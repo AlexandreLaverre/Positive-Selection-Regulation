@@ -23,4 +23,4 @@
 # Environment and working directory
 detect_positive_selection/venv/
 ChIPseq_analyses/work/
-ChIPseq_analyses/.nextflow/
+ChIPseq_analyses/.nextflow*
