@@ -1,19 +1,17 @@
 #! /usr/bin/env python
 
+########################################################################################################################
 ##### PIPELINE TO DETECT POSITIVE SELECTION  #####
 # Data requirements:
 # input file: list of interested coordinates
 # pairwise or multiple genome alignments
-
-# Scripts requirements:
-# pecan.py -> align pairs of homologous sequences
-# extract.aln.stats.excluding.regions.pl -> obtain final alignment statistics
 
 # Software requirements: PECAN + Snakemake + Exonerate + TreeTime + seqkit + lsgkm + ucsc-toupper + ucsc-MafsInRegions
 
 # Example of command to execute:
 # snakemake -j 8 --config Sp="human" Sample="CEBPA" AlignType="pairwise" AncMethod="parsimony" nbPart=6 nbRand=1000 --rerun-incomplete
 
+########################################################################################################################
 workdir: "/Users/alaverre/Documents/Detecting_positive_selection"
 
 sp = config["Sp"]
@@ -39,15 +37,15 @@ if config["AlignType"] == "pairwise":
 else:
     ruleorder: InferAncestralMultiple > InferAncestralPairwise
 
+########################################################################################################################
+
 rule all:
     input :
         pathResults + "/PosSelTest_deltaSVM." + str(nbRand) + ".txt"
 
 rule GenerateNegativeSeq:
-    message:
-        "Generate random sequences respecting the focal sequences composition for gkm training"
-    input:
-        BED_file = pathBED
+    message: "Generate random sequences respecting the focal sequences composition for gkm training"
+    input: BED_file = pathBED
     output:
         Positive_seq = pathModel + "/posSet.fa",
         Negative_seq = pathModel + "/negSet.fa"
@@ -59,15 +57,12 @@ rule GenerateNegativeSeq:
         """
 
 rule ModelTraining:
-    message:
-        "Training of the gkm-SVM, kmer=10, 4 threads"
+    message: "Training of the gkm-SVM, kmer=10, 4 threads"
     input:
         Positive_seq = pathModel + "/posSet.fa",
         Negative_seq = pathModel + "/negSet.fa"
-    output:
-        ModelTraining = pathModel + "/" + sample + ".model.txt"
-    log:
-        out = pathResults + "/log/ModelTraining.out"
+    output: ModelTraining = pathModel + "/" + sample + ".model.txt"
+    log: out = pathResults + "/log/ModelTraining.out"
     threads: 4
     shell:
         """
@@ -76,15 +71,12 @@ rule ModelTraining:
         """
 
 rule ModelValidation:
-    message:
-        "Training of the gkm-SVM, kmer=10, 4 threads, 5-fold cross-validation"
+    message: "Training of the gkm-SVM, kmer=10, 4 threads, 5-fold cross-validation"
     input:
         Positive_seq = pathModel + "/posSet.fa",
         Negative_seq = pathModel + "/negSet.fa"
-    output:
-        ModelValidation = pathModel + "/" + sample + ".cvpred.txt"
-    log:
-        out = pathResults + "/log/ModelValidation.out"
+    output: ModelValidation = pathModel + "/" + sample + ".cvpred.txt"
+    log: out = pathResults + "/log/ModelValidation.out"
     threads: 4
     shell:
         """
@@ -93,16 +85,14 @@ rule ModelValidation:
         """
 
 rule ModelPrediction:
-    message:
-        "Generate SVM weights for all possible 10-mers"
+    message: "Generate SVM weights for all possible 10-mers"
     input:
         Model = pathModel + "/" + sample + ".model.txt",
         kmer_fasta = path + "/results/kmer.fa"
     output:
         PredictedWeight = pathModel + "/kmer_predicted_weight.txt",
         Prediction_done = pathResults + "/log/ModelPrediction_done"
-    log:
-        out = pathResults + "/log/ModelPrediction.out"
+    log: out = pathResults + "/log/ModelPrediction.out"
     threads: 4
     shell:
         """
@@ -111,12 +101,9 @@ rule ModelPrediction:
         """
 
 rule BED_split:
-    message:
-        "Split the list of coordinates for parallelization"
-    input:
-        BED_file = pathBED
-    output:
-        BED_file_part = pathResults + "/log/"+ sample +"_part{part}"
+    message: "Split the list of coordinates for parallelization"
+    input: BED_file = pathBED
+    output: BED_file_part = pathResults + "/log/"+ sample +"_part{part}"
     shell:
         """
         mkdir -p {pathResults}/log/
@@ -125,15 +112,12 @@ rule BED_split:
         """
 
 rule InferAncestralPairwise:
-    message:
-        "Infer ancestral sequences from pairwise alignments"
+    message: "Infer ancestral sequences from pairwise alignments"
     input:
         Positive_seq = pathModel + "/posSet.fa",
         BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
-    output:
-        done = pathResults + "/log/" + sample +"_InferAncestral_part{part}_done"
-    log:
-        out = pathResults + "/log/" + sample +"_InferAncestral_part{part}.out"
+    output: done = pathResults + "/log/" + sample +"_InferAncestral_part{part}_done"
+    log: out = pathResults + "/log/" + sample +"_InferAncestral_part{part}.out"
     shell:
         """
         mkdir -p {pathAlignment}
@@ -142,15 +126,12 @@ rule InferAncestralPairwise:
         """
 
 rule InferAncestralMultiple:
-    message:
-        "Infer ancestral sequences from pairwise alignments"
+    message: "Infer ancestral sequences from pairwise alignments"
     input:
         Positive_seq = pathModel + "/posSet.fa",
         BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
-    output:
-        done = pathResults + "/log/" + sample +"_InferAncestral_part{part}_done"
-    log:
-        out = pathResults + "/log/" + sample +"_InferAncestral_part{part}.out"
+    output: done = pathResults + "/log/" + sample +"_InferAncestral_part{part}_done"
+    log: out = pathResults + "/log/" + sample +"_InferAncestral_part{part}.out"
     shell:
         """
         mkdir -p {pathAlignment}
@@ -159,10 +140,8 @@ rule InferAncestralMultiple:
         """
 
 rule ConcatSeq:
-    message:
-        "Concatenate and sort all coordinates"
-    input:
-        expand(pathResults + "/log/"+ sample +"_InferAncestral_part{part}_done", part=range(100, 100 + nbPart))
+    message: "Concatenate and sort all coordinates"
+    input: expand(pathResults + "/log/"+ sample +"_InferAncestral_part{part}_done", part=range(100, 100 + nbPart))
     output:
         concat_focal = pathResults + "/all_focal_sequences.fa",
         concat_focal_filtered = pathResults + "/filtered_focal_sequences.fa",
@@ -186,8 +165,7 @@ rule ConcatSeq:
         """
 
 rule TestPosSel:
-    message:
-        "Test for positive selection between ancestral and focal sequences"
+    message: "Test for positive selection between ancestral and focal sequences"
     input:
         PredictedWeight = pathModel + "/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/filtered_ancestral_sequences.fa",
@@ -195,8 +173,7 @@ rule TestPosSel:
     output:
         PosSel_test = pathResults + "/PosSelTest_deltaSVM." + str(nbRand) + ".txt",
         PosSel_test_done = pathResults + "/log/TestPosSel_done"
-    log:
-        out = pathResults + "/log/TestPosSel.out"
+    log: out = pathResults + "/log/TestPosSel.out"
     shell:
         """
         perl scripts/testPosSelec.pl {input.ancestral_sequences} {input.focal_sequences} {input.PredictedWeight} {nbRand} {output.PosSel_test} &> {log.out}
