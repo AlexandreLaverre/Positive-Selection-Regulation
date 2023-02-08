@@ -1,5 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
+use Statistics::Basic qw(:all);
 # This script is used to calculate the probability of a deltaSVM score higher or lower than null distribution
 # This script is modified from deltasvm.pl, a simple script that calculates deltaSVM scores, which contributed by Lee et al. in their study: A method to predict the impact of regulatory variants from DNA sequence. Nat Genet. 47:955-961.
 
@@ -117,7 +118,7 @@ sub mutate {
   my($dna) = $_[0];
   my $n = $_[1]; # snp number
   # Pick random positions in the DNA
-  my @position = (1 .. length($dna));
+  my @position = (0 .. length($dna)-1); 
   my @randomPos;
   for (1 .. $n) {
   my $randomPos = $position[rand @position];
@@ -131,19 +132,29 @@ sub mutate {
   my(@nucs_G) = ('T', 'C', 'A');
 
   # change into new sequence
+  my $nbRound=0;
+  my $oldnuc="X";
+  my $newnuc="Y";
   for (my $i=0; $i < $n; $i++) {
-    if ((substr($dna, $randomPos[$i], 1)=="A")) {
-      substr($dna,$randomPos[$i],1,$nucs_A[rand @nucs_A]);
+    my $oldnuc=substr($dna, $randomPos[$i], 1);
+    
+    if ($oldnuc eq "A"){
+      my $newnuc=$nucs_A[rand @nucs_A];
+      substr($dna,$randomPos[$i],1,$newnuc);
     }
-    if ((substr($dna, $randomPos[$i], 1)=="T")) {
-      substr($dna,$randomPos[$i],1,$nucs_T[rand @nucs_T]);
+    if ($oldnuc eq "T"){
+      my $newnuc=$nucs_T[rand @nucs_T];
+      substr($dna,$randomPos[$i],1,$newnuc);
     }
-    if ((substr($dna, $randomPos[$i], 1)=="C")) {
-      substr($dna,$randomPos[$i],1,$nucs_C[rand @nucs_C]);
+    if ($oldnuc eq "C"){
+      my $newnuc=$nucs_C[rand @nucs_C];
+      substr($dna,$randomPos[$i],1,$newnuc);
     }
-    if ((substr($dna, $randomPos[$i], 1)=="G")) {
-      substr($dna,$randomPos[$i],1,$nucs_G[rand @nucs_G]);
+    if ($oldnuc eq "G"){
+      my $newnuc=$nucs_G[rand @nucs_G];
+      substr($dna,$randomPos[$i],1,$newnuc);
     }
+     $nbRound++;
   }
   splice( @randomPos );
   return $dna;
@@ -161,7 +172,7 @@ my %sequence_alt_data;
 open($fh_ref, $refseqf) or die "can't open $refseqf: $!\n";
 open($fh_alt, $altseqf) or die "can't open $altseqf: $!\n";
 open OUT, ">$outf";
-print OUT "ID","\t", "deltaSVM","\t","SNP","\t","pval.low","\t","pval.high","\n";
+print OUT "ID","\t", "deltaSVM","\t","SNP","\t","pval.high","\n";
 
 print STDERR "calculating deltaSVM using $refseqf and $altseqf..\n";
 print STDERR "calculating probability of deltaSVM higher or lower than null distribution..\n";
@@ -200,11 +211,25 @@ while (read_fasta_sequence($fh_ref, \%sequence_ref_data)) {
     }
     # calculate random deltaSVM
     my $seq_random;
+    my @seq_random;
     my @score_random;
     my $score_random;
+    my @snpNbRand;
     for (1 .. $runNumb) {
       $score_random=0;
       $seq_random = mutate ($seq_ref,$snpNumb);
+       push @seq_random, $seq_random;
+       
+      my $x = 0;
+      my $snpNbRand=0;
+      my @seq_random = split //,$seq_random;
+      foreach  (@seq_ref) {
+      	if ($_ ne $seq_random[$x]) {
+         	$snpNbRand++;
+      	}
+      $x++;
+      }
+      push @snpNbRand, $snpNbRand;
       foreach my $i (0..($seqlen-$kmerlen)) {
         my $kmer_ref = substr($seq_ref, $i, $kmerlen);
         my $kmer_alt = substr($seq_random, $i, $kmerlen);
@@ -224,7 +249,7 @@ while (read_fasta_sequence($fh_ref, \%sequence_ref_data)) {
               $biggerNumb++;
           }
       }
-      $pvaluehigh=($biggerNumb+1)/($runNumb+1);
+      $pvaluehigh=$biggerNumb/$runNumb;
  
      # lowertail test
       foreach  (@score_random) {
@@ -241,7 +266,8 @@ while (read_fasta_sequence($fh_ref, \%sequence_ref_data)) {
     #print "$snpNumb","\n";
     #print "$pvalue","\n";
 
-    print OUT "$seqid_ref","\t", "$score","\t","$snpNumb","\t","$pvaluelow","\t","$pvaluehigh","\n";
+
+    print OUT "$seqid_ref","\t", "$score","\t","$snpNumb","\t","$pvaluehigh","\n";
     splice(@score_random);
   }
 }
