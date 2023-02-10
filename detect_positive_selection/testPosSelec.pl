@@ -6,7 +6,7 @@ use Statistics::Basic qw(:all);
 
 if ($#ARGV != 4) {
     print "\n";
-    print "   Usage: testPosSelec.pl <ref_seq_file> <alt_seq_file> <svm_weight_file> <number_random_sample> <test> <output_file>\n\n";
+    print "   Usage: testPosSelec.pl <ref_seq_file> <alt_seq_file> <svm_weight_file> <number_random_sample> <output_file>\n\n";
     print "   ref_seq_file - reference sequences to score in FASTA format\n";
     print "   alt_seq_file - alternative sequences to score in FASTA format\n";
     print "   (NOTE: sequences should be in the same order, also have the same name)\n";
@@ -132,9 +132,6 @@ sub mutate {
   my(@nucs_G) = ('T', 'C', 'A');
 
   # change into new sequence
-  my $nbRound=0;
-  my $oldnuc="X";
-  my $newnuc="Y";
   for (my $i=0; $i < $n; $i++) {
     my $oldnuc=substr($dna, $randomPos[$i], 1);
     
@@ -154,7 +151,6 @@ sub mutate {
       my $newnuc=$nucs_G[rand @nucs_G];
       substr($dna,$randomPos[$i],1,$newnuc);
     }
-     $nbRound++;
   }
   splice( @randomPos );
   return $dna;
