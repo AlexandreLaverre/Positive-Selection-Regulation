@@ -24,18 +24,18 @@ prefix = "hsap_" if sp == "human" else "b6-"
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection"
 pathBED = path + "/Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + "_based0.bed"
-pathResults = path + "/results/" + sp + "/" + sample
+pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathAlignment = pathResults + "/Alignments"
 pathModel = pathResults + "/Model"
 
 localrules : all, GenerateNegativeSeq, ModelTraining, ModelValidation, ModelPrediction, BED_split,
-            InferAncestralPairwise, InferAncestralMultiple, ConcatSeq, TestPosSel
+            InferAncestralPairwise, GetSequencesMultiple, ConcatSeq, TestPosSel
 
-# Define from which type of alignments ancestral estimation should be done
+# Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
-    ruleorder: InferAncestralPairwise > InferAncestralMultiple
+    ruleorder: InferAncestralPairwise > GetSequencesMultiple
 else:
-    ruleorder: InferAncestralMultiple > InferAncestralPairwise
+    ruleorder: GetSequencesMultiple > InferAncestralPairwise
 
 ########################################################################################################################
 
@@ -61,13 +61,12 @@ rule ModelTraining:
     input:
         Positive_seq = pathModel + "/posSet.fa",
         Negative_seq = pathModel + "/negSet.fa"
-    output: ModelTraining = pathModel + "/" + sample + ".model.txt"
+    output: touch(pathModel + "/" + sample + ".model.txt")
     log: out = pathResults + "/log/ModelTraining.out"
     threads: 4
     shell:
         """
         gkmtrain -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
-        touch {output.ModelTraining}
         """
 
 rule ModelValidation:
@@ -75,13 +74,12 @@ rule ModelValidation:
     input:
         Positive_seq = pathModel + "/posSet.fa",
         Negative_seq = pathModel + "/negSet.fa"
-    output: ModelValidation = pathModel + "/" + sample + ".cvpred.txt"
+    output: touch(pathModel + "/" + sample + ".cvpred.txt")
     log: out = pathResults + "/log/ModelValidation.out"
     threads: 4
     shell:
         """
         gkmtrain -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
-        touch {output.ModelValidation}
         """
 
 rule ModelPrediction:
@@ -116,32 +114,26 @@ rule InferAncestralPairwise:
     input:
         Positive_seq = pathModel + "/posSet.fa",
         BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
-    output: done = pathResults + "/log/" + sample +"_InferAncestral_part{part}_done"
-    log: out = pathResults + "/log/" + sample +"_InferAncestral_part{part}.out"
+    output: touch(pathResults + "/log/" + sample +"_GetAncestral_part{part}_done")
+    log: out = pathResults + "/log/" + sample +"_GetAncestral_part{part}.out"
     shell:
         """
         mkdir -p {pathAlignment}
         python scripts/InferAncestralPairwise.py {sp} {sample} {input.BED_file_part} {AncMethod} &> {log.out}
-        touch {output.done}
         """
 
-rule InferAncestralMultiple:
-    message: "Infer ancestral sequences from pairwise alignments"
-    input:
-        Positive_seq = pathModel + "/posSet.fa",
-        BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
-    output: done = pathResults + "/log/" + sample +"_InferAncestral_part{part}_done"
-    log: out = pathResults + "/log/" + sample +"_InferAncestral_part{part}.out"
+rule GetSequencesMultiple:
+    message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
+    input: BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
+    output: touch(pathResults + "/log/" + sample +"_GetAncestral_part{part}_done")
     shell:
         """
-        mkdir -p {pathAlignment}
-        python scripts/InferAncestralMultiple.py {sp} {sample} {input.BED_file_part} &> {log.out}
-        touch {output.done}
+        scripts/get_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part}
         """
 
 rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
-    input: expand(pathResults + "/log/"+ sample +"_InferAncestral_part{part}_done", part=range(100, 100 + nbPart))
+    input: expand(pathResults + "/log/"+ sample +"_GetAncestral_part{part}_done", part=range(100, 100 + nbPart))
     output:
         concat_focal = pathResults + "/all_focal_sequences.fa",
         concat_focal_filtered = pathResults + "/filtered_focal_sequences.fa",
@@ -150,17 +142,15 @@ rule ConcatSeq:
     shell:
         """
         cd {pathAlignment}
-        # Get all ancestral sequences sorted in one file
+        # Get all ancestral sequences in one file
         ls ancestral_sequences/*nogap.fa | xargs basename | sed -e 's/_nogap\.fa$//' > list_ancestral.txt
-        cat ancestral_sequences/*nogap.fa > {pathResults}/ancestral_sequences.fa
-        fastasort -f {pathResults}/ancestral_sequences.fa > {output.concat_ancestral}
+        cat ancestral_sequences/*nogap.fa > {output.concat_ancestral}
         
-        # Get all corresponding focal sequences sorted in one file
+        # Get all corresponding focal sequences in one file
         cat focal_sequences/*nogap.fa > {output.concat_focal}
-        seqtk subseq {output.concat_focal} {pathAlignment}/list_ancestral.txt > {pathResults}/focal_sequences.fa
-        fastasort -f {pathResults}/focal_sequences.fa > {output.concat_focal_filtered}
+        seqtk subseq {output.concat_focal} {pathAlignment}/list_ancestral.txt > {output.concat_focal_filtered}
         
-        # Make sequences in uppercase to remove soft repeat mask 
+        # Make sequences in uppercase to remove potential soft repeat mask 
         awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
         """
 
@@ -176,6 +166,6 @@ rule TestPosSel:
     log: out = pathResults + "/log/TestPosSel.out"
     shell:
         """
-        perl scripts/testPosSelec.pl {input.ancestral_sequences} {input.focal_sequences} {input.PredictedWeight} {nbRand} {output.PosSel_test} &> {log.out}
+        python scripts/testPosSelec.py {input.ancestral_sequences} {input.focal_sequences} {input.PredictedWeight} {nbRand} {output.PosSel_test} &> {log.out}
         touch {output.PosSel_test_done}
         """
