@@ -9,9 +9,9 @@ import numpy as np
 import pandas
 from alive_progress import alive_bar
 
-species = sys.argv[1]       # Species name: human dog
-NbRand = int(sys.argv[2])        # Number of random substitutions permutations per sequence
-Evol = sys.argv[3]          # Substitution model: uniform or proba
+species = sys.argv[1]           # Species name: human dog
+NbRand = int(sys.argv[2])       # Number of random substitutions permutations per sequence
+Evol = sys.argv[3]              # Substitution model: uniform or proba
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 pathSelection = path + "positive_selection/" + species + "/CEBPA/"
