@@ -257,7 +257,7 @@ while (read_fasta_sequence($fh_ref, \%sequence_ref_data)) {
 
     # output result
     $nbseq++;
-     print "$seqid_ref"," --> seq. number: ", "$nbseq", "\n";
+    print "$seqid_ref"," --> seq. number: ", "$nbseq", "\n";
     #print "$score","\n";
     #print "$snpNumb","\n";
     #print "$pvalue","\n";
