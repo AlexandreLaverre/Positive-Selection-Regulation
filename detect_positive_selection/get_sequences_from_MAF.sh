@@ -6,8 +6,8 @@ BED_file=$3	# i.e:
 
 path="/Users/alaverre/Documents/Detecting_positive_selection/"
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/Dog_triplet_ancestor.maf"
-pathResults="${path}/results/positive_selection/${sp}/${sample}/"
-pathAlign="${pathResults}/Alignments/"
+pathResults="${path}/results/positive_selection/${sp}/${sample}/Alignments/"
+pathAlign="${pathResults}/MAFs/"
 
 mkdir -p "${pathAlign}"
 mkdir -p "${pathResults}/focal_sequences/"
@@ -38,11 +38,11 @@ do
 	seqkit grep -p ${sp_name} -p ${anc_name} ${pathAlign}/${ID}.mfa > ${pathAlign}/${ID}_anc_foc.mfa
 	
 	# Remove GAP
-	trimal -nogaps -keepheader -in ${pathAlign}/${ID}_anc_foc.mfa  ${pathAlign}/${ID}_anc_foc_nogap.mfa
+	trimal -nogaps -keepheader -in ${pathAlign}/${ID}_anc_foc.mfa -out ${pathAlign}/${ID}_anc_foc_nogap.mfa
 	
 	# Get focal and ancestral sequences separatly
-	seqkit grep -p ${sp_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/focal_sequences/${ID}.fa
-	seqkit grep -p ${anc_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/ancestral_sequences/${ID}.fa
+	seqkit grep -p ${sp_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/focal_sequences/${ID}_nogap.fa
+	seqkit grep -p ${anc_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/ancestral_sequences/${ID}_nogap.fa
 	
 done
 	
