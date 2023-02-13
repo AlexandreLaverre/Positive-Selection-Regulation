@@ -29,7 +29,7 @@ do
 	for cond in "${conditions[@]}"
 	do
 		echo ${cond}
-		./testPosSelec.pl ${pathData}/${sp}_sequences/${samp}_${cond}filtered_ancestor.fa ${pathData}/${sp}_sequences/${samp}_${cond}filtered_focal.fa ${pathData}/${sp}_SVM_model/${samp}/kmer_10_library_weigths.txt 10000 ${pathResults}/${samp}_deltaSVM.txt
+		./testPosSelec.pl ${pathData}/${sp}_sequences/${samp}_${cond}filtered_ancestor.fa ${pathData}/${sp}_sequences/${samp}_${cond}filtered_focal.fa ${pathData}/${sp}_SVM_model/${samp}/kmer_10_library_weigths.txt 10000 ${pathResults}/${samp}_${cond}deltaSVM.txt
 	done
 done
 
