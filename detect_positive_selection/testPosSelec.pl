@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
 use strict;
-use Statistics::Basic qw(:all);
 # This script is used to calculate the probability of a deltaSVM score higher or lower than null distribution
 # This script is modified from deltasvm.pl, a simple script that calculates deltaSVM scores, which contributed by Lee et al. in their study: A method to predict the impact of regulatory variants from DNA sequence. Nat Genet. 47:955-961.
 
