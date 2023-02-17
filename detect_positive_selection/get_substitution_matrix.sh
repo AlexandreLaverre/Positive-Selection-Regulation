@@ -8,14 +8,17 @@ export path=/Users/alaverre/Documents/Detecting_positive_selection/
 export pathResults=${path}/results/substitution_matrix/${sp}/
 export pathAlignment=${path}/data/genome_alignments/${sp}/
 export SpeciesTree=${path}/data/species_trees/${sp}_tree.nk
+export pathGFF=${path}/data/genome_sequences/${sp}/
 
 if [ ${sp} = "dog" ]; then
-	export Alignment=${pathAlignment}/Dog_triplets.maf
+	Alignment=${pathAlignment}/Dog_triplets.maf
 	chroms=({1..38} "MT" "X")
+	prefix="Canis_lupus_familiaris.CanFam3.1.104"
+	species="Canis_lupus_familiaris,Canis_lupus_lupus,Lycaon_pictus"
 fi
 
 if [ ${sp} = "human" ]; then
-    export Alignment=${pathAlignment}/hg38.gorGor5.maf
+    Alignment=${pathAlignment}/hg38.gorGor5.maf
     chroms=(chr{1..22} "M" "X" "Y")
 fi
 
@@ -43,14 +46,30 @@ do
 		echo "Substitution matrix already done!"
 	else
 
+		# Mask CDS in MAF
+		if [ -e ${pathAlignment}/per_chrom/MAFs/${chr}.CDSmasked.maf ]; then
+			echo "MAF already masked for CDS!"
+		else
+			# Get a GFF with sorted CDS per chromosome
+			if [ ! -e ${pathGFF}/GFF_per_chrom ]; then
+				grep -w "CDS" ${pathGFF}/${prefix}.gff > ${pathGFF}/CDS_${prefix}.gff 
+				cut -f 1-8 ${pathGFF}/CDS_${prefix}.gff | sort -u > ${pathGFF}/CDS.uniq.${prefix}.gff 
+				sort -k1,1V -k4,4h -k5,5rh -k3,3r ${pathGFF}/CDS.uniq.${prefix}.gff > ${pathGFF}/CDS.uniq.sorted.${prefix}.gff
+				mkdir -p ${pathGFF}/GFF_per_chrom
+			fi
+		
+			grep -w "^${chr}" ${pathGFF}/CDS.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.CDS.uniq.sorted_${prefix}.gff
+		 	maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.CDS.uniq.sorted_${prefix}.gff --mask-features ${species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.CDSmasked.maf
+
+		 fi
+		
 		# Change MAF to PHYLIP format
 		phylip_file="${pathAlignment}/per_chrom/PHYLIPs/${chr}.phylip"
 		
 		if [ -e ${phylip_file} ]; then
 			echo "MAF to PHYLIP already done!"
 		else
-			mv ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf ${pathAlignment}/per_chrom/MAFs/${chr}.maf # just for cleaning (running only on non-scaffolds)
-			msa_view -i MAF -o PHYLIP ${pathAlignment}/per_chrom/MAFs/${chr}.maf > ${phylip_file}
+			msa_view -i MAF -o PHYLIP ${pathAlignment}/per_chrom/MAFs/${chr}.CDSmasked.maf > ${phylip_file}
 		fi
 
 		# Run phyML
