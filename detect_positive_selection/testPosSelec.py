@@ -13,23 +13,19 @@ import multiprocessing.pool
 # Variables and paths
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog")
+parser.add_argument("sample", help="Species name: human dog")
 parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("Evol", default="uniform", help="Substitution model (default = uniform)")
-parser.add_argument("-T", default=1, type=int, help="Number of threads for parallelization (default = 1)")
+parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
 args = parser.parse_args()
 
-species = args.species
-NbRand = args.NbRand
-Evol = args.Evol
-NbThread = args.T
-
 path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
-pathSelection = path + "positive_selection/" + species + "/CEBPA/"
+pathSelection = path + "positive_selection/" + args.species + "/" + args.sample + "/"
 Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
 Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
 ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"
 pathSubMat = path + "/substitution_matrix/dog/"
-Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(NbRand) + "permutations.txt_para", "w")
+Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
 
 
 ####################################################################################################
@@ -62,7 +58,7 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, nb_sub):
     normed_pos_proba = pos_proba / sum(pos_proba)   # normalisation of all positions to sum at 1
 
     random_seqs = []
-    for perm in range(NbRand):
+    for perm in range(args.NbRand):
         rand_seq = seq
         # draw positions
         rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=nb_sub)
@@ -87,8 +83,8 @@ def test_positive_selection(seq_name):
 
     # Get corresponding substitution matrix
     chromosome = seq_name.split(':')[0]
-    sub_mat_proba = SubMats[chromosome] if Evol != 'uniform' else SubMat_uniform
-    sub_mat_proba_normed = SubMats_norm[chromosome] if Evol != 'uniform' else SubMat_uniform
+    sub_mat_proba = SubMats[chromosome] if args.Evol != 'uniform' else SubMat_uniform
+    sub_mat_proba_normed = SubMats_norm[chromosome] if args.Evol != 'uniform' else SubMat_uniform
 
     # Number of substitutions between Ancestral and Focal sequences
     nb_sub = get_sub_number(ancestral_seq, focal_seq)
@@ -123,7 +119,7 @@ with open(ModelEstimation, 'r') as model:
         SVM_dict[rev_kmer] = svm_score
 
 # Substitution matrix
-if Evol == 'uniform':
+if args.Evol == 'uniform':
     SubMat_uniform = {'A': {'A': 0, 'C': 0.333, 'G': 0.333, 'T': 0.334},
                       'C': {'A': 0.333, 'C': 0, 'G': 0.333, 'T': 0.334},
                       'G': {'A': 0.333, 'C': 0.333, 'G': 0, 'T': 0.334},
@@ -161,7 +157,7 @@ SeqIDs = FocalSeqs.keys()
 # protect the entry point
 if __name__ == '__main__':
     with alive_bar(len(SeqIDs)) as bar:  # progress bar
-        with multiprocessing.Pool(NbThread) as pool:
+        with multiprocessing.Pool(args.NbThread) as pool:
 
             # Run function for each sequence in parallel
             for result in pool.imap_unordered(test_positive_selection, SeqIDs):
