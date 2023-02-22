@@ -1,58 +1,68 @@
 #!/usr/bin/env python
 # coding=utf-8
-
-import sys
+import argparse
 import os
 from Bio import SeqIO
 from Bio.Seq import Seq
 import numpy as np
 import pandas
 from alive_progress import alive_bar
+import multiprocessing.pool
 
-species = sys.argv[1]           # Species name: human dog
-NbRand = int(sys.argv[2])       # Number of random substitutions permutations per sequence
-Evol = sys.argv[3]              # Substitution model: uniform or proba
+####################################################################################################
+# Variables and paths
+parser = argparse.ArgumentParser()
+parser.add_argument("species", help="Species name: human dog")
+parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
+parser.add_argument("Evol", default="uniform", help="Substitution model (default = uniform)")
+parser.add_argument("-T", default=1, type=int, help="Number of threads for parallelization (default = 1)")
+args = parser.parse_args()
+
+species = args.species
+NbRand = args.NbRand
+Evol = args.Evol
+NbThread = args.T
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 pathSelection = path + "positive_selection/" + species + "/CEBPA/"
-Ancestral_fasta = pathSelection + "filtered_ancestral_sequences.fa_subsample"
-Focal_fasta = pathSelection + "filtered_focal_sequences.fa_subsample"
+Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
+Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
 ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"
 pathSubMat = path + "/substitution_matrix/dog/"
-
-Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(NbRand) + "permutations.txt_subsample_new", "w")
+Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(NbRand) + "permutations.txt_para", "w")
 
 
 ####################################################################################################
+# Functions
 # Get number of substitutions per sequence
-def get_sub_number(seq1, seq2):
-    if len(seq1) != len(seq2):
+def get_sub_number(seq_ref, seq_alt):
+    if len(seq_ref) != len(seq_alt):
         raise ValueError("Undefined for sequences of unequal length")
-    return sum(pos1 != pos2 for pos1, pos2 in zip(seq1, seq2))
+    return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
 
 
 # Calculate delta SVM from sliding windows
-def calculate_delta_svm(seq_ref, seq_alt, kmer_len, svm_scores):
+def calculate_delta_svm(seq_ref, seq_alt):
     delta_svm = 0
-    for pos in range(len(seq_ref) - kmer_len + 1):   # sliding window of kmer length
-        kmer_ref = seq_ref[pos:pos+kmer_len]
-        kmer_alt = seq_alt[pos:pos+kmer_len]
-        delta_svm += svm_scores[kmer_alt] - svm_scores[kmer_ref]  # sum of delta between sequences for each kmer
+    for pos in range(len(seq_ref) - KmerLen + 1):   # sliding window of kmer length
+        kmer_ref = seq_ref[pos:pos+KmerLen]
+        kmer_alt = seq_alt[pos:pos+KmerLen]
+        delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
     return delta_svm
 
 
 # Get random sequences according to substitution matrix
-def get_random_seqs(seq, sub_prob, sub_prob_norm, nb_sub, nb_perm):
+def get_random_seqs(seq, sub_prob, sub_prob_norm, nb_sub):
     # Get substitution probabilities for each position
     pos_proba = np.empty(len(seq))
     for pos in range(len(seq)):
-        nucl = seq[pos]                                # the probability to draw a given position is equal to the sum
-        pos_proba[pos] = sum(sub_prob[nucl].values())  # of the substitution probabilities from this nucleotide
+        nuc = seq[pos]                                # the probability to draw a given position is equal to the sum
+        pos_proba[pos] = sum(sub_prob[nuc].values())  # of the substitution probabilities from this nucleotide
 
     normed_pos_proba = pos_proba / sum(pos_proba)   # normalisation of all positions to sum at 1
 
     random_seqs = []
-    for perm in range(nb_perm):
+    for perm in range(NbRand):
         rand_seq = seq
         # draw positions
         rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=nb_sub)
@@ -70,9 +80,35 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, nb_sub, nb_perm):
     return random_seqs
 
 
+# Test positive selection for each sequence
+def test_positive_selection(seq_name):
+    focal_seq = str(FocalSeqs[seq_name].seq)
+    ancestral_seq = str(AncestralSeqs[seq_name].seq)
+
+    # Get corresponding substitution matrix
+    chromosome = seq_name.split(':')[0]
+    sub_mat_proba = SubMats[chromosome] if Evol != 'uniform' else SubMat_uniform
+    sub_mat_proba_normed = SubMats_norm[chromosome] if Evol != 'uniform' else SubMat_uniform
+
+    # Number of substitutions between Ancestral and Focal sequences
+    nb_sub = get_sub_number(ancestral_seq, focal_seq)
+    if nb_sub > 1:
+        # Get observed and random deltas
+        delta_obs = calculate_delta_svm(ancestral_seq, focal_seq)
+        random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed, nb_sub)
+        delta_rand = [calculate_delta_svm(ancestral_seq, rand_seq) for rand_seq in random_seqs]
+
+        # Calculate p-value
+        nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
+        p_val_high = nb_higher_rand / len(delta_rand)
+        output = (seq_name + "\t" + str(delta_obs) + "\t" + str(nb_sub) + "\t" + str(p_val_high) + "\n")
+
+        return output
+
+
 ####################################################################################################
+# Datas
 # Binding affinity values per kmer
-print("Get SVM score for each kmer from:", ModelEstimation)
 SVM_dict = {}
 with open(ModelEstimation, 'r') as model:
     for i in model.readlines():
@@ -86,7 +122,6 @@ with open(ModelEstimation, 'r') as model:
         SVM_dict[kmer] = svm_score
         SVM_dict[rev_kmer] = svm_score
 
-
 # Substitution matrix
 if Evol == 'uniform':
     SubMat_uniform = {'A': {'A': 0, 'C': 0.333, 'G': 0.333, 'T': 0.334},
@@ -94,7 +129,7 @@ if Evol == 'uniform':
                       'G': {'A': 0.333, 'C': 0.333, 'G': 0, 'T': 0.334},
                       'T': {'A': 0.333, 'C': 0.333, 'G': 0.334, 'T': 0}}
 else:
-    print("Get substitution matrix for each chromosome...")
+    # Get substitution matrix for each chromosome
     SubMats = {}
     SubMats_norm = {}
     for file in os.listdir(pathSubMat):
@@ -112,45 +147,27 @@ else:
             chrom_SubMat_norm = chrom_Table_norm.to_dict('index')
             SubMats_norm[chrom] = chrom_SubMat_norm
 
-
-# Sequences
-print("Get Ancestral sequences...")
+# Get Ancestral sequences
 AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(Ancestral_fasta), "fasta"))
 
-print("Get Focal sequences...")
+# Get Focal sequences
 FocalSeqs = SeqIO.to_dict(SeqIO.parse(open(Focal_fasta), "fasta"))
 
 ####################################################################################################
+# Running and writing results
 Output.write("ID\tdeltaSVM\tNbSub\tpval.high\n")  # header
 
-print("Running Positive Selection test for each sequence with", NbRand, "random permutations...")
-with alive_bar(len(FocalSeqs.keys())) as bar:
-    for ID in FocalSeqs.keys():
-        bar()   # Progress bar
-        FocalSeq = str(FocalSeqs[ID].seq)
-        AncestralSeq = str(AncestralSeqs[ID].seq)
+SeqIDs = FocalSeqs.keys()
+# protect the entry point
+if __name__ == '__main__':
+    with alive_bar(len(SeqIDs)) as bar:  # progress bar
+        with multiprocessing.Pool(NbThread) as pool:
 
-        # Get corresponding substitution matrix
-        chrom = ID.split(':')[0]
-        SubMat_proba = SubMats[chrom] if Evol != 'uniform' else SubMat_uniform
-        SubMat_proba_normed = SubMats_norm[chrom] if Evol != 'uniform' else SubMat_uniform
-
-        # Number of substitutions between Ancestral and Focal sequences
-        NbSub = get_sub_number(FocalSeq, AncestralSeq)
-        if NbSub > 1:
-
-            DeltaObs = calculate_delta_svm(AncestralSeq, FocalSeq, KmerLen, SVM_dict)
-            RandomSeqs = get_random_seqs(AncestralSeq, SubMat_proba, SubMat_proba_normed, NbSub, NbRand)
-            DeltaRand = [calculate_delta_svm(AncestralSeq, RandSeq, KmerLen, SVM_dict) for RandSeq in RandomSeqs]
-
-            # Calculate p-value
-            NbHigherRand = sum(rand > DeltaObs for rand in DeltaRand)
-            pvalHigh = NbHigherRand / len(DeltaRand)
-
-            Output.write(ID + "\t" + str(DeltaObs) + "\t" + str(NbSub) + "\t" + str(pvalHigh) + "\n")
+            # Run function for each sequence in parallel
+            for result in pool.imap_unordered(test_positive_selection, SeqIDs):
+                bar()  # print progress bar
+                if result is not None:
+                    Output.write(result)
 
 Output.close()
-
-print("Done!")
-
 ####################################################################################################
