@@ -23,10 +23,12 @@ AncMethod = config["AncMethod"]
 prefix = "hsap_" if sp == "human" else "b6-"
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection"
-pathBED = path + "/Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + "_based0.bed"
+#pathBED = path + "/Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + "_based0.bed"
+pathBED = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed"
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathAlignment = pathResults + "/Alignments"
 pathModel = pathResults + "/Model"
+pathScripts = path + "/scripts/detect_positive_selection"
 
 localrules : all, GenerateNegativeSeq, ModelTraining, ModelValidation, ModelPrediction, BED_split,
             InferAncestralPairwise, GetSequencesMultiple, ConcatSeq, TestPosSel
@@ -41,7 +43,7 @@ else:
 
 rule all:
     input :
-        pathResults + "/PosSelTest_deltaSVM." + str(nbRand) + ".txt"
+        pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt"
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
@@ -52,7 +54,7 @@ rule GenerateNegativeSeq:
     shell:
         """
         mkdir -p {pathModel}
-        Rscript scripts/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {pathModel}
+        Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {pathModel}
         touch {output.Positive_seq} {output.Negative_seq}
         """
 
@@ -86,7 +88,7 @@ rule ModelPrediction:
     message: "Generate SVM weights for all possible 10-mers"
     input:
         Model = pathModel + "/" + sample + ".model.txt",
-        kmer_fasta = path + "/results/kmer.fa"
+        kmer_fasta = path + "/results/positive_selection/kmer.fa"
     output:
         PredictedWeight = pathModel + "/kmer_predicted_weight.txt",
         Prediction_done = pathResults + "/log/ModelPrediction_done"
@@ -101,12 +103,12 @@ rule ModelPrediction:
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
     input: BED_file = pathBED
-    output: BED_file_part = pathResults + "/log/"+ sample +"_part{part}"
+    output:
+        expand(pathResults + "/log/"+ sample +"_part{part}", part=range(100, 100 + nbPart))
     shell:
         """
         mkdir -p {pathResults}/log/
-        split -d -l 3000 {input.BED_file} {pathResults}/log/{sample}_part1
-        touch {output.BED_file_part}
+        gsplit -d -n l/{nbPart} {input.BED_file} {pathResults}/log/{sample}_part1
         """
 
 rule InferAncestralPairwise:
@@ -119,7 +121,7 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathAlignment}
-        python scripts/InferAncestralPairwise.py {sp} {sample} {input.BED_file_part} {AncMethod} &> {log.out}
+        python {pathScripts}/InferAncestralPairwise.py {sp} {sample} {input.BED_file_part} {AncMethod} &> {log.out}
         """
 
 rule GetSequencesMultiple:
@@ -128,22 +130,23 @@ rule GetSequencesMultiple:
     output: touch(pathResults + "/log/" + sample +"_GetAncestral_part{part}_done")
     shell:
         """
-        scripts/get_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part}
+        {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part}
         """
 
 rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input: expand(pathResults + "/log/"+ sample +"_GetAncestral_part{part}_done", part=range(100, 100 + nbPart))
     output:
-        concat_focal = pathResults + "/all_focal_sequences.fa",
-        concat_focal_filtered = pathResults + "/filtered_focal_sequences.fa",
-        concat_focal_upper = pathResults + "/filtered_focal_sequences_upper.fa",
-        concat_ancestral = pathResults + "/filtered_ancestral_sequences.fa"
+        concat_focal = pathResults + "/sequences/all_focal_sequences.fa",
+        concat_focal_filtered = pathResults + "/sequences/filtered_focal_sequences.fa",
+        concat_focal_upper = pathResults + "/sequences/filtered_focal_sequences_upper.fa",
+        concat_ancestral = pathResults + "/sequences/filtered_ancestral_sequences.fa"
     shell:
         """
         cd {pathAlignment}
-        # Get all ancestral sequences in one file
-        ls ancestral_sequences/*nogap.fa | xargs basename | sed -e 's/_nogap\.fa$//' > list_ancestral.txt
+        mkdir -p {pathResults}/sequences/
+        # Get all non empty ancestral sequences in one file
+        find ancestral_sequences/ -iname "*nogap.fa" -maxdepth 1 -size +0 -print | xargs basename | sed -e 's/_nogap\.fa$//' > list_ancestral.txt
         cat ancestral_sequences/*nogap.fa > {output.concat_ancestral}
         
         # Get all corresponding focal sequences in one file
@@ -158,14 +161,10 @@ rule TestPosSel:
     message: "Test for positive selection between ancestral and focal sequences"
     input:
         PredictedWeight = pathModel + "/kmer_predicted_weight.txt",
-        ancestral_sequences = pathResults + "/filtered_ancestral_sequences.fa",
-        focal_sequences = pathResults + "/filtered_focal_sequences_upper.fa"
-    output:
-        PosSel_test = pathResults + "/PosSelTest_deltaSVM." + str(nbRand) + ".txt",
-        PosSel_test_done = pathResults + "/log/TestPosSel_done"
-    log: out = pathResults + "/log/TestPosSel.out"
+        ancestral_sequences = pathResults + "/sequences/filtered_ancestral_sequences.fa",
+        focal_sequences = pathResults + "/sequences/filtered_focal_sequences_upper.fa"
+    output: touch(pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt")
     shell:
         """
-        python scripts/testPosSelec.py {input.ancestral_sequences} {input.focal_sequences} {input.PredictedWeight} {nbRand} {output.PosSel_test} &> {log.out}
-        touch {output.PosSel_test_done}
+        python {pathScripts}/testPosSelec.py {sp} {sample} {nbRand} submat --NbThread {nbPart}
         """

@@ -26,24 +26,41 @@ conda activate phyml
 # Retrieve alignments of regions from whole genome alignment
 mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 
-for align in `ls ${pathAlign}/*maf`
+cat ${BED_file} | while read line
 do
-	ID="$(basename "${align}" .maf)"
+	ID=`echo ${line} | cut -f 4 -d ' ' `
+	align=${pathAlign}/${ID}.maf
 	
 	# Convert to FASTA
-	msa_view -i MAF -o FASTA ${align} > ${pathAlign}/${ID}.mfa
+	msa_view --missing-as-indels -i MAF -o FASTA ${align} > ${pathAlign}/${ID}.mfa
 	sed -i '' 's/ //g' ${pathAlign}/${ID}.mfa
+
+  	# Check if an alignment exists with the other species
+	if [ -s ${pathAlign}/${ID}.mfa ]; then                            
 	
-	# Keep only focal and ancestral sequences
-	seqkit grep -p ${sp_name} -p ${anc_name} ${pathAlign}/${ID}.mfa > ${pathAlign}/${ID}_anc_foc.mfa
-	
-	# Remove GAP
-	trimal -nogaps -keepheader -in ${pathAlign}/${ID}_anc_foc.mfa -out ${pathAlign}/${ID}_anc_foc_nogap.mfa
-	
-	# Get focal and ancestral sequences separatly
-	seqkit grep -p ${sp_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/focal_sequences/${ID}_nogap.fa
-	seqkit grep -p ${anc_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/ancestral_sequences/${ID}_nogap.fa
-	
+	    # Keep only focal and ancestral sequences
+	    seqkit grep -p ${sp_name} -p ${anc_name} ${pathAlign}/${ID}.mfa > ${pathAlign}/${ID}_anc_foc.mfa
+
+	    # Remove GAP
+	    trimal -nogaps -keepheader -in ${pathAlign}/${ID}_anc_foc.mfa -out ${pathAlign}/${ID}_anc_foc_nogap.mfa
+	    
+	    # Check if alignment still exists after removing GAPs
+	    if [ -f ${pathAlign}/${ID}_anc_foc_nogap.mfa ]; then
+		    # Get focal and ancestral sequences separatly
+		    seqkit grep -p ${sp_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/focal_sequences/${ID}_nogap.fa
+		    seqkit grep -p ${anc_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/ancestral_sequences/${ID}_nogap.fa
+
+		    # Change species names to ID
+		    sed -i '' "s/${sp_name}/${ID}/g" ${pathResults}/focal_sequences/${ID}_nogap.fa
+		    sed -i '' "s/${anc_name}/${ID}/g" ${pathResults}/ancestral_sequences/${ID}_nogap.fa
+	    else
+	    	echo "${ID}" >> ${pathResults}/missing.txt
+	    fi
+	    
+  	else
+    		echo "${ID}" >> ${pathResults}/missing.txt
+  	fi
+  
 done
 	
 #########################################################################
