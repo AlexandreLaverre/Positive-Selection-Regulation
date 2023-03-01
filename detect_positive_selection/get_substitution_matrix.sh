@@ -64,7 +64,7 @@ do
 		 fi
 		
 		# Change MAF to PHYLIP format
-		phylip_file="${pathAlignment}/per_chrom/PHYLIPs/${chr}.phylip"
+		phylip_file="${pathAlignment}/per_chrom/PHYLIPs/${chr}.exons_masked.phylip"
 		
 		if [ -e ${phylip_file} ]; then
 			echo "MAF to PHYLIP already done!"
