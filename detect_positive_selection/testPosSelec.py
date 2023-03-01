@@ -24,7 +24,7 @@ pathSelection = path + "positive_selection/" + args.species + "/" + args.sample 
 Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
 Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
 ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"
-pathSubMat = path + "/substitution_matrix/dog/"
+pathSubMat = path + "/substitution_matrix/" + args.species + "/"
 Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
 
 
@@ -44,7 +44,7 @@ def calculate_delta_svm(seq_ref, seq_alt):
         kmer_ref = seq_ref[pos:pos+KmerLen]
         kmer_alt = seq_alt[pos:pos+KmerLen]
         delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
-    return delta_svm
+    return round(delta_svm, 7)
 
 
 # Get random sequences according to substitution matrix
@@ -83,23 +83,25 @@ def test_positive_selection(seq_name):
 
     # Get corresponding substitution matrix
     chromosome = seq_name.split(':')[0]
-    sub_mat_proba = SubMats[chromosome] if args.Evol != 'uniform' else SubMat_uniform
-    sub_mat_proba_normed = SubMats_norm[chromosome] if args.Evol != 'uniform' else SubMat_uniform
 
-    # Number of substitutions between Ancestral and Focal sequences
-    nb_sub = get_sub_number(ancestral_seq, focal_seq)
-    if nb_sub > 1:
-        # Get observed and random deltas
-        delta_obs = calculate_delta_svm(ancestral_seq, focal_seq)
-        random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed, nb_sub)
-        delta_rand = [calculate_delta_svm(ancestral_seq, rand_seq) for rand_seq in random_seqs]
+    if chromosome in SubMats.keys():
+        sub_mat_proba = SubMats[chromosome] if args.Evol != 'uniform' else SubMat_uniform
+        sub_mat_proba_normed = SubMats_norm[chromosome] if args.Evol != 'uniform' else SubMat_uniform
 
-        # Calculate p-value
-        nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
-        p_val_high = nb_higher_rand / len(delta_rand)
-        output = (seq_name + "\t" + str(delta_obs) + "\t" + str(nb_sub) + "\t" + str(p_val_high) + "\n")
+        # Number of substitutions between Ancestral and Focal sequences
+        nb_sub = get_sub_number(ancestral_seq, focal_seq)
+        if nb_sub > 1:
+            # Get observed and random deltas
+            delta_obs = calculate_delta_svm(ancestral_seq, focal_seq)
+            random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed, nb_sub)
+            delta_rand = [calculate_delta_svm(ancestral_seq, rand_seq) for rand_seq in random_seqs]
 
-        return output
+            # Calculate p-value
+            nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
+            p_val_high = nb_higher_rand / len(delta_rand)
+            output = (seq_name + "\t" + str(delta_obs) + "\t" + str(nb_sub) + "\t" + str(p_val_high) + "\n")
+
+            return output
 
 
 ####################################################################################################
@@ -130,7 +132,7 @@ else:
     SubMats_norm = {}
     for file in os.listdir(pathSubMat):
         if file.endswith('.txt'):
-            chrom = 'chr' + file.strip('.txt')
+            chrom = file.strip('.txt')
 
             chrom_Table = pandas.read_table(pathSubMat + file, sep=' ')
             chrom_Table.index = ['A', 'C', 'G', 'T']     # change row values
