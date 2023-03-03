@@ -19,7 +19,7 @@ if [ ${sp} = "dog" ]; then
 fi
 
 source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
-conda activate phyml
+conda activate MAF
 
 #########################################################################
 
