@@ -42,8 +42,8 @@ if [ ${sp} == "dog" ]; then
 fi
 
 export sampleID=${pathData}/ChIP-seq/${sp}/${sample}_samples_input.csv
-export genome=${pathData}/genome_sequences/${sp}/${spID}.dna_sm.primary_assembly.fa
-export GTF=${pathData}/genome_sequences/${sp}/${spID}.${release}.gtf
+export genome=${pathData}/genome_sequences/${sp}/${spID}.dna_sm.primary_assembly.fa.gz
+export GTF=${pathData}/genome_sequences/${sp}/${spID}.${release}.gtf.gz
 
 if [ -f "${pathResults}/indexes/${spID}.dna_sm.toplevel.rev.2.bt2" ]; then
     echo "Indexes already done!"
