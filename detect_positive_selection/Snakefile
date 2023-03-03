@@ -66,6 +66,7 @@ rule ModelTraining:
     output: touch(pathModel + "/" + sample + ".model.txt")
     log: out = pathResults + "/log/ModelTraining.out"
     threads: 4
+    priority: 2
     shell:
         """
         gkmtrain -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
@@ -146,11 +147,11 @@ rule ConcatSeq:
         cd {pathAlignment}
         mkdir -p {pathResults}/sequences/
         # Get all non empty ancestral sequences in one file
-        find ancestral_sequences/ -iname "*nogap.fa" -maxdepth 1 -size +0 -print | xargs basename | sed -e 's/_nogap\.fa$//' > list_ancestral.txt
-        cat ancestral_sequences/*nogap.fa > {output.concat_ancestral}
-        
+        find ancestral_sequences -name "*nogap.fa" -size +0 | xargs basename | sed -e 's/_nogap\.fa$//' > list_ancestral.txt
+        find ancestral_sequences -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
+
         # Get all corresponding focal sequences in one file
-        cat focal_sequences/*nogap.fa > {output.concat_focal}
+        find focal_sequences -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
         seqtk subseq {output.concat_focal} {pathAlignment}/list_ancestral.txt > {output.concat_focal_filtered}
         
         # Make sequences in uppercase to remove potential soft repeat mask 
@@ -164,7 +165,8 @@ rule TestPosSel:
         ancestral_sequences = pathResults + "/sequences/filtered_ancestral_sequences.fa",
         focal_sequences = pathResults + "/sequences/filtered_focal_sequences_upper.fa"
     output: touch(pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt")
+    threads: nbPart
     shell:
         """
-        python {pathScripts}/testPosSelec.py {sp} {sample} {nbRand} submat --NbThread {nbPart}
+        python {pathScripts}/testPosSelec.py {sp} {sample} {nbRand} submat --NbThread {threads}
         """
