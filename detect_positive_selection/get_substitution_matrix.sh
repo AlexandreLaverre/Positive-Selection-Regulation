@@ -1,10 +1,16 @@
 #!/bin/bash
 
 export sp=$1
+export cluster=$2
 
 ####################################################################################
 
-export path=/Users/alaverre/Documents/Detecting_positive_selection/
+if [ ${cluster} = "local" ]; then
+	export path=/Users/alaverre/Documents/Detecting_positive_selection
+else
+	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
+fi
+
 export pathResults=${path}/results/substitution_matrix/${sp}/
 export pathAlignment=${path}/data/genome_alignments/${sp}/
 export SpeciesTree=${path}/data/species_trees/${sp}_tree.nk
@@ -23,7 +29,7 @@ if [ ${sp} = "human" ]; then
 fi
 
 source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
-conda activate phyml
+conda activate MAF
 
 #########################################################################
 mkdir -p ${pathAlignment}/per_chrom/PHYLIPs/

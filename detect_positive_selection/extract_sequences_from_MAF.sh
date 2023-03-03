@@ -3,8 +3,14 @@
 sp=$1    		# i.e: human or mouse
 sample=$2    	# i.e: CEBPA or HNF4A
 BED_file=$3	# i.e: 
+cluster=$4
 
-path="/Users/alaverre/Documents/Detecting_positive_selection/"
+if [ ${cluster} = "local" ]; then
+	export path=/Users/alaverre/Documents/Detecting_positive_selection
+else
+	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
+fi
+
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/Dog_triplet_ancestor.maf"
 pathResults="${path}/results/positive_selection/${sp}/${sample}/Alignments/"
 pathAlign="${pathResults}/MAFs/"
