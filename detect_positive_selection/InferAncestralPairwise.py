@@ -11,6 +11,7 @@ sp = sys.argv[1]    # i.e: human or mouse
 sample = sys.argv[2]    # i.e: CEBPA or HNF4A
 BED_file = sys.argv[3]  # i.e: path + "Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + ".bed2"
 method = sys.argv[4]    # i.e: parsimony
+cluster = sys.argv[5]
 
 ####################################################################################
 # Define variables and path
@@ -18,7 +19,11 @@ sister_sp = ["gorGor5", "panTro6"] if sp == "human" else ["gorGor5", "panTro6"]
 prefix = "hsap_" if sp == "human" else "b6-"
 genome = "hg38" if sp == "human" else "mm10"
 
-path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+if cluster == "cluster":
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+
 pathAlign = path + "data/genome_alignments/"
 pathResults = path + "results/" + sp + "/" + sample + "/Alignments/"
 

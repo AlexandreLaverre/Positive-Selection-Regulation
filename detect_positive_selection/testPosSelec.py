@@ -16,10 +16,15 @@ parser.add_argument("species", help="Species name: human dog")
 parser.add_argument("sample", help="Species name: human dog")
 parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("Evol", default="uniform", help="Substitution model (default = uniform)")
+parser.add_argument("cluster", default="local", help="cluster or local")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
 args = parser.parse_args()
 
-path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+if args.cluster == "cluster":
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+
 pathSelection = path + "positive_selection/" + args.species + "/" + args.sample + "/"
 Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
 Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"

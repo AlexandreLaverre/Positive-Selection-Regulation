@@ -9,7 +9,7 @@
 # Software requirements: PECAN + Snakemake + Exonerate + TreeTime + seqkit + lsgkm + ucsc-toupper + ucsc-MafsInRegions
 
 # Example of command to execute:
-# snakemake -j 8 --config Sp="human" Sample="CEBPA" AlignType="pairwise" AncMethod="parsimony" nbPart=6 nbRand=1000 --rerun-incomplete
+# snakemake -j 8 --config Sp="human" Sample="CEBPA" AlignType="MAF" AncMethod="parsimony" cluster="local" nbPart=6 nbRand=1000 --rerun-incomplete
 
 ########################################################################################################################
 workdir: "/Users/alaverre/Documents/Detecting_positive_selection"
@@ -19,11 +19,15 @@ sample = config["Sample"]
 nbPart = int(config["nbPart"])
 nbRand = int(config["nbRand"])
 AncMethod = config["AncMethod"]
+cluster = config["cluster"]
 
 prefix = "hsap_" if sp == "human" else "b6-"
 
-path = "/Users/alaverre/Documents/Detecting_positive_selection"
-#pathBED = path + "/Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + "_based0.bed"
+if cluster == "cluster":
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection"
+
 pathBED = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed"
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathAlignment = pathResults + "/Alignments"
@@ -54,7 +58,7 @@ rule GenerateNegativeSeq:
     shell:
         """
         mkdir -p {pathModel}
-        Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {pathModel}
+        Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {cluster}
         touch {output.Positive_seq} {output.Negative_seq}
         """
 
@@ -122,7 +126,7 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathAlignment}
-        python {pathScripts}/InferAncestralPairwise.py {sp} {sample} {input.BED_file_part} {AncMethod} &> {log.out}
+        python {pathScripts}/InferAncestralPairwise.py {sp} {sample} {input.BED_file_part} {AncMethod} {cluster} &> {log.out}
         """
 
 rule GetSequencesMultiple:
@@ -131,7 +135,7 @@ rule GetSequencesMultiple:
     output: touch(pathResults + "/log/" + sample +"_GetAncestral_part{part}_done")
     shell:
         """
-        {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part}
+        {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part} {cluster}
         """
 
 rule ConcatSeq:
@@ -168,5 +172,5 @@ rule TestPosSel:
     threads: nbPart
     shell:
         """
-        python {pathScripts}/testPosSelec.py {sp} {sample} {nbRand} submat --NbThread {threads}
+        python {pathScripts}/testPosSelec.py {sp} {sample} {nbRand} submat {cluster} --NbThread {threads}
         """

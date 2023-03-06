@@ -9,14 +9,18 @@ args = commandArgs(trailingOnly=TRUE)
 species = args[1] #"human"
 sample = args[2]  #"CEBPA"
 BED_file = args[3]
-pathResults = args[4]
-pathScripts = "/Users/alaverre/Documents/Detecting_positive_selection/scripts/compare_genome_assemblies"
+cluster = args[4]
+
+path = ifelse(cluster=="cluster", "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel", "/Users/alaverre/Documents/Detecting_positive_selection")
+
+pathScripts = paste0(path, "/scripts/compare_genome_assemblies")
+pathResults = paste0(path, "/results/positive_selection/", species, "/", sample, "/Model")
 
 # Check if chrName conversion between Ensembl and UCSC is needed
 BED = read.table(BED_file)
 if ("Ensembl" %in% seqlevelsStyle(BED$V1)){
   # Run chromosome names correspondence
-  system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file))
+  system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
   BED_file = paste0(BED_file, "_UCSC_names")
 }
 
