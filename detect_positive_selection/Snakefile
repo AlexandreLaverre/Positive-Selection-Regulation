@@ -12,7 +12,6 @@
 # snakemake -j 8 --config Sp="human" Sample="CEBPA" AlignType="MAF" AncMethod="parsimony" cluster="local" nbPart=6 nbRand=1000 --rerun-incomplete
 
 ########################################################################################################################
-workdir: "/Users/alaverre/Documents/Detecting_positive_selection"
 
 sp = config["Sp"]
 sample = config["Sample"]
@@ -25,8 +24,11 @@ prefix = "hsap_" if sp == "human" else "b6-"
 
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
+
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection"
+
+workdir: path
 
 pathBED = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed"
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
