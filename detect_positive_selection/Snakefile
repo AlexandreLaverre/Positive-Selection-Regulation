@@ -24,9 +24,10 @@ prefix = "hsap_" if sp == "human" else "b6-"
 
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
-
+    split = "split"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection"
+    split = "gsplit"
 
 workdir: path
 
@@ -115,7 +116,7 @@ rule BED_split:
     shell:
         """
         mkdir -p {pathResults}/log/
-        gsplit -d -n l/{nbPart} {input.BED_file} {pathResults}/log/{sample}_part1
+        {split} -d -n l/{nbPart} {input.BED_file} {pathResults}/log/{sample}_part1
         """
 
 rule InferAncestralPairwise:
