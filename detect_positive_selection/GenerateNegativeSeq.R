@@ -24,7 +24,7 @@ if ("Ensembl" %in% seqlevelsStyle(BED$V1)){
   BED_file = paste0(BED_file, "_UCSC_names")
 }
 
-if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm9.masked")}
+if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm10.masked")}
 if (species == "human"){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}
 if (species == "dog"){genome <- getBSgenome("BSgenome.Cfamiliaris.UCSC.canFam3.masked")}
 
