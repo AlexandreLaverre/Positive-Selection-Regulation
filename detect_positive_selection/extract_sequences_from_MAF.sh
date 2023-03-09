@@ -7,9 +7,13 @@ cluster=$4
 
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
+	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
+	source /users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh
 fi
+
+conda activate MAF
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/Dog_triplet_ancestor.maf"
 pathResults="${path}/results/positive_selection/${sp}/${sample}/Alignments/"
@@ -23,9 +27,6 @@ if [ ${sp} = "dog" ]; then
     sp_name="Canis_lupus_familiaris"
     anc_name="Anc09"
 fi
-
-source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
-conda activate MAF
 
 #########################################################################
 
