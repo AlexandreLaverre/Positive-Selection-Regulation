@@ -58,10 +58,11 @@ rule GenerateNegativeSeq:
     output:
         Positive_seq = pathModel + "/posSet.fa",
         Negative_seq = pathModel + "/negSet.fa"
+    log: out = pathResults + "/log/GenerateNegativeSeq.out"
     shell:
         """
         mkdir -p {pathModel}
-        Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {cluster}
+        Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {cluster} &> {log.out}
         touch {output.Positive_seq} {output.Negative_seq}
         """
 
