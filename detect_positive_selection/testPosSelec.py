@@ -8,7 +8,9 @@ import numpy as np
 import pandas
 from alive_progress import alive_bar
 import multiprocessing.pool
+import random
 
+random.seed(12)
 ####################################################################################################
 # Variables and paths
 parser = argparse.ArgumentParser()

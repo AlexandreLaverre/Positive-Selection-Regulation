@@ -25,9 +25,12 @@ prefix = "hsap_" if sp == "human" else "b6-"
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
     split = "split"
+    localrules: all, GenerateNegativeSeq, BED_split, ConcatSeq
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection"
     split = "gsplit"
+    localrules: all,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
+        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel
 
 workdir: path
 
@@ -36,9 +39,6 @@ pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathAlignment = pathResults + "/Alignments"
 pathModel = pathResults + "/Model"
 pathScripts = path + "/scripts/detect_positive_selection"
-
-localrules : all, GenerateNegativeSeq, ModelTraining, ModelValidation, ModelPrediction, BED_split,
-            InferAncestralPairwise, GetSequencesMultiple, ConcatSeq, TestPosSel
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
@@ -51,8 +51,7 @@ else:
 rule all:
     input :
         PosSelTest = pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt",
-        #model_validation = pathModel+ "/" + sample + ".cvpred.txt"
-
+        model_validation = pathModel+ "/" + sample + ".cvpred.txt"
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
@@ -77,9 +76,10 @@ rule ModelTraining:
     log: out = pathResults + "/log/ModelTraining.out"
     threads: 4
     priority: 2
+    params: time="2:00:00", mem="2G", threads=4
     shell:
         """
-        gkmtrain -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
+        gkmtrain -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} -r 12 &> {log.out}
         """
 
 rule ModelValidation:
@@ -90,9 +90,10 @@ rule ModelValidation:
     output: touch(pathModel + "/" + sample + ".cvpred.txt")
     log: out = pathResults + "/log/ModelValidation.out"
     threads: 4
+    params: time="2:00:00", mem="2G", threads=4
     shell:
         """
-        gkmtrain -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
+        gkmtrain -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} -r 12 &> {log.out}
         """
 
 rule ModelPrediction:
@@ -105,6 +106,7 @@ rule ModelPrediction:
         Prediction_done = pathResults + "/log/ModelPrediction_done"
     log: out = pathResults + "/log/ModelPrediction.out"
     threads: 4
+    params: time="2:00:00", mem="2G", threads=4
     shell:
         """
         gkmpredict -T {threads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
@@ -140,6 +142,7 @@ rule GetSequencesMultiple:
     input: BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
     output: touch(pathResults + "/log/" + sample +"_GetAncestral_part{part}_done")
     log: out = pathResults + "/log/" + sample + "_extract_sequences_from_MAF_part{part}.out"
+    params: time="2:00:00",mem="2G",threads=1
     shell:
         """
         {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part} {cluster} &> {log.out}
@@ -177,6 +180,7 @@ rule TestPosSel:
         focal_sequences = pathResults + "/sequences/filtered_focal_sequences_upper.fa"
     output: touch(pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt")
     threads: nbPart
+    params: time="2:00:00", mem="5G", threads=nbPart
     shell:
         """
         python {pathScripts}/testPosSelec.py {sp} {sample} {nbRand} submat {cluster} --NbThread {threads}
