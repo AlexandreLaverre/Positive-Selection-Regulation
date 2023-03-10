@@ -27,7 +27,7 @@ if [ ${sp} = "dog" ]; then
 fi
 
 if [ ${sp} = "human" ]; then
-	chroms=(chr{1..22} "MT" "X" "Y")
+	chroms=(chr{1..22} "M" "X" "Y")
 	prefix="Homo_sapiens.GRCh38.104"
 	species="Homo_sapiens,Pan_troglodytes,Gorilla_gorilla"
 fi
@@ -48,6 +48,7 @@ mkdir -p ${pathResults}/phyML_logs/
 if [ -e ${pathAlignment}/per_chrom/MAFs/ ]; then
 	echo "MAF split already done!"
 else
+  echo "Splitting whole genome alignment by chromosome"
 	mkdir -p ${pathAlignment}/per_chrom/MAFs/scaffolds/	
 	mafSplit -byTarget -useFullSequenceName _.bed ${pathAlignment}/per_chrom/MAFs/scaffolds/ ${Alignment}
 fi
@@ -72,8 +73,13 @@ do
 				cut -f 1-8 ${pathGFF}/exons_${prefix}.gff | sort -u > ${pathGFF}/exons.uniq.${prefix}.gff 
 				sort -k1,1V -k4,4h -k5,5rh -k3,3r ${pathGFF}/exons.uniq.${prefix}.gff > ${pathGFF}/exons.uniq.sorted.${prefix}.gff
 				rm ${pathGFF}/exons_${prefix}.gff ${pathGFF}/exons.uniq.${prefix}.gff
+
+				if [ ${sp} != "dog" ] ; then
+					sed -i 's/^/chr/g' ${pathGFF}/exons.uniq.sorted.${prefix}.gff
+				fi
 			fi
 
+      echo "Masking for exons..."
       grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff
 
       if [ ! -s ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff ]; then
