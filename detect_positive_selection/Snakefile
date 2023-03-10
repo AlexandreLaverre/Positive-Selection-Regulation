@@ -154,7 +154,7 @@ rule ConcatSeq:
         cd {pathAlignment}
         mkdir -p {pathResults}/sequences/
         # Get all non empty ancestral sequences in one file
-        find ancestral_sequences -name "*nogap.fa" -size +0 | xargs basename | sed -e 's/_nogap\.fa$//' > list_ancestral.txt
+        find ancestral_sequences -name "*nogap.fa" -size +0 | xargs basename | sed 's/_nogap\.fa$//' > list_ancestral.txt
         find ancestral_sequences -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file

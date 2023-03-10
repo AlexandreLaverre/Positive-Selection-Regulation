@@ -111,13 +111,13 @@ with open(BED_file, 'r') as f1:
                 # Extract fasta
                 os.system("seqkit grep -p " + genome + " " + PathRunning + "anc_foc.mfa > " + Focal_seq + ".fa")
                 os.system("seqkit grep -p " + genome + " " + PathRunning + "anc_foc_nogap.mfa > " + Focal_seq + "_nogap.fa")
-                os.system("sed -i '' -e 's/" + genome + "/" + ID + "/g' " + Focal_seq + ".fa")
-                os.system("sed -i '' -e 's/" + genome + "/" + ID + "/g' " + Focal_seq + "_nogap.fa")
+                os.system("sed -i 's/" + genome + "/" + ID + "/g' " + Focal_seq + ".fa")
+                os.system("sed -i 's/" + genome + "/" + ID + "/g' " + Focal_seq + "_nogap.fa")
 
                 os.system("seqkit grep -p NODE_0000001 " + PathRunning + "anc_foc.mfa > " + Ancestral_seq + ".fa")
                 os.system("seqkit grep -p NODE_0000001 " + PathRunning + "anc_foc_nogap.mfa > " + Ancestral_seq + "_nogap.fa")
-                os.system("sed -i '' -e 's/NODE_0000001/" + ID + "/g' " + Ancestral_seq + ".fa")
-                os.system("sed -i '' -e 's/NODE_0000001/" + ID + "/g' " + Ancestral_seq + "_nogap.fa")
+                os.system("sed -i 's/NODE_0000001/" + ID + "/g' " + Ancestral_seq + ".fa")
+                os.system("sed -i 's/NODE_0000001/" + ID + "/g' " + Ancestral_seq + "_nogap.fa")
 
                 #os.system("rm -r " + PathRunning)
             else:

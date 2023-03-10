@@ -40,7 +40,7 @@ do
 	
 	# Convert to FASTA
 	msa_view --missing-as-indels -i MAF -o FASTA ${align} > ${pathAlign}/${ID}.mfa
-	sed -i '' 's/ //g' ${pathAlign}/${ID}.mfa
+	sed -i 's/ //g' ${pathAlign}/${ID}.mfa
 
   	# Check if an alignment exists with the other species
 	if [ -s ${pathAlign}/${ID}.mfa ]; then                            
@@ -58,8 +58,8 @@ do
 		    seqkit grep -p ${anc_name} ${pathAlign}/${ID}_anc_foc_nogap.mfa > ${pathResults}/ancestral_sequences/${ID}_nogap.fa
 
 		    # Change species names to ID
-		    sed -i '' "s/${sp_name}/${ID}/g" ${pathResults}/focal_sequences/${ID}_nogap.fa
-		    sed -i '' "s/${anc_name}/${ID}/g" ${pathResults}/ancestral_sequences/${ID}_nogap.fa
+		    sed -i "s/${sp_name}/${ID}/g" ${pathResults}/focal_sequences/${ID}_nogap.fa
+		    sed -i "s/${anc_name}/${ID}/g" ${pathResults}/ancestral_sequences/${ID}_nogap.fa
 	    else
 	    	echo "${ID}" >> ${pathResults}/missing.txt
 	    fi

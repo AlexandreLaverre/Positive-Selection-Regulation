@@ -83,9 +83,9 @@ do
 		
 		# Make clean substitutions matrix
 		grep -A5 "rate matrix" ${phylip_file}_phyml_stats.txt | tail -n5 > ${pathResults}/${chr}.txt
-		sed -i '' "s/\[A---------C---------G---------T------\]/A C G T/g" ${pathResults}/${chr}.txt
-		sed -i '' "s/  //g" ${pathResults}/${chr}.txt
-		sed -i '' "s/-/ -/g" ${pathResults}/${chr}.txt
+		sed -i "s/\[A---------C---------G---------T------\]/A C G T/g" ${pathResults}/${chr}.txt
+		sed -i "s/  //g" ${pathResults}/${chr}.txt
+		sed -i "s/-/ -/g" ${pathResults}/${chr}.txt
 	fi
 	
 done
