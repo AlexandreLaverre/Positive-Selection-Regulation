@@ -51,7 +51,7 @@ else:
 rule all:
     input :
         PosSelTest = pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt",
-        model_validation = pathModel+ "/" + sample + ".cvpred.txt"
+        #model_validation = pathModel+ "/" + sample + ".cvpred.txt"
 
 
 rule GenerateNegativeSeq:
