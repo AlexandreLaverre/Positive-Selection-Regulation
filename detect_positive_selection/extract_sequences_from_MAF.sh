@@ -15,7 +15,7 @@ fi
 
 conda activate MAF
 
-pathGenomeAlign="${path}/data/genome_alignments/${sp}/Dog_triplet_ancestor.maf"
+pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf"
 pathResults="${path}/results/positive_selection/${sp}/${sample}/Alignments/"
 pathAlign="${pathResults}/MAFs/"
 
@@ -28,6 +28,16 @@ if [ ${sp} = "dog" ]; then
     anc_name="Anc09"
 fi
 
+if [ ${sp} = "human" ]; then
+    sp_name="Homo_sapiens"
+    anc_name="fullTreeAnc105"
+fi
+
+if [ ${sp} = "mouse" ]; then
+    sp_name="Mus_musculus"
+    anc_name="fullTreeAnc35"
+fi
+
 #########################################################################
 
 # Retrieve alignments of regions from whole genome alignment
@@ -35,7 +45,7 @@ mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 
 cat ${BED_file} | while read line
 do
-	ID=`echo ${line} | cut -f 4 -d ' ' `
+	ID=$(echo ${line} | cut -f 4 -d ' ')
 	echo ${ID}
 	align=${pathAlign}/${ID}.maf
 	
