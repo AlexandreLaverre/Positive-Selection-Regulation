@@ -77,7 +77,7 @@ rule ModelTraining:
     log: out = pathResults + "/log/ModelTraining.out"
     threads: 4
     priority: 2
-    params: time="1:00:00", mem="2G", threads=4
+    params: time="2:00:00", mem="2G", threads=4
     shell:
         """
         gkmtrain -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} -r 12 &> {log.out}
@@ -91,7 +91,7 @@ rule ModelValidation:
     output: touch(pathModel + "/" + sample + ".cvpred.txt")
     log: out = pathResults + "/log/ModelValidation.out"
     threads: 4
-    params: time="1:00:00", mem="2G", threads=4
+    params: time="2:00:00", mem="2G", threads=4
     shell:
         """
         gkmtrain -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} -r 12 &> {log.out}
