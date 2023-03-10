@@ -136,9 +136,10 @@ rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
     input: BED_file_part= pathResults + "/log/"+ sample +"_part{part}"
     output: touch(pathResults + "/log/" + sample +"_GetAncestral_part{part}_done")
+    log: out = pathResults + "/log/" + sample + "_extract_sequences_from_MAF_part{part}.out"
     shell:
         """
-        {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part} {cluster}
+        {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {input.BED_file_part} {cluster} &> {log.out}
         """
 
 rule ConcatSeq:

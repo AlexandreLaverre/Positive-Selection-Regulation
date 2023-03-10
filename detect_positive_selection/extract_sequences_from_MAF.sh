@@ -36,13 +36,14 @@ mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 cat ${BED_file} | while read line
 do
 	ID=`echo ${line} | cut -f 4 -d ' ' `
+	echo ${ID}
 	align=${pathAlign}/${ID}.maf
 	
 	# Convert to FASTA
 	msa_view --missing-as-indels -i MAF -o FASTA ${align} > ${pathAlign}/${ID}.mfa
 	sed -i 's/ //g' ${pathAlign}/${ID}.mfa
 
-  	# Check if an alignment exists with the other species
+  # Check if an alignment exists with the other species
 	if [ -s ${pathAlign}/${ID}.mfa ]; then                            
 	
 	    # Keep only focal and ancestral sequences
