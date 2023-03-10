@@ -32,6 +32,9 @@ else:
     localrules: all,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel
 
+localrules: all,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
+        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel
+
 workdir: path
 
 pathBED = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed"
