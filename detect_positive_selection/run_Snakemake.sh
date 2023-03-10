@@ -24,6 +24,6 @@ conda activate TestPos
 
 ##################################################################
 
-snakemake -j 10 --config Sp=${species} Sample=${sample} AlignType=${alignType} AncMethod=${method} cluster=${cluster} nbPart=${nbPart} nbRand=${nbRand} --rerun-incomplete --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} -c {params.threads} --mem={params.mem} -t {params.time}"
+snakemake -j 100 --config Sp=${species} Sample=${sample} AlignType=${alignType} AncMethod=${method} cluster=${cluster} nbPart=${nbPart} nbRand=${nbRand} --rerun-incomplete --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} -c {params.threads} --mem={params.mem} -t {params.time}"
 
 ##################################################################
