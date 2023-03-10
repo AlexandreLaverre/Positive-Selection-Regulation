@@ -27,13 +27,13 @@ if [ ${sp} = "dog" ]; then
 fi
 
 if [ ${sp} = "human" ]; then
-	chroms=(chr{1..22} "M" "X" "Y")
+	chroms=(chr{1..22} "chrM" "chrX" "chrY")
 	prefix="Homo_sapiens.GRCh38.104"
 	species="Homo_sapiens,Pan_troglodytes,Gorilla_gorilla"
 fi
 
 if [ ${sp} = "mouse" ]; then
-	chroms=(chr{1..19} "M" "X" "Y")
+	chroms=(chr{1..19} "chrM" "chrX" "chrY")
 	prefix="Mus_musculus.GRCm39.104"
 	species="Mus_musculus,Mus_spretus,Mus_caroli"
 fi
@@ -69,13 +69,14 @@ do
 			# Get a GFF with sorted exons per chromosome
 			if [ ! -e ${pathGFF}/exons.uniq.sorted.${prefix}.gff ]; then
 			  mkdir -p ${pathGFF}/GFF_per_chrom
-				zcat ${pathGFF}/${prefix}.gff3.gz | grep -w "exon" > ${pathGFF}/exons_${prefix}.gff
+				zcat < ${pathGFF}/${prefix}.gff3.gz | grep -w "exon" > ${pathGFF}/exons_${prefix}.gff
 				cut -f 1-8 ${pathGFF}/exons_${prefix}.gff | sort -u > ${pathGFF}/exons.uniq.${prefix}.gff 
 				sort -k1,1V -k4,4h -k5,5rh -k3,3r ${pathGFF}/exons.uniq.${prefix}.gff > ${pathGFF}/exons.uniq.sorted.${prefix}.gff
 				rm ${pathGFF}/exons_${prefix}.gff ${pathGFF}/exons.uniq.${prefix}.gff
 
 				if [ ${sp} != "dog" ] ; then
 					sed -i 's/^/chr/g' ${pathGFF}/exons.uniq.sorted.${prefix}.gff
+					sed -i 's/chrMT/chrM/g' ${pathGFF}/exons.uniq.sorted.${prefix}.gff
 				fi
 			fi
 
