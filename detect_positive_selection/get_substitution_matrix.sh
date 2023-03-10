@@ -16,16 +16,24 @@ export pathAlignment=${path}/data/genome_alignments/${sp}/
 export SpeciesTree=${path}/data/species_trees/${sp}_tree.nk
 export pathGFF=${path}/data/genome_sequences/${sp}/
 
+export Alignment=${pathAlignment}/triplet_ancestor.maf
+
 if [ ${sp} = "dog" ]; then
-	Alignment=${pathAlignment}/Dog_triplets.maf
 	chroms=({1..38} "MT" "X")
 	prefix="Canis_lupus_familiaris.CanFam3.1.104"
 	species="Canis_lupus_familiaris,Canis_lupus_lupus,Lycaon_pictus"
 fi
 
 if [ ${sp} = "human" ]; then
-    Alignment=${pathAlignment}/hg38.gorGor5.maf
-    chroms=(chr{1..22} "M" "X" "Y")
+	chroms=(chr{1..22} "MT" "X" "Y")
+	prefix="Homo_sapiens.GRCh38.104"
+	species="Homo_sapiens,Pan_troglodytes,Gorilla_gorilla"
+fi
+
+if [ ${sp} = "mouse" ]; then
+	chroms=(chr{1..19} "M" "X" "Y")
+	prefix="Mus_musculus.GRCm39.104"
+	species="Mus_musculus,Mus_spretus,Mus_caroli"
 fi
 
 source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
@@ -44,7 +52,7 @@ else
 fi
 
 # Run parameters estimation with phyML for each chromosome
-for chr in ${chroms[@]}
+for chr in "${chroms[@]}"
 do
 	echo "########### ${chr} ###########"
 	
@@ -57,13 +65,14 @@ do
 			echo "MAF already masked for exons!"
 		else
 			# Get a GFF with sorted exons per chromosome
-			if [ ! -e ${pathGFF}/GFF_per_chrom ]; then
-				grep -w "exon" ${pathGFF}/${prefix}.gff > ${pathGFF}/exons_${prefix}.gff 
+			if [ ! -e ${pathGFF}/exons.uniq.sorted.${prefix}.gff ]; then
+			  mkdir -p ${pathGFF}/GFF_per_chrom
+				zcat ${pathGFF}/${prefix}.gff.gz | grep -w "exon" > ${pathGFF}/exons_${prefix}.gff
 				cut -f 1-8 ${pathGFF}/exons_${prefix}.gff | sort -u > ${pathGFF}/exons.uniq.${prefix}.gff 
 				sort -k1,1V -k4,4h -k5,5rh -k3,3r ${pathGFF}/exons.uniq.${prefix}.gff > ${pathGFF}/exons.uniq.sorted.${prefix}.gff
-				mkdir -p ${pathGFF}/GFF_per_chrom
+				rm ${pathGFF}/exons_${prefix}.gff ${pathGFF}/exons.uniq.${prefix}.gff
 			fi
-		
+
 			grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff
 		 	maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff --mask-features ${species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
 
