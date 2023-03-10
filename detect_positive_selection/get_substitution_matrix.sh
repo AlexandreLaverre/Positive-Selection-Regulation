@@ -68,13 +68,18 @@ do
 			# Get a GFF with sorted exons per chromosome
 			if [ ! -e ${pathGFF}/exons.uniq.sorted.${prefix}.gff ]; then
 			  mkdir -p ${pathGFF}/GFF_per_chrom
-				zcat ${pathGFF}/${prefix}.gff.gz | grep -w "exon" > ${pathGFF}/exons_${prefix}.gff
+				zcat ${pathGFF}/${prefix}.gff3.gz | grep -w "exon" > ${pathGFF}/exons_${prefix}.gff
 				cut -f 1-8 ${pathGFF}/exons_${prefix}.gff | sort -u > ${pathGFF}/exons.uniq.${prefix}.gff 
 				sort -k1,1V -k4,4h -k5,5rh -k3,3r ${pathGFF}/exons.uniq.${prefix}.gff > ${pathGFF}/exons.uniq.sorted.${prefix}.gff
 				rm ${pathGFF}/exons_${prefix}.gff ${pathGFF}/exons.uniq.${prefix}.gff
 			fi
 
-			grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff
+      grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff
+
+      if [ ! -s ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff ]; then
+        echo "Weird! GFF file for ${chr} is empty!"
+      fi
+
 		 	maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff --mask-features ${species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
 
 		 fi
