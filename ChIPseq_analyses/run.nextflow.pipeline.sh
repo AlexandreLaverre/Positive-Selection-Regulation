@@ -114,18 +114,18 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --mem=20G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --time=12:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	echo "#SBATCH --time=24:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
 
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} --gtf ${GTF} -gff ${GFF} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '20.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} --gtf ${GTF} --gff ${GFF} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '20.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
 #########################################################################
 
 if [ ${cluster} = "cluster" ]; then
-	sbatch ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	bash ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 else
 	bash ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
