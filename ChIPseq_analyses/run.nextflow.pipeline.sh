@@ -97,6 +97,15 @@ export genome=${pathData}/genome_sequences/${sp}/${spID}${genome_suffix}
 export GTF=${pathData}/genome_sequences/${sp}/${spID}${GTF_suffix}
 export GFF=${pathData}/genome_sequences/${sp}/${spID}${GFF_suffix}
 
+if [ -f "${GTF}" ]; then
+    echo "Using GTF for annotations."
+    export annotations="--gtf ${GTF}"
+else 
+    echo "Using GFF for annotations."
+    export annotations="--gff ${GFF}"
+fi
+
+
 if [ 0 -lt $(ls ${pathResults}/indexes/${spID}.*.rev.2.bt2 2>/dev/null | wc -w) ]; then
     echo "Indexes already done!"
     export index="--bwa_index ${pathResults}/indexes/ --bowtie2_index ${pathResults}/indexes/"
@@ -120,12 +129,12 @@ fi
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} --gtf ${GTF} --gff ${GFF} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '20.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '20.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
 #########################################################################
 
 if [ ${cluster} = "cluster" ]; then
-	bash ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	sbatch ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 else
 	bash ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
