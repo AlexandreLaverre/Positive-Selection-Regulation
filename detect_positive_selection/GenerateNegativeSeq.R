@@ -34,6 +34,8 @@ if (species == "dog"){genome <- getBSgenome("BSgenome.Cfamiliaris.UCSC.canFam3.m
 
 ###############################################################################
 # Generate negative sequences
+set.seed(12)
+
 genNullSeqs(BED_file, genome = genome,
             outputBedFN = paste0(pathResults,'/negSet.bed'), 
             outputPosFastaFN = paste0(pathResults,'/posSet.fa'),

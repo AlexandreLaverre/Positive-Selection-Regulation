@@ -6,10 +6,9 @@
 # input file: list of interested coordinates
 # pairwise or multiple genome alignments
 
-# Software requirements: PECAN + Snakemake + Exonerate + TreeTime + seqkit + lsgkm + ucsc-toupper + ucsc-MafsInRegions
-
-# Example of command to execute:
-# snakemake -j 8 --config Sp="human" Sample="CEBPA" AlignType="MAF" AncMethod="parsimony" cluster="local" nbPart=6 nbRand=1000 --rerun-incomplete
+# Requirements :
+# Software: PECAN + Snakemake + Exonerate + TreeTime + seqkit + lsgkm + ucsc-toupper + ucsc-MafsInRegions
+# Python modules: Bio, Bio.Seq, numpy, pandas, multiprocessing.pool, alive_progress
 
 ########################################################################################################################
 
@@ -34,7 +33,12 @@ else:
 
 workdir: path
 
-pathBED = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed"
+pathBED_original = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed"
+if sp != "dog":
+    pathBED = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed_UCSC_names"
+else:
+    pathBED = pathBED_original
+
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathAlignment = pathResults + "/Alignments"
 pathModel = pathResults + "/Model"
@@ -51,21 +55,22 @@ else:
 rule all:
     input :
         PosSelTest = pathResults + "/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt",
-        model_validation = pathModel+ "/" + sample + ".cvpred.txt"
+        #model_validation = pathModel+ "/" + sample + ".cvpred.txt"
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
-    input: BED_file = pathBED
+    input: BED_file = pathBED_original
     output:
         Positive_seq = pathModel + "/posSet.fa",
-        Negative_seq = pathModel + "/negSet.fa"
+        Negative_seq = pathModel + "/negSet.fa",
+        BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/consensus_peaks.bed_UCSC_names"
     log: out = pathResults + "/log/GenerateNegativeSeq.out"
     priority: 2
     shell:
         """
         mkdir -p {pathModel}
         Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {input.BED_file} {cluster} &> {log.out}
-        touch {output.Positive_seq} {output.Negative_seq}
+        touch {output.Positive_seq} {output.Negative_seq} {output.BED_UCSC}
         """
 
 rule ModelTraining:
@@ -80,7 +85,7 @@ rule ModelTraining:
     params: time="2:00:00", mem="2G", threads=4
     shell:
         """
-        gkmtrain -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} -r 12 &> {log.out}
+        gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
         """
 
 rule ModelValidation:
@@ -94,7 +99,7 @@ rule ModelValidation:
     params: time="2:00:00", mem="2G", threads=4
     shell:
         """
-        gkmtrain -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} -r 12 &> {log.out}
+        gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathModel}/{sample} &> {log.out}
         """
 
 rule ModelPrediction:

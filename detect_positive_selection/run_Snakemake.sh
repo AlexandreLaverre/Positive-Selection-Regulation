@@ -3,7 +3,7 @@
 export species=$1				# i.e: human dog ...
 export sample=$2				# i.e: CEBPA HNF4A ...
 export cluster=$3				# i.e: local or cluster
-export nbPart=$4				# i.e: int (number of part for parallelization)
+export nbThreads=$4				# i.e: int (number of part for parallelization)
 export nbRand=$5				# i.e: int (randomization)
 export alignType=${6:-"MAF"}		# i.e: MAF or pairwise
 export method=${7:-"parismony"}	# i.e: only working with alignType=pairwise
@@ -20,10 +20,10 @@ else
 	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
 fi
 
-conda activate TestPos
+conda activate MAF
 
 ##################################################################
 
-snakemake -j 100 --config Sp=${species} Sample=${sample} AlignType=${alignType} AncMethod=${method} cluster=${cluster} nbPart=${nbPart} nbRand=${nbRand} --rerun-incomplete --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} -c {params.threads} --mem={params.mem} -t {params.time}"
+snakemake -j ${nbThreads} --config Sp=${species} Sample=${sample} AlignType=${alignType} AncMethod=${method} cluster=${cluster} nbPart=${nbThreads} nbRand=${nbRand} --rerun-incomplete --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} -c {params.threads} --mem={params.mem} -t {params.time}"
 
 ##################################################################

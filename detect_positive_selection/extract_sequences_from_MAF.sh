@@ -2,7 +2,7 @@
 
 sp=$1    		# i.e: human or mouse
 sample=$2    	# i.e: CEBPA or HNF4A
-BED_file=$3	# i.e: 
+BED_file=$3
 cluster=$4
 
 if [ ${cluster} = "local" ]; then
@@ -38,6 +38,21 @@ if [ ${sp} = "mouse" ]; then
     anc_name="fullTreeAnc35"
 fi
 
+if [ ${sp} = "rat" ]; then
+    sp_name="Rattus_norvegicus"
+    anc_name="fullTreeAnc38"
+fi
+
+if [ ${sp} = "macaca" ]; then
+    sp_name="Macaca_mulatta"
+    anc_name="fullTreeAnc91"
+fi
+
+if [ ${sp} = "chicken" ]; then
+    sp_name="Gallus_gallus"
+    anc_name=""
+fi
+
 #########################################################################
 
 # Retrieve alignments of regions from whole genome alignment
@@ -61,7 +76,8 @@ do
 
 	    # Remove GAP
 	    trimal -nogaps -keepheader -in ${pathAlign}/${ID}_anc_foc.mfa -out ${pathAlign}/${ID}_anc_foc_nogap.mfa
-	    
+	    rm ${pathAlign}/${ID}_anc_foc.mfa ${pathAlign}/${ID}.mfa
+
 	    # Check if alignment still exists after removing GAPs
 	    if [ -f ${pathAlign}/${ID}_anc_foc_nogap.mfa ]; then
 		    # Get focal and ancestral sequences separatly

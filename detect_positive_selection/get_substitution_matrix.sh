@@ -80,14 +80,14 @@ do
 				fi
 			fi
 
-      echo "Masking for exons..."
-      grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff
+      		echo "Masking for exons..."
+      		grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${prefix}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff
 
-      if [ ! -s ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff ]; then
-        echo "Weird! GFF file for ${chr} is empty!"
-      fi
+      		if [ ! -s ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff ]; then
+        			echo "Weird! GFF file for ${chr} is empty!"
+        		fi
 
-		 	maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff --mask-features ${species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
+		 maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${prefix}.gff --mask-features ${species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
 
 		 fi
 		
