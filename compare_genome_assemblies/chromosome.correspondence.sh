@@ -3,10 +3,15 @@
 export species=$1
 export genome1=$2
 export genome2=$3
+export cluster=$4
 
 ####################################################################################
+if [ ${cluster} = "cluster" ]; then
+	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel
+else
+	export path=/Users/alaverre/Documents/Detecting_positive_selection/
+fi
 
-export path=/Users/alaverre/Documents/Detecting_positive_selection/
 export pathGenomes=${path}/data/genome_sequences/${species}
 export pathScripts=${path}/scripts/compare_genome_assemblies
 
