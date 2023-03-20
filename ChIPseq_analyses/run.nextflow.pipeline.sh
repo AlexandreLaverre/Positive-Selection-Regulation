@@ -18,7 +18,7 @@ fi
 
 export pathResults=${path}/results/peaks_calling/${sp}/
 export pathData=${path}/data
-export pathScripts=${path}/scripts/ChIPseq_analyses
+export pathScripts=${path}/scripts/ChIPseq_analyses/logs
 
 mkdir -p ${pathResults}
 
@@ -26,13 +26,13 @@ mkdir -p ${pathResults}
 # Define parameters according to species and data source
 
 if [ ${sp} = "human" ]; then
-	export spID="GCF_000001405.38_GRCh38.p12"
+	export spID="Homo_sapiens.GRCh38"
 	export genomesize=2701262066 # from 50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
 	export blacklist="--blacklist  ${pathData}/genome_sequences/${sp}/blacklist.txt"
 fi
 
 if [ ${sp} == "mouse" ]; then
-	export spID="GCF_000001635.26_GRCm38.p6"
+	export spID="Mus_musculus.GRCm38"
 	export genomesize=2307679482
 	export blacklist="--blacklist  ${pathData}/genome_sequences/${sp}/blacklist.txt"
 fi
@@ -81,8 +81,8 @@ fi
 
 if [ ${source} == "Ensembl" ]; then
 	export genome_suffix=".dna_sm.toplevel.fa.gz"
-	export GTF_suffix=".104.gtf.gz"
-	export GFF_suffix=".104.gff3.gz"
+	export GTF_suffix=".102.gtf.gz"
+	export GFF_suffix=".102.gff3.gz"
 else
 	export genome_suffix="_genomic.fna.gz"
 	export GTF_suffix="_genomic.gtf.gz"
@@ -123,7 +123,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --mem=20G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --time=24:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	echo "#SBATCH --time=12:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
 
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
