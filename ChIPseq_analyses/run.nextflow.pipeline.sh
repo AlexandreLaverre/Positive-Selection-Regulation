@@ -74,7 +74,7 @@ if [ ${sp} == "pig" ]; then
 fi
 
 if [ ${sp} == "chicken" ]; then
-	export spID=""
+	export spID="Gallus_gallus.GRCg6a"
 	export genomesize=974987959
 	export blacklist=""
 fi
@@ -106,10 +106,11 @@ else
 fi
 
 
-if [ 0 -lt $(ls ${pathResults}/indexes/${spID}.*.rev.2.bt2 2>/dev/null | wc -w) ]; then
+if [ 0 -lt $(ls ${pathResults}/indexes/${spID}*.rev.2* 2>/dev/null | wc -w) ]; then
     echo "Indexes already done!"
     export index="--bwa_index ${pathResults}/indexes/ --bowtie2_index ${pathResults}/indexes/"
 else
+    echo "Need to create indexes!"
     export index="--save_reference"
 fi
 
@@ -123,7 +124,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --mem=20G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --time=12:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	echo "#SBATCH --time=8:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
 
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
