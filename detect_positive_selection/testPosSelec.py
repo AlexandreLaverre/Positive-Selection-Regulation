@@ -15,7 +15,8 @@ random.seed(12)
 # Variables and paths
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog")
-parser.add_argument("sample", help="Species name: human dog")
+parser.add_argument("sample", help="Study name: Wilson Schmidt")
+parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF")
 parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("Evol", default="uniform", help="Substitution model (default = uniform)")
 parser.add_argument("cluster", default="local", help="cluster or local")
@@ -27,7 +28,7 @@ if args.cluster == "cluster":
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
-pathSelection = path + "positive_selection/" + args.species + "/" + args.sample + "/"
+pathSelection = path + "positive_selection/" + args.species + "/" + args.sample + "/" + args.TF + "/"
 Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
 Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
 ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"

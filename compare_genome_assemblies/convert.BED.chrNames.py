@@ -32,9 +32,10 @@ with open(BED, 'r') as f2:
         i = i.split("\t")
 
         # Remove ID in scaffolds
-        old_chr = str(i[0])
-        new_chr = str(Correspondence_dict[old_chr])
-        if old_chr or new_chr in chromosomes_list:
+        old = str(i[0])
+        old_chr = 'chr' + str(i[0])
+        if old in chromosomes_list or old_chr in chromosomes_list:
+            new_chr = str(Correspondence_dict[old])
             new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
 
             output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')

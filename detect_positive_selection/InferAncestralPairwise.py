@@ -8,10 +8,11 @@ import sys
 from collections import defaultdict
 
 sp = sys.argv[1]    # i.e: human or mouse
-sample = sys.argv[2]    # i.e: CEBPA or HNF4A
-BED_file = sys.argv[3]  # i.e: path + "Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + ".bed2"
-method = sys.argv[4]    # i.e: parsimony
-cluster = sys.argv[5]
+sample = sys.argv[2]    # i.e: Wilson Schmidt...
+TF = sys.argv[3]    # i.e: CEBPA or HNF4A
+BED_file = sys.argv[4]  # i.e: path + "Tools/JialinTool/data/" + sp + "/" + sp + "_ChIP-Seq/" + prefix + sample + ".bed2"
+method = sys.argv[5]    # i.e: parsimony
+cluster = sys.argv[6]
 
 ####################################################################################
 # Define variables and path
@@ -25,9 +26,9 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 pathAlign = path + "data/genome_alignments/"
-pathResults = path + "results/" + sp + "/" + sample + "/Alignments/"
+pathResults = path + "results/" + sp + "/" + sample + "/" + TF + "/Alignments/"
 
-PositiveSeq = path + "results/" + sp + "/" + sample + "/Model/posSet.fa"
+PositiveSeq = path + "results/" + sp + "/" + sample + "/" + TF + "/Model/posSet.fa"
 Tree_file = pathAlign + sp + '_tree.nk'
 Tree = open(Tree_file).read()
 
