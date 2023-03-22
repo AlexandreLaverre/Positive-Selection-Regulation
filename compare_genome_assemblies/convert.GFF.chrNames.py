@@ -27,7 +27,7 @@ with open(Correspondence, 'r') as f1:
         new = i[1] if reverse == "F" else i[0]
         Correspondence_dict[old] = new
 
-with gzip.open(GFF, 'r') as f2:
+with gzip.open(GFF, 'rt') as f2:
     for line in f2:
         if line.startswith('#'):
             output.write(line)
