@@ -34,8 +34,13 @@ with gzip.open(GFF, 'rt') as f2:
         else:
             line = line.split("\t")
             old_name = str(line[0])
-            new_name = str(Correspondence_dict[old_name])
-            output.write(new_name + '\t' + '\t'.join(line[1:]))
+            try:
+                new_name = str(Correspondence_dict[old_name])
+                output.write(new_name + '\t' + '\t'.join(line[1:]))
+            except:
+                print(old_name, "not found!")
+
+
 
 output.close()
 ####################################################################################################
