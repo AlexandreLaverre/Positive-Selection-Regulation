@@ -15,7 +15,7 @@ else:
 
 Correspondence = path + "data/genome_sequences/" + species + "/chromosome_correspondence_" + suffix + ".txt"
 
-output = open(GFF + "_UCSC_names", 'w')
+output = gzip.open(suffix + "_" + GFF, 'wt')
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -31,10 +31,9 @@ with gzip.open(GFF, 'r') as f2:
             output.write(line)
         else:
             line = line.split("\t")
-
             old_name = str(line[0])
             new_name = str(Correspondence_dict[old_name])
-            output.write(new_name + '\t' + '\t'.join(i[1:]))
+            output.write(new_name + '\t' + '\t'.join(line[1:]))
 
 output.close()
 ####################################################################################################
