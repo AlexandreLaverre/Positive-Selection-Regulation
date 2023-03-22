@@ -7,14 +7,15 @@ suppressMessages(library(BiocManager))
 args = commandArgs(trailingOnly=TRUE)
 
 species = args[1] #"human"
-sample = args[2]  #"CEBPA"
-BED_file = args[3]
-cluster = args[4]
+sample = args[2]  #"Wilson"
+TF = args[3]  #"CEBPA"
+BED_file = args[4]
+cluster = args[5]
 
 path = ifelse(cluster=="cluster", "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel", "/Users/alaverre/Documents/Detecting_positive_selection")
 
 pathScripts = paste0(path, "/scripts/compare_genome_assemblies")
-pathResults = paste0(path, "/results/positive_selection/", species, "/", sample, "/Model")
+pathResults = paste0(path, "/results/positive_selection/", species, "/", sample, "/", TF, "/Model")
 
 # Check if chrName conversion between Ensembl and UCSC is needed
 BED = read.table(BED_file)

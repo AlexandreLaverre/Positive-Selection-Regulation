@@ -2,8 +2,9 @@
 
 sp=$1    		# i.e: human or mouse
 sample=$2    	# i.e: CEBPA or HNF4A
-BED_file=$3
-cluster=$4
+TF=$3
+BED_file=$4
+cluster=$5
 
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
@@ -16,7 +17,7 @@ fi
 conda activate MAF
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf"
-pathResults="${path}/results/positive_selection/${sp}/${sample}/Alignments/"
+pathResults="${path}/results/positive_selection/${sp}/${sample}/${TF}/Alignments/"
 pathAlign="${pathResults}/MAFs/"
 
 mkdir -p "${pathAlign}"
