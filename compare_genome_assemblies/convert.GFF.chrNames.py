@@ -7,6 +7,7 @@ species = sys.argv[1]
 GFF = sys.argv[2]
 suffix = sys.argv[3]
 cluster = sys.argv[4]
+reverse = sys.argv[5]
 
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
@@ -21,9 +22,10 @@ output = gzip.open(suffix + "_" + GFF, 'wt')
 Correspondence_dict = {}
 with open(Correspondence, 'r') as f1:
     for i in f1.readlines():
-        i = i.strip("\n")
         i = i.split("\t")
-        Correspondence_dict[i[0]] = i[1]
+        old = i[0] if reverse == "F" else i[1]
+        new = i[1] if reverse == "F" else i[0]
+        Correspondence_dict[old] = new
 
 with gzip.open(GFF, 'r') as f2:
     for line in f2:
