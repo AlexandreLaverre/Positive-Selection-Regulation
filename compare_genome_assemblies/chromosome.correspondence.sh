@@ -4,7 +4,7 @@ export species=$1
 export genome1=$2
 export genome2=$3
 export suffix=$4
-export cluster=$4
+export cluster=$5
 
 ####################################################################################
 if [ ${cluster} = "cluster" ]; then
