@@ -182,7 +182,7 @@ rule ArchiveAlignments:
     output: archive = pathResults + "/{TF}/alignments.archive.tar.gz"
     shell:
         """
-        tar -czvf {output.archive} {pathResults}/{wildcards.TF}/Alignments/
+        tar -czf {output.archive} {pathResults}/{wildcards.TF}/Alignments/
         rm -r {pathResults}/{wildcards.TF}/Alignments/
         """
 
