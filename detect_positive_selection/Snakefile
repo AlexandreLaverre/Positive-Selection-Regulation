@@ -25,12 +25,12 @@ cluster = config["cluster"]
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
     split = "split"
-    localrules: all, GenerateNegativeSeq, BED_split, ConcatSeq
+    localrules: all, GenerateNegativeSeq, BED_split, ConcatSeq, ArchiveAlignments
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection"
     split = "gsplit"
     localrules: all,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
-        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel
+        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments
 
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
@@ -50,8 +50,9 @@ else:
 
 rule all:
     input :
-        PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt", TF=TFs)
-        #model_validation = pathResults + "/{TF}/Model/{TF}.cvpred.txt"
+        PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt", TF=TFs),
+        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=TFs)
+        #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=TFs)
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
@@ -175,6 +176,16 @@ rule ConcatSeq:
         awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
         """
 
+rule ArchiveAlignments:
+    message: "Create an archive file containing all alignments"
+    input: focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
+    output: archive = pathResults + "/{TF}/alignments.archive.tar.gz"
+    shell:
+        """
+        tar -czvf {output.archive} {pathResults}/{wildcards.TF}/Alignments/
+        rm -r {pathResults}/{wildcards.TF}/Alignments/
+        """
+
 rule TestPosSel:
     message: "Test for positive selection between ancestral and focal sequences"
     input:
@@ -188,3 +199,4 @@ rule TestPosSel:
         """
         python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} submat {cluster} --NbThread {threads}
         """
+
