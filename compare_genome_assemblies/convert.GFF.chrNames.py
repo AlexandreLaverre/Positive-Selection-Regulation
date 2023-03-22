@@ -38,7 +38,7 @@ with gzip.open(GFF, 'rt') as f2:
                 new_name = str(Correspondence_dict[old_name])
                 output.write(new_name + '\t' + '\t'.join(line[1:]))
             except:
-                print(old_name, "not found!")
+                continue
 
 
 
