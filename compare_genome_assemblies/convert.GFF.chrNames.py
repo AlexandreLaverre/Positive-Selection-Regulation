@@ -27,6 +27,7 @@ with open(Correspondence, 'r') as f1:
         new = i[1] if reverse == "F" else i[0]
         Correspondence_dict[old] = new
 
+missing_names = []
 with gzip.open(GFF, 'rt') as f2:
     for line in f2:
         if line.startswith('#'):
@@ -38,9 +39,10 @@ with gzip.open(GFF, 'rt') as f2:
                 new_name = str(Correspondence_dict[old_name])
                 output.write(new_name + '\t' + '\t'.join(line[1:]))
             except:
+                missing_names.append(old_name)
                 continue
 
-
+print("Found", len(set(missing_names)), "missing scaffolds.")
 
 output.close()
 ####################################################################################################
