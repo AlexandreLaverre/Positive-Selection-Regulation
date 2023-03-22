@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
 import sys
-import os
+import gzip
 
 species = sys.argv[1]
-BED = sys.argv[2]
+GFF = sys.argv[2]
 suffix = sys.argv[3]
 cluster = sys.argv[4]
 
@@ -14,10 +14,8 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 Correspondence = path + "data/genome_sequences/" + species + "/chromosome_correspondence_" + suffix + ".txt"
-MatrixPath = path + "results/substitution_matrix/" + species
-chromosomes_list = [chrom.split('.')[0] for chrom in os.listdir(MatrixPath)]
 
-output = open(BED + "_UCSC_names", 'w')
+output = open(GFF + "_UCSC_names", 'w')
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -27,19 +25,16 @@ with open(Correspondence, 'r') as f1:
         i = i.split("\t")
         Correspondence_dict[i[0]] = i[1]
 
-with open(BED, 'r') as f2:
-    for i in f2.readlines():
-        i = i.strip("\n")
-        i = i.split("\t")
+with gzip.open(GFF, 'r') as f2:
+    for line in f2:
+        if line.startswith('#'):
+            output.write(line)
+        else:
+            line = line.split("\t")
 
-        # Remove ID in scaffolds
-        old = str(i[0])
-        old_chr = 'chr' + str(i[0])
-        if old in chromosomes_list or old_chr in chromosomes_list:
-            new_chr = str(Correspondence_dict[old])
-            new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
-
-            output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')
+            old_name = str(line[0])
+            new_name = str(Correspondence_dict[old_name])
+            output.write(new_name + '\t' + '\t'.join(i[1:]))
 
 output.close()
 ####################################################################################################
