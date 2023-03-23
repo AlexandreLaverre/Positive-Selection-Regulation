@@ -25,13 +25,14 @@ cluster = config["cluster"]
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
     split = "split"
-    localrules: all, GenerateNegativeSeq, BED_split, ConcatSeq, ArchiveAlignments
+    localrules: all, BED_split, ConcatSeq
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection"
     split = "gsplit"
     localrules: all,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments
 
+suffix = "_UCSC_names" if source != "Ensembl" else ""
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
 pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
@@ -63,6 +64,7 @@ rule GenerateNegativeSeq:
         BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/{TF}.consensus_peaks.bed_UCSC_names"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     priority: 2
+    params: time="1:00:00",mem="2G",threads=1
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Model/
@@ -93,7 +95,7 @@ rule ModelValidation:
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
     threads: 4
-    params: time="2:00:00", mem="2G", threads=4
+    params: time="6:00:00", mem="2G", threads=4
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/ &> {log.out}
@@ -108,6 +110,7 @@ rule ModelPrediction:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
+    priority: 2
     threads: 4
     params: time="2:00:00", mem="2G", threads=4
     shell:
@@ -118,7 +121,7 @@ rule ModelPrediction:
 
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
-    input: BED_file = pathPeaks + "/{TF}.consensus_peaks.bed_UCSC_names"
+    input: BED_file = pathPeaks + "/{TF}.consensus_peaks.bed" + suffix
     output: touch(pathResults + "/log/{TF}/part{part}")
     shell:
         """
@@ -133,6 +136,7 @@ rule InferAncestralPairwise:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
     log: out = pathResults + "/log/{TF}/GetAncestral_part{part}.out"
+    params: time="2:00:00",mem="1G",threads=1
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
@@ -145,7 +149,7 @@ rule GetSequencesMultiple:
         BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}.out"
-    params: time="1:00:00",mem="2G",threads=1
+    params: time="2:00:00",mem="1G",threads=1
     shell:
         """
         {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {wildcards.TF} {input.BED_file_part} {cluster} &> {log.out}
@@ -160,6 +164,7 @@ rule ConcatSeq:
         concat_focal_filtered = pathResults + "/{TF}/sequences/filtered_focal_sequences.fa",
         concat_focal_upper = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa",
         concat_ancestral = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa"
+    params: time="1:00:00",mem="1G",threads=1
     shell:
         """
         cd {pathResults}/{wildcards.TF}/Alignments/
@@ -180,6 +185,7 @@ rule ArchiveAlignments:
     message: "Create an archive file containing all alignments"
     input: focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
     output: archive = pathResults + "/{TF}/alignments.archive.tar.gz"
+    params: time="1:00:00",mem="1G",threads=1
     shell:
         """
         tar -czf {output.archive} {pathResults}/{wildcards.TF}/Alignments/
