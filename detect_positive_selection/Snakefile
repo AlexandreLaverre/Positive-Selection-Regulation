@@ -79,7 +79,7 @@ rule ModelTraining:
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     threads: 4
     priority: 2
-    params: time="2:00:00", mem="2G", threads=4
+    params: time="4:00:00", mem="2G", threads=4
     shell:
         """
         gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
@@ -109,7 +109,7 @@ rule ModelPrediction:
         Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     threads: 4
-    params: time="1:00:00", mem="2G", threads=4
+    params: time="2:00:00", mem="2G", threads=4
     shell:
         """
         gkmpredict -T {threads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
