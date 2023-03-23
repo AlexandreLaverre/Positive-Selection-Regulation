@@ -63,8 +63,7 @@ rule GenerateNegativeSeq:
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa",
         BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/{TF}.consensus_peaks.bed_UCSC_names"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
-    priority: 2
-    params: time="1:00:00",mem="2G",threads=1
+    params: time="1:00:00",mem="5G",threads=1
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Model/
