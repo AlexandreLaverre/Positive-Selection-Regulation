@@ -21,10 +21,10 @@ else
 	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
 fi
 
-conda activate MAF
+conda activate TestPos
 
 ##################################################################
 
-snakemake -j ${nbThreads} --config sp=${species} sample=${sample} source=${source} AlignType=${alignType} AncMethod=${method} cluster=${cluster} nbPart=${nbThreads} nbRand=${nbRand} --rerun-incomplete --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} -c {params.threads} --mem={params.mem} -t {params.time}"
+snakemake -j 50 --config sp=${species} sample=${sample} source=${source} AlignType=${alignType} AncMethod=${method} cluster=${cluster} nbPart=${nbThreads} nbRand=${nbRand} --rerun-incomplete --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} -c {params.threads} --mem={params.mem} -t {params.time}"
 
 ##################################################################
