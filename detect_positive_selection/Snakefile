@@ -194,7 +194,7 @@ rule TestPosSel:
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
     output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt")
     threads: nbPart
-    params: time="1:00:00", mem="5G", threads=nbPart
+    params: time="3:00:00", mem="5G", threads=nbPart
     shell:
         """
         python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} submat {cluster} --NbThread {threads}
