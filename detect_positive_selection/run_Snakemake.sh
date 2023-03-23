@@ -14,10 +14,10 @@ export Prefix=${species}_${sample}
 ##################################################################
 
 if [ ${cluster} = "cluster" ]; then
-	export pathLog=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/scripts/detect_positive_selection
+	export pathLog=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/scripts/detect_positive_selection/logs
 	source /users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh
 else
-	export pathLog=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection
+	export pathLog=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection/logs
 	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
 fi
 
