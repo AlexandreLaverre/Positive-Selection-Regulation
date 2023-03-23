@@ -5,15 +5,14 @@ import os
 
 species = sys.argv[1]
 BED = sys.argv[2]
-suffix = sys.argv[3]
-cluster = sys.argv[4]
+cluster = sys.argv[3]
 
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
-Correspondence = path + "data/genome_sequences/" + species + "/chromosome_correspondence_" + suffix + ".txt"
+Correspondence = path + "data/genome_sequences/" + species + "/chromosome_correspondence.txt"
 MatrixPath = path + "results/substitution_matrix/" + species
 chromosomes_list = [chrom.split('.')[0] for chrom in os.listdir(MatrixPath)]
 
