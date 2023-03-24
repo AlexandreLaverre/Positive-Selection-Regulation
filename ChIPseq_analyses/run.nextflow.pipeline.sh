@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export sp=$1		# i.e: dog
-export sample=$2	# i.e: FOXA1 CEBPA All
+export sample=$2	# i.e: Wilson Schmidt
 export source=$3	# i.e: Ensembl (for dog and cat) and NCBI (for all others)
-export container=$4	# i.e: docker or conda (only conda working currently)
+export container=$4	# i.e: docker singularity conda
 export threads=$5	# i.e: number of threads to use
 export cluster=$6	# i.e: local or cluster
 export resume=$7	# i.e: -resume or nothing
@@ -56,7 +56,7 @@ if [ ${sp} == "rat" ]; then
 fi
 
 if [ ${sp} == "macaca" ]; then
-	export spID="GCF_000772875.2_Mmul_8.0.1"
+	export spID="sup2kb_GCA_000772875.3_Mmul_8.0.1"
 	export genomesize=2498932238
 	export blacklist=""
 fi
@@ -122,7 +122,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --output=${pathScripts}/std_output_peaks_calling_${sp}_${sample}.txt" >>  ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --error=${pathScripts}/std_error_peaks_calling_${sp}_${sample}.txt" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --mem=30G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	echo "#SBATCH --mem=20G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --time=8:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
@@ -130,7 +130,7 @@ fi
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '20.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
 #########################################################################
 
