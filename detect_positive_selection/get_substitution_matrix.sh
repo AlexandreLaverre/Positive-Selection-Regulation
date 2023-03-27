@@ -27,15 +27,21 @@ if [ ${sp} = "dog" ]; then
 fi
 
 if [ ${sp} = "human" ]; then
-	chroms=(chr{1..22} "chrM" "chrX" "chrY")
+	chroms=(chr{1..22} "chrX" "chrY")
 	prefix="Homo_sapiens.GRCh38.104"
 	species="Homo_sapiens,Pan_troglodytes,Gorilla_gorilla"
 fi
 
 if [ ${sp} = "mouse" ]; then
-	chroms=(chr{1..19} "chrM" "chrX" "chrY")
+	chroms=(chr{1..19} "chrX" "chrY")
 	prefix="Mus_musculus.GRCm39.104"
 	species="Mus_musculus,Mus_spretus,Mus_caroli"
+fi
+
+if [ ${sp} = "macaca" ]; then
+	chroms=(NC_027{893..914}.1 "NC_005943.1")
+	prefix="GCA_000772875.2_Mmul_8.0.1_genomic"
+	species="Macaca_mulatta,Macaca_fascicularis,Macaca_nemestrina"
 fi
 
 conda activate MAF
