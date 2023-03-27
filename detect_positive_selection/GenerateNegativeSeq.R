@@ -28,8 +28,15 @@ if ("Ensembl" %in% seqlevelsStyle(BED$V1)){
 if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm10.masked")}
 if (species == "human"){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}
 if (species == "dog"){genome <- getBSgenome("BSgenome.Cfamiliaris.UCSC.canFam3.masked")}
+if (species == "rat"){genome <- getBSgenome("BSgenome.Rnorvegicus.UCSC.rn6.masked")}
+if (species == "macaca"){genome <- getBSgenome("BSgenome..Mmulatta.UCSC.rheMac8.masked")}
+if (species == "cat"){genome <- getBSgenome("BSgenome.Fcatus.UCSC.felCat9.masked")}
+if (species == "cattle"){genome <- getBSgenome("BSgenome.Btaurus.GenBank.Btau5.0.masked")}
+if (species == "rabbit"){genome <- getBSgenome("BSgenome.Ocuniculus.UCSC.oryCun2.masked")}
+if (species == "chicken"){genome <- getBSgenome("BSgenome.Ggallus.UCSC.galGal6.masked")}
+if (species == "pig"){genome <- getBSgenome("BSgenome.Sscrofa.UCSC.susScr3.masked")}
 
-# For new genomes
+# For new genomes, check if available first, else create it via BSgenome forge
 #available.genomes()
 #BiocManager::install("BSgenome.Mmusculus.UCSC.mm10.masked")
 
