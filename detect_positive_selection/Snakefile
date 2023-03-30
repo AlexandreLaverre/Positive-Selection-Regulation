@@ -140,7 +140,7 @@ rule ModelPrediction:
 
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
-    input: BED_file = pathPeaks + "/{TF}.consensus_peaks.bed" + suffix
+    input: BED_file = pathPeaks + "/{TF}.peaks.bed" + suffix
     output: touch(pathResults + "/log/{TF}/part{part}")
     shell:
         """
