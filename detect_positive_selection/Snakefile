@@ -72,7 +72,7 @@ rule GetPeaks:
         cut -f 1-4 {output.Peaks} | sed 's/\t/:/g' > {pathPeaks}/IDs
         cut -f 1-3 {output.Peaks} > {pathPeaks}/coord
         paste {pathPeaks}/coord {pathPeaks}/IDs > {output.Peaks}
-        rm coord IDs
+        rm {pathPeaks}/coord {pathPeaks}/IDs
         """
 
 rule GenerateNegativeSeq:
