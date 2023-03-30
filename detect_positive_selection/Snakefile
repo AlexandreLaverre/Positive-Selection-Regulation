@@ -69,10 +69,10 @@ rule GetPeaks:
         fi
         
         # Add meaningful ID for each peak
-        cut -f 1-4 {output.Peaks} | sed 's/\t/:/g' > {pathPeaks}/IDs
-        cut -f 1-3 {output.Peaks} > {pathPeaks}/coord
-        paste {pathPeaks}/coord {pathPeaks}/IDs > {output.Peaks}
-        rm {pathPeaks}/coord {pathPeaks}/IDs
+        cut -f 1-4 {output.Peaks} | sed 's/\t/:/g' > {pathPeaks}/{wildcards.TF}_IDs
+        cut -f 1-3 {output.Peaks} > {pathPeaks}/{wildcards.TF}_coord
+        paste {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs > {output.Peaks}
+        rm {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs
         """
 
 rule GenerateNegativeSeq:
