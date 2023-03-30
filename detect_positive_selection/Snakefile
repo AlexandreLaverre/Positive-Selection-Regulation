@@ -81,7 +81,7 @@ rule GenerateNegativeSeq:
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa",
-        BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/{TF}.consensus_peaks.bed_UCSC_names"
+        BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/{TF}.peaks.bed_UCSC_names"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     params: time="1:00:00",mem="5G",threads=1
     shell:
