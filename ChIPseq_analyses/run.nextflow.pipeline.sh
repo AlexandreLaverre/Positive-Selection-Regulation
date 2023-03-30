@@ -2,7 +2,7 @@
 
 export sp=$1		# i.e: dog
 export sample=$2	# i.e: Wilson Schmidt
-export source=$3	# i.e: Ensembl (for dog and cat) and NCBI (for all others)
+export source=$3	# i.e: NCBI (for macaca, cat, cattle and rabbit) or Ensembl (for all others)
 export container=$4	# i.e: docker singularity conda
 export threads=$5	# i.e: number of threads to use
 export cluster=$6	# i.e: local or cluster
@@ -44,7 +44,7 @@ if [ ${sp} == "dog" ]; then
 fi
 
 if [ ${sp} == "cat" ]; then
-	export spID="Felis_catus.Felis_catus_9.0"
+	export spID="GCA_000181335.3_Felis_catus_8.0"
 	export genomesize=235000000
 	export blacklist=""
 fi
@@ -62,14 +62,8 @@ if [ ${sp} == "macaca" ]; then
 fi
 
 if [ ${sp} == "cattle" ]; then
-	export spID="GCF_000003205.7_Btau_5.0.1"
+	export spID="GCA_000003205.6_Btau_5.0.1"
 	export genomesize=2370644326
-	export blacklist=""
-fi
-
-if [ ${sp} == "pig" ]; then
-	export spID="GCF_000003025.5_Sscrofa10.2"
-	export genomesize=2105185708
 	export blacklist=""
 fi
 
@@ -77,6 +71,12 @@ if [ ${sp} == "chicken" ]; then
 	export spID="Gallus_gallus.GRCg6a"
 	export genomesize=974987959
 	export blacklist=""
+fi
+
+if [ ${sp} == "rabbit" ]; then
+        export spID="GCA_000003625.3_OryCun2.0"
+        export genomesize=974987959
+        export blacklist=""
 fi
 
 if [ ${source} == "Ensembl" ]; then
@@ -122,7 +122,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --output=${pathScripts}/std_output_peaks_calling_${sp}_${sample}.txt" >>  ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --error=${pathScripts}/std_error_peaks_calling_${sp}_${sample}.txt" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --mem=20G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	echo "#SBATCH --mem=30G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --time=8:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
@@ -130,7 +130,7 @@ fi
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '20.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
 #########################################################################
 
