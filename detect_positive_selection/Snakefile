@@ -16,7 +16,6 @@ import os
 
 sp = config["sp"]
 sample = config["sample"]
-source = config["source"]
 nbPart = int(config["nbPart"])
 nbRand = int(config["nbRand"])
 AncMethod = config["AncMethod"]
@@ -32,7 +31,7 @@ else:
     localrules: all,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments
 
-suffix = "_UCSC_names" if source != "Ensembl" else ""
+suffix = "_UCSC_names" if sp in ["human", "mouse", "rat"] else ""
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
 pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
