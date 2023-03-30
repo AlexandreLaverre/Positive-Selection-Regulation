@@ -56,11 +56,11 @@ rule all:
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
-    input: PeaksFolder = directory(pathPeaks + "/bowtie2/mergedLibrary/macs2/broadPeak/")
+    input: PeaksFolder = pathPeaks + "/bowtie2/mergedLibrary/macs2/broadPeak/"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
-        if [ -d {input.PeaksFolder}/consensus/{wildcards.TF}]; then
+        if [ -d {input.PeaksFolder}/consensus/{wildcards.TF} ]; then
             # peaks come from a consensus of several samples
 	        cp {input.PeaksFolder}/consensus/{wildcards.TF}/{wildcards.TF}.consensus_peaks.bed {output.Peaks} 
         else
