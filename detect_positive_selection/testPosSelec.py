@@ -41,7 +41,7 @@ Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permu
 # Get number of substitutions per sequence
 def get_sub_number(seq_ref, seq_alt):
     if len(seq_ref) != len(seq_alt):
-        raise ValueError("Undefined for sequences of unequal length")
+        raise ValueError("Focal and ancestral sequences don't have the same length!")
     return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
 
 
@@ -153,11 +153,19 @@ else:
             chrom_SubMat_norm = chrom_Table_norm.to_dict('index')
             SubMats_norm[chrom] = chrom_SubMat_norm
 
+    if len(SubMats) == 0:
+        raise ValueError("Substitution matrix not found!")
+
+
 # Get Ancestral sequences
 AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(Ancestral_fasta), "fasta"))
+if len(AncestralSeqs) == 0:
+    raise ValueError("Ancestral sequence file is empty!")
 
 # Get Focal sequences
 FocalSeqs = SeqIO.to_dict(SeqIO.parse(open(Focal_fasta), "fasta"))
+if len(FocalSeqs) == 0:
+    raise ValueError("Focal sequence file is empty!")
 
 ####################################################################################################
 # Running and writing results
