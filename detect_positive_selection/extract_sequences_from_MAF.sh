@@ -67,7 +67,6 @@ do
   echo "$align"
 
 	# Convert to FASTA
-	# shellcheck disable=SC2086
 	msa_view --missing-as-indels -i MAF -o FASTA "${align}" > "${pathAlign}"/"${ID}".mfa
 	sed -i 's/ //g' "${pathAlign}"/"${ID}".mfa
 
