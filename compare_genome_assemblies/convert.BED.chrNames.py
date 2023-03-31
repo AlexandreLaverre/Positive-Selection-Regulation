@@ -17,7 +17,7 @@ Correspondence = path + "data/genome_sequences/" + species + "/chromosome_corres
 MatrixPath = path + "results/substitution_matrix/" + species
 chromosomes_list = [chrom.split('.')[0] for chrom in os.listdir(MatrixPath)]
 
-output = open(BED + "_Ensembl_names", 'w')
+output = open(BED + "_UCSC_names", 'w')
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -35,13 +35,11 @@ with open(BED, 'r') as f2:
         # Remove ID in scaffolds
         old = str(i[0])
         old_chr = 'chr' + str(i[0])
-        interval = str(i[3]).split(":")[3] #new
+        if old in chromosomes_list or old_chr in chromosomes_list:
+            new_chr = str(Correspondence_dict[old])
+            new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
 
-        #if old in chromosomes_list or old_chr in chromosomes_list:
-        new_chr = str(Correspondence_dict[old])
-        #new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
-        new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2]) + ':' + interval  # new
-        output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')
+            output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')
 
 output.close()
 ####################################################################################################
