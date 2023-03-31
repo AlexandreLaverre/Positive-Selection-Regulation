@@ -6,7 +6,7 @@ export cluster=$3				# i.e: local or cluster
 export nbThreads=$4				# i.e: int (number of part for parallelization)
 export nbRand=$5				# i.e: int (randomization)
 export alignType=${6:-"MAF"}			# i.e: MAF or pairwise
-export method=${7:-"parismony"}			# i.e: only working with alignType=pairwise
+export method=${7:-"parsimony"}			# i.e: only working with alignType=pairwise
 
 export Prefix=${species}_${sample}
 
