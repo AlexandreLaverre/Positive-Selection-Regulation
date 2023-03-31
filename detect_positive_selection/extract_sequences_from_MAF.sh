@@ -59,12 +59,12 @@ fi
 # Retrieve alignments of regions from whole genome alignment
 mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 
-cat ${BED_file} | while read line
+cut -f 4 ${BED_file} | while read ID
 do
-	ID=$(echo ${line} | cut -f 4 -d ' ')
+	#ID=$(echo ${line} | cut -f 4 -d ' ')
 	echo ${ID}
 	align=${pathAlign}/${ID}.maf
-	
+
 	# Convert to FASTA
 	msa_view --missing-as-indels -i MAF -o FASTA ${align} > ${pathAlign}/${ID}.mfa
 	sed -i 's/ //g' ${pathAlign}/${ID}.mfa
