@@ -51,7 +51,7 @@ fi
 
 if [ ${sp} = "chicken" ]; then
     sp_name="Gallus_gallus"
-    anc_name=""
+    anc_name="birdAnc333"
 fi
 
 #########################################################################
