@@ -207,7 +207,7 @@ rule ArchiveAlignments:
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """
-        tar -czf {output.archive} {pathResults}/{wildcards.TF}/Alignments/
+        tar -czf {output.archive} -C {pathResults}/{wildcards.TF} Alignments/
         rm -r {pathResults}/{wildcards.TF}/Alignments/
         """
 
