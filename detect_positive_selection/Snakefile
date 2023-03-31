@@ -38,7 +38,7 @@ pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
 TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/broadPeak/*.broadPeak')]))
 print("Running with :", ', '.join(TFs), "transcription factors" )
 
-workdir: path
+workdir: pathResults
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
