@@ -59,11 +59,12 @@ fi
 # Retrieve alignments of regions from whole genome alignment
 mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 
-cut -f 4 "${BED_file}" | while read ID
+for ID in `cat "${BED_file}" | cut -f 4`
 do
 	#ID=$(echo ${line} | cut -f 4 -d ' ')
 	echo "${ID}"
 	align="${pathAlign}"/"${ID}".maf
+  echo "$align"
 
 	# Convert to FASTA
 	# shellcheck disable=SC2086
