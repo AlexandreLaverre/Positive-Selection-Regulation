@@ -36,12 +36,11 @@ with open(BED, 'r') as f2:
         old = str(i[0])
         old_chr = 'chr' + str(i[0])
         interval = str(i[3]).split(":")[3] #new
-        new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2]) + ':' + interval #new
 
         #if old in chromosomes_list or old_chr in chromosomes_list:
         new_chr = str(Correspondence_dict[old])
         #new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
-
+        new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2]) + ':' + interval  # new
         output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')
 
 output.close()
