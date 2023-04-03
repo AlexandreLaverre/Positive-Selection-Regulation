@@ -181,6 +181,7 @@ if __name__ == '__main__':
             for result in pool.imap_unordered(test_positive_selection, SeqIDs):
                 bar()  # print progress bar
                 if result is not None:
+                    print(result)
                     Output.write(result)
 
 Output.close()
