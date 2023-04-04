@@ -6,6 +6,9 @@ TF=$3
 BED_file=$4
 cluster=$5
 
+#########################################################################
+# Define paths
+
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
 	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
@@ -23,6 +26,9 @@ pathAlign="${pathResults}/MAFs/"
 mkdir -p "${pathAlign}"
 mkdir -p "${pathResults}/focal_sequences/"
 mkdir -p "${pathResults}/ancestral_sequences/"
+
+#########################################################################
+# Define focal and ancestral names
 
 if [ ${sp} = "dog" ]; then
     sp_name="Canis_lupus_familiaris"
@@ -54,11 +60,26 @@ if [ ${sp} = "chicken" ]; then
     anc_name="birdAnc333"
 fi
 
-#########################################################################
+if [ ${sp} = "rabbit" ]; then
+    sp_name="Oryctolagus_cuniculus"
+    anc_name="fullTreeAnc15"
+fi
 
+if [ ${sp} = "cat" ]; then
+    sp_name="Felis_catus"
+    anc_name="fullTreeAnc202"
+fi
+
+if [ ${sp} = "cattle" ]; then
+    sp_name="Bos_taurus"
+    anc_name="fullTreeAnc170"
+fi
+
+#########################################################################
 # Retrieve alignments of regions from whole genome alignment
 mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 
+# Retrieve ancestral and focal sequences
 for ID in `cat "${BED_file}" | cut -f 4`
 do
 	#ID=$(echo ${line} | cut -f 4 -d ' ')
