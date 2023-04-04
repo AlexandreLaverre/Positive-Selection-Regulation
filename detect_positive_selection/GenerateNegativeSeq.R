@@ -19,7 +19,7 @@ pathResults = paste0(path, "/results/positive_selection/", species, "/", sample,
 
 # Check if chrName conversion between Ensembl and UCSC is needed
 BED = read.table(BED_file)
-if ("Ensembl" %in% seqlevelsStyle(BED$V1)){
+if (species != "rat"){
   # Run chromosome names correspondence
   system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
   BED_file = paste0(BED_file, "_UCSC_names")
