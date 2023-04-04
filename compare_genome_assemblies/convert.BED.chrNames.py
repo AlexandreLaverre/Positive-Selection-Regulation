@@ -35,6 +35,8 @@ with open(BED, 'r') as f2:
         # Remove ID in scaffolds
         old = str(i[0])
         old_chr = 'chr' + str(i[0])
+        print(old)
+        print(chromosomes_list)
         if old in chromosomes_list or old_chr in chromosomes_list:
             new_chr = str(Correspondence_dict[old])
             new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
