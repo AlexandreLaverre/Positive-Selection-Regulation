@@ -27,53 +27,8 @@ mkdir -p "${pathAlign}"
 mkdir -p "${pathResults}/focal_sequences/"
 mkdir -p "${pathResults}/ancestral_sequences/"
 
-#########################################################################
 # Define focal and ancestral names
-
-if [ ${sp} = "dog" ]; then
-    sp_name="Canis_lupus_familiaris"
-    anc_name="Anc09"
-fi
-
-if [ ${sp} = "human" ]; then
-    sp_name="Homo_sapiens"
-    anc_name="fullTreeAnc105"
-fi
-
-if [ ${sp} = "mouse" ]; then
-    sp_name="Mus_musculus"
-    anc_name="fullTreeAnc35"
-fi
-
-if [ ${sp} = "rat" ]; then
-    sp_name="Rattus_norvegicus"
-    anc_name="fullTreeAnc38"
-fi
-
-if [ ${sp} = "macaca" ]; then
-    sp_name="Macaca_mulatta"
-    anc_name="fullTreeAnc91"
-fi
-
-if [ ${sp} = "chicken" ]; then
-    sp_name="Gallus_gallus"
-    anc_name="birdAnc333"
-fi
-
-if [ ${sp} = "rabbit" ]; then
-    sp_name="Oryctolagus_cuniculus"
-    anc_name="fullTreeAnc15"
-fi
-
-if [ ${sp} = "cat" ]; then
-    sp_name="Felis_catus"
-    anc_name="fullTreeAnc202"
-fi
-
-if [ ${sp} = "cattle" ]; then
-    sp_name="Bos_taurus"
-    anc_name="fullTreeAnc170"
-fi
+source ${path}/scripts/params.sh ${sp} ${cluster}
 
 #########################################################################
 # Retrieve alignments of regions from whole genome alignment

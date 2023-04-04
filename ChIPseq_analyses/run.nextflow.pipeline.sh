@@ -22,72 +22,8 @@ export pathScripts=${path}/scripts/ChIPseq_analyses/logs
 
 mkdir -p ${pathResults}
 
-#########################################################################
-# Define parameters according to species and data source
-
-if [ ${sp} = "human" ]; then
-	export spID="Homo_sapiens.GRCh38"
-	export genomesize=2701262066 # from 50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
-	export blacklist="--blacklist  ${pathData}/genome_sequences/${sp}/blacklist.txt"
-fi
-
-if [ ${sp} == "mouse" ]; then
-	export spID="Mus_musculus.GRCm38"
-	export genomesize=2307679482
-	export blacklist="--blacklist  ${pathData}/genome_sequences/${sp}/blacklist.txt"
-fi
-
-if [ ${sp} == "dog" ]; then
-	export spID="Canis_lupus_familiaris.CanFam3.1"
-	export genomesize=2237684358
-	export blacklist=""
-fi
-
-if [ ${sp} == "cat" ]; then
-	export spID="GCA_000181335.3_Felis_catus_8.0"
-	export genomesize=235000000
-	export blacklist=""
-fi
-
-if [ ${sp} == "rat" ]; then
-	export spID="GCF_000001895.5_Rnor_6.0"
-	export genomesize=2375372135
-	export blacklist=""
-fi
-
-if [ ${sp} == "macaca" ]; then
-	export spID="sup2kb_GCA_000772875.3_Mmul_8.0.1"
-	export genomesize=2498932238
-	export blacklist=""
-fi
-
-if [ ${sp} == "cattle" ]; then
-	export spID="GCA_000003205.6_Btau_5.0.1"
-	export genomesize=2370644326
-	export blacklist=""
-fi
-
-if [ ${sp} == "chicken" ]; then
-	export spID="Gallus_gallus.GRCg6a"
-	export genomesize=974987959
-	export blacklist=""
-fi
-
-if [ ${sp} == "rabbit" ]; then
-        export spID="GCA_000003625.3_OryCun2.0"
-        export genomesize=974987959
-        export blacklist=""
-fi
-
-if [ ${source} == "Ensembl" ]; then
-	export genome_suffix=".dna_sm.toplevel.fa.gz"
-	export GTF_suffix=".102.gtf.gz"
-	export GFF_suffix=".102.gff3.gz"
-else
-	export genome_suffix="_genomic.fna.gz"
-	export GTF_suffix="_genomic.gtf.gz"
-	export GFF_suffix="_genomic.gff.gz"
-fi
+# Define parameters according to species
+source ${path}/scripts/params.sh ${sp} ${cluster}
 
 #########################################################################
 # Define input files
