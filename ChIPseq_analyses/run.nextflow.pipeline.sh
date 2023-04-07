@@ -1,19 +1,20 @@
 #!/bin/bash
 
-export sp=$1		# i.e: dog
-export sample=$2	# i.e: Wilson Schmidt
-export source=$3	# i.e: NCBI (for macaca, cat, cattle and rabbit) or Ensembl (for all others)
-export container=$4	# i.e: docker singularity conda
-export threads=$5	# i.e: number of threads to use
-export cluster=$6	# i.e: local or cluster
-export resume=$7	# i.e: -resume or nothing
+export sp=$1				# i.e: dog human mouse ...
+export sample=$2			# i.e: Wilson Schmidt Rensch ...
+export threads=$3			# i.e: number of threads to use
+export cluster=$4			# i.e: local or cluster
+export resume=${5:-"false"}	# i.e: resume or false
+export skip=${6:-"false"}		# i.e: skip or false
 
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
 	export pathConda="/Users/alaverre/miniconda3/etc/profile.d/conda.sh"
+	export container="conda"
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
 	export pathConda="/users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh"
+	export containe="singularity"
 fi
 
 export pathResults=${path}/results/peaks_calling/${sp}/
@@ -50,6 +51,18 @@ else
     export index="--save_reference"
 fi
 
+if [ ${skip} != "false" ]; then
+	skip="--skip_spp --skip_multiqc"
+else
+	skip=""
+fi
+
+if [ ${resume} != "false" ]; then
+	resume="-resume"
+else
+	resume=""
+fi
+
 #########################################################################
 echo "#!/bin/bash" > ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
@@ -66,7 +79,7 @@ fi
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
 #########################################################################
 
