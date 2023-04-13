@@ -66,12 +66,12 @@ if [ ${sp} = "rat" ]; then
 fi
 
 if [ ${sp} = "cat" ]; then
-	spID="GCA_000181335.3_Felis_catus_8.0"
+	spID="sup2kb_GCA_000181335.3_Felis_catus_8.0"
 	sp_name="Felis_catus"
 	sis_sp_names="Felis_catus,Felis_nigripes,Puma_concolor"
 	anc_name="fullTreeAnc202"
 	chroms=(CM0013{78..96}.2) # from NCBI (A1 to F2 and X)
-	export genomesize=235000000
+	export genomesize=230000000
 fi
 
 if [ ${sp} = "cattle" ]; then
