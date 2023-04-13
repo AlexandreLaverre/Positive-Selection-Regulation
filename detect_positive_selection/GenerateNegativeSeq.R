@@ -29,8 +29,8 @@ if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm10.mask
 if (species == "human"){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}
 if (species == "dog"){genome <- getBSgenome("BSgenome.Cfamiliaris.UCSC.canFam3.masked")}
 if (species == "rat"){genome <- getBSgenome("BSgenome.Rnorvegicus.UCSC.rn6.masked")}
-if (species == "macaca"){genome <- getBSgenome("BSgenome..Mmulatta.UCSC.rheMac8.masked")}
-if (species == "cat"){genome <- getBSgenome("BSgenome.Fcatus.UCSC.felCat9.masked")}
+if (species == "macaca"){genome <- getBSgenome("BSgenome.Mmulatta.UCSC.sup2kb.rheMac8.masked")}
+if (species == "cat"){genome <- getBSgenome("BSgenome.Fcatus.UCSC.sup2kb.felCat8.masked")}
 if (species == "cattle"){genome <- getBSgenome("BSgenome.Btaurus.GenBank.Btau5.0.masked")}
 if (species == "rabbit"){genome <- getBSgenome("BSgenome.Ocuniculus.UCSC.oryCun2.masked")}
 if (species == "chicken"){genome <- getBSgenome("BSgenome.Ggallus.UCSC.galGal6.masked")}
