@@ -51,8 +51,8 @@ else:
 rule all:
     input :
         PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt", TF=TFs),
-        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=TFs)
-        #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=TFs)
+        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=TFs),
+        model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=TFs)
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
@@ -92,7 +92,7 @@ rule GenerateNegativeSeq:
         """
 
 rule ModelTraining:
-    message: "Training of the gkm-SVM, kmer=10, 4 threads"
+    message: "Training of the gkm-SVM, kmer=10, 16 threads"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
@@ -107,7 +107,7 @@ rule ModelTraining:
         """
 
 rule ModelValidation:
-    message: "Training of the gkm-SVM, kmer=10, 4 threads, 5-fold cross-validation"
+    message: "Training of the gkm-SVM, kmer=10, 16 threads, 5-fold cross-validation"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
