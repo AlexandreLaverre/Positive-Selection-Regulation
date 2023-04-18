@@ -1,89 +1,59 @@
 #!/bin/bash
 
 ################ Input parameters #####################
-export species=$1         # i.e : human or mouse
-export score=$2		  # i.e : phyloP or phastCons
-export way=$3             # i.e : 30 60 or 100way
-export enhancer=$4        # i.e : FANTOM5 ENCODE RoadmapEpigenomics FOCS_GRO_seq restriction_fragments
-export masked_exons=$5    # i.e : TRUE or FALSE
+export species=$1       			  # i.e : human or mouse
+export sample=$2				  # i.e : Wilson/CEBPA
+export masked_exons=${3:-"FALSE"}   # i.e : TRUE or FALSE
 
 ################ Export paths #####################
-export path=/beegfs/data/alaverre/Regulatory_landscape/
-export pathAnouk=/beegfs/data/necsulea/RegulatoryLandscapesManuscript/
 
+export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
 
-if [ "${enhancer}" = "restriction_fragments" ]; then
-export pathEnhancers=${pathAnouk}/SupplementaryDataset1/${species}
-else
-export pathEnhancers=${pathAnouk}/SupplementaryDataset4/${species}/${enhancer}
-fi
+export pathphyloP=${path}/data/phyloP/${species}/
+export pathBED=${path}/results/positive_selection/${species}/${sample}/PosSelTest_deltaSVM_10000permutations.txt
+export pathResults=${path}/result/phyloP/${species}/${sample}
+export pathScripts=${path}/scripts/statistics_analysis
 
-export pathphyloP=${path}/data/${score}/${species}/${way}
-
-if [ ${USER} = "alaverre" ]; then
-    export pathResults=${path}/result/${score}/${species}/${enhancer}
-    export pathScripts=${path}/scripts/phyloP_scores
-fi
-
-if [ ${USER} = "necsulea" ]; then
-    export pathResults=/beegfs/data/necsulea/RegulatoryLandscapes/results/${score}/${species}/${enhancer}
-    export pathScripts=/beegfs/data/necsulea/RegulatoryLandscapes/scripts/phyloP_scores
-fi
+mkdir -p ${pathResults}
 
 ################ Define aligments input files #####################
 
-export suffixPhylo=${score}${way}.wigFix.gz
-
 if [ "${species}" = "mouse" ]; then
-  export chromosomes=({1..19} X Y)
-  export genome=mm10
+  export chromosomes=(chr{1..19} chrX chrY)
+  export way=17way
 elif [ "${species}" = "human" ]; then
-  export chromosomes=({1..22} X Y)
-  export genome=hg38
+  export chromosomes=(chr{1..22} chrX chrY)
+  export way=60way.glire
 fi
 
+export suffixPhylo=phyloP${way}.wigFix.gz
+export coordConvention=0_open_end
 
-if [ "${enhancer}" = "restriction_fragments" ]; then
-    export CoordSuffix=frag_coords_${genome}.bed
-    export coordConvention=1_closed_end
-else
-    export CoordSuffix=enhancer_coordinates_ID.bed
-    export coordConvention=0_open_end
-fi
-
+#useless for the moment
 if [ "${masked_exons}" = "TRUE" ]; then
-    export suffixExons=MaskedExons_Ensembl94
+    export suffixExons="_MaskedExons_Ensembl94"
     export pathExons=${path}/data/exons/${species}_exons_Ensembl94.txt
 else
-    export suffixExons=Unmasked
+    export suffixExons=""
     export pathExons="NA"
-fi
-
-################ Create dir output #####################
-
-if [ -e "${pathResults}" ]; then
-    echo "dir output already there"
-else
-    mkdir -p ${pathResults}
 fi
 
 ################ Running Compute phyloP scores #####################
 
 for chr in "${chromosomes[@]}"
 do
-    export pathPhyloP_scores=${pathphyloP}/chr${chr}.${suffixPhylo}
+    export pathPhyloP_scores=${pathphyloP}/${chr}.${suffixPhylo}
 
     if [ -e "${pathPhyloP_scores}" ]; then
-      if [ -e "${pathResults}"/${score}_${way}_chr${chr}_${suffixExons}.txt ]; then
+      if [ -e "${pathResults}/${chr}_${way}${suffixExons}.txt" ]; then
 	    echo "already done"
-
       else
-    	    echo "#!/bin/bash" > ${pathScripts}/log/${score}_${way}_${species}_${enhancer}_chr${chr}_${suffixExons}
+    	    echo "#!/bin/bash" > ${pathScripts}/log/${sample}_${way}_${species}_${chr}${suffixExons}
 	    
-	    echo "perl ${pathScripts}/compute.phyloP.scores.pl --pathCoords=${pathEnhancers}/${CoordSuffix} --coordConvention=${coordConvention} --pathMaskExonBlocks=${pathExons} --pathScores=${pathPhyloP_scores} --chr=chr${chr} --pathOutput=${pathResults}/${score}_${way}_chr${chr}_${suffixExons}.txt" >> ${pathScripts}/log/${score}_${way}_${species}_${enhancer}_chr${chr}_${suffixExons}
+	    echo "perl ${pathScripts}/compute.phyloP.scores.pl --pathCoords=${pathBED} --coordConvention=${coordConvention} --pathMaskExonBlocks=${pathExons} --pathScores=${pathPhyloP_scores} --chr=${chr} --pathOutput=${pathResults}/${chr}_${way}${suffixExons}.txt" >> ${pathScripts}/log/${sample}_${way}_${species}_${chr}${suffixExons}
 
-      #bash ${pathScripts}/log/phyloP_${way}_${species}_${enhancer}_chr${chr}_${suffixExons}
-      sbatch -p normal --time=1:00:00 --mem=120GB -c 1 -o ${pathScripts}/log/std_output_${score}_${way}_${species}_${enhancer}_chr${chr}_${suffixExons} -e ${pathScripts}/log/std_error_${score}_${way}_${species}_${enhancer}_chr${chr}_${suffixExons} ${pathScripts}/log/${score}_${way}_${species}_${enhancer}_chr${chr}_${suffixExons}
+      #bash ${pathScripts}/log/${sample}_${way}_${species}_${chr}${suffixExons}
+      #sbatch -p cpu --time=1:00:00 --mem=2GB -c 1 ${pathScripts}/log/${sample}_${way}_${species}_${chr}${suffixExons}
        fi
     fi
 done
