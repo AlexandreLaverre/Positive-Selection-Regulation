@@ -14,7 +14,7 @@ if [ ${cluster} = "local" ]; then
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
 	export pathConda="/users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh"
-	export containe="singularity"
+	export container="singularity"
 fi
 
 export pathResults=${path}/results/peaks_calling/${sp}/
@@ -73,7 +73,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --mem=30G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --time=8:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	echo "#SBATCH --time=12:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 fi
 
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
