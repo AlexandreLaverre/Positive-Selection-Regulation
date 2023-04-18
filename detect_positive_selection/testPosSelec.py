@@ -107,7 +107,8 @@ def test_positive_selection(seq_name):
             # Calculate p-value
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
             p_val_high = nb_higher_rand / len(delta_rand)
-            output = (seq_name + "\t" + str(delta_obs) + "\t" + str(nb_sub) + "\t" + str(p_val_high) + "\n")
+            output = (seq_name + "\t" + str(delta_obs) + "\t" + str(np.median(delta_rand)) + "\t" +
+                      str(np.mean(delta_rand)) + "\t" + str(nb_sub) + "\t" + str(p_val_high) + "\n")
 
             return output
 
@@ -169,7 +170,7 @@ if len(FocalSeqs) == 0:
 
 ####################################################################################################
 # Running and writing results
-Output.write("ID\tdeltaSVM\tNbSub\tpval.high\n")  # header
+Output.write("ID\tdeltaSVM\tmed.deltaSVM.simul\tmean.deltaSVM.simul\tNbSub\tpval.high\n")  # header
 
 SeqIDs = FocalSeqs.keys()
 # protect the entry point
