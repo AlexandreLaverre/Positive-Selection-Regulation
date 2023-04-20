@@ -20,7 +20,7 @@ chromosomes_list = [chrom.strip('.txt') for chrom in os.listdir(MatrixPath)]
 if not os.path.isfile(Correspondence):
     sys.exit("Chromosome correspondence file doesn't exist!")
 
-output = open(BED + "_UCSC_names", 'w')
+output = open(BED + "_UCSC_names_interval", 'w')
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -34,6 +34,7 @@ with open(BED, 'r') as f2:
     for i in f2.readlines():
         i = i.strip("\n")
         i = i.split("\t")
+        interval = i[3].split(":")[3]
 
         # Remove ID in scaffolds
         old = str(i[0])
@@ -42,7 +43,7 @@ with open(BED, 'r') as f2:
             new_chr = str(Correspondence_dict[old])
             new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
 
-            output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')
+            output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\t' + interval + '\n')
 
 output.close()
 ####################################################################################################
