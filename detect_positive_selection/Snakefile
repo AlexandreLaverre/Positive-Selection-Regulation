@@ -114,10 +114,10 @@ rule ModelValidation:
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
     threads: 16
-    params: time="24:00:00", mem="2G", threads=16
+    params: time="20:00:00", mem="2G", threads=16
     shell:
         """
-        gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/ &> {log.out}
+        gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelPrediction:
