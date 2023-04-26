@@ -21,6 +21,7 @@ parser.add_argument("NbRand", type=int, help="Number of random substitutions per
 parser.add_argument("Evol", default="uniform", help="Substitution model (default = uniform)")
 parser.add_argument("cluster", default="local", help="cluster or local")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
+parser.add_argument("--Simul", type=int, required=False, help="Number of Mutation per Seq in simulation mode (default = 2)")
 args = parser.parse_args()
 
 if args.cluster == "cluster":
@@ -28,12 +29,19 @@ if args.cluster == "cluster":
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
-pathSelection = path + "positive_selection/" + args.species + "/" + args.sample + "/" + args.TF + "/"
-Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
-Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
+if args.Simul:
+    pathSelection = path + "positive_selection/" + args.species + "/simulation/"
+    Ancestral_fasta = pathSelection + "sequences/simulated_focal_sequences_" + str(args.Simul) + ".fa"
+    Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
+    Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.Simul) + "_mutations.txt", "w")
+else:
+    pathSelection = path + "positive_selection/" + args.species + "/" + args.sample + "/" + args.TF + "/"
+    Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
+    Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
+    Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
+
 ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"
 pathSubMat = path + "/substitution_matrix/" + args.species + "/"
-Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
 
 
 ####################################################################################################
