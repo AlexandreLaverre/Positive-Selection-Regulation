@@ -48,29 +48,6 @@ def calculate_delta_svm(seq_ref, seq_alt):
         delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
     return round(delta_svm, 7)
 
-
-def calculate_delta_svm_faster(seq_ref, seq_alt):
-    seq_len = len(seq_ref)
-    window_size = KmerLen
-    window_stride = 1
-
-    # convert sequences to arrays of ASCII codes
-    seq_ref_arr = np.frombuffer(seq_ref.encode('ascii'), dtype=np.uint8)
-    seq_alt_arr = np.frombuffer(seq_alt.encode('ascii'), dtype=np.uint8)
-
-    # create arrays of sliding windows for reference and alternate sequences
-    shape = ((seq_len - window_size) // window_stride + 1, window_size)
-    strides = (window_stride, 1)
-    ref_windows = np.lib.stride_tricks.as_strided(seq_ref_arr, shape=shape, strides=strides)
-    alt_windows = np.lib.stride_tricks.as_strided(seq_alt_arr, shape=shape, strides=strides)
-
-    # compute delta_svm as the sum of kmer score differences
-    kmer_scores_alt = np.vectorize(lambda x: SVM_dict.get(x.decode('ascii'), 0))(alt_windows.view('S' + str(KmerLen)))
-    kmer_scores_ref = np.vectorize(lambda x: SVM_dict.get(x.decode('ascii'), 0))(ref_windows.view('S' + str(KmerLen)))
-    delta_svm = np.sum(kmer_scores_alt - kmer_scores_ref)
-
-    return round(delta_svm.item(), 7)
-
 ####################################################################################################
 # Binding affinity values per kmer
 SVM_dict = {}
