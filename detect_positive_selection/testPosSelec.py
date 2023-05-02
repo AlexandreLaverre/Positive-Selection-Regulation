@@ -106,7 +106,7 @@ def test_positive_selection(seq_name):
 
         # Number of substitutions between Ancestral and Focal sequences
         nb_sub = get_sub_number(ancestral_seq, focal_seq)
-        if nb_sub > 1:
+        if nb_sub > 1 & len(focal_seq) > 50:
             # Get observed and random deltas
             delta_obs = calculate_delta_svm(ancestral_seq, focal_seq)
             random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed, nb_sub)
