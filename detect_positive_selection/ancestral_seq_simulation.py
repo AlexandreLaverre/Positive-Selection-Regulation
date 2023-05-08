@@ -7,6 +7,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 import copy
 from alive_progress import alive_bar
+import random
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 pathSubMat = path + "/substitution_matrix/human/"
@@ -87,7 +88,8 @@ if not os.path.isfile(First_focal_fasta):
         SeqIO.write(FirstSeqs.values(), First, 'fasta')
 
 ####################################################################################################
-mutations = [2, 3] #list(range(2, 10, 1)) + list(range(10, 110, 10))
+mutations = [50] #list(range(2, 5, 1)) + list(range(10, 30, 10))
+
 # Iterate over mutation values
 for nb_mut in mutations:
     output = open(pathSimulation + "/sequences/simulated_sequences_" + str(nb_mut) + "mut_selection.fa", 'w')
@@ -96,29 +98,41 @@ for nb_mut in mutations:
     # Create a deep copy of the first sequences
     simul_seqs = copy.deepcopy(FirstSeqs)
     deltaSVM_dic = {}
+
+    # Shuffle the sequence IDs
+    seq_ids = list(FirstSeqs.keys())
+    random.shuffle(seq_ids)
+
     print("Running with", nb_mut, "mutations per sequence...")
 
     # Iterate over sequence IDs
     with alive_bar(10000) as bar:
-        for i, ID in enumerate(FirstSeqs.keys()):
+        for i, ID in enumerate(seq_ids):
             bar()  # print progress bar
             focal_seq = str(FirstSeqs[ID].seq)
             chromosome = ID.split(':')[0]
             sub_mat_proba = SubMats[chromosome]
             sub_mat_proba_norm = SubMats_norm[chromosome]
+
             if len(focal_seq) >= 50:
                 DeltaSVM = None
+                attempt = 0
                 while True:
                     mutated_seq = generate_mutated_sequence(focal_seq, sub_mat_proba, sub_mat_proba_norm, nb_mut)
                     DeltaSVM = calculate_delta_svm(mutated_seq, focal_seq)
+                    attempt += 1
 
-                    # First 1000 sequences with positive selection
-                    if i < 1000 and DeltaSVM >= 3:
+                    if attempt > 1000:
+                        print(ID, "is highly constrained: skipped!")
                         break
-                    # Then 1000 sequences with negative selection
-                    elif 1000 <= i < 2000 and DeltaSVM <= -3:
+
+                    # First 1000 sequences with strong positive selection
+                    if i < 1000 and DeltaSVM > 5:
                         break
-                    # Remaining sequences
+                    # Then 1000 sequences with strong negative selection
+                    elif 1000 <= i < 2000 and DeltaSVM < -5:
+                        break
+                    # Remaining sequences with low changes in affinity
                     elif i >= 2000 and -1 < DeltaSVM < 1:
                         break
 
