@@ -71,7 +71,7 @@ if [ ${sp} = "cat" ]; then
 	sis_sp_names="Felis_catus,Felis_nigripes,Puma_concolor"
 	anc_name="fullTreeAnc202"
 	chroms=(CM0013{78..96}.2) # from NCBI (A1 to F2 and X)
-	export genomesize=230000000
+	export genomesize=2300000000
 fi
 
 if [ ${sp} = "cattle" ]; then
