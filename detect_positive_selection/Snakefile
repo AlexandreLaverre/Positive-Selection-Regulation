@@ -16,10 +16,11 @@ import os
 
 sp = config["sp"]
 sample = config["sample"]
-nbPart = int(config["nbPart"])
+nbThreads = int(config["nbPart"])
 nbRand = int(config["nbRand"])
 AncMethod = config["AncMethod"]
 cluster = config["cluster"]
+nbPart = 10
 
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
@@ -92,32 +93,30 @@ rule GenerateNegativeSeq:
         """
 
 rule ModelTraining:
-    message: "Training of the gkm-SVM, kmer=10, 16 threads"
+    message: "Training of the gkm-SVM, kmer=10, 8 threads"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
-    threads: 16
     priority: 2
-    params: time="10:00:00", mem="4G", threads=16
+    params: time="10:00:00", mem="4G", threads=nbThreads
     shell:
         """
-        gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelValidation:
-    message: "Training of the gkm-SVM, kmer=10, 16 threads, 5-fold cross-validation"
+    message: "Cross-validation of the model"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
-    threads: 16
-    params: time="20:00:00", mem="2G", threads=16
+    params: time="20:00:00", mem="2G", threads=nbThreads
     shell:
         """
-        gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -x 5 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelPrediction:
@@ -130,11 +129,10 @@ rule ModelPrediction:
         Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
-    threads: 4
-    params: time="2:00:00", mem="2G", threads=4
+    params: time="2:00:00", mem="2G", threads=nbThreads
     shell:
         """
-        gkmpredict -T {threads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
+        gkmpredict -T {nbThreads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
         touch {output.Prediction_done}
         """
 
