@@ -20,7 +20,7 @@ chromosomes_list = [chrom.strip('.txt') for chrom in os.listdir(MatrixPath)]
 if not os.path.isfile(Correspondence):
     sys.exit("Chromosome correspondence file doesn't exist!")
 
-output = open(BED + "_UCSC_names_interval", 'w')
+output = open(BED + "_UCSC_names", 'w')
 
 ####################################################################################################
 Correspondence_dict = {}
