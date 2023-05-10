@@ -21,6 +21,7 @@ if not os.path.isfile(Correspondence):
     sys.exit("Chromosome correspondence file doesn't exist!")
 
 output = open(BED + "_UCSC_names", 'w')
+output_interval = open(BED + "_UCSC_names_interval", 'w')
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -43,7 +44,8 @@ with open(BED, 'r') as f2:
             new_chr = str(Correspondence_dict[old])
             new_ID = new_chr + ':' + str(i[1]) + ':' + str(i[2])
 
-            output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\t' + interval + '\n')
+            output.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\n')
+            output_interval.write(new_chr + '\t' + str(i[1]) + '\t' + str(i[2]) + '\t' + new_ID + '\t' + interval + '\n')
 
 output.close()
 ####################################################################################################
