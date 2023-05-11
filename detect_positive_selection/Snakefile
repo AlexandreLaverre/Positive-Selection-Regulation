@@ -93,7 +93,7 @@ rule GenerateNegativeSeq:
         """
 
 rule ModelTraining:
-    message: "Training of the gkm-SVM, kmer=10, 8 threads"
+    message: "Training of the gkm-SVM, kmer=10, 16 threads"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
@@ -217,6 +217,7 @@ rule TestPosSel:
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
     output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt")
     threads: nbPart
+    priority: 2
     params: time="15:00:00", mem="5G", threads=nbPart
     shell:
         """
