@@ -100,7 +100,7 @@ rule ModelTraining:
     output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 2
-    params: time="10:00:00", mem="5G", threads=nbThreads
+    params: time="15:00:00", mem="5G", threads=nbThreads
     shell:
         """
         gkmtrain -r 12 -l 10 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
@@ -113,7 +113,7 @@ rule ModelValidation:
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
-    params: time="20:00:00", mem="5G", threads=nbThreads
+    params: time="30:00:00", mem="5G", threads=nbThreads
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
