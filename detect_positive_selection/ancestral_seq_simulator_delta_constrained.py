@@ -92,8 +92,8 @@ mutations = [50] #list(range(2, 5, 1)) + list(range(10, 30, 10))
 
 # Iterate over mutation values
 for nb_mut in mutations:
-    output = open(pathSimulation + "/sequences/simulated_sequences_" + str(nb_mut) + "mut_selection.fa", 'w')
-    out_dic = open(pathSimulation + "/sequences/simulated_deltaSVM_" + str(nb_mut) + "mut_selection.txt", 'w')
+    output = open(pathSimulation + "/sequences/simulated_sequences_" + str(nb_mut) + "_mut_selection.fa", 'w')
+    out_dic = open(pathSimulation + "/sequences/simulated_deltaSVM_" + str(nb_mut) + "_mut_selection.txt", 'w')
 
     # Create a deep copy of the first sequences
     simul_seqs = copy.deepcopy(FirstSeqs)
