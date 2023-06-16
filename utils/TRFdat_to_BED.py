@@ -3,8 +3,9 @@ from argparse import (ArgumentParser, FileType)
 
 
 def parse_args():
-    "Parse the input arguments, use '-h' for help"
-    parser = ArgumentParser(description='Convert Tandem Repeat Finder (TRF) dat file to bed format with repeat units for microsatellite genotyping')
+    """Parse the input arguments, use '-h' for help"""
+    parser = ArgumentParser(description='Convert Tandem Repeat Finder (TRF) dat file to bed format with repeat units '
+                                        'for microsatellite genotyping')
     parser.add_argument(
         '--dat', type=str, required=True,
         help='Input dat file produced by Tandem Repeat Finder (TRF) using the -d option')
@@ -15,7 +16,7 @@ def parse_args():
     return parser.parse_args()
 
 
-### Main
+# Main
 def main():
     # Parse command line arguments
     args = parse_args()
@@ -39,7 +40,6 @@ def main():
                             continue
                         start = splitline[0]
                         end = splitline[1]
-                        motif = splitline[13]
                         bed.write('\t'.join([chrom, start, end, "trf", '\t'.join(splitline[2:14])]) + '\n')
                     except IndexError:
                         pass
