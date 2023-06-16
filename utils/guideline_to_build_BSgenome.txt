@@ -1,0 +1,80 @@
+### Get the correct genome version on the alignment:
+https://zoonomiaproject.org/the-mammal-tree-list-view/
+
+### Get genome accession
+i.e: GCA_001624865.1
+
+### Download files on UCSC or NCBI:
+i.e: https://hgdownload.soe.ucsc.edu/hubs/GCA/001/624/865/GCA_001624865.1/
+
+- .fa.gz : genome sequence
+- .out : RepeatMasker output				/!\ if random number of space, reformat it using /reformat_out_file.py
+- .2bit : binary genome 					/!\ if not found, run fasta22bit:
+- .gaps or .agp : assembly gaps 			/!\ if agp, need to add this line to the masked-seed: AGAPSfiles_type: "agp"
+- .trf : Tandem Repeat Finder output		
+
+# If no .trf file:
+gunzip .fa.gz
+TRF GCA_001624865.1.fa 2 5 7 80 10 50 2000 -d # recommended parameters, "-d" is important to convert in bed format
+TRFdat_to_bed.py --dat <GCA_001624865.1.fa.dat> --bed <GCA_001624865.1.bed>
+
+### Build BSgenome unmasked:
+- create seed file:
+
+Package: BSgenome.Mspretus.GenBank.SPRET
+Title: Full genome sequences for Mus spretus (GenBank version SPRET_EiJ_v1)
+Description: Full genome sequences for Mus spretus as provided by Genbank (SPRET_EiJ_v1) and stored in Biostrings objects.
+Version: 1.0
+organism: Mus spretus
+common_name: Algerian mouse
+provider: Genbank
+genome: SPRET_EiJ_v1
+release_date: Apr 2016
+source_url: https://hgdownload.soe.ucsc.edu/hubs/GCA/001/624/865/GCA_001624865.1/
+organism_biocview: Mus_spretus
+BSgenomeObjname: Mspretus
+SrcDataFiles: GCA_001624865.1.2bit
+PkgExamples: genome$CM004094.1  # same as genome[["CM004094.1"]]
+seqs_srcdir: /Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/Mspretus/BSgenome/
+seqfile_name: GCA_001624865.1.2bit
+circ_seqs: character(0) # or "chrM"				/!\ put this line only if it's a non-registered assembly
+
+- in R run:
+library("BSgenome")
+forgeBSgenomeDataPkg("path/to/my/seed")
+
+- in terminal run:
+R CMD build <pkgdir>
+R CMD check <tarball>
+R CMD INSTALL <tarball
+
+### Build BSgenome masked:
+- create seed file:
+Package: BSgenome.Btaurus.GenBank.Btau5.0.1.masked
+Title: Full masked genome sequences for Bos taurus (GenBank genome Btau5.0.1)
+Description: Full genome sequences for Bos taurus (Cattle) as provided by GenBank (genome Btau5.0.1). The sequences are the same as in BSgenome.Btaurus.GenBank.Btau5.0.1, except that each of them has the 2 following masks on top: (1) the mask of assembly gaps (AGAPS mask), (2) the mask of intra-contig ambiguities (AMB mask), (3) the mask of repeats from RepeatMasker (RM mask), and (4) the mask of repeats from Tandem Repeats Finder (TRF mask).
+Version: 1.4.3
+RefPkgname: BSgenome.Btaurus.GenBank.Btau5.0.1
+source_url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/003/205/GCA_000003205.6_Btau_5.0.1/
+organism_biocview: Bos_taurus
+nmask_per_seq: 4
+SrcDataFiles: AGAPS masks: downloaded and combined in one file from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/003/205/GCA_000003205.6_Btau_5.0.1//GCA_000003205.6_Btau_5.0.1_assembly_structure/Primary_Assembly/
+	RM masks: GCA_000003205.7_Btau_5.0.1_rm.out.gz, downloaded from https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/003/205/GCF_000003205.7_Btau_5.0.1/ and converted to GenBank chromosomes ID
+	TRF masks: Btau5.0.1.trf.bed.gz, obtained from TRF Finder with default parameters
+PkgExamples: genome$CM000177.6  # a MaskedDNAString object!
+	## To get rid of the masks altogether:
+	unmasked(genome$CM000177.6)  # same as BSgenome.Btaurus.GenBank.Btau5.0.1$CM000177.6
+masks_srcdir: /Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/cattle/BSgenome/masks
+AGAPSfiles_name: GCA_000003205.6_Btau_5.0.1_genomic.agp
+AGAPSfiles_type: "agp"
+RMfiles_name: GCA_000003205.7_Btau_5.0.1_rm.out.gz
+TRFfiles_name: Btau5.0.1.trf.bed.gz
+
+- in R run:
+library("BSgenome")
+forgeMaskedBSgenomeDataPkg("path/to/my/seed")
+
+- in terminal run:
+R CMD build <pkgdir>
+R CMD check <tarball>
+R CMD INSTALL <tarball
