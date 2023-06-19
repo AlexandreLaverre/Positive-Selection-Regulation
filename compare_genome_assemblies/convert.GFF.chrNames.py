@@ -15,8 +15,6 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/" + species
 
 Correspondence = path + "/chromosome_correspondence_" + suffix + ".txt"
-print(f"{path}/{suffix}_{GFF}")
-
 output = gzip.open(f"{path}/{suffix}_{GFF}", 'wt')
 
 ####################################################################################################
@@ -29,7 +27,7 @@ with open(Correspondence, 'r') as f1:
         Correspondence_dict[old] = new
 
 missing_names = []
-with gzip.open(GFF, 'rt') as f2:
+with gzip.open(f"{path}/{GFF}", 'rt') as f2:
     for line in f2:
         if line.startswith('#'):
             output.write(line)
