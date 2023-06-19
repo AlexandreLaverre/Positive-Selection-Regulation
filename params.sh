@@ -113,7 +113,7 @@ fi
 ########################################################
 # Files prefix and suffix according to source
 
-if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "cattle" ] ]; then
+if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "cattle" ]; then
 	# Anotations from NCBI
 	export genome_suffix="_genomic.fna.gz"
 	export GTF_suffix="_genomic.gtf.gz"
