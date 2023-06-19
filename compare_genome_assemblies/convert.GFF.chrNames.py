@@ -43,6 +43,7 @@ with gzip.open(f"{path}/{GFF}", 'rt') as f2:
 
 print("Found", len(set(missing_names)), "missing scaffolds.")
 print("First 10 missing:"', '.join(list(set(missing_names))[0:10]))
+print("Done!")
 
 output.close()
 ####################################################################################################
