@@ -84,7 +84,7 @@ if [ ${sp} = "cattle" ]; then
 fi
 
 if [ ${sp} = "rabbit" ]; then
-	spID=" Oryctolagus_cuniculus.OryCun2.0"
+	spID="Oryctolagus_cuniculus.OryCun2.0"
 	sp_name="Oryctolagus_cuniculus"
 	sis_sp_names="Oryctolagus_cuniculus,Lepus_americanus,Ochotona_princeps"
 	anc_name="fullTreeAnc15"
