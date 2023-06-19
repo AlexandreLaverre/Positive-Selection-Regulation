@@ -84,11 +84,11 @@ if [ ${sp} = "cattle" ]; then
 fi
 
 if [ ${sp} = "rabbit" ]; then
-	spID="GCA_000003625.3_OryCun2.0"
+	spID=" Oryctolagus_cuniculus.OryCun2.0"
 	sp_name="Oryctolagus_cuniculus"
 	sis_sp_names="Oryctolagus_cuniculus,Lepus_americanus,Ochotona_princeps"
 	anc_name="fullTreeAnc15"
-	chroms=(CM000{790..811}.1) # from NCBI (chr1 to 21 and X)
+	chroms=({1..21} "X")
 	export genomesize=2300000000 
 fi
 
@@ -113,7 +113,7 @@ fi
 ########################################################
 # Files prefix and suffix according to source
 
-if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "cattle" ] || [ ${sp} = "rabbit" ]; then
+if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "cattle" ] ]; then
 	# Anotations from NCBI
 	export genome_suffix="_genomic.fna.gz"
 	export GTF_suffix="_genomic.gtf.gz"
