@@ -2,8 +2,6 @@
 suppressMessages(library(gkmSVM))
 suppressMessages(library(BSgenome))
 suppressMessages(library(BiocManager))
-#library(reticulate)
-#use_python("/Users/alaverre/miniconda3/bin/python")
 args = commandArgs(trailingOnly=TRUE)
 
 species = args[1] #"human"
