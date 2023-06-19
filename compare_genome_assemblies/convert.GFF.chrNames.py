@@ -10,13 +10,13 @@ cluster = sys.argv[4]
 reverse = sys.argv[5]
 
 if cluster == "cluster":
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/genome_sequences/" + species
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/" + species
 
-Correspondence = path + "data/genome_sequences/" + species + "/chromosome_correspondence_" + suffix + ".txt"
+Correspondence = path + "/chromosome_correspondence_" + suffix + ".txt"
 
-output = gzip.open(suffix + "_" + GFF, 'wt')
+output = gzip.open(f"{path}/{suffix}_{GFF}", 'wt')
 
 ####################################################################################################
 Correspondence_dict = {}
