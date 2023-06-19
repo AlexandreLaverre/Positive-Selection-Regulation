@@ -89,7 +89,25 @@ if [ ${sp} = "rabbit" ]; then
 	sis_sp_names="Oryctolagus_cuniculus,Lepus_americanus,Ochotona_princeps"
 	anc_name="fullTreeAnc15"
 	chroms=(CM000{790..811}.1) # from NCBI (chr1 to 21 and X)
-	export genomesize=974987959
+	export genomesize=2300000000 
+fi
+
+if [ ${sp} = "spretus" ]; then
+	spID="Mus_spretus.SPRET_EiJ_v1"
+	sp_name="Mus_spretus"
+	sis_sp_names="Mus_musculus,Mus_spretus,Mus_caroli"
+	anc_name="fullTreeAnc35"
+	chroms=({1..19} "X") 
+	export genomesize=2307679482 # using the same as Mus_musculus
+fi
+
+if [ ${sp} = "caroli" ]; then
+	spID="Mus_caroli.CAROLI_EIJ_v1.1"
+	sp_name="Mus_caroli"
+	sis_sp_names="Mus_musculus,Mus_spretus,Mus_caroli"
+	anc_name="fullTreeAnc36"
+	chroms=({1..19} "X") 
+	export genomesize=2307679482 # using the same as Mus_musculus
 fi
 
 ########################################################
