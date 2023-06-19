@@ -10,7 +10,7 @@ outFile = gzip.open(Path_inFile.strip(".gz") + "_2.gz", 'wt')
 
 for line in Infile:
     clean_line = line.split()
-    outFile.write("\t".join(clean_line) + '\n')
+    outFile.write("\t".join(clean_line[0:15]) + '\n')
 
 Infile.close()
 outFile.close()
