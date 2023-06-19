@@ -14,8 +14,8 @@ fi
 if [ ${sp} = "dog" ]; then
 	spID="Canis_lupus_familiaris.CanFam3.1"
 	sp_name="Canis_lupus_familiaris"
-	sis_sp_names="Canis_lupus_familiaris,Canis_lupus_lupus,Lycaon_pictus"
-	anc_name="Anc09"
+	sis_sp_names="Canis_lupus_familiaris,Lycaon_pictus,Vulpes_vulpes" #Canis_lupus_lupus
+	anc_name="Anc04" # Anc09
 	chroms=({1..38} "MT" "X")
 	export genomesize=2237684358 # from 50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
 fi
