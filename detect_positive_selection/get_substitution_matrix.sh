@@ -65,19 +65,18 @@ do
 	      		grep -w "^${chr}" ${pathGFF}/exons.uniq.sorted.${spID}.gff > ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff
 	      		
 	      		if [ ${sp} = "human" ] || [ ${sp} = "mouse" ] || [ ${sp} = "rat" ]; then
-				# use UCSC chromosomes names
-				sed -i'' 's/^/chr/g' ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff 
-				mv ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff  ${pathGFF}/GFF_per_chrom/chr${chr}.exons.uniq.sorted_${spID}.gff 
-				chr="chr${chr}"
-			fi
+							# use UCSC chromosomes names
+							sed -i'' 's/^/chr/g' ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff 
+							mv ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff  ${pathGFF}/GFF_per_chrom/chr${chr}.exons.uniq.sorted_${spID}.gff 
+							chr="chr${chr}"
+						fi
 
 	      		if [ ! -s ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff ]; then
 	        			echo "GFF file for ${chr} is empty! Is-it normal?"
 	        			cp ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
-	        		else
-	        			maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff --mask-features ${sis_sp_species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
-
-	        		fi
+	        	else
+	        			maf_parse -o MAF --features ${pathGFF}/GFF_per_chrom/${chr}.exons.uniq.sorted_${spID}.gff --mask-features ${close_species} ${pathAlignment}/per_chrom/MAFs/scaffolds/${chr}.maf > ${pathAlignment}/per_chrom/MAFs/${chr}.exons_masked.maf
+	        	fi
 		fi
 		
 		# Change MAF to PHYLIP format
