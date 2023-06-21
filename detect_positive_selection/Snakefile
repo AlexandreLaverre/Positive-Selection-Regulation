@@ -6,7 +6,10 @@ import os
 ##### PIPELINE TO DETECT POSITIVE SELECTION  #####
 # Data requirements:
 # input file: list of interested coordinates
+# BSgenome of focal species
 # pairwise or multiple genome alignments
+# substitution matrix per chromosome
+# chromosome correspondence if genome annotation and alignment are not from the same source
 
 # Requirements :
 # Software: PECAN + Snakemake + Exonerate + TreeTime + seqkit + lsgkm + ucsc-toupper + ucsc-MafsInRegions
@@ -36,7 +39,7 @@ suffix = "_UCSC_names" if sp in ["human", "mouse"] else ""
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
 pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
-TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/broadPeak/*.broadPeak')]))
+TFs =  list(set([os.path.basename(BED).split('_')[1] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/broadPeak/*.broadPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(TFs), "transcription factors" )
 
 workdir: pathResults
