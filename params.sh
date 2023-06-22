@@ -106,7 +106,7 @@ if [ ${sp} = "caroli" ]; then
 	sp_name="Mus_caroli"
 	close_species="Mus_musculus,Mus_spretus,Mus_caroli"
 	anc_name="fullTreeAnc36"
-	chroms=(LT608{229..248})  #Ensembl: {1..19} "X"
+	chroms=(LT608{229..248}.1)  #Ensembl: {1..19} "X"
 	export genomesize=2307679482 # using the same as Mus_musculus
 fi
 
