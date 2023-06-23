@@ -44,7 +44,7 @@ if (species == "caroli"){genome <- getBSgenome("BSgenome.Mcaroli.GenBank.CAROLI.
 # Generate negative sequences
 set.seed(12)
 
-genNullSeqs(BED_file, genome = genome, nMaxTrials=50,
+genNullSeqs(BED_file, genome = genome, nMaxTrials=100,
             outputBedFN = paste0(pathResults,'/negSet.bed'), 
             outputPosFastaFN = paste0(pathResults,'/posSet.fa'),
             outputNegFastaFN = paste0(pathResults,'/negSet.fa'))
