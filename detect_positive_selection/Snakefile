@@ -35,7 +35,7 @@ else:
     localrules: all, GetPeaks, GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments
 
-suffix = "_UCSC_names" if sp in ["human", "mouse"] else ""
+suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
 pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
