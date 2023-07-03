@@ -9,9 +9,9 @@ import scipy.stats as stats
 import pandas
 from alive_progress import alive_bar
 import multiprocessing.pool
-import random
+import matplotlib.pyplot as plt
+np.random.seed(12)
 
-random.seed(12)
 ####################################################################################################
 # Variables and paths
 parser = argparse.ArgumentParser()
@@ -19,11 +19,11 @@ parser.add_argument("species", help="Species name: human dog")
 parser.add_argument("sample", help="Study name: Wilson Schmidt")
 parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF")
 parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
-parser.add_argument("Evol", default="uniform", help="Substitution model (default = uniform)")
 parser.add_argument("cluster", default="local", help="cluster or local")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
 parser.add_argument("--Simul", type=int, required=False, help="Number of Mutation per Seq in simulation mode")
 parser.add_argument("--Selection", action='store_true', default=False, help="Add a selection step during permutations (default=False)")
+parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 args = parser.parse_args()
 
 if args.cluster == "cluster":
@@ -32,11 +32,19 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
 if args.Simul:
-    pathSelection = path + "positive_selection/" + args.species + "/simulation/"
-    Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
-    Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
+    pathSelection = f"{path}positive_selection/{args.species}/simulation/{args.TF}/"
     SimulSel_flag = "_selection" if args.Selection else ""
-    Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations{SimulSel_flag}.txt", "w")
+
+    pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
+    seq = f"{args.TF}_{args.sample}"
+
+    Ancestral_fasta = f"{pathJialin}{seq}_filtered_ancestor.fa"
+    Focal_fasta = f"{pathJialin}{seq}_filtered_focal.fa"
+    Output = open(f"{pathSelection}PosSelTest_deltaSVM_mouse_triplets_{seq}{SimulSel_flag}.txt", "w")
+
+    #Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
+    #Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
+    #Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations{SimulSel_flag}.txt", "w")
 else:
     pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
@@ -56,18 +64,42 @@ def get_sub_number(seq_ref, seq_alt):
     return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
 
 
+# Calculate SVM from sliding windows
+def calculate_svm(seq):
+    svm = 0
+    for pos in range(len(seq) - KmerLen + 1):   # sliding window of kmer length
+        kmer = seq[pos:pos+KmerLen]
+        svm += SVM_dict[kmer]   # sum of SVM for each kmer
+    return round(svm, 7)
+
+
 # Calculate delta SVM from sliding windows
 def calculate_delta_svm(seq_ref, seq_alt):
     delta_svm = 0
     for pos in range(len(seq_ref) - KmerLen + 1):   # sliding window of kmer length
         kmer_ref = seq_ref[pos:pos+KmerLen]
         kmer_alt = seq_alt[pos:pos+KmerLen]
-        delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
+        if kmer_ref != kmer_alt:
+            delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
     return round(delta_svm, 7)
 
 
+def mutate_seq(seq, normed_pos_proba, sub_prob_norm, sub):
+    # draw positions
+    rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=sub)
+    # draw directions
+    for pos in rand_pos:
+        old_nuc = seq[pos]
+        directions = list(sub_prob_norm[old_nuc].keys())
+        proba = list(sub_prob_norm[old_nuc].values())
+        new_nuc = np.random.choice(directions, p=proba)
+        seq[pos] = new_nuc
+
+    return ''.join(seq)
+
+
 # Get random sequences according to substitution matrix
-def get_random_seqs(seq, sub_prob, sub_prob_norm, sub, selection):
+def get_random_seqs(seq, seqID, sub_prob, sub_prob_norm, sub, selection):
     # Get substitution probabilities for each position
     pos_proba = np.empty(len(seq))
     for pos in range(len(seq)):
@@ -76,30 +108,22 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, sub, selection):
 
     normed_pos_proba = pos_proba / sum(pos_proba)   # normalisation of all positions to sum at 1
 
-    random_seqs = []
-    while len(random_seqs) != args.NbRand:
-        rand_seq = seq
-        # draw positions
-        rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=sub)
+    random_seqs = [""] * args.NbRand
+    old_svm = SVMAncestral[seqID]
+    nb_seq = 0
+    while nb_seq < args.NbRand:
+        rand_seq = mutate_seq(list(seq), normed_pos_proba, sub_prob_norm, sub)
 
-        # draw directions
-        for pos in rand_pos:
-            old_nuc = seq[pos]
-            directions = list(sub_prob_norm[old_nuc].keys())
-            proba = list(sub_prob_norm[old_nuc].values())
-            new_nuc = np.random.choice(directions, p=proba)
-            rand_seq = rand_seq[:pos] + new_nuc + rand_seq[pos+1:]  # change value in pos
-
-        # selection step
         if not selection:
-            random_seqs.append(rand_seq)
+            random_seqs[nb_seq] = rand_seq
+            nb_seq += 1
         else:
-            new_delta = calculate_delta_svm(seq, rand_seq)
-            probability = delta_distribution.cdf(new_delta)  # calculate the AUC from this delta
-
-            # Keep the random seq according to the AUC
+            delta = calculate_delta_svm(seq, rand_seq)
+            new_svm = old_svm + delta
+            probability = delta_distribution.cdf(new_svm)  # calculate the AUC from this SVM
             if probability > np.random.random():
-                random_seqs.append(rand_seq)
+                random_seqs[nb_seq] = rand_seq
+                nb_seq += 1
 
     return random_seqs
 
@@ -110,7 +134,7 @@ def test_positive_selection(seq_name):
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
 
     # Get corresponding substitution matrix
-    chromosome = seq_name.split(':')[0]
+    chromosome = seq_name.split('_')[0]  # remember to change _ by :
 
     if chromosome in SubMats.keys():
         sub_mat_proba = SubMats[chromosome] if args.Evol != 'uniform' else SubMat_uniform
@@ -119,9 +143,10 @@ def test_positive_selection(seq_name):
         # Number of substitutions between Ancestral and Focal sequences
         nb_sub = get_sub_number(ancestral_seq, focal_seq)
         if nb_sub > 1 and len(focal_seq) > 40:
+            SVM = calculate_svm(focal_seq)
             # Get observed and random deltas
             delta_obs = deltaObs[seq_name]
-            random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed,
+            random_seqs = get_random_seqs(ancestral_seq, seq_name, sub_mat_proba, sub_mat_proba_normed,
                                           nb_sub, selection=args.Selection)
             delta_rand = [calculate_delta_svm(ancestral_seq, rand_seq) for rand_seq in random_seqs]
 
@@ -129,7 +154,7 @@ def test_positive_selection(seq_name):
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
             p_val_high = nb_higher_rand / len(delta_rand)
 
-            output = f"{seq_name}\t{delta_obs}\t{np.median(delta_rand)}\t{np.mean(delta_rand)}" \
+            output = f"{seq_name}\t{SVM}\t{delta_obs}\t{np.median(delta_rand)}\t{np.mean(delta_rand)}" \
                      f"\t{nb_sub}\t{p_val_high}\n"
 
             return output
@@ -193,6 +218,7 @@ if len(FocalSeqs) == 0:
 
 # Calculate observed deltaSVM
 deltaObs = {}
+SVMAncestral = {}
 for ID in SeqIDs:
     focal_seq = str(FocalSeqs[ID].seq)
     ancestral_seq = str(AncestralSeqs[ID].seq)
@@ -202,21 +228,22 @@ for ID in SeqIDs:
     if substitution > 1 and len(focal_seq) > 40:
         delta = calculate_delta_svm(ancestral_seq, focal_seq)
         deltaObs[ID] = delta
+        svm = calculate_svm(ancestral_seq)
+        SVMAncestral[ID] = svm
 
 # Fit a probability distribution to observed deltaSVMs
 if args.Selection:
-    fit_params = stats.norm.fit(list(deltaObs.values()))
+    fit_params = stats.norm.fit(list(SVMAncestral.values()))
     delta_distribution = stats.norm(*fit_params)
 
 ####################################################################################################
 # Running and writing results
-Output.write("ID\tdeltaSVM\tmed.deltaSVM.simul\tmean.deltaSVM.simul\tNbSub\tpval.high\n")  # header
+Output.write("ID\tSVM\tdeltaSVM\tmed.deltaSVM.simul\tmean.deltaSVM.simul\tNbSub\tpval.high\n")  # header
 
 # protect the entry point
 if __name__ == '__main__':
     with alive_bar(len(SeqIDs)) as bar:  # progress bar
         with multiprocessing.Pool(args.NbThread) as pool:
-
             # Run function for each sequence in parallel
             for result in pool.imap_unordered(test_positive_selection, SeqIDs):
                 bar()  # print progress bar
