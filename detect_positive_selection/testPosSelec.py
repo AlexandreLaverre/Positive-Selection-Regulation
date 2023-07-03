@@ -9,7 +9,7 @@ import scipy.stats as stats
 import pandas
 from alive_progress import alive_bar
 import multiprocessing.pool
-import matplotlib.pyplot as plt
+
 np.random.seed(12)
 
 ####################################################################################################
