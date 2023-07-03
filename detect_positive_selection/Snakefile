@@ -129,7 +129,7 @@ rule ModelValidation:
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
-    params: time="30:00:00", mem="5G", threads=nbThreads
+    params: time="48:00:00", mem="5G", threads=nbThreads
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
@@ -237,6 +237,6 @@ rule TestPosSel:
     params: time="15:00:00", mem="5G", threads=nbPart
     shell:
         """
-        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} submat {cluster} --NbThread {threads}
+        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} {cluster} --NbThread {threads}
         """
 
