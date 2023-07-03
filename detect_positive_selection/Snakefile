@@ -58,9 +58,21 @@ rule all:
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=TFs),
         model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=TFs)
 
+
+rule check_input_data:
+    message: "Check if all the required data are present before starting."
+    input:
+        PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/broadPeak/",
+        GenomeAlignment=f"{path}/data/genome_alignments/{sp}/triplet_ancestor.maf",
+        SubstiMatrixes=f"{path}/results/substitution_matrix/{sp}/",
+        ChromCorrespondence=f"{path}/data/genome_sequences/{sp}/chromosome_correspondence.txt"
+    output: touch(pathResults + "/log/input_check.txt")
+    shell:"""mkdir -p {pathResults}/log"""
+
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
-    input: PeaksFolder = pathPeaks + "/bowtie2/mergedLibrary/macs2/broadPeak/"
+    input: PeaksFolder = pathPeaks + "/bowtie2/mergedLibrary/macs2/broadPeak/",
+           InputCheck = pathResults+ "/log/input_check.txt"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
@@ -81,7 +93,8 @@ rule GetPeaks:
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
-    input: BED_file = pathPeaks + "/{TF}.peaks.bed"
+    input:
+        BED_file = pathPeaks + "/{TF}.peaks.bed"
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa",
@@ -116,7 +129,7 @@ rule ModelValidation:
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
-    params: time="30:00:00", mem="5G", threads=nbThreads
+    params: time="48:00:00", mem="5G", threads=nbThreads
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
@@ -224,6 +237,6 @@ rule TestPosSel:
     params: time="15:00:00", mem="5G", threads=nbPart
     shell:
         """
-        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} submat {cluster} --NbThread {threads}
+        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} {cluster} --NbThread {threads}
         """
 
