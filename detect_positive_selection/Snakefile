@@ -148,7 +148,7 @@ rule ModelPrediction:
         Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
-    params: time="2:00:00", mem="2G", threads=nbThreads
+    params: time="6:00:00", mem="2G", threads=nbThreads
     shell:
         """
         gkmpredict -T {nbThreads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
