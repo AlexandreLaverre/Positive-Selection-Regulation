@@ -66,8 +66,12 @@ rule check_input_data:
         GenomeAlignment=f"{path}/data/genome_alignments/{sp}/triplet_ancestor.maf",
         SubstiMatrixes=f"{path}/results/substitution_matrix/{sp}/",
         ChromCorrespondence=f"{path}/data/genome_sequences/{sp}/chromosome_correspondence.txt"
-    output: touch(pathResults + "/log/input_check.txt")
-    shell:"""mkdir -p {pathResults}/log"""
+    output: Check=f"{pathResults}/log/input_check.txt"
+    shell:
+        """
+        mkdir -p {pathResults}/log
+        touch {output.Check}
+        """
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
