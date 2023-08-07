@@ -112,7 +112,8 @@ unlist(slot(auc_result, "y.values"))
 legend(0.3,0.6,"(AUC = 0.986)",bty="n",lwd = 3,cex=1.4,col = c("black", "blue","white")) 
 
 #####** deltaSVM summary **#####
-deltaSVM<-fread(paste0(pathResults, "/human/CEBPA_deltaSVM.txt"))
+#deltaSVM<-fread(paste0(pathResults, "/human/CEBPA_deltaSVM.txt"))
+deltaSVM<-fread(paste0(pathData, "data/human/deltaSVM/CEBPA/hsap_CEBPA_deltaSVM_highertailTest.txt"))
 ## change the format of deltaSVM files
 deltaSVM<-dataMod(deltaSVM)
 ## plot deltaSVM and pvalue
@@ -148,12 +149,12 @@ legend("topleft",legend=paste("p=",signif(fTest$p.value,3)),bty = 'n',cex=1.5)
 
 #####* compare expression variation across populations betwween the putative target genes of positive and non-positive sites  *#####
 ## target genes of TFBS
-TFBSgene<-fread(paste0(pathData, "data/human/human_TFBS_target_genes/hsap_CEBPA_targetGene.txt"))
+TFBSgene<-fread(paste0(pathData, "data/human/TFBS_target_genes/hsap_CEBPA_targetGene.txt"))
 TFBSgene<-TFBSgene[,c(1:3,7)]
 colnames(TFBSgene)[c(1:4)]<-c("chr","start","end","geneID")
 TFBSgene<-unique(TFBSgene)
 ## expression count
-geneCount<-fread(paste0(pathData,"data/human/human_gtex/getx_liver_gene_tpm.txt"))
+geneCount<-fread(paste0(pathData,"data/human/gtex/getx_liver_gene_tpm.txt"))
 colnames(geneCount)[1]<-"geneID"
 geneCount$geneID<-gsub("\\..*","",geneCount$geneID)
 geneCount[,c(2:176)]<-log2(geneCount[,c(2:176)]+1)

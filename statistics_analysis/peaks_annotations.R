@@ -12,7 +12,7 @@ for (sp in species){
     peaks <- read.table(paste0(path, "positive_selection/", sp, "/new_run/", TF, ".consensus_peaks.annotatePeaks.txt"), h=T, sep="\t")
     peaks_test <- read.table(paste0(path, "positive_selection/", sp, "/new_run/", TF, "_PosSelTest_deltaSVM_10000permutations.txt"), h=T)
     rownames(peaks_test) <- peaks_test$ID
-    peaks_signif_ID <- peaks_test[which(qvalue(peaks_test$pval.high)$qvalues < 0.05),]$ID
+    peaks_signif_ID <- peaks_test[which(qvalue(peaks_test$pval.high)$FDR < 0.01),]$ID
     peaks_test$chr <- sapply(strsplit(peaks_test$ID,":"), `[`, 1)
     peaks_test$start <- sapply(strsplit(peaks_test$ID,":"), `[`, 2)
     peaks_test$end <- sapply(strsplit(peaks_test$ID,":"), `[`, 3)
