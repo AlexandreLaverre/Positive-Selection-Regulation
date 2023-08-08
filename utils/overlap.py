@@ -19,7 +19,7 @@ parser.add_argument("-v", "--verbose", action="store_true", help="increase outpu
 args = parser.parse_args()
 
 #path = "/home/laverre/Documents/Regulatory_Landscape/data/" + args.specie + "/"
-path = "/home/laverre/Regulatory_landscape/Snakemake_folder/data/human2other/human2mouse/test/"
+path = os.getcwd()
 reference_file = path + args.reference_file
 interest_file = path + args.interest_file
 output_file = path + args.output_file
