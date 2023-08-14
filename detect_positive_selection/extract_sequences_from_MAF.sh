@@ -17,7 +17,7 @@ else
 	source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
 fi
 
-mamba activate MAF
+conda activate MAF
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf"
 pathResults="${path}/results/positive_selection/${sp}/${sample}/${TF}/Alignments/"
@@ -79,7 +79,7 @@ do
   
 done
 
-mamba activate TestPos
+conda activate TestPos
 
 #########################################################################
 	
