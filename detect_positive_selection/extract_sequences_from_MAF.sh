@@ -14,7 +14,7 @@ if [ ${cluster} = "local" ]; then
 	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
-	source /users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh
+	source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
 fi
 
 conda activate MAF
@@ -22,6 +22,11 @@ conda activate MAF
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf"
 pathResults="${path}/results/positive_selection/${sp}/${sample}/${TF}/Alignments/"
 pathAlign="${pathResults}/MAFs/"
+
+if [ ! -f "${pathGenomeAlign}" ]; then
+  echo "Genome alignment file not found!"
+  exit
+fi
 
 mkdir -p "${pathAlign}"
 mkdir -p "${pathResults}/focal_sequences/"
@@ -38,9 +43,8 @@ mafsInRegion ${BED_file} -outDir ${pathAlign}/ ${pathGenomeAlign}
 for ID in `cat "${BED_file}" | cut -f 4`
 do
 	#ID=$(echo ${line} | cut -f 4 -d ' ')
-	echo "${ID}"
+	#echo "${ID}"
 	align="${pathAlign}"/"${ID}".maf
-  echo "$align"
 
 	# Convert to FASTA
 	msa_view --missing-as-indels -i MAF -o FASTA "${align}" > "${pathAlign}"/"${ID}".mfa
