@@ -23,12 +23,12 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
 pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
-Ancestral_fasta = pathSelection + "filtered_ancestral_sequences.fa"
-Focal_fasta = pathSelection + "filtered_focal_sequences.fa"
+Ancestral_fasta = pathSelection + "/sequences/filtered_ancestral_sequences.fa"
+Focal_fasta = pathSelection + "/sequences/filtered_focal_sequences.fa"
 Output_all = open(pathSelection + "all_possible_deltaSVM.txt", "w")
 Output_obs = open(pathSelection + "observed_deltaSVM.txt", "w")
 
-ModelEstimation = pathSelection + "kmer_predicted_weight.txt"
+ModelEstimation = pathSelection + "/Model/kmer_predicted_weight.txt"
 
 ####################################################################################################
 # Functions
