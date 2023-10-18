@@ -32,9 +32,8 @@ mkdir -p "${pathAlign}"
 mkdir -p "${pathResults}/focal_sequences/"
 mkdir -p "${pathResults}/sister_sequences/"
 mkdir -p "${pathResults}/ancestral_sequences/"
-
 # Define focal and ancestral names
-# shellcheck disable=SC2086
+
 source ${path}/scripts/params.sh "$sp" "$cluster"
 sister_name="$(echo "$close_species" | cut -d "," -f 2)"
 
@@ -72,6 +71,7 @@ do
 
 		    # Change species names to ID
 		    sed -i "s/${sp_name}/${ID}/g" "${pathResults}"/focal_sequences/"${ID}"_nogap.fa
+		    sed -i "s/${sister_name}/${ID}/g" "${pathResults}"/sister_sequences/"${ID}"_nogap.fa
 		    sed -i "s/${anc_name}/${ID}/g" "${pathResults}"/ancestral_sequences/"${ID}"_nogap.fa
 	    else
 	    	echo "${ID}" >> "${pathResults}"/missing.txt
