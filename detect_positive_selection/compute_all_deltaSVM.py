@@ -14,6 +14,7 @@ parser.add_argument("species", help="Species name: human dog ...")
 parser.add_argument("sample", help="Study name: Wilson Schmidt ...")
 parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF ...")
 parser.add_argument("cluster", default="local", help="cluster or local")
+parser.add_argument("--sister", default=False, action='store_true', help="Run on sister's sequences instead of focal.")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
 args = parser.parse_args()
 
@@ -22,13 +23,16 @@ if args.cluster == "cluster":
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
+focal_species = "sister" if args.sister else "focal"
 pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
 Ancestral_fasta = pathSelection + "/sequences/filtered_ancestral_sequences.fa"
-Focal_fasta = pathSelection + "/sequences/filtered_focal_sequences.fa"
-Output_all = open(pathSelection + "all_possible_deltaSVM.txt", "w")
-Output_obs = open(pathSelection + "observed_deltaSVM.txt", "w")
+Focal_fasta = pathSelection + "/sequences/filtered_" + focal_species + "_sequences.fa"
+
+Output_all = open(pathSelection + focal_species + "_all_possible_deltaSVM.txt", "w")
+Output_obs = open(pathSelection + focal_species + "_observed_deltaSVM.txt", "w")
 
 ModelEstimation = pathSelection + "/Model/kmer_predicted_weight.txt"
+
 
 ####################################################################################################
 # Functions
@@ -36,7 +40,6 @@ ModelEstimation = pathSelection + "/Model/kmer_predicted_weight.txt"
 def get_sub_IDs(seq_ref, seq_alt):
     if len(seq_ref) != len(seq_alt):
         raise ValueError("Focal and ancestral sequences don't have the same length!")
-
     sub_IDs = []
     loc = 0
     for pos_ref, pos_alt in zip(seq_ref, seq_alt):
@@ -85,6 +88,7 @@ def compute_all_delta(seq):
                 deltas[ID] = str(calculate_delta_svm(seq, test_seq))
 
     return deltas
+
 
 # Compute all deltaSVM
 def run_deltas(seq_name):
