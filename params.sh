@@ -95,7 +95,7 @@ fi
 if [ ${sp} = "spretus" ]; then
 	spID="Mus_spretus.SPRET_EiJ_v1"
 	sp_name="Mus_spretus"
-	close_species="Mus_musculus,Mus_spretus,Mus_caroli"
+	close_species="Mus_spretus,Mus_musculus,Mus_caroli"
 	anc_name="fullTreeAnc35"
 	chroms=(CM0040{94..99}.1 CM004{100..113}.1) #Ensembl:{1..19} "X"
 	export genomesize=2307679482 # using the same as Mus_musculus
@@ -104,7 +104,7 @@ fi
 if [ ${sp} = "caroli" ]; then
 	spID="Mus_caroli.CAROLI_EIJ_v1.1"
 	sp_name="Mus_caroli"
-	close_species="Mus_musculus,Mus_spretus,Mus_caroli"
+	close_species="Mus_caroli,Mus_musculus,Mus_spretus"
 	anc_name="fullTreeAnc36"
 	chroms=(LT608{229..248}.1)  #Ensembl: {1..19} "X"
 	export genomesize=2307679482 # using the same as Mus_musculus
