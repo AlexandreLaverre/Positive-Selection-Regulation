@@ -60,7 +60,7 @@ do
 
 	    # Remove GAP
 	    trimal -nogaps -keepheader -in "${pathAlign}"/"${ID}".mfa -out "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa
-	    rm "${pathAlign}"/"${ID}"_anc_foc.mfa "${pathAlign}"/"${ID}".mfa
+	    rm "${pathAlign}"/"${ID}".mfa # "${pathAlign}"/"${ID}"_anc_foc.mfa
 
 	    # Check if alignment still exists after removing GAPs
 	    if [ -f "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa ]; then
