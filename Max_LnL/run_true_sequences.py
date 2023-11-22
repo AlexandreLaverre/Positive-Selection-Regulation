@@ -95,10 +95,10 @@ def EstimateEvolution(ID, plots=False):
 
 ########################################################################################################################
 parser = argparse.ArgumentParser()
-parser.add_argument("species", help="Species name: human dog")
-parser.add_argument("TF", help="Transcription factor : CEBPA CTCF...")
+parser.add_argument("species", help="Species common name (e.g: human dog)")
+parser.add_argument("TF", help="Transcription factor (e.g: CEBPA CTCF)")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
-parser.add_argument("--Nbins", default=100, type=int, required=False, help="Number of Mutation per Seq in simulation mode")
+parser.add_argument("--Nbins", default=100, type=int, required=False, help="Number of bins for All deltasSVM per Seq")
 args = parser.parse_args()
 
 maxSub = 150
