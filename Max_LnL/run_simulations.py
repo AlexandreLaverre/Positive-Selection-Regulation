@@ -17,8 +17,8 @@ np.random.seed(1234)
 # Define parameters
 path = "../../results/MaxLikelihoodApproach/ProbaFixEstimation/"
 os.makedirs(path, exist_ok=True)
-num_simulations = 100
-n_bins = 100
+num_simulations = 1000
+n_bins = 200
 plots = False
 output = True
 

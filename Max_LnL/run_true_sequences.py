@@ -19,7 +19,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ########################################################################################################################
 def EstimateEvolution(ID, plots=False):
-    #print(ID)
+    print(ID)
     # Retrieve the corresponding deltas for each ID
     all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == ID, 1:].iloc[0]
     obs_svm_row = Obs_SVM_All_seq.loc[Obs_SVM_All_seq['ID'] == ID, 4:].iloc[0]
@@ -71,11 +71,12 @@ def EstimateEvolution(ID, plots=False):
             conclusion = "Neutral model"
 
     # Create a DataFrame for each simulation
-    df = pd.DataFrame({"Nmut": [len(obs_svm)], "MeanObs": [np.mean(obs_svm)], "VarObs": [np.var(obs_svm)],
+    df = pd.DataFrame({"ID": [ID], "Nmut": [len(obs_svm)], "MeanObs": [np.mean(obs_svm)], "VarObs": [np.var(obs_svm)],
                        "VarPurif:": [model_purif.x[0]], "VarPos:": [model_pos.x[0]], "MeanPos:": [model_pos.x[1]],
                        "NiterPurif:": [model_purif.nit], "NiterPos:": [model_pos.nit],
                        "LL_neutral": [LL_neutral], "LL_purif": [LL_purif], "LL_pos": [LL_pos],
-                       "Conclusion": [conclusion]})
+                       "pval_NullPurif": [p_value_null_purif], "pval_NullPos": [p_value_null_pos],
+                       "pval_PurifPos": [p_value_purif_pos], "Conclusion": [conclusion]})
 
     if plots:
         with PdfPages(f'{pathResults}/MLE_summary_{ID}.pdf') as pdf:
@@ -128,6 +129,6 @@ if __name__ == '__main__':
 
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{pathResults}/MLE_summary.csv', index=False)
+    result_df.to_csv(f'{pathResults}/MLE_summary_{args.Nbins}bins.csv', index=False)
 
 ########################################################################################################################
