@@ -59,7 +59,7 @@ def loglikelihood(deltas, params, hist_mutations):
 
 # Plot the results for each sequence
 def general_plot(all_deltas, obs, svm_distribution, purif, pos, scenario, test, sub_ax1, sub_ax2):
-    sub_ax1.hist(all_deltas, bins=50, density=True, alpha=0.7, label="All mutations")
+    sub_ax1.hist(all_deltas, bins=100, density=True, alpha=0.7, label="All mutations")
     sub_ax1.plot(sorted(all_deltas), svm_distribution(sorted(all_deltas)))
     for obs_value in obs:
         sub_ax1.axvline(obs_value, color='red', linestyle='--')
