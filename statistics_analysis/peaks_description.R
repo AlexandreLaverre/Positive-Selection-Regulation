@@ -7,14 +7,15 @@ library(qvalue)
 library(data.table)
 
 pal <- c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"), brewer.pal(12, "Set3")) 
-
 TF_col <- c("red", "#4DAF4A", "magenta", "black", "orange")
 path <- "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
 species <- c("dog", "human", "macaca", "mouse", "rat", "spretus", "caroli", "chicken", "cat","rabbit")#cattle
 TFs <- c("CTCF", "HNF6", "CEBPA", "FOXA1", "HNF4A")
 divergence <- c(0.005, 6.4, 3, 2.5, 12, 2.5, 4.5, 33, 4.6, 18) #, 0.5)
+mean_sub <- c(0.005, 6.4, 3, 2.5, 12, 2.5, 4.5, 33, 4.6, 18) #, 0.5)
 names(divergence) <- species
+names(pal) <- species
 
 peaks <- read.table(paste0(path, "peaks_calling/peaks_numbers.txt"),h=T, fill=T)
 peaks$species <- factor(peaks$species, levels = species)
@@ -26,6 +27,7 @@ peaks$signif_low <- NA
 peaks$signif_high <- NA
 peaks$signif_FDR <- NA
 peaks$signif_qval <- NA
+peaks$meanSub <- NA
 CEX=1.3
 
 #species= c("human")
@@ -38,6 +40,7 @@ for (sp in species){
       test <- read.table(file,h=T)     
       nb_signif_high <- nrow(test[which(test$pval.high < 0.05),])
       nb_signif_low <- nrow(test[which(test$pval.high > 0.95),])
+      peaks[which(peaks$species==sp & peaks$TF == TF),]$meanSub = mean(test$NbSub)
       peaks[which(peaks$species==sp & peaks$TF == TF),]$tested_peaks = nrow(test)
       peaks[which(peaks$species==sp & peaks$TF == TF),]$signif_high = nb_signif_high
       peaks[which(peaks$species==sp & peaks$TF == TF),]$signif_low = nb_signif_low
@@ -188,6 +191,20 @@ boxplot((peaks$signif_qval*100)/peaks$tested_peaks~peaks$TF, ylab="% positive pe
 
 plot(tested$stats[3,]*100~divergence, col=pal[1:length(divergence)], pch=16, mgp=c(3,1,0),
      ylab="% positive peaks", xlab="Divergence time (MY)", las=1)
+
+dev.off()
+
+# Proportion signif peaks according to mean substitutions
+pdf(paste0(path,"figures/proportion_positive_peaks_to_nb_substitutions.pdf"),height=4, width=7 )
+par(mfrow=(c(1,2)))
+par(mai=c(1,0.8,0.4,0))
+plot((peaks$signif_qval*100)/peaks$tested_peaks~peaks$meanSub, col=pal[peaks$species], pch=16,
+     xlab="Mean number of substitution", ylab="% positive peaks", cex.lab=1.25)
+
+cor = cor.test((peaks$signif_qval*100)/peaks$tested_peaks, peaks$meanSub)
+mtext(side=3, text=paste0("R2=", round(cor$estimate, 2)))
+plot.new()
+legend("left", species, col=pal[species], pch=16, bty='n', ncol=1, inset=c(-0.15, 0), xpd=T, cex=1.2)
 
 dev.off()
 
