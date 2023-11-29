@@ -30,7 +30,7 @@ def EstimateEvolution(ID, plots=False):
 
     # fit a kernel distribution on our data
     gaussian_mutation = stats.gaussian_kde(All_SVM)
-    hist_SVM = np.histogram(All_SVM, bins=args.Nbins)
+    hist_SVM = np.histogram(All_SVM, bins=args.NbBin)
 
     # Null model: no param.
     LL_neutral = ML.loglikelihood(obs_svm, [], hist_SVM)
@@ -129,6 +129,6 @@ if __name__ == '__main__':
 
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{pathResults}/MLE_summary_{args.Nbins}bins.csv', index=False)
+    result_df.to_csv(f'{pathResults}/MLE_summary_{args.NbBin}bins.csv', index=False)
 
 ########################################################################################################################
