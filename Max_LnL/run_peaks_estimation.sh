@@ -21,7 +21,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --job-name=MaxLL_${Prefix}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --output=${pathScripts}/logs/std_output_MaxLL_${Prefix}.txt" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --error=${pathScripts}/logs/std_error_MaxLL_${Prefix}.txt" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
-	echo "#SBATCH --partition=normal" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
+	echo "#SBATCH --partition=cpu" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --mem=4G" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --cpus-per-task=${nbThread}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --time=${time}:00:00" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
@@ -30,7 +30,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "conda activate MaxLikelihood" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 	echo "python ${pathScripts}/true_sequences.py ${species} ${sample} --NbThread ${nbThread} --NbBin ${nbBin}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
-	sbatch ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
+	#sbatch ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 else
 	export pathScripts=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection/Max_LnL/
