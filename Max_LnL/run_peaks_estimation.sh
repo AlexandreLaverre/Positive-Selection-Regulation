@@ -18,6 +18,7 @@ if [ ${cluster} = "cluster" ]; then
 	export time=$(( ($(wc -l < ${path}/results/positive_selection/all_deltas/${species}/${sample}/observed_deltaSVM.txt) / (1000*${nbThread}))+1 ))
 
 	# BATCH informations
+	echo "#!/bin/sh" > ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --job-name=MaxLL_${Prefix}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --output=${pathScripts}/logs/std_output_MaxLL_${Prefix}.txt" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --error=${pathScripts}/logs/std_error_MaxLL_${Prefix}.txt" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
