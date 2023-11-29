@@ -15,7 +15,7 @@ if [ ${cluster} = "cluster" ]; then
 	export pathScripts=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/scripts/Max_LnL/
 
 	# Calculate time needed: considering 1000 peaks per hour and per thread
-	export time=$(( $(wc -l < ${path}/results/positive_selection/all_deltas/${species}/${sample}/observed_deltaSVM.txt) / (1000*${nbThread}) ))
+	export time=$(( ($(wc -l < ${path}/results/positive_selection/all_deltas/${species}/${sample}/observed_deltaSVM.txt) / (1000*${nbThread}))+1 ))
 
 	# BATCH informations
 	echo "#SBATCH --job-name=MaxLL_${Prefix}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
