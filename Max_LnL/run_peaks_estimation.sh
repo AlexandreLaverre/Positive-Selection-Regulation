@@ -27,7 +27,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --cpus-per-task=${nbThread}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "#SBATCH --time=${time}:00:00" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
-	echo "source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
+	echo "source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "mamba activate MaxLikelihood" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 	echo "python ${pathScripts}/peaks_estimation.py ${species} ${sample} --NbThread ${nbThread} --NbBin ${nbBin}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
