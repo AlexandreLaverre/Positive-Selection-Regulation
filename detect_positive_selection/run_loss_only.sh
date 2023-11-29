@@ -3,7 +3,6 @@ sp=$1		# mouse
 sample=$2	# Wilson
 TF=$3		# CEBPA_loss
 BED=$4		# Mmusculus_loss_peaks.txt
-cluster=$5	# cluster
 
 path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
 pathBED=${path}/results/peaks_overlap/peaks_by_type/${BED}
@@ -33,4 +32,4 @@ awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' ../sequences/filtered_f
 #rm -r ${pathResults}/Alignments/
 
 # Run Positive Selection test
-python ${pathScripts}/testPosSelec.py ${sp} ${sample} ${TF} 10000 ${cluster} --NbThread 10
+python ${pathScripts}/testPosSelec.py ${sp} ${sample} ${TF} 10000 cluster --NbThread 5
