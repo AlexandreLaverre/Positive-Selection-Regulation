@@ -97,8 +97,8 @@ for Nsim in range(num_simulations):
         if output:
             # Create a DataFrame for each simulation
             df = pd.DataFrame({"Nmut": [len(obs_svm)], "MeanObs": [np.mean(obs_svm)], "VarObs": [np.var(obs_svm)],
-                               "Scenario": [simul], "VarPurif:": [model_purif.x[0]], "VarPos:": [model_pos.x[0]],
-                               "MeanPos:": [model_pos.x[1]], "NiterPurif:": [model_purif.nit], "NiterPos:": [model_pos.nit],
+                               "Scenario": [simul], "VarPurif": [model_purif.x[0]], "VarPos": [model_pos.x[0]],
+                               "MeanPos": [model_pos.x[1]], "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit],
                                "LL_neutral": [LL_neutral], "LL_purif": [LL_purif], "LL_pos": [LL_pos],
                                "Conclusion": [conclusion]})
 
