@@ -15,10 +15,10 @@ import MLEvol_functions as ML
 np.random.seed(1234)
 
 # Define parameters
-path = "../../results/MaxLikelihoodApproach/ProbaFixEstimation/"
+path = "../results/MaxLikelihoodApproach/ProbaFixEstimation/"
 os.makedirs(path, exist_ok=True)
 num_simulations = 1000
-n_bins = 200
+n_bins = 50
 plots = False
 output = True
 
@@ -52,54 +52,47 @@ for Nsim in range(num_simulations):
         LL_neutral = ML.loglikelihood(obs_svm, [], hist_SVM)
         print(f"  LnL neutral    : {LL_neutral:.2f}")
 
-        std_max = np.std((min(All_SVM), max(All_SVM)))
-        std_min = 1e-1
-        # Stabilizing selection: fixed mean to 0, minimize variance
-        model_purif = minimize(lambda theta: -ML.loglikelihood(obs_svm, theta, hist_SVM), np.array([std_max / 2]),
-                               bounds=[(std_min, std_max)], method="L-BFGS-B")
+        # Stabilizing selection: alpha = beta
+        model_purif = minimize(lambda theta: -ML.loglikelihood(obs_svm, theta, hist_SVM), np.array([1.0]),
+                               bounds=[(0.0, np.inf)], method="Nelder-Mead")
         LL_purif = -model_purif.fun
-        print(f"  LnL stabilizing: {LL_purif:.2f}, std: {model_purif.x[0]:.2f}")
+        print(f"  LnL stabilizing: {LL_purif:.4f}, alpha: {model_purif.x[0]:.3g}, beta: {model_purif.x[0]:.3g}")
 
-        optimal_min = hist_SVM[1][0]
-        optimal_max = hist_SVM[1][-2]
-        bounds = [(std_min, std_max), (optimal_min, optimal_max)]
-        # Positive selection: minimize mean AND variance
-        model_pos = minimize(lambda theta: -ML.loglikelihood(obs_svm, theta, hist_SVM), np.array([model_purif.x[0], 0]),
-                             bounds=bounds, method="Powell")
+        bounds = [(0.0, np.inf), (0.0, np.inf)]
+        # Positive selection
+        initial_guess = np.array([1.0, 1.0])
+        model_pos = minimize(lambda theta: -ML.loglikelihood(obs_svm, theta, hist_SVM), initial_guess,
+                             bounds=bounds, method="Nelder-Mead")
         LL_pos = -model_pos.fun
-        print(f"  LnL positive   : {LL_pos:.2f}, std: {model_pos.x[0]:.2f}, mean: {model_pos.x[1]:.2f}")
+        print(f"  LnL positive   : {LL_pos:.4f}, alpha: {model_pos.x[0]:.3g}, beta: {model_pos.x[1]:.3g}")
 
         # Likelihood ratio test:
         LRT_null_purif = -2 * (LL_neutral - LL_purif)
-        LRT_null_pos = -2 * (LL_neutral - LL_pos)
         LRT_purif_pos = -2 * (LL_purif - LL_pos)
 
         p_value_null_purif = chi2.sf(LRT_null_purif, 1)
-        p_value_null_pos = chi2.sf(LRT_null_pos, 2)
         p_value_purif_pos = chi2.sf(LRT_purif_pos, 1)
         print(f"  LRT null vs purif: {LRT_null_purif:.2f}, p-value: {p_value_null_purif:.2g}")
-        print(f"  LRT null vs pos  : {LRT_null_pos:.2f}, p-value: {p_value_null_pos:.2g}")
         print(f"  LRT purif vs pos : {LRT_purif_pos:.2f}, p-value: {p_value_purif_pos:.2g}")
 
-        alpha = 0.01
+        alpha = 0.05
+        conclusion = "Neutral model"
         if p_value_null_purif < alpha:
             conclusion = "Stabilizing model"
-            if p_value_purif_pos < alpha:
-                conclusion = "Positive model"
-        else:
-            if p_value_null_pos < alpha:
-                conclusion = "Positive model"
-            else:
-                conclusion = "Neutral model"
+        if p_value_purif_pos < p_value_null_purif and p_value_purif_pos < alpha:
+            conclusion = "Positive model"
 
         print("  Conclusion:", conclusion)
 
         if output:
             # Create a DataFrame for each simulation
             df = pd.DataFrame({"Nmut": [len(obs_svm)], "MeanObs": [np.mean(obs_svm)], "VarObs": [np.var(obs_svm)],
-                               "Scenario": [simul], "VarPurif:": [model_purif.x[0]], "VarPos:": [model_pos.x[0]],
-                               "MeanPos:": [model_pos.x[1]], "NiterPurif:": [model_purif.nit], "NiterPos:": [model_pos.nit],
+                               "Scenario": [simul], "AlphaPurif:": [model_purif.x[0]], "AlphaPos:": [model_pos.x[0]],
+                               "BetaPos:": [model_pos.x[1]], "NiterPurif:": [model_purif.nit],
+                               "NiterPos:": [model_pos.nit],
                                "LL_neutral": [LL_neutral], "LL_purif": [LL_purif], "LL_pos": [LL_pos],
+                               "LRT_null_purif": [LRT_null_purif], "LRT_purif_pos": [LRT_purif_pos],
+                               "p_value_null_purif": [p_value_null_purif], "p_value_purif_pos": [p_value_purif_pos],
                                "Conclusion": [conclusion]})
 
             dfs.append(df)
