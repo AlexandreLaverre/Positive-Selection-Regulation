@@ -19,7 +19,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ########################################################################################################################
 def EstimateEvolution(ID, plots=False):
-    print(ID)
+    #print(ID)
     # Retrieve the corresponding deltas for each ID
     all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == ID, 1:].iloc[0]
     obs_svm_row = Obs_SVM_All_seq.loc[Obs_SVM_All_seq['ID'] == ID, 4:].iloc[0]
@@ -30,7 +30,7 @@ def EstimateEvolution(ID, plots=False):
 
     # fit a kernel distribution on our data
     gaussian_mutation = stats.gaussian_kde(All_SVM)
-    hist_SVM = np.histogram(All_SVM, bins=args.Nbins)
+    hist_SVM = np.histogram(All_SVM, bins=args.NbBin)
 
     # Null model: no param.
     LL_neutral = ML.loglikelihood(obs_svm, [], hist_SVM)
@@ -99,7 +99,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species common name (e.g: human dog)")
 parser.add_argument("TF", help="Transcription factor (e.g: CEBPA CTCF)")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
-parser.add_argument("--Nbins", default=100, type=int, required=False, help="Number of bins for All deltasSVM per Seq")
+parser.add_argument("--NbBin", default=100, type=int, required=False, help="Number of bins for All deltasSVM per Seq")
 args = parser.parse_args()
 
 maxSub = 150
@@ -129,6 +129,6 @@ if __name__ == '__main__':
 
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{pathResults}/MLE_summary_{args.Nbins}bins.csv', index=False)
+    result_df.to_csv(f'{pathResults}/MLE_summary_{args.NbBin}bins.csv', index=False)
 
 ########################################################################################################################
