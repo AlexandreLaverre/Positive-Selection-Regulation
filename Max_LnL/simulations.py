@@ -9,7 +9,6 @@ from scipy.stats import chi2
 import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 from mpl_toolkits.mplot3d import Axes3D
-import MLEvol_functions as ML
 
 # Seed numpy random generator
 np.random.seed(1234)
@@ -19,8 +18,15 @@ path = "../../results/MaxLikelihoodApproach/ProbaFixEstimation/"
 os.makedirs(path, exist_ok=True)
 num_simulations = 1000
 n_bins = 50
+max_mut = 10
+distrib = "Gaussian"  # or Beta
 plots = False
 output = True
+
+if distrib == "Gaussian":
+    import MLEvol_functions_Gaussian as ML
+else:
+    import MLEvol_functions as ML
 
 ########################################################################################################################
 dfs = []
@@ -38,7 +44,7 @@ for Nsim in range(num_simulations):
     pos_weights /= np.sum(pos_weights)
 
     # Observed deltaSVM: change in affinity of substitutions for a sequence
-    Nsub = np.random.randint(2, 10)
+    Nsub = np.random.randint(2, max_mut)
     print(f'Number of substitutions: {Nsub}')
     Simul_Obs_SVM = {"Random": np.random.choice(All_SVM, Nsub, replace=False),
                      "Stabilizing": np.random.choice(All_SVM, Nsub, replace=False, p=stab_weights),
@@ -98,7 +104,7 @@ for Nsim in range(num_simulations):
             dfs.append(df)
 
         if plots:
-            with PdfPages(f'{path}/MLE_summary_{simul}_{Nsim}.pdf') as pdf:
+            with PdfPages(f'{path}/MLE_summary_{simul}_{Nsim}_{distrib}.pdf') as pdf:
                 fig, axes = plt.subplots(2, 2, figsize=(14, 14))
                 axes[1, 1].axis('off')
                 axes[1, 1] = fig.add_subplot(224, projection='3d')
@@ -113,6 +119,6 @@ for Nsim in range(num_simulations):
 if output:
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{path}/MLE_summary_{num_simulations}simul_{n_bins}bins.csv', index=False)
+    result_df.to_csv(f'{path}/MLE_summary_{num_simulations}simul_{n_bins}bins_{max_mut}MaxMut_{distrib}.csv', index=False)
 
 ########################################################################################################################
