@@ -5,38 +5,36 @@ from scipy import stats
 import matplotlib as mat
 
 
-def proba_fixation(delta, params):
-    if len(params) == 0:
-        return 1
+def proba_fixation(delta, params, delta_bounds):
+    alpha = params[0] if len(params) > 0 else 1.0
+    beta = params[1] if len(params) == 2 else alpha
+    max_delta = max(np.abs(delta_bounds))
+    scaled_delta = (delta + max_delta) / (2 * max_delta)
+    w_mutant = stats.beta.pdf(scaled_delta, a=alpha, b=beta)
+    w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
+    if w_mutant < 1.e-10:
+        return 0.0
+    s = np.log(w_mutant / w_ancestral)
+    if abs(s) < 1.e-4:
+        return 1.0 + s / 2
+    elif s > 10:
+        return s
+    elif s < -10:
+        return - s * np.exp(s)
     else:
-        std_dev = params[0]
-        if std_dev == 0:
-            return 0.0
-        mean = params[1] if len(params) == 2 else 0
-        w_mutant = stats.norm.pdf(delta, loc=mean, scale=std_dev)
-        w_ancestral = stats.norm.pdf(mean, loc=mean, scale=std_dev)
-        if w_mutant == 0.0:
-            return 0.0
-        s = np.log(w_mutant / w_ancestral)
-        if abs(s) < 1.e-4:
-            return 1.0 + s / 2
-        elif s > 10:
-            return s
-        elif s < -10:
-            return - s * np.exp(s)
-        else:
-            return s / (1 - np.exp(-s))
+        return s / (1 - np.exp(-s))
 
 
 def proba_substitution(params, mutations_proba, bins_values):
     n_bins = len(mutations_proba)
+    delta_bounds = [min(bins_values), max(bins_values)]
     output_array = np.zeros(n_bins)
     for b in range(n_bins):
         p = mutations_proba[b]
         min_bin = bins_values[b]
         max_bin = bins_values[b + 1]
         mean_bin = (max_bin + min_bin) / 2
-        output_array[b] = p * proba_fixation(mean_bin, params)
+        output_array[b] = p * proba_fixation(mean_bin, params, delta_bounds)
     sum_output = np.sum(output_array)
     if sum_output == 0:
         return output_array
@@ -96,11 +94,11 @@ def general_plot(all_deltas, obs, svm_distribution, purif, pos, scenario, test, 
 def plot_model(obs, hist_svm, model_params, ax, model_type="Stabilizing", bounds=None):
     k = 0.5
     if model_type == "Stabilizing":
-        std_min = max([bounds[0][0], model_params[0] * k])
-        std_max = min([bounds[0][1], model_params[0] * (2 - k)])
-        std_range = np.linspace(std_min, std_max, 100)  # Std range
-        ll_values = [-loglikelihood(obs, [std], hist_svm) for std in std_range]
-        ax.plot(std_range, ll_values, label=f"{model_type} Selection Model")
+        alpha_min = max([bounds[0][0], model_params[0] * k])
+        alpha_max = min([bounds[0][1], model_params[0] * (2 - k)])
+        alpha_range = np.linspace(alpha_min, alpha_max, 100)  # Std range
+        ll_values = [-loglikelihood(obs, [std], hist_svm) for std in alpha_range]
+        ax.plot(alpha_range, ll_values, label=f"{model_type} Selection Model")
         ax.scatter(model_params[0], -loglikelihood(obs, model_params, hist_svm), color='red', marker='o',
                    label="Minimized Point")
         ax.set_xlabel("Parameter: Standard Deviation")
@@ -109,24 +107,24 @@ def plot_model(obs, hist_svm, model_params, ax, model_type="Stabilizing", bounds
         ax.legend()
 
     elif model_type == "Positive":
-        std_min = max([bounds[0][0], model_params[0] * k])
-        std_max = min([bounds[0][1], model_params[0] * (2 - k)])
-        mean_min = max([bounds[1][0], model_params[1] - 3])
-        mean_max = min([bounds[1][1], model_params[1] + 3])
-        std_range = np.linspace(std_min, std_max, 30)
-        mean_range = np.linspace(mean_min, mean_max, 30)
+        alpha_min = max([bounds[0][0], model_params[0] * k])
+        alpha_max = min([bounds[0][1], model_params[0] * (2 - k)])
+        beta_min = max([bounds[1][0], model_params[1] * k])
+        beta_max = min([bounds[1][1], model_params[1] * (2 - k)])
+        alpha_range = np.linspace(alpha_min, alpha_max, 30)
+        beta_range = np.linspace(beta_min, beta_max, 30)
 
-        std_values, mean_values = np.meshgrid(std_range, mean_range)
+        alpha_values, beta_values = np.meshgrid(alpha_range, beta_range)
         ll_values = np.array(
-            [[-loglikelihood(obs, [std, mean], hist_svm) for std in std_range] for mean in mean_range])
+            [[-loglikelihood(obs, [std, mean], hist_svm) for std in alpha_range] for mean in beta_range])
 
         # Plotting the log-likelihood surface
-        ax.plot_surface(std_values, mean_values, ll_values, cmap='viridis', alpha=0.8,
+        ax.plot_surface(alpha_values, beta_values, ll_values, cmap='viridis', alpha=0.8,
                         label=f"{model_type} Selection Model")
         ax.scatter(model_params[0], model_params[1], -loglikelihood(obs, model_params, hist_svm), color='red',
                    marker='o', label="Minimized Point")
         ax.invert_xaxis()
-        ax.set_xlabel("Parameter: Variance")
-        ax.set_ylabel("Parameter: Mean")
+        ax.set_xlabel("Parameter: $\\alpha$")
+        ax.set_ylabel("Parameter: $\\beta$")
         ax.set_zlabel("Log-Likelihood")
         ax.set_title(f"Minimization Process - {model_type} Selection Model")
