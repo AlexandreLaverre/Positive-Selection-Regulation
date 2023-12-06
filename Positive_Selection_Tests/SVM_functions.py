@@ -11,7 +11,7 @@ def get_sub_number(seq_ref, seq_alt):
     return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
 
 
-# Get number of substitutions per sequence and their IDs
+# Get ID of substitutions in a sequence
 def get_sub_ids(seq_ref, seq_alt):
     if len(seq_ref) != len(seq_alt):
         raise ValueError("Focal and ancestral sequences don't have the same length!")

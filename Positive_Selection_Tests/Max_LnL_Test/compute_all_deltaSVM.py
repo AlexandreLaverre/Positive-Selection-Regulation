@@ -3,12 +3,10 @@
 
 import argparse
 from Bio import SeqIO
-from Bio.Seq import Seq
 from alive_progress import alive_bar
 import multiprocessing.pool
 from Positive_Selection_Tests import SVM_functions as SVM
 
-SVM.get_sub_ids()
 ####################################################################################################
 # Variables and paths
 parser = argparse.ArgumentParser()
@@ -29,11 +27,10 @@ focal_species = "sister" if args.sister else "focal"
 pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
 Ancestral_fasta = pathSelection + "/sequences/filtered_ancestral_sequences.fa"
 Focal_fasta = pathSelection + "/sequences/filtered_" + focal_species + "_sequences.fa"
+ModelEstimation = pathSelection + "/Model/kmer_predicted_weight.txt"
 
 Output_all = open(pathSelection + focal_species + "_all_possible_deltaSVM.txt", "w")
 Output_obs = open(pathSelection + focal_species + "_observed_deltaSVM.txt", "w")
-
-ModelEstimation = pathSelection + "/Model/kmer_predicted_weight.txt"
 
 
 ####################################################################################################
@@ -75,22 +72,12 @@ def run_deltas(seq_name):
 
         return output_obs, output_all
 
+
 ####################################################################################################
 # Datas
 # Binding affinity values per kmer
-SVM_dict = {}
-with open(ModelEstimation, 'r') as model:
-    for i in model.readlines():
-        i = i.strip("\n")
-        i = i.split("\t")
-        kmer = i[0]
-        KmerLen = len(kmer)
-        svm_score = float(i[1])
-        rev_kmer = str(Seq(kmer).reverse_complement())  # add the reverse complement kmer
-
-        SVM_dict[kmer] = svm_score
-        SVM_dict[rev_kmer] = svm_score
-
+SVM_dict = SVM.get_svm_dict(ModelEstimation)
+KmerLen = SVM_dict[0]
 
 # Get Ancestral sequences
 AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(Ancestral_fasta), "fasta"))
@@ -102,7 +89,6 @@ FocalSeqs = SeqIO.to_dict(SeqIO.parse(open(Focal_fasta), "fasta"))
 SeqIDs = FocalSeqs.keys()
 if len(FocalSeqs) == 0:
     raise ValueError("Focal sequence file is empty!")
-
 
 ####################################################################################################
 # Running and writing results

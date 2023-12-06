@@ -95,7 +95,7 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, sub, selection):
             delta = SVM.calculate_delta(seq, rand_seq, SVM_dict, KmerLen)
             probability = 2*delta_distribution.cdf(delta)  # cumulative distribution *2
             if probability > 1:
-                probability = 2-probability  # to center the maximum probability at mid distribution
+                probability = 2-probability  # to center the maximum probability at mid-distribution
 
             if probability > np.random.random():
                 random_seqs[nb_seq] = rand_seq

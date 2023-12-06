@@ -2,7 +2,6 @@
 # coding=utf-8
 import numpy as np
 import os
-import pandas
 from Bio import SeqIO
 from Bio.Seq import Seq
 import copy
