@@ -6,7 +6,9 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from alive_progress import alive_bar
 import multiprocessing.pool
+from Positive_Selection_Tests import SVM_functions as SVM
 
+SVM.get_sub_ids()
 ####################################################################################################
 # Variables and paths
 parser = argparse.ArgumentParser()
@@ -35,43 +37,6 @@ ModelEstimation = pathSelection + "/Model/kmer_predicted_weight.txt"
 
 
 ####################################################################################################
-# Functions
-# Get number of substitutions per sequence
-def get_sub_IDs(seq_ref, seq_alt):
-    if len(seq_ref) != len(seq_alt):
-        raise ValueError("Focal and ancestral sequences don't have the same length!")
-    sub_IDs = []
-    loc = 0
-    for pos_ref, pos_alt in zip(seq_ref, seq_alt):
-        if pos_ref != pos_alt:
-            ID = "pos" + str(loc) + ":" + pos_ref + "-" + pos_alt
-            sub_IDs.append(ID)
-        loc += 1
-
-    return sub_IDs
-
-
-# Calculate SVM from sliding windows
-def calculate_svm(seq):
-    svm = 0
-    for pos in range(len(seq) - KmerLen + 1):   # sliding window of kmer length
-        kmer = seq[pos:pos+KmerLen]
-        svm += SVM_dict[kmer]   # sum of SVM for each kmer
-    return round(svm, 7)
-
-
-# Calculate delta SVM from sliding windows
-def calculate_delta_svm(seq_ref, seq_alt):
-    delta_svm = 0
-    for pos in range(len(seq_ref) - KmerLen + 1):   # sliding window of kmer length
-        kmer_ref = seq_ref[pos:pos+KmerLen]
-        kmer_alt = seq_alt[pos:pos+KmerLen]
-
-        if kmer_ref != kmer_alt:
-            delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
-    return round(delta_svm, 7)
-
-
 # Get deltaSVM for all possible substitutions.
 def compute_all_delta(seq):
     nuc = ["A", "T", "C", "G"]
@@ -85,27 +50,27 @@ def compute_all_delta(seq):
                 test_seq[position] = new_nuc
                 test_seq = "".join(test_seq)
 
-                deltas[ID] = str(calculate_delta_svm(seq, test_seq))
+                deltas[ID] = str(SVM.calculate_delta(seq, test_seq, SVM_dict, KmerLen))
 
     return deltas
 
 
-# Compute all deltaSVM
+# Return all and observed deltaSVM for a given sequence
 def run_deltas(seq_name):
     focal_seq = str(FocalSeqs[seq_name].seq)
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
-    substitutions = get_sub_IDs(ancestral_seq, focal_seq)
+    substitutions = SVM.get_sub_ids(ancestral_seq, focal_seq)
 
     if len(substitutions) > 1 and 20 <= len(ancestral_seq) <= 1000:
-        SVM = calculate_svm(focal_seq)
-        deltaSVM = calculate_delta_svm(ancestral_seq, focal_seq)
+        SVM_score = SVM.calculate_svm(focal_seq, KmerLen)
+        deltaSVM = SVM.calculate_delta(ancestral_seq, focal_seq, SVM_dict, KmerLen)
 
         # all possible substitutions
         deltas = compute_all_delta(ancestral_seq)
         obs_delta = '\t'.join([deltas[sub] for sub in substitutions])
         all_delta = '\t'.join(deltas.values())
 
-        output_obs = f"{seq_name}\t{SVM}\t{deltaSVM}\t{len(substitutions)}\t{obs_delta}\n"
+        output_obs = f"{seq_name}\t{SVM_score}\t{deltaSVM}\t{len(substitutions)}\t{obs_delta}\n"
         output_all = f"{seq_name}\t{all_delta}\n"
 
         return output_obs, output_all

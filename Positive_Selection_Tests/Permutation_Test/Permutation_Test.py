@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
-import os
 from Bio import SeqIO
-from Bio.Seq import Seq
 import numpy as np
 import scipy.stats as stats
-import pandas
 from alive_progress import alive_bar
 import multiprocessing.pool
+from Positive_Selection_Tests import SVM_functions as SVM
 
 np.random.seed(12)
 
@@ -59,33 +57,6 @@ pathSubMat = path + "/substitution_matrix/" + args.species + "/"
 
 ####################################################################################################
 # Functions
-# Get number of substitutions per sequence
-def get_sub_number(seq_ref, seq_alt):
-    if len(seq_ref) != len(seq_alt):
-        raise ValueError("Focal and ancestral sequences don't have the same length!")
-    return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
-
-
-# Calculate SVM from sliding windows
-def calculate_svm(seq):
-    svm = 0
-    for pos in range(len(seq) - KmerLen + 1):   # sliding window of kmer length
-        kmer = seq[pos:pos+KmerLen]
-        svm += SVM_dict[kmer]   # sum of SVM for each kmer
-    return round(svm, 7)
-
-
-# Calculate delta SVM from sliding windows
-def calculate_delta_svm(seq_ref, seq_alt):
-    delta_svm = 0
-    for pos in range(len(seq_ref) - KmerLen + 1):   # sliding window of kmer length
-        kmer_ref = seq_ref[pos:pos+KmerLen]
-        kmer_alt = seq_alt[pos:pos+KmerLen]
-        if kmer_ref != kmer_alt:
-            delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
-    return round(delta_svm, 7)
-
-
 def mutate_seq(seq, normed_pos_proba, sub_prob_norm, sub):
     # draw positions
     rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=sub)
@@ -118,10 +89,10 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, sub, selection):
         if not selection:
             random_seqs[nb_seq] = rand_seq
             nb_seq += 1
-            delta = calculate_delta_svm(seq, rand_seq)
+            delta = SVM.calculate_delta(seq, rand_seq, SVM_dict, KmerLen)
             Distrib_simul.write(str(delta) + "\n")
         else:
-            delta = calculate_delta_svm(seq, rand_seq)
+            delta = SVM.calculate_delta(seq, rand_seq, SVM_dict, KmerLen)
             probability = 2*delta_distribution.cdf(delta)  # cumulative distribution *2
             if probability > 1:
                 probability = 2-probability  # to center the maximum probability at mid distribution
@@ -145,15 +116,15 @@ def test_positive_selection(seq_name):
         sub_mat_proba_normed = SubMats_norm[chromosome] if args.Evol != 'uniform' else SubMat_uniform
 
         # Number of substitutions between Ancestral and Focal sequences
-        nb_sub = get_sub_number(ancestral_seq, focal_seq)
+        nb_sub = SVM.get_sub_number(ancestral_seq, focal_seq)
 
         if nb_sub > 1 and len(focal_seq) > 40:
-            focalSVM = calculate_svm(focal_seq)
+            focalSVM = SVM.calculate_svm(focal_seq, SVM_dict, KmerLen)
             # Get observed and random deltas
-            delta_obs = calculate_delta_svm(ancestral_seq, focal_seq)
+            delta_obs = SVM.calculate_delta(ancestral_seq, focal_seq, SVM_dict, KmerLen)
             random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed,
                                           nb_sub, selection=args.Selection)
-            delta_rand = [calculate_delta_svm(ancestral_seq, rand_seq) for rand_seq in random_seqs]
+            delta_rand = [SVM.calculate_delta(ancestral_seq, rand_seq, SVM_dict, KmerLen) for rand_seq in random_seqs]
 
             # Calculate p-value
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
@@ -168,46 +139,17 @@ def test_positive_selection(seq_name):
 ####################################################################################################
 # Datas
 # Binding affinity values per kmer
-SVM_dict = {}
-with open(ModelEstimation, 'r') as model:
-    for i in model.readlines():
-        i = i.strip("\n")
-        i = i.split("\t")
-        kmer = i[0]
-        KmerLen = len(kmer)
-        svm_score = float(i[1])
-        rev_kmer = str(Seq(kmer).reverse_complement())  # add the reverse complement kmer
+SVM_dict = SVM.get_svm_dict(ModelEstimation)
+KmerLen = SVM_dict[0]
 
-        SVM_dict[kmer] = svm_score
-        SVM_dict[rev_kmer] = svm_score
-
-# Substitution matrix
+# Get substitution matrix for each chromosome
 if args.Evol == 'uniform':
     SubMat_uniform = {'A': {'A': 0, 'C': 0.333, 'G': 0.333, 'T': 0.334},
                       'C': {'A': 0.333, 'C': 0, 'G': 0.334, 'T': 0.333},
                       'G': {'A': 0.333, 'C': 0.334, 'G': 0, 'T': 0.333},
                       'T': {'A': 0.334, 'C': 0.333, 'G': 0.333, 'T': 0}}
 else:
-    # Get substitution matrix for each chromosome
-    SubMats = {}
-    SubMats_norm = {}
-    for file in os.listdir(pathSubMat):
-        if file.endswith('.txt'):
-            chrom = file.strip('.txt')
-
-            chrom_Table = pandas.read_table(pathSubMat + file, sep=' ')
-            chrom_Table.index = ['A', 'C', 'G', 'T']     # change row values
-            np.fill_diagonal(chrom_Table.values, 0)      # assign 0 to diagonal
-            chrom_SubMat = chrom_Table.to_dict('index')  # get dict by matrix rows
-            SubMats[chrom] = chrom_SubMat
-
-            # Get substitution probabilities of each nucleotide to sum at 1 for drawing directions
-            chrom_Table_norm = chrom_Table.div(chrom_Table.sum(axis=1), axis=0)
-            chrom_SubMat_norm = chrom_Table_norm.to_dict('index')
-            SubMats_norm[chrom] = chrom_SubMat_norm
-
-    if len(SubMats) == 0:
-        raise ValueError("Substitution matrix not found!")
+    SubMats, SubMats_norm = SVM.get_sub_matrix(pathSubMat)
 
 
 # Get Ancestral sequences

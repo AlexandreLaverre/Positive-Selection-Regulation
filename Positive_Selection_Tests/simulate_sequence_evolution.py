@@ -8,6 +8,7 @@ from Bio.Seq import Seq
 import copy
 from alive_progress import alive_bar
 import random
+from Positive_Selection_Tests import SVM_functions as SVM
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 pathSubMat = path + "/substitution_matrix/human/"
@@ -41,42 +42,13 @@ def generate_mutated_sequence(sequence, sub_mat, sub_mat_norm, nb_mutations):
     return sequence
 
 
-def calculate_delta_svm(seq_ref, seq_alt):
-    delta_svm = 0
-    for pos in range(len(seq_ref) - KmerLen + 1):   # sliding window of kmer length
-        kmer_ref = seq_ref[pos:pos+KmerLen]
-        kmer_alt = seq_alt[pos:pos+KmerLen]
-        delta_svm += SVM_dict[kmer_alt] - SVM_dict[kmer_ref]  # sum of delta between sequences for each kmer
-    return round(delta_svm, 7)
-
 ####################################################################################################
 # Binding affinity values per kmer
-SVM_dict = {}
-with open(ModelEstimation, 'r') as model:
-    for i in model.readlines():
-        i = i.strip("\n")
-        i = i.split("\t")
-        kmer = i[0]
-        KmerLen = len(kmer)
-        svm_score = float(i[1])
-        rev_kmer = str(Seq(kmer).reverse_complement())  # add the reverse complement kmer
-
-        SVM_dict[kmer] = svm_score
-        SVM_dict[rev_kmer] = svm_score
+SVM_dict = SVM.get_svm_dict(ModelEstimation)
+KmerLen = SVM_dict[0]
 
 # Get substitution matrix for each chromosome
-SubMats = {}
-SubMats_norm = {}
-for file in os.listdir(pathSubMat):
-    if file.endswith('.txt'):
-        chrom = file.strip('.txt')
-
-        chrom_Table = pandas.read_table(pathSubMat + file, sep=' ')
-        chrom_Table.index = ['A', 'C', 'G', 'T']     # change row values
-        np.fill_diagonal(chrom_Table.values, 0)      # assign 0 to diagonal
-        chrom_SubMat = chrom_Table.to_dict('index')  # get dict by matrix rows
-        SubMats[chrom] = chrom_SubMat
-        SubMats_norm[chrom] = chrom_Table.div(chrom_Table.sum(axis=1), axis=0).to_dict('index')  # get normalized dict by matrix rows
+SubMats, SubMats_norm = SVM.get_sub_matrix(pathSubMat)
 
 # Get Focal sequences
 AllSeqs = SeqIO.to_dict(SeqIO.parse(open(Focal_fasta), "fasta"))
@@ -88,7 +60,7 @@ if not os.path.isfile(First_focal_fasta):
         SeqIO.write(FirstSeqs.values(), First, 'fasta')
 
 ####################################################################################################
-mutations = [50] #list(range(2, 5, 1)) + list(range(10, 30, 10))
+mutations = [50]  # list(range(2, 5, 1)) + list(range(10, 30, 10))
 
 # Iterate over mutation values
 for nb_mut in mutations:
@@ -119,7 +91,7 @@ for nb_mut in mutations:
                 attempt = 0
                 while True:
                     mutated_seq = generate_mutated_sequence(focal_seq, sub_mat_proba, sub_mat_proba_norm, nb_mut)
-                    DeltaSVM = calculate_delta_svm(mutated_seq, focal_seq)
+                    DeltaSVM = SVM.calculate_delta(mutated_seq, focal_seq, SVM_dict, KmerLen)
                     attempt += 1
 
                     if attempt > 1000:
@@ -145,5 +117,3 @@ for nb_mut in mutations:
     for ID, delta in deltaSVM_dic.items():
         out_dic.write(str(ID) + '\t' + str(delta) + '\n')
     out_dic.close()
-
-
