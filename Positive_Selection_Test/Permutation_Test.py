@@ -32,24 +32,26 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
 if args.Simul:
-    pathSelection = f"{path}positive_selection/{args.species}/simulation/{args.TF}/"
+    pathSelection = f"{path}positive_selection/{args.species}/simulation_mutational_steps/"
     SimulSel_flag = "_selection" if args.Selection else ""
 
     pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
     seq = f"{args.TF}_{args.sample}"
 
-    Ancestral_fasta = f"{pathJialin}{seq}_filtered_ancestor.fa"
-    Focal_fasta = f"{pathJialin}{seq}_filtered_focal.fa"
-    Output = open(f"{pathSelection}PosSelTest_deltaSVM_mouse_triplets_{seq}{SimulSel_flag}.txt", "w")
+    #Ancestral_fasta = f"{pathJialin}{seq}_filtered_ancestor.fa"
+    #Focal_fasta = f"{pathJialin}{seq}_filtered_focal.fa"
+    #Output = open(f"{pathSelection}PosSelTest_deltaSVM_mouse_triplets_{seq}{SimulSel_flag}.txt", "w")
 
-    #Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
-    #Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
-    #Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations{SimulSel_flag}.txt", "w")
+    Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
+    Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
+    Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations{SimulSel_flag}.txt", "w")
+    Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations{SimulSel_flag}.txt", "w")
 else:
     pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
-    Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
+    Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations_selection_NegativeDelta.txt", "w")
+    NegativeSet = f"{path}/positive_selection/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"
 pathSubMat = path + "/substitution_matrix/" + args.species + "/"
@@ -99,7 +101,7 @@ def mutate_seq(seq, normed_pos_proba, sub_prob_norm, sub):
 
 
 # Get random sequences according to substitution matrix
-def get_random_seqs(seq, seqID, sub_prob, sub_prob_norm, sub, selection):
+def get_random_seqs(seq, sub_prob, sub_prob_norm, sub, selection):
     # Get substitution probabilities for each position
     pos_proba = np.empty(len(seq))
     for pos in range(len(seq)):
@@ -109,7 +111,6 @@ def get_random_seqs(seq, seqID, sub_prob, sub_prob_norm, sub, selection):
     normed_pos_proba = pos_proba / sum(pos_proba)   # normalisation of all positions to sum at 1
 
     random_seqs = [""] * args.NbRand
-    old_svm = SVMAncestral[seqID]
     nb_seq = 0
     while nb_seq < args.NbRand:
         rand_seq = mutate_seq(list(seq), normed_pos_proba, sub_prob_norm, sub)
@@ -117,10 +118,14 @@ def get_random_seqs(seq, seqID, sub_prob, sub_prob_norm, sub, selection):
         if not selection:
             random_seqs[nb_seq] = rand_seq
             nb_seq += 1
+            delta = calculate_delta_svm(seq, rand_seq)
+            Distrib_simul.write(str(delta) + "\n")
         else:
             delta = calculate_delta_svm(seq, rand_seq)
-            new_svm = old_svm + delta
-            probability = delta_distribution.cdf(new_svm)  # calculate the AUC from this SVM
+            probability = 2*delta_distribution.cdf(delta)  # cumulative distribution *2
+            if probability > 1:
+                probability = 2-probability  # to center the maximum probability at mid distribution
+
             if probability > np.random.random():
                 random_seqs[nb_seq] = rand_seq
                 nb_seq += 1
@@ -141,12 +146,12 @@ def test_positive_selection(seq_name):
 
         # Number of substitutions between Ancestral and Focal sequences
         nb_sub = get_sub_number(ancestral_seq, focal_seq)
-        print(nb_sub, len(focal_seq))
+
         if nb_sub > 1 and len(focal_seq) > 40:
-            SVM = calculate_svm(focal_seq)
+            focalSVM = calculate_svm(focal_seq)
             # Get observed and random deltas
-            delta_obs = deltaObs[seq_name]
-            random_seqs = get_random_seqs(ancestral_seq, seq_name, sub_mat_proba, sub_mat_proba_normed,
+            delta_obs = calculate_delta_svm(ancestral_seq, focal_seq)
+            random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed,
                                           nb_sub, selection=args.Selection)
             delta_rand = [calculate_delta_svm(ancestral_seq, rand_seq) for rand_seq in random_seqs]
 
@@ -154,7 +159,7 @@ def test_positive_selection(seq_name):
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
             p_val_high = nb_higher_rand / len(delta_rand)
 
-            output = f"{seq_name}\t{SVM}\t{delta_obs}\t{np.median(delta_rand)}\t{np.mean(delta_rand)}" \
+            output = f"{seq_name}\t{focalSVM}\t{delta_obs}\t{np.median(delta_rand)}\t{np.mean(delta_rand)}" \
                      f"\t{nb_sub}\t{p_val_high}\n"
 
             return output
@@ -216,24 +221,16 @@ SeqIDs = FocalSeqs.keys()
 if len(FocalSeqs) == 0:
     raise ValueError("Focal sequence file is empty!")
 
-# Calculate observed deltaSVM
-deltaObs = {}
-SVMAncestral = {}
-for ID in SeqIDs:
-    focal_seq = str(FocalSeqs[ID].seq)
-    ancestral_seq = str(AncestralSeqs[ID].seq)
-
-    # Number of substitutions between Ancestral and Focal sequences
-    substitution = get_sub_number(ancestral_seq, focal_seq)
-    if substitution > 1 and len(focal_seq) > 40:
-        delta = calculate_delta_svm(ancestral_seq, focal_seq)
-        deltaObs[ID] = delta
-        svm = calculate_svm(ancestral_seq)
-        SVMAncestral[ID] = svm
-
-# Fit a probability distribution to observed deltaSVMs
+# Fit a probability distribution to Negative deltaSVMs
 if args.Selection:
-    fit_params = stats.norm.fit(list(SVMAncestral.values()))
+    DeltaNegative = []
+    with open(NegativeSet, 'r') as negative:
+        for i in negative.readlines()[1:]:
+            i = i.strip("\n")
+            i = i.split("\t")
+            DeltaNegative.append(float(i[2]))
+
+    fit_params = stats.norm.fit(DeltaNegative)
     delta_distribution = stats.norm(*fit_params)
 
 ####################################################################################################
