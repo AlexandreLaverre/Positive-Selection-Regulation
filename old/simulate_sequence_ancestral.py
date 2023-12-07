@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+# coding=utf-8
+import numpy as np
+import os
+import pandas
+from Bio import SeqIO
+from Bio.Seq import Seq
+import copy
+from alive_progress import alive_bar
+import random
+from Positive_Selection_Tests import SVM_functions as SVM
+
+path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+pathSubMat = path + "/substitution_matrix/human/"
+pathSimulation = path + "positive_selection/human/simulation/"
+Focal_fasta = pathSimulation + "/sequences/filtered_focal_sequences.fa"
+ModelEstimation = pathSimulation + "/Model/kmer_predicted_weight.txt"
+
+
+def generate_mutated_sequence(sequence, sub_mat, sub_mat_norm, nb_mutations):
+    for mut in range(nb_mutations):
+        # Calculate substitution probabilities for each position
+        pos_proba = np.empty(len(sequence))
+        for pos in range(len(sequence)):
+            nuc = sequence[pos]
+            pos_proba[pos] = sum(sub_mat[nuc].values())
+
+        normed_pos_proba = pos_proba / sum(pos_proba)  # normalisation of all positions to sum at 1
+
+        # draw position
+        rand_pos = int(np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, size=1))
+
+        # draw directions
+        old_nuc = sequence[rand_pos]
+        directions = list(sub_mat_norm[old_nuc].keys())
+        proba = list(sub_mat_norm[old_nuc].values())
+        new_nuc = np.random.choice(directions, p=proba)
+        rand_seq = sequence[:rand_pos] + new_nuc + sequence[rand_pos + 1:]  # change value in pos
+
+        sequence = rand_seq
+
+    return sequence
+
+
+####################################################################################################
+# Binding affinity values per kmer
+SVM_dict = SVM.get_svm_dict(ModelEstimation)
+KmerLen = SVM_dict[0]
+
+# Get substitution matrix for each chromosome
+SubMats, SubMats_norm = SVM.get_sub_matrix(pathSubMat)
+
+# Get Focal sequences
+AllSeqs = SeqIO.to_dict(SeqIO.parse(open(Focal_fasta), "fasta"))
+FirstSeqs = dict(list(AllSeqs.items())[:10000])
+First_focal_fasta = pathSimulation + "/sequences/first_focal_sequences.fa"
+
+if not os.path.isfile(First_focal_fasta):
+    with open(First_focal_fasta, 'w') as First:
+        SeqIO.write(FirstSeqs.values(), First, 'fasta')
+
+####################################################################################################
+mutations = [50]  # list(range(2, 5, 1)) + list(range(10, 30, 10))
+
+# Iterate over mutation values
+for nb_mut in mutations:
+    output = open(pathSimulation + "/sequences/simulated_sequences_" + str(nb_mut) + "_mut_selection.fa", 'w')
+    out_dic = open(pathSimulation + "/sequences/simulated_deltaSVM_" + str(nb_mut) + "_mut_selection.txt", 'w')
+
+    # Create a deep copy of the first sequences
+    simul_seqs = copy.deepcopy(FirstSeqs)
+    deltaSVM_dic = {}
+
+    # Shuffle the sequence IDs
+    seq_ids = list(FirstSeqs.keys())
+    random.shuffle(seq_ids)
+
+    print("Running with", nb_mut, "mutations per sequence...")
+
+    # Iterate over sequence IDs
+    with alive_bar(10000) as bar:
+        for i, ID in enumerate(seq_ids):
+            bar()  # print progress bar
+            focal_seq = str(FirstSeqs[ID].seq)
+            chromosome = ID.split(':')[0]
+            sub_mat_proba = SubMats[chromosome]
+            sub_mat_proba_norm = SubMats_norm[chromosome]
+
+            if len(focal_seq) >= 50:
+                DeltaSVM = None
+                attempt = 0
+                while True:
+                    mutated_seq = generate_mutated_sequence(focal_seq, sub_mat_proba, sub_mat_proba_norm, nb_mut)
+                    DeltaSVM = SVM.calculate_delta(mutated_seq, focal_seq, SVM_dict, KmerLen)
+                    attempt += 1
+
+                    if attempt > 1000:
+                        print(ID, "is highly constrained: skipped!")
+                        break
+
+                    # First 1000 sequences with strong positive selection
+                    if i < 1000 and DeltaSVM > 5:
+                        break
+                    # Then 1000 sequences with strong negative selection
+                    elif 1000 <= i < 2000 and DeltaSVM < -5:
+                        break
+                    # Remaining sequences with low changes in affinity
+                    elif i >= 2000 and -1 < DeltaSVM < 1:
+                        break
+
+                deltaSVM_dic[ID] = DeltaSVM
+                simul_seqs[ID].seq = Seq(mutated_seq)
+
+    SeqIO.write(simul_seqs.values(), output, 'fasta')
+    output.close()
+
+    for ID, delta in deltaSVM_dic.items():
+        out_dic.write(str(ID) + '\t' + str(delta) + '\n')
+    out_dic.close()
