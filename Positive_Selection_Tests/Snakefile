@@ -25,6 +25,7 @@ AncMethod = config["AncMethod"]
 cluster = config["cluster"]
 nbPart = 10
 
+
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
     split = "split"
