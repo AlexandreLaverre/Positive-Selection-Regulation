@@ -47,7 +47,7 @@ def compute_all_delta(seq):
                 test_seq[position] = new_nuc
                 test_seq = "".join(test_seq)
 
-                deltas[ID] = str(SVM.calculate_delta(seq, test_seq, SVM_dict, KmerLen))
+                deltas[ID] = str(SVM.calculate_delta(seq, test_seq, SVM_dict))
 
     return deltas
 
@@ -59,8 +59,8 @@ def run_deltas(seq_name):
     substitutions = SVM.get_sub_ids(ancestral_seq, focal_seq)
 
     if len(substitutions) > 1 and 20 <= len(ancestral_seq) <= 1000:
-        SVM_score = SVM.calculate_svm(focal_seq, KmerLen)
-        deltaSVM = SVM.calculate_delta(ancestral_seq, focal_seq, SVM_dict, KmerLen)
+        SVM_score = SVM.calculate_svm(focal_seq)
+        deltaSVM = SVM.calculate_delta(ancestral_seq, focal_seq, SVM_dict)
 
         # all possible substitutions
         deltas = compute_all_delta(ancestral_seq)
@@ -77,7 +77,6 @@ def run_deltas(seq_name):
 # Datas
 # Binding affinity values per kmer
 SVM_dict = SVM.get_svm_dict(ModelEstimation)
-KmerLen = SVM_dict[0]
 
 # Get Ancestral sequences
 AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(Ancestral_fasta), "fasta"))
