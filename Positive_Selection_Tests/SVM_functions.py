@@ -1,7 +1,7 @@
 from Bio.Seq import Seq
 import os
 import pandas
-import numpy
+import numpy as np
 
 
 # Get number of substitutions per sequence
@@ -42,7 +42,8 @@ def get_svm_dict(path_model):
 
 
 # Calculate SVM from sliding windows
-def calculate_svm(seq, svm_dict, kmer_len):
+def calculate_svm(seq, svm_dict):
+    kmer_len = len(svm_dict[0])
     svm = 0
     for pos in range(len(seq) - kmer_len + 1):   # sliding window of kmer length
         kmer = seq[pos:pos+kmer_len]
@@ -51,7 +52,8 @@ def calculate_svm(seq, svm_dict, kmer_len):
 
 
 # Calculate delta SVM from sliding windows
-def calculate_delta(seq_ref, seq_alt, svm_dict, kmer_len):
+def calculate_delta(seq_ref, seq_alt, svm_dict):
+    kmer_len = len(svm_dict[0])
     delta_svm = 0
     for pos in range(len(seq_ref) - kmer_len + 1):   # sliding window of kmer length
         kmer_ref = seq_ref[pos:pos+kmer_len]
@@ -71,13 +73,50 @@ def get_sub_matrix(path_matrix):
 
             chrom_Table = pandas.read_table(path_matrix + file, sep=' ')
             chrom_Table.index = ['A', 'C', 'G', 'T']  # change row values
-            numpy.fill_diagonal(chrom_Table.values, 0)  # assign 0 to diagonal
+            np.fill_diagonal(chrom_Table.values, 0)  # assign 0 to diagonal
             chrom_SubMat = chrom_Table.to_dict('index')  # get dict by matrix rows
             submats[chrom] = chrom_SubMat
-            submats_norm[chrom] = chrom_Table.div(chrom_Table.sum(axis=1), axis=0).to_dict(
-                'index')  # get normalized dict by matrix rows
+            # get normalized dict by matrix rows
+            submats_norm[chrom] = chrom_Table.div(chrom_Table.sum(axis=1), axis=0).to_dict('index')
 
     if len(submats) == 0:
         raise ValueError("Substitution matrix not found!")
 
     return submats, submats_norm
+
+
+def normalised_position_probability(seq, sub_prob):
+    # Get substitution probabilities for each position
+    pos_proba = np.empty(len(seq))
+    for pos in range(len(seq)):
+        nuc = seq[pos]  # the probability to draw a given position is equal to the sum
+        pos_proba[pos] = sum(sub_prob[nuc].values())  # of the substitution probabilities from this nucleotide
+
+    normed_pos_proba = pos_proba / sum(pos_proba)  # normalisation of all positions to sum at 1
+
+    return normed_pos_proba
+
+
+# Mutate a sequence N time according to positional and directional probabilities
+def mutate_seq(seq, normed_pos_proba, sub_prob_norm, n_sub):
+    # draw positions
+    rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=n_sub)
+    # draw directions
+    for pos in rand_pos:
+        old_nuc = seq[pos]
+        directions = list(sub_prob_norm[old_nuc].keys())
+        proba = list(sub_prob_norm[old_nuc].values())
+        new_nuc = np.random.choice(directions, p=proba)
+        seq[pos] = new_nuc
+
+    return ''.join(seq)
+
+
+def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
+    normed_pos_proba = normalised_position_probability(seq, sub_prob)
+    random_seqs = [""] * n_rand
+    for n in range(n_rand):
+        rand_seq = mutate_seq(list(seq), normed_pos_proba, sub_prob_norm, n_sub)
+        random_seqs[n] = rand_seq
+
+    return random_seqs
