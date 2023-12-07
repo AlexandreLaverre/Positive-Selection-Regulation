@@ -40,6 +40,8 @@ def get_svm_dict(path_model):
             svm_dict[kmer] = svm_score
             svm_dict[rev_kmer] = svm_score
 
+    return svm_dict
+
 
 # Calculate SVM from sliding windows
 def calculate_svm(seq, svm_dict):
@@ -48,18 +50,21 @@ def calculate_svm(seq, svm_dict):
     for pos in range(len(seq) - kmer_len + 1):   # sliding window of kmer length
         kmer = seq[pos:pos+kmer_len]
         svm += svm_dict[kmer]   # sum of SVM for each kmer
+
     return round(svm, 7)
 
 
 # Calculate delta SVM from sliding windows
 def calculate_delta(seq_ref, seq_alt, svm_dict):
-    kmer_len = len(svm_dict[0])
+    kmer_len = len(list(svm_dict.keys())[0])
     delta_svm = 0
     for pos in range(len(seq_ref) - kmer_len + 1):   # sliding window of kmer length
-        kmer_ref = seq_ref[pos:pos+kmer_len]
-        kmer_alt = seq_alt[pos:pos+kmer_len]
-        if kmer_ref != kmer_alt:
-            delta_svm += svm_dict[kmer_alt] - svm_dict[kmer_ref]  # sum of delta between sequences for each kmer
+        kmer_ref = seq_ref[pos:pos + kmer_len]
+        kmer_alt = seq_alt[pos:pos + kmer_len]
+        if kmer_ref == kmer_alt:
+            continue
+        delta_svm += svm_dict[kmer_alt] - svm_dict[kmer_ref]  # sum of delta between sequences for each kmer
+
     return round(delta_svm, 7)
 
 
@@ -119,4 +124,4 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
         rand_seq = mutate_seq(list(seq), normed_pos_proba, sub_prob_norm, n_sub)
         random_seqs[n] = rand_seq
 
-    return random_seqs
+    return random_seqs if n_rand != 1 else random_seqs[0]
