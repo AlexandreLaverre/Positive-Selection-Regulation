@@ -4,9 +4,11 @@ import numpy as np
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from multiprocessing import Manager, Pool
+from multiprocessing import Pool
 from alive_progress import alive_bar
-import SVM_functions as SVM #from Positive_Selection_Tests
+import sys
+sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
+import SVM_functions as SVM
 
 path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
 species = "human"
@@ -33,7 +35,7 @@ def get_simulated_sequences(seq_id):
             random_seq = SVM.get_random_seqs(seq, sub_mat_proba, sub_mat_proba_norm, n_sub=nsub, n_rand=1)
             delta = SVM.calculate_delta(seq, random_seq, SVM_dict)
 
-            # Low delta = Stabilising selection
+             # Low delta = Stabilising selection
             if -0.5 < delta < 0.5 and stab_seq is None:
                 stab_seq = SeqRecord(Seq(random_seq), id=seq_id, description="")
 
@@ -71,7 +73,7 @@ for ID in initial_sequences.keys():
     if nb_sub > 1:
         seq_ids.append(ID)
 
-    if len(seq_ids) == 1000:
+    if len(seq_ids) == 1001:
         break
 
 Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
@@ -83,7 +85,7 @@ if __name__ == '__main__':
             # Run function for each sequence in parallel
             for results in pool.imap_unordered(get_simulated_sequences, seq_ids):
                 bar()
-                if results is not None:
+                if results is not None:  # can be None if sequence length is out-limit
                     Stabilised_dict[results[0]] = results[1]
                     Positive_dict[results[0]] = results[2]
                     Neutral_dict[results[0]] = results[3]
