@@ -3,6 +3,9 @@
 import numpy as np
 from scipy import stats
 import matplotlib as mat
+import pandas as pd
+from scipy.optimize import minimize
+from scipy.stats import chi2
 
 
 def proba_fixation(delta, params, delta_bounds):
@@ -53,6 +56,59 @@ def loglikelihood(deltas, params, hist_mutations):
     if min(models_lk) <= 0.0:
         return -np.infty
     return np.sum(np.log(models_lk))
+
+
+def run_estimations(hist_svm, obs_svm, alpha=0.05, verbose=False):
+    # Null model: no param.
+    ll_neutral = loglikelihood(obs_svm, [], hist_svm)
+
+    # Stabilizing selection: alpha = beta
+    bounds = [(0.0, np.inf)]
+    model_purif = minimize(lambda theta: -loglikelihood(obs_svm, theta, hist_svm), np.array([1.0]),
+                           bounds=bounds, method="Nelder-Mead")
+    ll_purif = -model_purif.fun
+
+    # Positive selection
+    bounds = [(0.0, np.inf), (0.0, np.inf)]
+    initial_guess = np.array([1.0, 1.0])
+    model_pos = minimize(lambda theta: -loglikelihood(obs_svm, theta, hist_svm), initial_guess,
+                         bounds=bounds, method="Nelder-Mead")
+    ll_pos = -model_pos.fun
+
+    models = [model_purif, model_pos, bounds]
+
+    # Likelihood ratio test:
+    lrt_null_purif = -2 * (ll_neutral - ll_purif)
+    lrt_purif_pos = -2 * (ll_purif - ll_pos)
+
+    p_value_null_purif = chi2.sf(lrt_null_purif, 1)
+    p_value_purif_pos = chi2.sf(lrt_purif_pos, 1)
+
+    conclusion = "Neutral model"
+    if p_value_null_purif < alpha:
+        conclusion = "Stabilizing model"
+    if p_value_purif_pos < p_value_null_purif and p_value_purif_pos < alpha:
+        conclusion = "Positive model"
+
+    if verbose:
+        print(f"  LnL neutral    : {ll_neutral:.2f}")
+        print(f"  LnL stabilizing: {ll_purif:.4f}, alpha: {model_purif.x[0]:.3g}, beta: {model_purif.x[0]:.3g}")
+        print(f"  LnL positive   : {ll_pos:.4f}, alpha: {model_pos.x[0]:.3g}, beta: {model_pos.x[1]:.3g}")
+        print(f"  LRT null vs purif: {lrt_null_purif:.2f}, p-value: {p_value_null_purif:.2g}")
+        print(f"  LRT purif vs pos : {lrt_purif_pos:.2f}, p-value: {p_value_purif_pos:.2g}")
+        print("  Conclusion:", conclusion)
+
+    # Create a DataFrame
+    result = pd.DataFrame({"Nmut": [len(obs_svm)], "SumObs": [np.sum(obs_svm)], "MeanObs": [np.mean(obs_svm)],
+                           "VarObs": [np.var(obs_svm)], "AlphaPurif:": [model_purif.x[0]],
+                           "AlphaPos:": [model_pos.x[0]], "BetaPos:": [model_pos.x[1]],
+                           "NiterPurif:": [model_purif.nit], "NiterPos:": [model_pos.nit],
+                           "LL_neutral": [ll_neutral], "LL_purif": [ll_purif], "LL_pos": [ll_pos],
+                           "LRT_null_purif": [lrt_null_purif], "LRT_purif_pos": [lrt_purif_pos],
+                           "p_value_null_purif": [p_value_null_purif], "p_value_purif_pos": [p_value_purif_pos],
+                           "Conclusion": [conclusion]})
+
+    return result, models
 
 
 # Plot the results for each sequence
