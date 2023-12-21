@@ -96,6 +96,6 @@ if __name__ == '__main__':
 
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{pathResults}/MLE_summary_simulated_{simulation}_{args.NbBin}bins.csv', index=False)
+    result_df.to_csv(f'{pathResults}/MLE_summary_simulated_{simulation}_{args.NbBin}bins_500simul.csv', index=False)
 
 ########################################################################################################################
