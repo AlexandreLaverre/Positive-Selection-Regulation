@@ -83,6 +83,7 @@ def run_estimations(hist_svm, obs_svm, alpha=0.05, verbose=False):
 
     p_value_null_purif = chi2.sf(lrt_null_purif, 1)
     p_value_purif_pos = chi2.sf(lrt_purif_pos, 1)
+    p_value_null_pos = chi2.sf(lrt_purif_pos, 2)
 
     conclusion = "Neutral model"
     if p_value_null_purif < alpha:
@@ -100,13 +101,13 @@ def run_estimations(hist_svm, obs_svm, alpha=0.05, verbose=False):
 
     # Create a DataFrame
     result = pd.DataFrame({"Nmut": [len(obs_svm)], "SumObs": [np.sum(obs_svm)], "MeanObs": [np.mean(obs_svm)],
-                           "VarObs": [np.var(obs_svm)], "AlphaPurif:": [model_purif.x[0]],
-                           "AlphaPos:": [model_pos.x[0]], "BetaPos:": [model_pos.x[1]],
-                           "NiterPurif:": [model_purif.nit], "NiterPos:": [model_pos.nit],
+                           "VarObs": [np.var(obs_svm)],"MinSVM": [np.min(hist_svm[1])], "MaxSVM": [np.max(hist_svm[1])],
+                           "AlphaPurif": [model_purif.x[0]], "AlphaPos": [model_pos.x[0]], "BetaPos": [model_pos.x[1]],
+                           "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit],
                            "LL_neutral": [ll_neutral], "LL_purif": [ll_purif], "LL_pos": [ll_pos],
                            "LRT_null_purif": [lrt_null_purif], "LRT_purif_pos": [lrt_purif_pos],
                            "p_value_null_purif": [p_value_null_purif], "p_value_purif_pos": [p_value_purif_pos],
-                           "Conclusion": [conclusion]})
+                           "p_value_null_pos": [p_value_null_pos], "Conclusion": [conclusion]})
 
     return result, models
 
