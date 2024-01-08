@@ -100,7 +100,7 @@ if __name__ == '__main__':
     dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
 
     for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_{dict_name}_evolution_by_{Simu_method}.fa", 'w') as output:
+        with open(f"{PathSequence}/simulated_sequences_by_{Simu_method}_{dict_name}_evolution.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################
