@@ -1,7 +1,9 @@
+import random
 from Bio.Seq import Seq
 import os
 import pandas
 import numpy as np
+from scipy import stats
 
 
 # Get number of substitutions per sequence
@@ -125,3 +127,44 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
         random_seqs[n] = rand_seq
 
     return random_seqs if n_rand != 1 else random_seqs[0]
+
+
+# Get deltaSVM for all possible substitutions.
+def compute_all_delta(seq, svm_dict):
+    nuc = ["A", "T", "C", "G"]
+    deltas = {}
+    for position in range(len(seq)):
+        old_nuc = seq[position]
+        for new_nuc in nuc:
+            if new_nuc != old_nuc:
+                id = "pos" + str(position) + ":" + old_nuc + "-" + new_nuc
+                test_seq = list(seq)
+                test_seq[position] = new_nuc
+                test_seq = "".join(test_seq)
+
+                deltas[id] = str(calculate_delta(seq, test_seq, svm_dict))
+
+    return deltas
+
+
+def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random"):
+    deltas = np.array(list(dic_deltas.values()))
+    if evol == "random":
+        sampled_sub = np.random.choice(list(dic_deltas.keys()), size=n_sub, replace=False)
+    else:
+        mean = np.quantile(deltas, 0.99) if evol == "positive" else 0
+        weights = np.array([stats.norm.pdf(svm, loc=mean, scale=0.1) for svm in deltas])
+        weights /= np.sum(weights)
+        sampled_sub = np.random.choice(list(dic_deltas.keys()), size=n_sub, p=weights, replace=False)
+
+    seq = list(seq)
+    for sub in sampled_sub:
+        id_pos = sub.split(":")[0]
+        pos = int(id_pos.strip("pos"))
+        new_nuc = sub.split("-")[1]
+        seq[pos] = new_nuc
+
+    return ''.join(seq)
+
+
+

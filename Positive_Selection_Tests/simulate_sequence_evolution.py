@@ -18,35 +18,46 @@ PathSequence = f"{path}/positive_selection/{species}/{TF}/sequences/"
 PathModel = f"{path}/positive_selection/{species}/{TF}/Model/kmer_predicted_weight.txt"
 
 max_mut = 10
+Simu_method = "500_rounds"
 NbThread = 8
 
 
 ####################################################################################################
-def get_simulated_sequences(seq_id):
+def get_simulated_sequences(seq_id, method=Simu_method):
     original_seq = str(initial_sequences[seq_id].seq)
     if 20 <= len(original_seq) <= 1000:
         chromosome = seq_id.split(':')[0]
         sub_mat_proba = SubMats[chromosome]
         sub_mat_proba_norm = SubMats_norm[chromosome]
-        nsub = np.random.randint(2, max_mut)
+        nsub = np.random.randint(2, max_mut+1)
 
-        # Simulate 500 sequences
-        random_seq = SVM.get_random_seqs(original_seq, sub_mat_proba, sub_mat_proba_norm, n_sub=nsub, n_rand=500)
-        deltas = {}
-        for seq in random_seq:
-            deltas[seq] = SVM.calculate_delta(original_seq, seq, SVM_dict)
+        if method == "500_rounds":
+            # Simulate 500 sequences
+            random_seq = SVM.get_random_seqs(original_seq, sub_mat_proba, sub_mat_proba_norm, n_sub=nsub, n_rand=500)
+            deltas = {}
+            for seq in random_seq:
+                deltas[seq] = SVM.calculate_delta(original_seq, seq, SVM_dict)
 
-        # Stabilising selection: find the lowest change in delta
-        min_seq = min(deltas, key=lambda k: abs(deltas[k]))
-        stab_seq = SeqRecord(Seq(min_seq), id=seq_id, description="")
+            # Stabilising selection: find the lowest change in delta
+            stab_id = min(deltas, key=lambda k: abs(deltas[k]))
 
-        # Positive selection: find the highest change in delta =
-        max_seq = max(deltas, key=lambda k: abs(deltas[k]))
-        pos_seq = SeqRecord(Seq(max_seq), id=seq_id, description="")
+            # Positive selection: find the highest change in delta
+            pos_id = max(deltas, key=lambda k: abs(deltas[k]))
 
-        # Random drift: random seq
-        rand_seq = random.choice(list(deltas.keys()))
-        null_seq = SeqRecord(Seq(rand_seq), id=seq_id, description="")
+            # Random drift: find a random seq
+            rand_id = random.choice(list(deltas.keys()))
+
+        elif method == "deltas":
+            deltas = SVM.compute_all_delta(original_seq, SVM_dict)
+            for k, v in deltas.items():
+                deltas[k] = float(v)
+            stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
+            pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="positive")
+            rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
+
+        stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
+        pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description="")
+        null_seq = SeqRecord(Seq(rand_id), id=seq_id, description="")
 
         return seq_id, stab_seq, pos_seq, null_seq
 
@@ -89,7 +100,7 @@ if __name__ == '__main__':
     dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
 
     for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_{dict_name}_evolution_500.fa", 'w') as output:
+        with open(f"{PathSequence}/simulated_sequences_{dict_name}_evolution_by_{Simu_method}.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################
