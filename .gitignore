@@ -43,3 +43,5 @@ detect_positive_selection/venv/
 ChIPseq_analyses/work/
 .idea/
 .snakemake/
+*/__pycache__/
+*/*/__pycache__/
