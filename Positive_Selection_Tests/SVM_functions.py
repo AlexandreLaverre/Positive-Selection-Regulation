@@ -57,8 +57,10 @@ def calculate_svm(seq, svm_dict):
 
 
 # Calculate delta SVM from sliding windows
-def calculate_delta(seq_ref, seq_alt, svm_dict):
-    kmer_len = len(list(svm_dict.keys())[0])
+def calculate_delta(seq_ref, seq_alt, svm_dict, kmer_len=10):
+    if kmer_len != 10:
+        kmer_len = len(list(svm_dict.keys())[0])
+
     delta_svm = 0
     for pos in range(len(seq_ref) - kmer_len + 1):   # sliding window of kmer length
         kmer_ref = seq_ref[pos:pos + kmer_len]

@@ -5,7 +5,9 @@ from Bio import SeqIO
 import numpy as np
 from alive_progress import alive_bar
 import multiprocessing.pool
-from Positive_Selection_Tests import SVM_functions as SVM
+import sys
+sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
+import SVM_functions as SVM
 
 np.random.seed(12)
 
@@ -18,7 +20,7 @@ parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF")
 parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("cluster", default="local", help="cluster or local")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
-parser.add_argument("--Simul", type=int, required=False, help="Number of Mutation per Seq in simulation mode")
+parser.add_argument("--Simulation", default="500_rounds_stabilising", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 args = parser.parse_args()
 
@@ -27,19 +29,23 @@ if args.cluster == "cluster":
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
-if args.Simul:
-    pathSelection = f"{path}positive_selection/{args.species}/simulation_mutational_steps/"
-    seq = f"{args.TF}_{args.sample}"
+if args.Simulation:
+    pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
+    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}_evolution.fa"
+    Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
+    Output = open(f"{pathSelection}/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_by_{args.Simulation}.txt", "w")
 
     # pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
     # Ancestral_fasta = f"{pathJialin}{seq}_filtered_ancestor.fa"
     # Focal_fasta = f"{pathJialin}{seq}_filtered_focal.fa"
     # Output = open(f"{pathSelection}PosSelTest_deltaSVM_mouse_triplets_{seq}{SimulSel_flag}.txt", "w")
+    # Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
 
-    Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
-    Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
-    Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
-    Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
+    # pathSelection = f"{path}positive_selection/{args.species}/simulation_mutational_steps/"
+    # seq = f"{args.TF}_{args.sample}"
+    # Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
+    # Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
+    #Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
     pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
@@ -47,8 +53,8 @@ else:
     Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations_selection_NegativeDelta.txt", "w")
     NegativeSet = f"{path}/positive_selection/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
-ModelEstimation = pathSelection + "Model/kmer_predicted_weight.txt"
-pathSubMat = path + "/substitution_matrix/" + args.species + "/"
+ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
+pathSubMat = f"{path}/substitution_matrix/{args.species}/"
 
 
 ####################################################################################################
@@ -58,12 +64,14 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, sub):
 
     random_seqs = [""] * args.NbRand
     nb_seq = 0
+    seq = list(seq)
     while nb_seq < args.NbRand:
-        rand_seq = SVM.mutate_seq(list(seq), normed_pos_proba, sub_prob_norm, sub)
+        rand_seq = SVM.mutate_seq(seq, normed_pos_proba, sub_prob_norm, sub)
         random_seqs[nb_seq] = rand_seq
         nb_seq += 1
-        delta = SVM.calculate_delta(seq, rand_seq, SVM_dict)
-        Distrib_simul.write(str(delta) + "\n")
+
+        #delta = SVM.calculate_delta(seq, rand_seq, SVM_dict)
+        #Distrib_simul.write(str(delta) + "\n")
 
     return random_seqs
 
@@ -126,7 +134,7 @@ if len(FocalSeqs) == 0:
 
 ####################################################################################################
 # Running and writing results
-Output.write("ID\tSVM\tdeltaSVM\tmed.deltaSVM.simul\tmean.deltaSVM.simul\tNbSub\tpval.high\n")  # header
+Output.write("ID\tSVM\tdeltaSVM\tmed.expected.deltaSVM\tmean.expected.deltaSVM\tNbSub\tpval.high\n")  # header
 
 # protect the entry point
 if __name__ == '__main__':
