@@ -26,7 +26,6 @@ for (distrib in c("Beta", "Gaussian")){
   }
 }
 
-
 par(mfrow=c(2,2))
 for (distrib in c("Beta", "Gaussian")){
   simul <- read.csv(paste0(path, "/Simulations/MLE_summary_1000simul_100bins_", 
@@ -48,14 +47,12 @@ for (distrib in c("Beta", "Gaussian")){
     
 table(simul$Scenario, simul$Conclusion)
 
-
-
+################################################################################
+################################################################################
 old.gaussian.simul <- read.csv(paste0(path, "/Simulations/MLE_summary_1000simul_100bins.csv"), h=T)
 old.gaussian.simul$LRT_null_purif <- -2*(old.gaussian.simul$LL_neutral-old.gaussian.simul$LL_purif)
 summary(old.gaussian.simul$LRT_null_purif)
 hist(-old.gaussian.simul$LL_neutral-old.gaussian.simul$LL_purif)
-
-
 
 pdf("/Users/alaverre/Documents/Detecting_positive_selection/results/MaxLikelihoodApproach/ProbaFixEstimation/Comparisons_scenario_conclusion_1000simul_100bins.pdf", width=7, height=8)
 par(xpd = TRUE)
@@ -118,3 +115,115 @@ for (TF in TFs){
   
 }
 
+################################################################################
+################################################################################
+# Simulations 500 sequences
+library(corrplot)
+library(RColorBrewer)
+
+path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+col=c("forestgreen", "deepskyblue3", "firebrick")
+names(col) = c("Positive model", "Stabilizing model", "Neutral model")
+
+bin = "50"
+datas = c("", "_500simul")
+selection = c("neutral", "stabilising", "positive")
+maxSub=150
+par(mfrow=c(2,2))
+
+all_delta <- list()
+all_simul <- list()
+
+for (data in datas){
+  for (sel in selection){
+  obs_col = c("seq_name", "SVM", "deltaSVM", "NbSub", paste("sub", 1:maxSub, sep = ":"))
+  deltas <- read.table(paste0(path, "/positive_selection/human/Wilson/CEBPA/deltas/simulated", data, "_", sel, "_observed_deltaSVM.txt"), h=F, sep="\t", quote="", fill=T, col.names = obs_col)
+  row.names(deltas) <- deltas$seq_name
+  all_delta[[paste0(sel, data)]] <- deltas
+  
+  simul <- read.csv(paste0(path, "MaxLikelihoodApproach/human/CEBPA/simulations/MLE_summary_simulated_", sel, "_", bin, "bins", data, ".csv"), h=T, row.names = 1)
+  simul$Conclusion <- as.factor(simul$Conclusion)
+  simul$Conclusion <- factor(simul$Conclusion, levels=c("Positive model", "Stabilizing model", "Neutral model"))
+  
+  simul$deltaSVM <- deltas[row.names(simul),]$deltaSVM
+  simul$Diffdelta <-simul$deltaSVM-simul$SumObs
+  hist(simul$Diffdelta, breaks=20, xlab="diff deltaSVM", main=paste(sel, data))
+  all_simul[[paste0(sel, data)]] <- simul
+  
+  print(paste(sel, data))
+  print(table(simul$Conclusion))
+  }
+  
+  
+}
+
+simul$Conclusion <- NULL
+CorMat <- cor(simul)
+corrplot(CorMat, type="upper", order="hclust", main=type, col=brewer.pal(n=8, name="RdYlBu"))
+
+for (data in datas){
+  rand <- all_simul[[paste0("neutral", data)]]
+  rand$ID <- rownames(rand)
+  rand$Scenario <- "Random"
+  rownames(rand) <- NULL
+  pos <- all_simul[[paste0("positive", data)]]
+  pos$ID <- rownames(pos)
+  pos$Scenario <- "Positive"
+  rownames(pos) <- NULL
+  stab <- all_simul[[paste0("stabilising", data)]]
+  stab$ID <- rownames(stab)
+  stab$Scenario <- "Stabilizing"
+  rownames(stab) <- NULL
+  simul <- rbind(rand, pos, stab)
+  simul$Scenario <- factor(simul$Scenario, levels=c("Positive", "Stabilizing", "Random"))
+  
+  boxplot(simul$Nmut~simul$Scenario, notch=T)
+  boxplot(simul$Nmut~simul$Conclusion, notch=T)
+  boxplot(simul$Diffdelta~simul$Scenario, notch=T, outline=F)
+  boxplot(simul$Diffdelta~simul$Conclusion, notch=T, outline=F)
+  
+  
+  pdf(paste0(path, "/figures/Simulations", data, "_epistatic_effect.pdf"))
+  par(mfrow=c(2,2))
+  # Barplot proportion epistasis per substitution number
+  simul$Epistasis <- ifelse(simul$Diffdelta==0, 0, 1)
+  barplot(tapply(simul$Epistasis, simul$Nmut, function(x) (sum(x)/length(x))*100),
+          xlab="Number of substitution", ylab="% seq with epistasis", main="All simulations", las=1)
+  
+  barplot(tapply(simul[which(simul$Scenario=="Random"),]$Epistasis, simul[which(simul$Scenario=="Random"),]$Nmut, function(x) (sum(x)/length(x))*100),
+          xlab="Number of substitution", ylab="% seq with epistasis", main="Random simulations", las=1)
+  
+  barplot(tapply(simul[which(simul$Scenario=="Positive"),]$Epistasis, simul[which(simul$Scenario=="Positive"),]$Nmut, function(x) (sum(x)/length(x))*100),
+          xlab="Number of substitution", ylab="% seq with epistasis", main="Positive simulations", las=1)
+  
+  barplot(tapply(simul[which(simul$Scenario=="Stabilizing"),]$Epistasis, simul[which(simul$Scenario=="Stabilizing"),]$Nmut, function(x) (sum(x)/length(x))*100),
+          xlab="Number of substitution", ylab="% seq with epistasis", main="Stabilising simulations", las=1)
+  
+  # Boxplot epistatic effect
+  boxplot(simul$Diffdelta~simul$Nmut, notch=T, outline=F, xlab="Number of substitution", ylab="Epistatic effect", main="All simulations")
+  abline(h=0, lty="dotted", cex=1.2)
+  prop=1-length(which(simul$Diffdelta == 0))/nrow(simul)
+  mtext(paste("Proportion of epistasis =", signif(prop, digits=2)))
+  
+  boxplot(rand$Diffdelta~rand$Nmut, notch=T, outline=F, xlab="Number of substitution", ylab="Epistatic effect", main="Random simulations")
+  abline(h=0, lty="dotted", cex=1.2)
+  prop=1-length(which(rand$Diffdelta == 0))/nrow(rand)
+  mtext(paste("Proportion of epistasis =", signif(prop, digits=2)))
+  
+  boxplot(pos$Diffdelta~pos$Nmut, notch=T, outline=F, xlab="Number of substitution", ylab="Epistatic effect", main="Positive simulations")
+  abline(h=0, lty="dotted", cex=1.2)
+  prop=1-length(which(pos$Diffdelta == 0))/nrow(pos)
+  mtext(paste("Proportion of epistasis =", signif(prop, digits=2)))
+  
+  boxplot(stab$Diffdelta~stab$Nmut, notch=T, outline=F, xlab="Number of substitution", ylab="Epistatic effect", main="Stabilising simulations")
+  abline(h=0, lty="dotted", cex=1.2)
+  prop=1-length(which(stab$Diffdelta == 0))/nrow(stab)
+  mtext(paste("Proportion of epistasis =", signif(prop, digits=2)))
+  
+  dev.off()
+}
+
+
+barplot(table(simul$Conclusion, simul$Scenario), col=col, las=1, cex.lab=1.2, xlab="Scenario", ylab="Nb simulation")
+legend("top", legend=names(col), fill=col, bty="n", ncol=3, inset = c(0, -0.25))
+text(x=2, y=1300, labels="Test conclusion", cex=1.2)

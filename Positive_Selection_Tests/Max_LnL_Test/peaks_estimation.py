@@ -78,8 +78,8 @@ All_SVM_All_seq = pd.read_csv(f'{pathData}/simulated_initial_all_possible_deltaS
                               names=range(1 + maxLength * 3))
 All_SVM_All_seq.columns = ['ID'] + list(All_SVM_All_seq.columns[1:])
 
-Obs_SVM_All_seq = pd.read_csv(f'{pathData}/simulated_{simulation}_observed_deltaSVM.txt', sep='\t', header=None,
-                              names=range(maxSub + 4))
+Obs_SVM_All_seq = pd.read_csv(f'{pathData}/simulated_by_500_rounds_{simulation}_observed_deltaSVM.txt', sep='\t',
+                              header=None, names=range(maxSub + 4))
 Obs_SVM_All_seq.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(Obs_SVM_All_seq.columns[4:])
 
 SeqIDs = set(Obs_SVM_All_seq['ID'])
@@ -96,6 +96,6 @@ if __name__ == '__main__':
 
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{pathResults}/MLE_summary_simulated_{simulation}_{args.NbBin}bins_500simul.csv', index=False)
+    result_df.to_csv(f'{pathResults}/MLE_summary_simulated_by_500_rounds_{simulation}_{args.NbBin}bins.csv', index=False)
 
 ########################################################################################################################

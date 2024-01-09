@@ -18,7 +18,7 @@ parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF ...")
 parser.add_argument("cluster", default="local", help="cluster or local")
 parser.add_argument("--sister", default=False, action='store_true', help="Run on sister's sequences instead of focal.")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
-parser.add_argument("--Simulation", default=False, action='store_true', help="Get obs delta for all the simulated regimes")
+parser.add_argument("--Simulation", default=False, help="Get obs delta for all the simulated regimes (default = False; either 500_rounds or deltas")
 args = parser.parse_args()
 
 if args.cluster == "cluster":
@@ -34,7 +34,7 @@ if args.Simulation:
     output_files['all'] = open(f"{pathResults}/deltas/simulated_initial_all_possible_deltaSVM.txt", "w")
     targets = ["stabilising", "neutral", "positive"]
     for evol in targets:
-        output_files[evol] = open(f"{pathResults}/deltas/simulated_500_{evol}_observed_deltaSVM.txt", "w")
+        output_files[evol] = open(f"{pathResults}/deltas/simulated_by_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
 else:
     targets = [focal_sp]
     output_files['all'] = open(f"{pathResults}/deltas/ancestral_all_possible_deltaSVM.txt", "w")
@@ -42,22 +42,6 @@ else:
 
 
 ####################################################################################################
-# Get deltaSVM for all possible substitutions.
-def compute_all_delta(seq):
-    nuc = ["A", "T", "C", "G"]
-    deltas = {}
-    for position in range(len(seq)):
-        old_nuc = seq[position]
-        for new_nuc in nuc:
-            if new_nuc != old_nuc:
-                id = "pos" + str(position) + ":" + old_nuc + "-" + new_nuc
-                test_seq = list(seq)
-                test_seq[position] = new_nuc
-                test_seq = "".join(test_seq)
-
-                deltas[id] = str(SVM.calculate_delta(seq, test_seq, SVM_dict))
-
-    return deltas
 
 
 # Return all and observed deltaSVM for a given sequence
@@ -65,7 +49,7 @@ def run_deltas(seq_name):
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
     if 20 <= len(ancestral_seq) <= 1000:
         # all possible substitutions
-        deltas = compute_all_delta(ancestral_seq)
+        deltas = SVM.compute_all_delta(ancestral_seq, SVM_dict)
         all_delta = '\t'.join(deltas.values())
         output_all = f"{seq_name}\t{all_delta}\n"
         output_obs = {}
@@ -96,7 +80,7 @@ if args.Simulation:
     FocalSeqs = {}
     for evol in targets:
         FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(
-            open(f"{pathResults}/sequences/simulated_sequences_{evol}_evolution_500.fa"), "fasta"))
+            open(f"{pathResults}/sequences/simulated_sequences_by_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
     SeqIDs = FocalSeqs[evol].keys()
 else:
     # Get ancestral sequences
