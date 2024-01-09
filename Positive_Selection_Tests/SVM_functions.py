@@ -46,8 +46,9 @@ def get_svm_dict(path_model):
 
 
 # Calculate SVM from sliding windows
-def calculate_svm(seq, svm_dict):
-    kmer_len = len(list(svm_dict.keys())[0])
+def calculate_svm(seq, svm_dict, kmer_len=10):
+    if kmer_len != 10:
+        kmer_len = len(list(svm_dict.keys())[0])
     svm = 0
     for pos in range(len(seq) - kmer_len + 1):   # sliding window of kmer length
         kmer = seq[pos:pos+kmer_len]
