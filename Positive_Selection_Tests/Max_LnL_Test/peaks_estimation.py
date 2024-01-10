@@ -12,7 +12,6 @@ import warnings
 import argparse
 from mpl_toolkits.mplot3d import Axes3D
 import sys
-
 sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/Max_LnL_Test/')
 import MLEvol_functions as ML
 
@@ -21,7 +20,6 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ########################################################################################################################
 def estimate_evolution(id, plots=False):
-    # print(ID)
     # Retrieve the corresponding deltas for each ID
     all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == id, 1:].iloc[0]
     obs_svm_row = Obs_SVM_All_seq.loc[Obs_SVM_All_seq['ID'] == id, 4:].iloc[0]
@@ -56,32 +54,37 @@ def estimate_evolution(id, plots=False):
 ########################################################################################################################
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species common name (e.g: human dog)")
+parser.add_argument("sample", help="Study name: Wilson Schmidt")
 parser.add_argument("TF", help="Transcription factor (e.g: CEBPA CTCF)")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
 parser.add_argument("--NbBin", default=100, type=int, required=False, help="Number of bins for All deltasSVM per Seq")
-parser.add_argument("--Simulation", type=str, required=False, help="Type of simulations (neutral stabilising positive)")
+parser.add_argument("--Simulation", type=str, required=False,
+                    help="Type of simulations (e.g: by_500_rounds_neutral by_deltas_stabilising)")
 args = parser.parse_args()
 
 maxSub = 150
 maxLength = 1000
-
-if args.Simulation:
-    simulation = args.Simulation
-
 path = "/Users/alaverre/Documents/Detecting_positive_selection"
-# pathData = f'{path}/results/positive_selection/all_deltas/{args.species}/{args.TF}/'
-pathData = f'{path}/results/positive_selection/{args.species}/Wilson/{args.TF}/deltas/'
+pathData = f'{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/deltas/'
 pathResults = f'{path}/results/MaxLikelihoodApproach/{args.species}/{args.TF}/simulations/'
 os.makedirs(pathResults, exist_ok=True)
 
-All_SVM_All_seq = pd.read_csv(f'{pathData}/simulated_initial_all_possible_deltaSVM.txt', sep='\t', header=None,
-                              names=range(1 + maxLength * 3))
-All_SVM_All_seq.columns = ['ID'] + list(All_SVM_All_seq.columns[1:])
+if args.Simulation:
+    Ancestral_deltas_file = "simulated_initial_all_possible_deltaSVM.txt"
+    Focal_deltas_file = f"simulated_{args.Simulation}_observed_deltaSVM.txt"
+    Output_file = f"MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
+else:
+    Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
+    Focal_deltas_file = "focal_observed_deltaSVM.txt"
+    Output_file = f"MLE_summary_{args.NbBin}bins.csv"
 
-Obs_SVM_All_seq = pd.read_csv(f'{pathData}/simulated_by_500_rounds_{simulation}_observed_deltaSVM.txt', sep='\t',
-                              header=None, names=range(maxSub + 4))
+All_SVM_All_seq = pd.read_csv(f'{pathData}/{Ancestral_deltas_file}', sep='\t', header=None, names=range(1+maxLength*3))
+Obs_SVM_All_seq = pd.read_csv(f'{pathData}/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
+
+All_SVM_All_seq.columns = ['ID'] + list(All_SVM_All_seq.columns[1:])
 Obs_SVM_All_seq.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(Obs_SVM_All_seq.columns[4:])
 
+########################################################################################################################
 SeqIDs = set(Obs_SVM_All_seq['ID'])
 dfs = []
 # protect the entry point
@@ -96,6 +99,6 @@ if __name__ == '__main__':
 
     # Concatenate all individual DataFrames
     result_df = pd.concat(dfs, ignore_index=True)
-    result_df.to_csv(f'{pathResults}/MLE_summary_simulated_by_500_rounds_{simulation}_{args.NbBin}bins.csv', index=False)
+    result_df.to_csv(f'{pathResults}/{Output_file}', index=False)
 
 ########################################################################################################################

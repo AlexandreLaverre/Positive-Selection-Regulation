@@ -19,9 +19,10 @@ parser.add_argument("sample", help="Study name: Wilson Schmidt")
 parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF")
 parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("cluster", default="local", help="cluster or local")
-parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
-parser.add_argument("--Simulation", default="500_rounds_stabilising", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
+parser.add_argument("--NbThread", required=False, default=1, type=int, help="Number of threads for parallelization (default = 1)")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
+parser.add_argument("--Simulation", required=False, default="500_rounds_stabilising",
+                    help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
 args = parser.parse_args()
 
 if args.cluster == "cluster":
@@ -45,7 +46,7 @@ if args.Simulation:
     # seq = f"{args.TF}_{args.sample}"
     # Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
     # Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
-    #Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
+    # Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
     pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
@@ -134,7 +135,7 @@ if len(FocalSeqs) == 0:
 
 ####################################################################################################
 # Running and writing results
-Output.write("ID\tSVM\tdeltaSVM\tmed.expected.deltaSVM\tmean.expected.deltaSVM\tNbSub\tpval.high\n")  # header
+Output.write("ID\tSVM\tdeltaSVM\tmed.expected.deltaSVM\tmean.expected.deltaSVM\tNbSub\tpval.high\n")
 
 # protect the entry point
 if __name__ == '__main__':
