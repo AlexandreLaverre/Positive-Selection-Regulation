@@ -75,8 +75,8 @@ def calculate_delta(seq_ref, seq_alt, svm_dict, kmer_len=10):
 
 # Get the Substitution Matrix and the normalised one for each chromosome
 def get_sub_matrix(path_matrix):
-    submats = {}
-    submats_norm = {}
+    sub_mats = {}
+    sub_mats_norm = {}
     for file in os.listdir(path_matrix):
         if file.endswith('.txt'):
             chrom = file.strip('.txt')
@@ -85,14 +85,14 @@ def get_sub_matrix(path_matrix):
             chrom_Table.index = ['A', 'C', 'G', 'T']  # change row values
             np.fill_diagonal(chrom_Table.values, 0)  # assign 0 to diagonal
             chrom_SubMat = chrom_Table.to_dict('index')  # get dict by matrix rows
-            submats[chrom] = chrom_SubMat
+            sub_mats[chrom] = chrom_SubMat
             # get normalized dict by matrix rows
-            submats_norm[chrom] = chrom_Table.div(chrom_Table.sum(axis=1), axis=0).to_dict('index')
+            sub_mats_norm[chrom] = chrom_Table.div(chrom_Table.sum(axis=1), axis=0).to_dict('index')
 
-    if len(submats) == 0:
+    if len(sub_mats) == 0:
         raise ValueError("Substitution matrix not found!")
 
-    return submats, submats_norm
+    return sub_mats, sub_mats_norm
 
 
 def normalised_position_probability(seq, sub_prob):
