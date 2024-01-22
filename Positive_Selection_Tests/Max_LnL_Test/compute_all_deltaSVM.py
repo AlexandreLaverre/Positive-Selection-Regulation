@@ -6,6 +6,7 @@ from Bio import SeqIO
 from alive_progress import alive_bar
 import multiprocessing.pool
 import sys
+import os
 sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
 import SVM_functions as SVM
 
@@ -30,6 +31,7 @@ focal_sp = "sister" if args.sister else "focal"
 pathResults = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
 
 output_files = {}
+os.makedirs(f"{pathResults}/deltas/", exist_ok=True)
 if args.Simulation:
     output_files['all'] = open(f"{pathResults}/deltas/simulated_initial_all_possible_deltaSVM.txt", "w")
     targets = ["stabilising", "neutral", "positive"]
@@ -97,7 +99,7 @@ if __name__ == '__main__':
         with multiprocessing.Pool(args.NbThread) as pool:
             for results in pool.imap_unordered(run_deltas, SeqIDs):
                 bar()
-                if results is not None:
+                if results is not None and len(results[1]) > 0:
                     output_files['all'].write(results[0])
                     for evol in targets:
                         output_files[evol].write(results[1][evol])
