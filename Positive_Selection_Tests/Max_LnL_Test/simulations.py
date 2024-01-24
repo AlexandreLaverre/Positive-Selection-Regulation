@@ -32,7 +32,6 @@ for Nsim in range(num_simulations):
     print(f'Simulation {Nsim}')
     # SVM score distribution: affinity of all possible deltas for a sequence
     All_SVM = np.random.normal(-1, 3, 3000)
-    gaussian_mutation = stats.gaussian_kde(All_SVM)  # fit a kernel distribution on our data
     hist_SVM = np.histogram(All_SVM, bins=n_bins)
 
     stab_weights = np.array([stats.norm.pdf(svm, loc=0, scale=1) for svm in All_SVM])
@@ -59,6 +58,7 @@ for Nsim in range(num_simulations):
             dfs.append(estimations)
 
         if plots:
+            gaussian_mutation = stats.gaussian_kde(All_SVM)  # fit a kernel distribution on our data
             with PdfPages(f'{path}/MLE_summary_{simul}_{Nsim}_{distrib}.pdf') as pdf:
                 fig, axes = plt.subplots(2, 2, figsize=(14, 14))
                 axes[1, 1].axis('off')

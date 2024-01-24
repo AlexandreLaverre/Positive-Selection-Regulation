@@ -27,15 +27,14 @@ def estimate_evolution(id, plots=False):
     # SVM score distribution: affinity of all possible deltas for a sequence
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
-
-    # fit a kernel distribution on our data
-    gaussian_mutation = stats.gaussian_kde(all_svm)
     hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
     estimations, models = ML.run_estimations(hist_svm, obs_svm, alpha=0.01)
     estimations.insert(0, "ID", [id])
 
     if plots:
+        # fit a kernel distribution on our data
+        gaussian_mutation = stats.gaussian_kde(all_svm)
         with PdfPages(f'{pathResults}/MLE_summary_{id}.pdf') as pdf:
             fig, axes = plt.subplots(2, 2, figsize=(14, 14))
             axes[1, 1].axis('off')
@@ -56,6 +55,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species common name (e.g: human dog)")
 parser.add_argument("sample", help="Study name: Wilson Schmidt")
 parser.add_argument("TF", help="Transcription factor (e.g: CEBPA CTCF)")
+parser.add_argument("cluster", default="local", help="cluster or local")
 parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
 parser.add_argument("--NbBin", default=100, type=int, required=False, help="Number of bins for All deltasSVM per Seq")
 parser.add_argument("--Simulation", type=str, required=False,
@@ -64,7 +64,12 @@ args = parser.parse_args()
 
 maxSub = 150
 maxLength = 1000
-path = "/Users/alaverre/Documents/Detecting_positive_selection"
+
+if args.cluster == "cluster":
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+
 pathData = f'{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/deltas/'
 pathResults = f'{path}/results/MaxLikelihoodApproach/{args.species}/{args.TF}/simulations/'
 os.makedirs(pathResults, exist_ok=True)
