@@ -101,7 +101,8 @@ def run_estimations(hist_svm, obs_svm, alpha=0.05, verbose=False):
 
     # Create a DataFrame
     result = pd.DataFrame({"Nmut": [len(obs_svm)], "SumObs": [np.sum(obs_svm)], "MeanObs": [np.mean(obs_svm)],
-                           "VarObs": [np.var(obs_svm)],"MinSVM": [np.min(hist_svm[1])], "MaxSVM": [np.max(hist_svm[1])],
+                           "VarObs": [np.var(obs_svm)], "MedSVM": [np.median(hist_svm[1])],
+                           "MinSVM": [np.min(hist_svm[1])], "MaxSVM": [np.max(hist_svm[1])],
                            "AlphaPurif": [model_purif.x[0]], "AlphaPos": [model_pos.x[0]], "BetaPos": [model_pos.x[1]],
                            "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit],
                            "LL_neutral": [ll_neutral], "LL_purif": [ll_purif], "LL_pos": [ll_pos],
