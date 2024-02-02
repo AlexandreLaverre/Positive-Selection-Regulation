@@ -39,17 +39,17 @@ if args.Simulation:
         output_files[evol] = open(f"{pathResults}/deltas/simulated_by_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
 else:
     targets = [focal_sp]
-    output_files['all'] = open(f"{pathResults}/deltas/ancestral_all_possible_deltaSVM.txt", "w")
-    output_files[focal_sp] = open(f"{pathResults}/deltas/{focal_sp}_observed_deltaSVM.txt", "w")
+    output_files['all'] = open(f"{pathResults}/deltas/ancestral_all_possible_deltaSVM_posID.txt", "w")
+    output_files[focal_sp] = open(f"{pathResults}/deltas/{focal_sp}_observed_deltaSVM_posID.txt", "w")
 
-
+maxLen = 1000
 ####################################################################################################
 
 
 # Return all and observed deltaSVM for a given sequence
 def run_deltas(seq_name):
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
-    if 20 <= len(ancestral_seq) <= 1000:
+    if 20 <= len(ancestral_seq) <= maxLen:
         # all possible substitutions
         deltas = SVM.compute_all_delta(ancestral_seq, SVM_dict)
         all_delta = '\t'.join(deltas.values())
@@ -93,6 +93,10 @@ else:
     SeqIDs = FocalSeqs[focal_sp].keys()
 
 ####################################################################################################
+# Write header
+all_mutations = '\t'.join([f"pos{i}:{nuc}" for i in range(0, maxLen) for nuc in ["A", "T", "C", "G"]])
+output_files['all'].write(f"ID\t{all_mutations}\n")
+
 # Running and writing results
 if __name__ == '__main__':
     with alive_bar(len(SeqIDs)) as bar:  # progress bar
