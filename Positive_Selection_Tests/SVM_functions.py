@@ -4,30 +4,17 @@ import os
 import pandas
 import numpy as np
 from scipy import stats
+import itertools as it
+import sys
+
+sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/Max_LnL_Test/')
+import MLEvol_functions as ML
+
+all_nuc = ["A", "T", "C", "G"]
 
 
-# Get number of substitutions per sequence
-def get_sub_number(seq_ref, seq_alt):
-    if len(seq_ref) != len(seq_alt):
-        raise ValueError("Focal and ancestral sequences don't have the same length!")
-    return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
-
-
-# Get ID of substitutions in a sequence
-def get_sub_ids(seq_ref, seq_alt):
-    if len(seq_ref) != len(seq_alt):
-        raise ValueError("Focal and ancestral sequences don't have the same length!")
-    sub_ids = []
-    loc = 0
-    for pos_ref, pos_alt in zip(seq_ref, seq_alt):
-        if pos_ref != pos_alt:
-            id = "pos" + str(loc) + ":" + pos_ref + "-" + pos_alt
-            sub_ids.append(id)
-        loc += 1
-
-    return sub_ids
-
-
+########################################################################################################################
+##################################### Deltas associated functions ######################################################
 # Get SVM score for each kmer of a given model
 def get_svm_dict(path_model):
     svm_dict = {}
@@ -50,9 +37,9 @@ def calculate_svm(seq, svm_dict, kmer_len=10):
     if kmer_len != 10:
         kmer_len = len(list(svm_dict.keys())[0])
     svm = 0
-    for pos in range(len(seq) - kmer_len + 1):   # sliding window of kmer length
-        kmer = seq[pos:pos+kmer_len]
-        svm += svm_dict[kmer]   # sum of SVM for each kmer
+    for pos in range(len(seq) - kmer_len + 1):  # sliding window of kmer length
+        kmer = seq[pos:pos + kmer_len]
+        svm += svm_dict[kmer]  # sum of SVM for each kmer
 
     return round(svm, 7)
 
@@ -63,7 +50,7 @@ def calculate_delta(seq_ref, seq_alt, svm_dict, kmer_len=10):
         kmer_len = len(list(svm_dict.keys())[0])
 
     delta_svm = 0
-    for pos in range(len(seq_ref) - kmer_len + 1):   # sliding window of kmer length
+    for pos in range(len(seq_ref) - kmer_len + 1):  # sliding window of kmer length
         kmer_ref = seq_ref[pos:pos + kmer_len]
         kmer_alt = seq_alt[pos:pos + kmer_len]
         if kmer_ref == kmer_alt:
@@ -71,6 +58,69 @@ def calculate_delta(seq_ref, seq_alt, svm_dict, kmer_len=10):
         delta_svm += svm_dict[kmer_alt] - svm_dict[kmer_ref]  # sum of delta between sequences for each kmer
 
     return round(delta_svm, 7)
+
+
+# Get deltaSVM for all possible substitutions.
+def compute_all_delta(seq, svm_dict):
+    deltas = {}
+    for pos in range(len(seq)):
+        old_nuc = seq[pos]
+        for new_nuc in all_nuc:
+            mut_id = f"pos{pos}:{new_nuc}"
+            if new_nuc != old_nuc:
+                mut_seq = list(seq)
+                mut_seq[pos] = new_nuc
+                mut_seq = "".join(mut_seq)
+                deltas[mut_id] = str(calculate_delta(seq, mut_seq, svm_dict))
+            else:
+                deltas[mut_id] = "NA"
+
+    return deltas
+
+
+def update_deltas(seq, svm_dict, deltas, new_sub):
+    new_deltas = deltas.copy()
+    # Find positions around the substitution
+    start = max(new_sub - 9, 0)
+    end = min(new_sub + 9, len(seq)-1)
+    positions = it.chain(range(start, new_sub), range(new_sub+1, end+1))
+    for pos in positions:
+        old_nuc = seq[pos]
+        old_delta_loc = pos * 3
+        for new_nuc in all_nuc:
+            if new_nuc != old_nuc:
+                mut_seq = list(seq)
+                mut_seq[pos] = new_nuc
+                mut_seq = "".join(mut_seq)
+                new_deltas[old_delta_loc] = float(calculate_delta(seq, mut_seq, svm_dict))
+
+                old_delta_loc = old_delta_loc + 1
+
+    return new_deltas
+
+
+########################################################################################################################
+################################## Substitutions associated functions ##################################################
+# Get number of substitutions per sequence
+def get_sub_number(seq_ref, seq_alt):
+    if len(seq_ref) != len(seq_alt):
+        raise ValueError("Focal and ancestral sequences don't have the same length!")
+    return sum(pos1 != pos2 for pos1, pos2 in zip(seq_ref, seq_alt))
+
+
+# Get ID of substitutions in a sequence
+def get_sub_ids(seq_ref, seq_alt):
+    if len(seq_ref) != len(seq_alt):
+        raise ValueError("Focal and ancestral sequences don't have the same length!")
+    sub_ids = []
+    loc = 0
+    for pos_ref, pos_alt in zip(seq_ref, seq_alt):
+        if pos_ref != pos_alt:
+            id = f"pos{loc}:{pos_alt}"
+            sub_ids.append(id)
+        loc += 1
+
+    return sub_ids
 
 
 # Get the Substitution Matrix and the normalised one for each chromosome
@@ -95,6 +145,8 @@ def get_sub_matrix(path_matrix):
     return sub_mats, sub_mats_norm
 
 
+########################################################################################################################
+##################################### Mutations associated functions ###################################################
 def normalised_position_probability(seq, sub_prob):
     # Get substitution probabilities for each position
     pos_proba = np.empty(len(seq))
@@ -107,8 +159,24 @@ def normalised_position_probability(seq, sub_prob):
     return normed_pos_proba
 
 
+def normalised_mutations_probability(seq, sub_prob, sub_prob_norm):
+    mut_proba = np.empty(len(seq) * 3)
+    pos_mut = 0
+    for pos in range(len(seq)):
+        nuc = seq[pos]
+        proba_pos = sum(sub_prob[nuc].values())
+        proba_dir = [sub_prob_norm[nuc][i] for i in all_nuc if i != nuc]
+
+        mut_proba[pos_mut:pos_mut + 3] = [i * proba_pos for i in proba_dir]
+        pos_mut += 3
+
+    normed_mut_proba = mut_proba / sum(mut_proba)  # normalisation of all positions to sum at 1
+
+    return normed_mut_proba
+
+
 # Mutate a sequence N time according to positional and directional probabilities
-def mutate_seq(seq, normed_pos_proba, sub_prob_norm, n_sub):
+def mutate_seq_from_proba(seq, normed_pos_proba, sub_prob_norm, n_sub):
     # draw positions
     rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=n_sub)
     # draw directions
@@ -126,28 +194,22 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
     normed_pos_proba = normalised_position_probability(seq, sub_prob)
     random_seqs = [""] * n_rand
     for n in range(n_rand):
-        rand_seq = mutate_seq(list(seq), normed_pos_proba, sub_prob_norm, n_sub)
+        rand_seq = mutate_seq_from_proba(list(seq), normed_pos_proba, sub_prob_norm, n_sub)
         random_seqs[n] = rand_seq
 
     return random_seqs if n_rand != 1 else random_seqs[0]
 
 
-# Get deltaSVM for all possible substitutions.
-def compute_all_delta(seq, svm_dict):
-    nuc = ["A", "T", "C", "G"]
-    deltas = {}
-    for position in range(len(seq)):
-        old_nuc = seq[position]
-        for new_nuc in nuc:
-            if new_nuc != old_nuc:
-                id = "pos" + str(position) + ":" + old_nuc + "-" + new_nuc
-                test_seq = list(seq)
-                test_seq[position] = new_nuc
-                test_seq = "".join(test_seq)
+def mutate_from_ids(seq, ids):
+    ids = [ids] if type(ids) is not list else ids
+    seq = list(seq)
+    for sub in ids:
+        id_pos = sub.split(":")[0]
+        pos = int(id_pos.strip("pos"))
+        new_nuc = sub.split(":")[1]
+        seq[pos] = new_nuc
 
-                deltas[id] = str(calculate_delta(seq, test_seq, svm_dict))
-
-    return deltas
+    return ''.join(seq)
 
 
 def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random"):
@@ -160,14 +222,29 @@ def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random"):
         weights /= np.sum(weights)
         sampled_sub = np.random.choice(list(dic_deltas.keys()), size=n_sub, p=weights, replace=False)
 
-    seq = list(seq)
-    for sub in sampled_sub:
-        id_pos = sub.split(":")[0]
-        pos = int(id_pos.strip("pos"))
-        new_nuc = sub.split("-")[1]
-        seq[pos] = new_nuc
+    mutate_seq = mutate_from_ids(list(seq), sampled_sub)
 
-    return ''.join(seq)
+    return mutate_seq
 
 
+def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins):
+    # Weighted probability of substitutions for each bin
+    hist_svm = np.histogram(all_deltas, bins=n_bins)
+    bins_values = hist_svm[1]
+    proba_delta = hist_svm[0] / np.sum(hist_svm[0])
+    proba_substi_bin = ML.proba_substitution(params, proba_delta, bins_values)
 
+    # Find back the probability for each bin of deltas
+    deltas_bin = np.searchsorted(bins_values, all_deltas, side='left') - 1
+    proba_substitution = [proba_substi_bin[i] if i >= 0 else proba_substi_bin[0] for i in deltas_bin]
+
+    # Weighted probability of mutations for each position*direction (length_seq*3)
+    proba_mutation = normalised_mutations_probability(original_seq, sub_mat[0], sub_mat[1])
+
+    # Final probability = proba_mut * proba_sub
+    proba = [mut * sub for mut, sub in zip(proba_mutation, proba_substitution)]
+    proba_weighted = list(proba / np.sum(proba))
+
+    return proba_weighted
+
+########################################################################################################################
