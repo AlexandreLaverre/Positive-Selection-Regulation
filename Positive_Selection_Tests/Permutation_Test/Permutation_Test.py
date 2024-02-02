@@ -17,12 +17,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog")
 parser.add_argument("sample", help="Study name: Wilson Schmidt")
 parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF")
-parser.add_argument("NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("cluster", default="local", help="cluster or local")
+parser.add_argument("--NbRand", type=int, help="Number of random substitutions permutations per sequence")
 parser.add_argument("--NbThread", required=False, default=1, type=int, help="Number of threads for parallelization (default = 1)")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
-parser.add_argument("--Simulation", required=False, default="500_rounds_stabilising",
-                    help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
+parser.add_argument("--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
 args = parser.parse_args()
 
 if args.cluster == "cluster":
@@ -51,7 +50,7 @@ else:
     pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
-    Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations_selection_NegativeDelta.txt", "w")
+    Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
     NegativeSet = f"{path}/positive_selection/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
