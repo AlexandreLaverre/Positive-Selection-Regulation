@@ -141,7 +141,7 @@ initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_foc
 ancestral_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_ancestral_sequences.fa"), "fasta"))
 
 # All deltaSVM
-All_SVM_All_seq = pd.read_csv(f'{pathData}/focal_all_possible_deltaSVM.txt', sep='\t', header=0, low_memory=False)
+All_SVM_All_seq = pd.read_csv(f'{pathData}/focal_all_possible_deltaSVM.txt', sep='\t', header=0)
 
 # Find 1000 sequences with more than 1 substitution (for all deltas)
 seq_ids = []
