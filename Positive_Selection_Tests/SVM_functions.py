@@ -206,8 +206,11 @@ def mutate_from_ids(seq, ids):
     for sub in ids:
         id_pos = sub.split(":")[0]
         pos = int(id_pos.strip("pos"))
+        old_nuc = seq[pos]
         new_nuc = sub.split(":")[1]
         seq[pos] = new_nuc
+        if new_nuc == old_nuc:
+            print("Warning: old and new nucleotides are the same,", sub)
 
     return ''.join(seq)
 
