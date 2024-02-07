@@ -14,14 +14,13 @@ import SVM_functions as SVM
 # Variables and paths
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog ...")
-parser.add_argument("sample", help="Study name: Wilson Schmidt ...")
-parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF ...")
-parser.add_argument("--node", default="ancestral",
+parser.add_argument("sample", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
+parser.add_argument("-N", "--node", default="ancestral",
                     help="From which node to compute deltas: ancestral, focal or sister (default=ancestral)")
-parser.add_argument("--cluster", default="local", help="cluster or local")
-parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default=1)")
-parser.add_argument("--Simulation", default=False,
+parser.add_argument("-S", "--Simulation", default=False,
                     help="Get obs delta for all the simulated regimes (default=False; either 500_rounds or deltas")
+parser.add_argument("--cluster", default="local", help="cluster or local")
+parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 
 maxLen = 1000
@@ -59,7 +58,7 @@ if args.cluster == "cluster":
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
 
-pathResults = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
+pathResults = f"{path}/positive_selection/{args.species}/{args.sample}"
 
 # Binding affinity values per kmer
 SVM_dict = SVM.get_svm_dict(f"{pathResults}/Model/kmer_predicted_weight.txt")
@@ -70,11 +69,11 @@ if args.Simulation:
     FocalSeqs = {}
 
     # Define input and output files
-    output_files['all'] = open(f"{pathResults}/deltas/simulated_initial_all_possible_deltaSVM.txt", "w")
+    output_files['all'] = open(f"{pathResults}/deltas/simulated_{args.Simulation}_initial_all_possible_deltaSVM.txt", "w")
     targets = ["stabilising", "neutral", "positive"]
     for evol in targets:
-        output_files[evol] = open(f"{pathResults}/deltas/simulated_by_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
-        FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/simulated_sequences_by_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
+        output_files[evol] = open(f"{pathResults}/deltas/simulated_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
+        FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/simulated_sequences_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
 
     # Get initial sequences
     AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_sequences.fa"), "fasta"))
@@ -97,6 +96,7 @@ else:
 # Write header
 all_mutations = '\t'.join([f"pos{i}:{nuc}" for i in range(0, maxLen) for nuc in ["A", "T", "C", "G"]])
 output_files['all'].write(f"ID\t{all_mutations}\n")
+
 
 # Running and writing results
 if __name__ == '__main__':

@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 ########################################################################################################################
 def estimate_evolution(id, plots=False):
     # Retrieve the corresponding deltas for each ID
-    all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == id, 1:].iloc[0]
+    all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == id, "pos0:A":].iloc[0]
     obs_svm_row = Obs_SVM_All_seq.loc[Obs_SVM_All_seq['ID'] == id, 4:].iloc[0]
 
     # SVM score distribution: affinity of all possible deltas for a sequence
@@ -53,13 +53,11 @@ def estimate_evolution(id, plots=False):
 ########################################################################################################################
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species common name (e.g: human dog)")
-parser.add_argument("sample", help="Study name: Wilson Schmidt")
-parser.add_argument("TF", help="Transcription factor (e.g: CEBPA CTCF)")
-parser.add_argument("cluster", default="local", help="cluster or local")
-parser.add_argument("--NbThread", default=1, type=int, help="Number of threads for parallelization (default = 1)")
-parser.add_argument("--NbBin", default=100, type=int, required=False, help="Number of bins for All deltasSVM per Seq")
-parser.add_argument("--Simulation", type=str, required=False,
-                    help="Type of simulations (e.g: by_500_rounds_neutral by_deltas_stabilising)")
+parser.add_argument("sample", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
+parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for All deltasSVM (default=50)")
+parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
+parser.add_argument("--cluster", default="local", help="cluster or local")
+parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 
 maxSub = 150
@@ -70,8 +68,8 @@ if args.cluster == "cluster":
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
-pathData = f'{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/deltas/'
-pathResults = f'{path}/results/MaxLikelihoodApproach/{args.species}/{args.TF}/simulations/'
+pathData = f'{path}/results/positive_selection/{args.species}/{args.sample}/deltas/'
+pathResults = f'{path}/results/MaxLikelihoodApproach/{args.species}/simulations/'
 os.makedirs(pathResults, exist_ok=True)
 
 if args.Simulation:
@@ -81,12 +79,10 @@ if args.Simulation:
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "focal_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_{args.NbBin}bins.csv"
+    Output_file = f"MLE_summary_{args.Simulation}_{args.NbBin}bins.csv"
 
-All_SVM_All_seq = pd.read_csv(f'{pathData}/{Ancestral_deltas_file}', sep='\t', header=None, names=range(1+maxLength*3))
+All_SVM_All_seq = pd.read_csv(f'{pathData}/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathData}/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
-
-All_SVM_All_seq.columns = ['ID'] + list(All_SVM_All_seq.columns[1:])
 Obs_SVM_All_seq.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(Obs_SVM_All_seq.columns[4:])
 
 ########################################################################################################################
