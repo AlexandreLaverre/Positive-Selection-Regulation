@@ -15,13 +15,12 @@ np.random.seed(12)
 # Variables and paths
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog")
-parser.add_argument("sample", help="Study name: Wilson Schmidt")
-parser.add_argument("TF", help="Transcription Factor name: CEBPA CTCF")
-parser.add_argument("cluster", default="local", help="cluster or local")
-parser.add_argument("--NbRand", type=int, help="Number of random substitutions permutations per sequence")
-parser.add_argument("--NbThread", required=False, default=1, type=int, help="Number of threads for parallelization (default = 1)")
+parser.add_argument("sample", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
+parser.add_argument("--NbRand", default=10000, type=int, help="Number of random substitutions permutations per sequence (default=10k")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
-parser.add_argument("--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
+parser.add_argument("-S", "--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
+parser.add_argument("--cluster", default="local", help="cluster or local")
+parser.add_argument("-T, ""--NbThread", required=False, default=1, type=int, help="Number of threads for parallelization (default=1)")
 args = parser.parse_args()
 
 if args.cluster == "cluster":
@@ -31,7 +30,7 @@ else:
 
 if args.Simulation:
     pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
-    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}_evolution.fa"
+    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}.fa"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_by_{args.Simulation}.txt", "w")
 
@@ -66,7 +65,7 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, sub):
     nb_seq = 0
     seq = list(seq)
     while nb_seq < args.NbRand:
-        rand_seq = SVM.mutate_seq(seq, normed_pos_proba, sub_prob_norm, sub)
+        rand_seq = SVM.mutate_seq_from_proba(seq, normed_pos_proba, sub_prob_norm, sub)
         random_seqs[nb_seq] = rand_seq
         nb_seq += 1
 
