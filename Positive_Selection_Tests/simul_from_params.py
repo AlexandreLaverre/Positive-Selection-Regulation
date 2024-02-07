@@ -6,11 +6,11 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from multiprocessing import Pool
 from alive_progress import alive_bar
+import random
 import sys
 sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
 sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/Max_LnL_Test/')
 import SVM_functions as SVM
-import MLEvol_functions as ML
 import pandas as pd
 
 ####################################################################################################
@@ -67,12 +67,11 @@ def get_simulated_sequences(seq_id):
 
         # Beta params
         alpha_stab = np.random.randint(500, 3000)
-        alpha_pos = np.random.randint(50, 60)
-        beta_pos = 61-alpha_pos
+        alpha_pos = np.random.randint(30, 50)
 
         null_params = []         # no param
-        stab_params = [alpha_stab, alpha_stab]     # alpha=beta
-        pos_params = [alpha_pos, beta_pos]      # alpha != beta
+        stab_params = [alpha_stab, alpha_stab]          # alpha=beta
+        pos_params = random.sample([alpha_pos, 1], 2)  # alpha != beta
         all_params = [null_params, stab_params, pos_params]
 
         mut_seqs = []
@@ -83,17 +82,21 @@ def get_simulated_sequences(seq_id):
             # Apply substitutions on original sequence
             samp_sub_ids = []
             samp_sub_locs = []
+            tmp_samp_pos = []
             mutated_seq = original_seq
             deltas = init_deltas
             proba_subs = init_proba_subs
             for _ in range(nsub):
                 # Remove the mutation(s) related to the sampled sub (if not BackMutation, remove 3, else 1)
                 sub_ids, mutated_proba_subs = remove_pos(init_sub_id, proba_subs, samp_sub_locs, BackMutation)
+                #print(len(sub_ids), len(mutated_proba_subs))
 
                 # Sample a substitution
                 sampled_sub = np.random.choice(sub_ids, p=mutated_proba_subs)
-                samp_sub_ids.append(sampled_sub)
                 sub_loc = sub_ids.index(sampled_sub)
+                samp_sub_ids.append(sampled_sub)
+                samp_sub_locs.append(sub_loc)
+                tmp_samp_pos.append(sampled_sub.split(":")[0])
 
                 # Considering epistasis (non-independence of substitutions effect)
                 if epistasis:
@@ -103,14 +106,19 @@ def get_simulated_sequences(seq_id):
                     # Recompute surrounding deltas and substitution probabilities
                     sub_pos = sub_loc // 3
                     deltas = SVM.update_deltas(mutated_seq, SVM_dict, deltas, sub_pos)
-                    proba_subs = SVM.proba_delta_mut(mutated_seq, sub_mat, deltas, params, NbBin)
 
+                    proba_subs = SVM.proba_delta_mut(mutated_seq, sub_mat, deltas, params, NbBin)
 
             # Mutate seq with all independent sampled substitutions at once
             if not epistasis:
                 mutated_seq = SVM.mutate_from_ids(original_seq, samp_sub_ids)
 
             mut_seqs.append(mutated_seq)
+
+            substitutions = SVM.get_sub_ids(original_seq, mutated_seq)
+            if not set(substitutions) == set(samp_sub_ids):
+                print(seq_id, nsub, "\n sampled:", len(samp_sub_ids), set(samp_sub_ids),
+                      "\n mutated:", len(substitutions), set(substitutions))
 
         rand, stab, pos = mut_seqs[0], mut_seqs[1], mut_seqs[2]
 
@@ -133,7 +141,7 @@ initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_foc
 ancestral_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_ancestral_sequences.fa"), "fasta"))
 
 # All deltaSVM
-All_SVM_All_seq = pd.read_csv(f'{pathData}/ancestral_all_possible_deltaSVM_posID.txt', sep='\t', header=0, low_memory=False)
+All_SVM_All_seq = pd.read_csv(f'{pathData}/focal_all_possible_deltaSVM.txt', sep='\t', header=0, low_memory=False)
 
 # Find 1000 sequences with more than 1 substitution (for all deltas)
 seq_ids = []
