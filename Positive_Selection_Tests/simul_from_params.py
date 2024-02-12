@@ -25,11 +25,9 @@ max_mut = 10
 NbThread = 8
 maxSub = 150
 maxLength = 1000
-NbBin = 50
 epistasis = True
 BackMutation = False
 prefix = f"{'epistasis' if epistasis else 'independent_SVM'}_{'with_backMut' if BackMutation else 'without_backMut'}"
-
 
 ####################################################################################################
 def remove_pos(sub_ids, subs_proba, sub_locs, back_mut):
@@ -66,7 +64,7 @@ def get_simulated_sequences(seq_id):
         init_deltas = [float(svm) for svm in all_svm_no_nan.values.tolist()]
 
         # Beta params
-        alpha_stab = np.random.randint(500, 3000)
+        alpha_stab = np.random.randint(2000, 3000)
         alpha_pos = np.random.randint(30, 50)
 
         null_params = []         # no param
@@ -74,10 +72,11 @@ def get_simulated_sequences(seq_id):
         pos_params = random.sample([alpha_pos, 1], 2)  # alpha != beta
         all_params = [null_params, stab_params, pos_params]
 
+        stats = [str(nsub), str(alpha_stab), str(alpha_pos)]
         mut_seqs = []
         for params in all_params:
             # Compute initial probabilities of substitutions (= proba_mut * proba_delta * proba_fix)
-            init_proba_subs = SVM.proba_delta_mut(original_seq, sub_mat, init_deltas, params, NbBin)
+            init_proba_subs = SVM.proba_delta_mut(original_seq, sub_mat, init_deltas, params)
 
             # Apply substitutions on original sequence
             samp_sub_ids = []
@@ -107,7 +106,7 @@ def get_simulated_sequences(seq_id):
                     sub_pos = sub_loc // 3
                     deltas = SVM.update_deltas(mutated_seq, SVM_dict, deltas, sub_pos)
 
-                    proba_subs = SVM.proba_delta_mut(mutated_seq, sub_mat, deltas, params, NbBin)
+                    proba_subs = SVM.proba_delta_mut(mutated_seq, sub_mat, deltas, params)
 
             # Mutate seq with all independent sampled substitutions at once
             if not epistasis:
@@ -126,7 +125,7 @@ def get_simulated_sequences(seq_id):
         stab_seq = SeqRecord(Seq(stab), id=seq_id, description="")
         pos_seq = SeqRecord(Seq(pos), id=seq_id, description="")
 
-        return seq_id, stab_seq, pos_seq, rand_seq
+        return seq_id, stab_seq, pos_seq, rand_seq, stats
 
 
 ####################################################################################################
@@ -138,22 +137,14 @@ SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/substitution_matrix/{species
 
 # Get initial sequences
 initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_focal_sequences.fa"), "fasta"))
-ancestral_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_ancestral_sequences.fa"), "fasta"))
 
 # All deltaSVM
 All_SVM_All_seq = pd.read_csv(f'{pathData}/focal_all_possible_deltaSVM.txt', sep='\t', header=0)
 
 # Find 1000 sequences with more than 1 substitution (for all deltas)
-seq_ids = []
-for ID in initial_sequences.keys():
-    nb_sub = SVM.get_sub_number(ancestral_sequences[ID], initial_sequences[ID])
-    if nb_sub > 1:
-        seq_ids.append(ID)
+seq_ids = list(initial_sequences.keys())[0:1000]
 
-    if len(seq_ids) == 1001:
-        break
-
-Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
+Stabilised_dict, Positive_dict, Neutral_dict, Stats = {}, {}, {}, {}
 
 ####################################################################################################
 if __name__ == '__main__':
@@ -163,14 +154,23 @@ if __name__ == '__main__':
             for results in pool.imap_unordered(get_simulated_sequences, seq_ids):
                 bar()
                 if results is not None:  # can be None if sequence length is out-limit
-                    Stabilised_dict[results[0]] = results[1]
-                    Positive_dict[results[0]] = results[2]
-                    Neutral_dict[results[0]] = results[3]
+                    ID = results[0]
+                    Stabilised_dict[ID] = results[1]
+                    Positive_dict[ID] = results[2]
+                    Neutral_dict[ID] = results[3]
+                    Stats[ID] = results[4]
 
     dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
 
+    # Write sequences
     for dict_name, dic in dictionaries.items():
         with open(f"{PathSequence}/simulated_sequences_by_params_{prefix}_{dict_name}_evolution.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
+
+    # Write stats
+    with open(f"{path}/positive_selection/{species}/{TF}/stats_by_params_{prefix}.txt", 'w') as OutStats:
+        OutStats.write("ID\tAlphaStab\tAlphaPos\n")
+        for ID, values in Stats.items():
+            OutStats.write(ID + "\t" + "\t".join(values) + "\n")
 
 ####################################################################################################
