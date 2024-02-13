@@ -18,20 +18,20 @@ parser.add_argument("-N", "--node", default="ancestral",
                     help="From which node to compute deltas: ancestral, focal or sister (default=ancestral)")
 parser.add_argument("-S", "--Simulation", default=False,
                     help="Get obs delta for all the simulated regimes (default=False; either 500_rounds or deltas")
-parser.add_argument("--cluster", default="local", help="cluster or local")
+parser.add_argument("--cluster", default=False, help="cluster or local")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 
 maxLen = 1000
 
-if args.cluster == "cluster":
+if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 pathResults = f"{path}/results/positive_selection/{args.species}/{args.sample}"
-sys.path.append(f"{path}/scripts/Positive_Selection_Tests/")
-from functions import SVM
+sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+import SVM
 
 
 ####################################################################################################

@@ -5,7 +5,7 @@ import pandas
 import numpy as np
 from scipy import stats
 import itertools as it
-from functions import MLEvol as ML
+import MLEvol as ML
 
 all_nuc = ["A", "T", "C", "G"]
 
