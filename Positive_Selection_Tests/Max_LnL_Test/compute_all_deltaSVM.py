@@ -30,25 +30,42 @@ maxLen = 1000
 # Return all and observed deltaSVM for a given sequence
 def run_deltas(seq_name):
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
+    output_all, output_obs = "", {}
+
     if 20 <= len(ancestral_seq) <= maxLen:
-        # all possible substitutions
-        deltas = SVM.compute_all_delta(ancestral_seq, SVM_dict)
-        all_delta = '\t'.join(deltas.values())
-        output_all = f"{seq_name}\t{all_delta}\n"
-        output_obs = {}
-        test_sub = []
-        for dict_name, focal in FocalSeqs.items():
-            focal_seq = str(focal[seq_name].seq)
-            substitutions = SVM.get_sub_ids(ancestral_seq, focal_seq)
-            test_sub.append(len(substitutions))
-            if len(substitutions) > 1:
+        if args.Simulation:
+            # compute all deltas
+            deltas = SVM.compute_all_delta(ancestral_seq, SVM_dict)
+            all_delta = '\t'.join(deltas.values())
+            output_all = f"{seq_name}\t{all_delta}\n"
+
+            # compute observed deltas for each evolutionary scenario
+            for dict_name, focal in FocalSeqs.items():
+                focal_seq = str(focal[seq_name].seq)
+                substitutions = SVM.get_sub_ids(ancestral_seq, focal_seq)
                 svm_score = SVM.calculate_svm(focal_seq, SVM_dict)
                 delta_svm = SVM.calculate_delta(ancestral_seq, focal_seq, SVM_dict)
-
                 obs_delta = '\t'.join([deltas[sub] for sub in substitutions])
+
                 output_obs[dict_name] = f"{seq_name}\t{svm_score}\t{delta_svm}\t{len(substitutions)}\t{obs_delta}\n"
 
-        return output_all, output_obs
+        else:
+            focal_seq = str(FocalSeqs["focal"][seq_name].seq)
+            substitutions = SVM.get_sub_ids(ancestral_seq, focal_seq)
+
+            if len(substitutions) > 1:
+                # compute all deltas
+                deltas = SVM.compute_all_delta(ancestral_seq, SVM_dict)
+                all_delta = '\t'.join(deltas.values())
+                output_all = f"{seq_name}\t{all_delta}\n"
+
+                svm_score = SVM.calculate_svm(focal_seq, SVM_dict)
+                delta_svm = SVM.calculate_delta(ancestral_seq, focal_seq, SVM_dict)
+                obs_delta = '\t'.join([deltas[sub] for sub in substitutions])
+
+                output_obs['focal'] = f"{seq_name}\t{svm_score}\t{delta_svm}\t{len(substitutions)}\t{obs_delta}\n"
+
+    return output_all, output_obs
 
 
 ####################################################################################################
@@ -67,7 +84,6 @@ output_files = {}
 os.makedirs(f"{pathResults}/deltas/", exist_ok=True)
 if args.Simulation:
     FocalSeqs = {}
-
     # Define input and output files
     output_files['all'] = open(f"{pathResults}/deltas/simulated_{args.Simulation}_initial_all_possible_deltaSVM.txt", "w")
     targets = ["stabilising", "neutral", "positive"]
@@ -80,17 +96,16 @@ if args.Simulation:
     SeqIDs = FocalSeqs[evol].keys()
 
 else:
-    targets = [args.node]
     output_files['all'] = open(f"{pathResults}/deltas/{args.node}_all_possible_deltaSVM.txt", "w")
-    output_files[args.node] = open(f"{pathResults}/deltas/{args.node}_observed_deltaSVM.txt", "w")
+    output_files['focal'] = open(f"{pathResults}/deltas/{args.node}_to_observed_deltaSVM.txt", "w")
 
     # Get ancestral sequences
     AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_{args.node}_sequences.fa"), "fasta"))
 
     # Get focal sequences
-    FocalSeqs = {args.node: SeqIO.to_dict(
-        SeqIO.parse(open(f"{pathResults}/sequences/filtered_{args.node}_sequences.fa"), "fasta"))}
-    SeqIDs = FocalSeqs[args.node].keys()
+    targets = ['focal']
+    FocalSeqs = {'focal': SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_sequences.fa"), "fasta"))}
+    SeqIDs = FocalSeqs['focal'].keys()
 
 ####################################################################################################
 # Write header
