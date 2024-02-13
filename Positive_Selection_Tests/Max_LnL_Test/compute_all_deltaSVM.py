@@ -18,7 +18,7 @@ parser.add_argument("-N", "--node", default="ancestral",
                     help="From which node to compute deltas: ancestral, focal or sister (default=ancestral)")
 parser.add_argument("-S", "--Simulation", default=False,
                     help="Get obs delta for all the simulated regimes (default=False; either 500_rounds or deltas")
-parser.add_argument("--cluster", default=False, help="cluster or local")
+parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 
