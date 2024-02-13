@@ -5,10 +5,7 @@ import pandas
 import numpy as np
 from scipy import stats
 import itertools as it
-import sys
-
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/Max_LnL_Test/')
-import MLEvol_functions as ML
+from functions import MLEvol as ML
 
 all_nuc = ["A", "T", "C", "G"]
 

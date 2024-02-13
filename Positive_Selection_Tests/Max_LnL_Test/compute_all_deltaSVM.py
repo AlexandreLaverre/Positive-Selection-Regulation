@@ -8,6 +8,7 @@ import multiprocessing.pool
 import sys
 import os
 
+
 ####################################################################################################
 # Variables and paths
 parser = argparse.ArgumentParser()
@@ -30,7 +31,7 @@ else:
 
 pathResults = f"{path}/results/positive_selection/{args.species}/{args.sample}"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/")
-import SVM_functions as SVM
+from functions import SVM
 
 
 ####################################################################################################
