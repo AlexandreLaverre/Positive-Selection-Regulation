@@ -231,31 +231,36 @@ def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random"):
 
 
 def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins=False):
-    if n_bins:
-        # Weighted probability of substitutions for each bin
-        hist_svm = np.histogram(all_deltas, bins=n_bins)
-        bins_values = hist_svm[1]
-        proba_delta = hist_svm[0] / np.sum(hist_svm[0])
-        proba_substi_bin = ML.proba_substitution(params, proba_delta, bins_values)
-
-        # Find back the probability for each bin of deltas
-        deltas_bin = np.searchsorted(bins_values, all_deltas, side='left') - 1
-        proba_substitution = [proba_substi_bin[i] if i >= 0 else proba_substi_bin[0] for i in deltas_bin]
-
+    n_deltas = len(all_deltas)
+    # If random: all substitutions probabilities = 1
+    if len(params) == 0:
+        proba_substitution = np.ones(n_deltas)
     else:
-        # Compute probability of fixation for all deltas
-        delta_bounds = [min(all_deltas), max(all_deltas)]
-        proba_substitution = np.zeros(all_deltas)
-        for delta in all_deltas:
-            proba_substitution[delta] = ML.proba_fixation(delta, params, delta_bounds)
+        if n_bins:
+            # Weighted probability of substitutions for each bin
+            hist_svm = np.histogram(all_deltas, bins=n_bins)
+            bins_values = hist_svm[1]
+            proba_delta = hist_svm[0] / np.sum(hist_svm[0])
+            proba_substi_bin = ML.proba_substitution(params, proba_delta, bins_values)
+
+            # Find back the probability for each bin of deltas
+            deltas_bin = np.searchsorted(bins_values, all_deltas, side='left') - 1
+            proba_substitution = [proba_substi_bin[i] if i >= 0 else proba_substi_bin[0] for i in deltas_bin]
+
+        else:
+            # Compute probability of fixation for all deltas
+            delta_bounds = [min(all_deltas), max(all_deltas)]
+            proba_substitution = np.zeros(n_deltas)
+            for d in range(n_deltas):
+                proba_substitution[d] = ML.proba_fixation(all_deltas[d], params, delta_bounds)
 
     # Weighted probability of mutations for each position*direction (length_seq*3)
     proba_mutation = normalised_mutations_probability(original_seq, sub_mat[0], sub_mat[1])
 
     # Final probability = proba_mut * proba_sub
     output_array = [mut * sub for mut, sub in zip(proba_mutation, proba_substitution)]
-    proba_weighted = list(output_array / np.sum(output_array))
+    sum_output = np.sum(output_array)
 
-    return proba_weighted
+    return list(output_array / sum_output) if sum_output != 0 else list(output_array)
 
 ########################################################################################################################
