@@ -7,8 +7,6 @@ from alive_progress import alive_bar
 import multiprocessing.pool
 import sys
 import os
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
-import SVM_functions as SVM
 
 ####################################################################################################
 # Variables and paths
@@ -24,6 +22,15 @@ parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of thr
 args = parser.parse_args()
 
 maxLen = 1000
+
+if args.cluster == "cluster":
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+
+pathResults = f"{path}/results/positive_selection/{args.species}/{args.sample}"
+sys.path.append(f"{path}/scripts/Positive_Selection_Tests/")
+import SVM_functions as SVM
 
 
 ####################################################################################################
@@ -69,14 +76,6 @@ def run_deltas(seq_name):
 
 
 ####################################################################################################
-# Datas
-if args.cluster == "cluster":
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
-else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
-
-pathResults = f"{path}/positive_selection/{args.species}/{args.sample}"
-
 # Binding affinity values per kmer
 SVM_dict = SVM.get_svm_dict(f"{pathResults}/Model/kmer_predicted_weight.txt")
 
