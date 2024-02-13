@@ -25,6 +25,7 @@ max_mut = 10
 NbThread = 8
 maxSub = 150
 maxLength = 1000
+Nbin = False
 epistasis = True
 BackMutation = False
 prefix = f"{'epistasis' if epistasis else 'independent_SVM'}_{'with_backMut' if BackMutation else 'without_backMut'}"
@@ -45,7 +46,8 @@ def remove_pos(sub_ids, subs_proba, sub_locs, back_mut):
             sub_ids = sub_ids[:start] + sub_ids[end:]
             subs_proba = subs_proba[:start] + subs_proba[end:]
 
-        subs_proba = list(subs_proba / np.sum(subs_proba))
+        sum_output = np.sum(subs_proba)
+        subs_proba = list(subs_proba / sum_output) if sum_output != 0 else list(subs_proba)
 
     return sub_ids, subs_proba
 
@@ -65,7 +67,7 @@ def get_simulated_sequences(seq_id):
 
         # Beta params
         alpha_stab = np.random.randint(2000, 3000)
-        alpha_pos = np.random.randint(30, 50)
+        alpha_pos = np.random.randint(45, 50)
 
         null_params = []         # no param
         stab_params = [alpha_stab, alpha_stab]          # alpha=beta
@@ -76,7 +78,7 @@ def get_simulated_sequences(seq_id):
         mut_seqs = []
         for params in all_params:
             # Compute initial probabilities of substitutions (= proba_mut * proba_delta * proba_fix)
-            init_proba_subs = SVM.proba_delta_mut(original_seq, sub_mat, init_deltas, params)
+            init_proba_subs = SVM.proba_delta_mut(original_seq, sub_mat, init_deltas, params, Nbin)
 
             # Apply substitutions on original sequence
             samp_sub_ids = []
@@ -106,7 +108,7 @@ def get_simulated_sequences(seq_id):
                     sub_pos = sub_loc // 3
                     deltas = SVM.update_deltas(mutated_seq, SVM_dict, deltas, sub_pos)
 
-                    proba_subs = SVM.proba_delta_mut(mutated_seq, sub_mat, deltas, params)
+                    proba_subs = SVM.proba_delta_mut(mutated_seq, sub_mat, deltas, params, Nbin)
 
             # Mutate seq with all independent sampled substitutions at once
             if not epistasis:
@@ -164,11 +166,11 @@ if __name__ == '__main__':
 
     # Write sequences
     for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_by_params_{prefix}_{dict_name}_evolution.fa", 'w') as output:
+        with open(f"{PathSequence}/simulated_sequences_by_params_{prefix}_{dict_name}_evolution_noBin.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
 
     # Write stats
-    with open(f"{path}/positive_selection/{species}/{TF}/stats_by_params_{prefix}.txt", 'w') as OutStats:
+    with open(f"{path}/positive_selection/{species}/{TF}/stats_by_params_{prefix}_noBin.txt", 'w') as OutStats:
         OutStats.write("ID\tAlphaStab\tAlphaPos\n")
         for ID, values in Stats.items():
             OutStats.write(ID + "\t" + "\t".join(values) + "\n")
