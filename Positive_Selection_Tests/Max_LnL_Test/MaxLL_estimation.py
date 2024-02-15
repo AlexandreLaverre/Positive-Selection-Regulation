@@ -27,7 +27,7 @@ args = parser.parse_args()
 maxSub = 150
 maxLength = 1000
 
-if args.cluster == "cluster":
+if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
