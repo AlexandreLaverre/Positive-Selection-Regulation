@@ -2,15 +2,13 @@
 # coding=utf-8
 import numpy as np
 from scipy import stats
-import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.backends.backend_pdf import PdfPages
 from alive_progress import alive_bar
 import multiprocessing.pool
 import warnings
 import argparse
-from mpl_toolkits.mplot3d import Axes3D
 import sys
+
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ########################################################################################################################
@@ -26,15 +24,21 @@ args = parser.parse_args()
 
 maxSub = 150
 maxLength = 1000
+plots = False
 
 if args.cluster:
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 pathResults = f'{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/'
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol as ML
+
+if plots:
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_pdf import PdfPages
+    from mpl_toolkits.mplot3d import Axes3D
 
 
 ########################################################################################################################
