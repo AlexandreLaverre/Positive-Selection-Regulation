@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-import os
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
@@ -12,10 +11,30 @@ import warnings
 import argparse
 from mpl_toolkits.mplot3d import Axes3D
 import sys
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/Max_LnL_Test/')
-import MLEvol_functions as ML
-
 warnings.filterwarnings("ignore", category=RuntimeWarning)
+
+########################################################################################################################
+parser = argparse.ArgumentParser()
+parser.add_argument("species", help="Species common name (e.g: human dog)")
+parser.add_argument("sample", help="Study name: Wilson Schmidt...")
+parser.add_argument("TF", help="Transcription Factor: CEBPA CTCF ...")
+parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for deltasSVM (default=50)")
+parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
+parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
+parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
+args = parser.parse_args()
+
+maxSub = 150
+maxLength = 1000
+
+if args.cluster == "cluster":
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+
+pathResults = f'{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/'
+sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+import MLEvol as ML
 
 
 ########################################################################################################################
@@ -51,38 +70,17 @@ def estimate_evolution(id, plots=False):
 
 
 ########################################################################################################################
-parser = argparse.ArgumentParser()
-parser.add_argument("species", help="Species common name (e.g: human dog)")
-parser.add_argument("sample", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
-parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for All deltasSVM (default=50)")
-parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
-parser.add_argument("--cluster", default="local", help="cluster or local")
-parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
-args = parser.parse_args()
-
-maxSub = 150
-maxLength = 1000
-
-if args.cluster == "cluster":
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
-else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-
-pathData = f'{path}/results/positive_selection/{args.species}/{args.sample}/deltas/'
-pathResults = f'{path}/results/MaxLikelihoodApproach/{args.species}/simulations/'
-os.makedirs(pathResults, exist_ok=True)
-
 if args.Simulation:
     Ancestral_deltas_file = "simulated_initial_all_possible_deltaSVM.txt"
     Focal_deltas_file = f"simulated_{args.Simulation}_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
+    Output_file = f"simulations/MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
-    Focal_deltas_file = "focal_observed_deltaSVM.txt"
+    Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
     Output_file = f"MLE_summary_{args.Simulation}_{args.NbBin}bins.csv"
 
-All_SVM_All_seq = pd.read_csv(f'{pathData}/{Ancestral_deltas_file}', sep='\t', header=0)
-Obs_SVM_All_seq = pd.read_csv(f'{pathData}/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
+All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
+Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
 Obs_SVM_All_seq.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(Obs_SVM_All_seq.columns[4:])
 
 ########################################################################################################################

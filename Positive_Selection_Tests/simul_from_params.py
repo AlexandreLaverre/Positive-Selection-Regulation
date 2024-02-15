@@ -8,10 +8,10 @@ from multiprocessing import Pool
 from alive_progress import alive_bar
 import random
 import sys
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/Max_LnL_Test/')
-import SVM_functions as SVM
 import pandas as pd
+sys.path.append("/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/functions/")
+import SVM
+
 
 ####################################################################################################
 path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
