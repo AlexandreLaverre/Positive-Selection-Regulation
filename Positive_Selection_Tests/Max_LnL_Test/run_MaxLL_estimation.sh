@@ -15,7 +15,7 @@ if [ ${cluster} = "cluster" ]; then
 	export pathScripts=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/scripts/Positive_Selection_Tests/Max_LnL_Test/
 
 	# Calculate time needed: considering 500 peaks per hour and per thread
-	export time=$(( ($(wc -l < ${path}/results/positive_selection/${species}/${sample}/deltas/ancestral_to_observed_deltaSVM.txt) / (500*${nbThread}))+1 ))
+	export time=$(( ($(wc -l < ${path}/results/positive_selection/${species}/${sample}/deltas/ancestral_to_observed_deltaSVM.txt) / (1000*${nbThread}))+1 ))
 
 	# BATCH informations
 	echo "#!/bin/sh" > ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
