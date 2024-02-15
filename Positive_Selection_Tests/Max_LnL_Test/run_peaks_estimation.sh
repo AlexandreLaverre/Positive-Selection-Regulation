@@ -30,12 +30,12 @@ if [ ${cluster} = "cluster" ]; then
 	echo "source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "conda activate MaxLikelihood" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
-	echo "python ${pathScripts}/peaks_estimation.py ${species} ${sample} --NbThread ${nbThread} --NbBin ${nbBin}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
+	echo "python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} --NbThread ${nbThread} --NbBin ${nbBin}" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	sbatch ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 else
 	export pathScripts=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection/Max_LnL/
-	python ${pathScripts}/peaks_estimation.py ${species} ${sample} --NbThread ${nbThread} --NbBin ${nbBin}
+	python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} --NbThread ${nbThread} --NbBin ${nbBin}
 fi
 
 ##################################################################
