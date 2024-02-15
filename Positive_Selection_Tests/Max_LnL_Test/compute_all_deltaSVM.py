@@ -21,6 +21,7 @@ parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of thr
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
+maxSub = 150
 maxLen = 1000
 
 if args.cluster:
@@ -60,7 +61,7 @@ def run_deltas(seq_name):
             focal_seq = str(FocalSeqs["focal"][seq_name].seq)
             substitutions = SVM.get_sub_ids(ancestral_seq, focal_seq)
 
-            if len(substitutions) > 1:
+            if maxSub > len(substitutions) > 1:
                 # compute all deltas
                 deltas = SVM.compute_all_delta(ancestral_seq, SVM_dict)
                 all_delta = '\t'.join(deltas.values())
