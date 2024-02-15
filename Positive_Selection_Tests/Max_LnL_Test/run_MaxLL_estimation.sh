@@ -12,7 +12,7 @@ export Prefix=${species}_${sample/\//_}
 
 if [ ${cluster} = "cluster" ]; then
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
-	export pathScripts=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/scripts/Max_LnL_Test/
+	export pathScripts=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/scripts/Positive_Selection_Tests/Max_LnL_Test/
 
 	# Calculate time needed: considering 500 peaks per hour and per thread
 	export time=$(( ($(wc -l < ${path}/results/positive_selection/${species}/${sample}/deltas/ancestral_to_observed_deltaSVM.txt) / (500*${nbThread}))+1 ))
@@ -34,7 +34,7 @@ if [ ${cluster} = "cluster" ]; then
 	sbatch ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 else
-	export pathScripts=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection/Max_LnL_Test/
+	export pathScripts=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection/Positive_Selection_Tests/Max_LnL_Test/
 	python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} -T ${nbThread} --NbBin ${nbBin}
 fi
 
