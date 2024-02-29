@@ -1,11 +1,12 @@
 #!/bin/bash
 
-export sp=$1				# i.e: dog human mouse ...
-export sample=$2			# i.e: Wilson Schmidt Rensch ...
-export threads=$3			# i.e: number of threads to use
-export cluster=$4			# i.e: local or cluster
-export resume=${5:-"false"}	# i.e: resume or false
-export skip=${6:-"false"}		# i.e: skip or false
+export sp=$1				        # i.e: dog human mouse ...
+export sample=$2			      # i.e: Wilson Schmidt Rensch ...
+export peaksType=$3         # i.e: narrow or broad
+export threads=$4			      # i.e: number of threads to use
+export cluster=$5			      # i.e: local or cluster
+export resume=${6:-"false"}	# i.e: resume or false
+export skip=${7:-"false"}		# i.e: skip or false
 
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
@@ -63,6 +64,12 @@ else
 	resume=""
 fi
 
+if [ ${peaksType} == "narrow" ]; then
+	peaksType="--narrow_peak"
+else
+	peaksType=""
+fi
+
 #########################################################################
 echo "#!/bin/bash" > ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
@@ -79,7 +86,7 @@ fi
 echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 
 #########################################################################
 
