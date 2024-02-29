@@ -18,23 +18,23 @@ parser.add_argument("TF", help="Transcription Factor: CEBPA CTCF ...")
 parser.add_argument("--NbRand", default=10000, type=int, help="Number of random substitutions permutations per sequence (default=10k")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 parser.add_argument("-S", "--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
-parser.add_argument("--cluster", default="local", help="cluster or local")
+parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 parser.add_argument("-T", "--NbThread", required=False, default=8, type=int, help="Number of threads for parallelization (default=1)")
 args = parser.parse_args()
 
-if args.cluster == "cluster":
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/"
+if args.cluster:
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
 if args.Simulation:
-    pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
-    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_{args.Simulation}.fa"
+    pathSelection = f"{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/"
+    Focal_fasta = f"{pathSelection}/sequences/simul_{args.Simulation}_evolution.fa"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
-    Output = open(f"{pathSelection}/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
+    Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
 
     # pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
     # Ancestral_fasta = f"{pathJialin}{seq}_filtered_ancestor.fa"
@@ -48,14 +48,14 @@ if args.Simulation:
     # Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
     # Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
-    pathSelection = f"{path}/positive_selection/{args.species}/{args.sample}/{args.TF}/"
+    pathSelection = f"{path}/results/positive_selection/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
     Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
-    NegativeSet = f"{path}/positive_selection/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
+    NegativeSet = f"{path}/results/positive_selection/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
-pathSubMat = f"{path}/substitution_matrix/{args.species}/"
+pathSubMat = f"{path}/results/substitution_matrix/{args.species}/"
 
 
 ####################################################################################################

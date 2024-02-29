@@ -14,12 +14,10 @@ import SVM
 
 
 ####################################################################################################
-path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
 species = "human"
 TF = "Wilson/CEBPA"
-PathSequence = f"{path}/positive_selection/{species}/{TF}/sequences/"
-PathModel = f"{path}/positive_selection/{species}/{TF}/Model/kmer_predicted_weight.txt"
-pathData = f'{path}/positive_selection/{species}/{TF}/deltas/'
+path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
+pathResult = f"{path}/positive_selection/{species}/{TF}/"
 
 max_mut = 10
 NbThread = 8
@@ -29,6 +27,8 @@ Nbin = False
 epistasis = True
 BackMutation = False
 prefix = f"{'epistasis' if epistasis else 'independent_SVM'}_{'with_backMut' if BackMutation else 'without_backMut'}"
+prefix = prefix if Nbin else f"{prefix}_noBin"
+
 
 ####################################################################################################
 def remove_pos(sub_ids, subs_proba, sub_locs, back_mut):
@@ -67,18 +67,18 @@ def get_simulated_sequences(seq_id):
 
         # Beta params
         alpha_stab = np.random.randint(2000, 3000)
-        alpha_pos = np.random.randint(45, 50)
-
-        null_params = []         # no param
+        pos = np.random.randint(45, 50)
         stab_params = [alpha_stab, alpha_stab]          # alpha=beta
-        pos_params = random.sample([alpha_pos, 1], 2)  # alpha != beta
-        all_params = [null_params, stab_params, pos_params]
+        pos_params = random.sample([pos, 1], 2)  # alpha != beta
+        all_params = {"neutral": [], "stabilising": stab_params, "positive": pos_params}
 
-        stats = [str(nsub), str(alpha_stab), str(alpha_pos)]
-        mut_seqs = []
-        for params in all_params:
+        output_proba_sub = {}
+        mut_seqs = {}
+        for evol in evol_regimes:
+            params = all_params[evol]
             # Compute initial probabilities of substitutions (= proba_mut * proba_delta * proba_fix)
             init_proba_subs = SVM.proba_delta_mut(original_seq, sub_mat, init_deltas, params, Nbin)
+            output_proba_sub[evol] = init_proba_subs
 
             # Apply substitutions on original sequence
             samp_sub_ids = []
@@ -90,7 +90,6 @@ def get_simulated_sequences(seq_id):
             for _ in range(nsub):
                 # Remove the mutation(s) related to the sampled sub (if not BackMutation, remove 3, else 1)
                 sub_ids, mutated_proba_subs = remove_pos(init_sub_id, proba_subs, samp_sub_locs, BackMutation)
-                #print(len(sub_ids), len(mutated_proba_subs))
 
                 # Sample a substitution
                 sampled_sub = np.random.choice(sub_ids, p=mutated_proba_subs)
@@ -114,39 +113,43 @@ def get_simulated_sequences(seq_id):
             if not epistasis:
                 mutated_seq = SVM.mutate_from_ids(original_seq, samp_sub_ids)
 
-            mut_seqs.append(mutated_seq)
+            mut_seqs[evol] = mutated_seq
 
             substitutions = SVM.get_sub_ids(original_seq, mutated_seq)
             if not set(substitutions) == set(samp_sub_ids):
                 print(seq_id, nsub, "\n sampled:", len(samp_sub_ids), set(samp_sub_ids),
                       "\n mutated:", len(substitutions), set(substitutions))
 
-        rand, stab, pos = mut_seqs[0], mut_seqs[1], mut_seqs[2]
+        rand_seq = SeqRecord(Seq(mut_seqs["neutral"]), id=seq_id, description="")
+        stab_seq = SeqRecord(Seq(mut_seqs["stabilising"]), id=seq_id, description="")
+        pos_seq = SeqRecord(Seq(mut_seqs["positive"]), id=seq_id, description="")
+        sequences = {"neutral": rand_seq, "stabilising": stab_seq, "positive": pos_seq}
 
-        rand_seq = SeqRecord(Seq(rand), id=seq_id, description="")
-        stab_seq = SeqRecord(Seq(stab), id=seq_id, description="")
-        pos_seq = SeqRecord(Seq(pos), id=seq_id, description="")
+        stats = [str(nsub), str(alpha_stab), str(pos_params[0]), str(pos_params[1])]
 
-        return seq_id, stab_seq, pos_seq, rand_seq, stats
+        return seq_id, stats, sequences, output_proba_sub
 
 
 ####################################################################################################
 # Model estimation for each kmer
-SVM_dict = SVM.get_svm_dict(PathModel)
+SVM_dict = SVM.get_svm_dict(f"{pathResult}/Model/kmer_predicted_weight.txt")
 
 # Get substitution matrix for each chromosome
 SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/substitution_matrix/{species}/")
 
 # Get initial sequences
-initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_focal_sequences.fa"), "fasta"))
+initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{pathResult}/sequences/filtered_focal_sequences.fa"), "fasta"))
 
 # All deltaSVM
-All_SVM_All_seq = pd.read_csv(f'{pathData}/focal_all_possible_deltaSVM.txt', sep='\t', header=0)
+All_SVM_All_seq = pd.read_csv(f'{pathResult}/deltas/focal_all_possible_deltaSVM.txt', sep='\t', header=0)
 
 # Find 1000 sequences with more than 1 substitution (for all deltas)
 seq_ids = list(initial_sequences.keys())[0:1000]
 
-Stabilised_dict, Positive_dict, Neutral_dict, Stats = {}, {}, {}, {}
+Stats = {}
+evol_regimes = ["neutral", "stabilising", "positive"]
+Sequences = {evol: {} for evol in evol_regimes}
+Proba_Sub = {evol: {} for evol in evol_regimes}
 
 ####################################################################################################
 if __name__ == '__main__':
@@ -157,22 +160,27 @@ if __name__ == '__main__':
                 bar()
                 if results is not None:  # can be None if sequence length is out-limit
                     ID = results[0]
-                    Stabilised_dict[ID] = results[1]
-                    Positive_dict[ID] = results[2]
-                    Neutral_dict[ID] = results[3]
-                    Stats[ID] = results[4]
-
-    dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
+                    Stats[ID] = results[1]
+                    for evol in evol_regimes:
+                        Sequences[evol][ID] = results[2][evol]
+                        Proba_Sub[evol][ID] = results[3][evol]
 
     # Write sequences
-    for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_by_params_{prefix}_{dict_name}_evolution_noBin.fa", 'w') as output:
-            SeqIO.write(dic.values(), output, 'fasta')
+    for evol, seq_dict in Sequences.items():
+        with open(f"{pathResult}/sequences/simul_by_params_{prefix}_{evol}_evolution.fa", 'w') as outSeq:
+            for ID, seq in seq_dict.items():
+                SeqIO.write(seq, outSeq, 'fasta')
+
+    # Write Substitution probabilities
+    for evol, sub_dict in Proba_Sub.items():
+        with open(f"{pathResult}/substitution_probabilities/simul_by_params_{prefix}_{evol}_evolution.txt", 'w') as outSub:
+            for ID, sub in sub_dict.items():
+                outSub.write(ID + "\t" + "\t".join(map(str, sub)) + "\n")
 
     # Write stats
-    with open(f"{path}/positive_selection/{species}/{TF}/stats_by_params_{prefix}_noBin.txt", 'w') as OutStats:
-        OutStats.write("ID\tAlphaStab\tAlphaPos\n")
+    with open(f"{pathResult}/stats_simulation/simul_by_params_{prefix}.txt", 'w') as outStats:
+        outStats.write("ID\tNsub\tAlphaStab\tAlphaPos\tBetaPos\n")
         for ID, values in Stats.items():
-            OutStats.write(ID + "\t" + "\t".join(values) + "\n")
+            outStats.write(ID + "\t" + "\t".join(values) + "\n")
 
 ####################################################################################################

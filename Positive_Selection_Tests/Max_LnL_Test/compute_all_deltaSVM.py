@@ -85,11 +85,11 @@ os.makedirs(f"{pathResults}/deltas/", exist_ok=True)
 if args.Simulation:
     FocalSeqs = {}
     # Define input and output files
-    output_files['all'] = open(f"{pathResults}/deltas/simulated_{args.Simulation}_initial_all_possible_deltaSVM.txt", "w")
+    output_files['all'] = open(f"{pathResults}/deltas/simul_{args.Simulation}_initial_all_possible_deltaSVM.txt", "w")
     targets = ["stabilising", "neutral", "positive"]
     for evol in targets:
-        output_files[evol] = open(f"{pathResults}/deltas/simulated_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
-        FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/simulated_sequences_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
+        output_files[evol] = open(f"{pathResults}/deltas/simul_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
+        FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/simul_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
 
     # Get initial sequences
     AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_sequences.fa"), "fasta"))
@@ -111,7 +111,6 @@ else:
 # Write header
 all_mutations = '\t'.join([f"pos{i}:{nuc}" for i in range(0, maxLen) for nuc in ["A", "T", "C", "G"]])
 output_files['all'].write(f"ID\t{all_mutations}\n")
-
 
 # Running and writing results
 if __name__ == '__main__':

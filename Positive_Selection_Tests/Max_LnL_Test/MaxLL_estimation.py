@@ -57,7 +57,7 @@ def estimate_evolution(id, plots=False):
     if plots:
         # fit a kernel distribution on our data
         gaussian_mutation = stats.gaussian_kde(all_svm)
-        with PdfPages(f'{pathResults}/MLE_summary_{id}.pdf') as pdf:
+        with PdfPages(f'{pathResults}/Tests/MLE_summary_{id}.pdf') as pdf:
             fig, axes = plt.subplots(2, 2, figsize=(14, 14))
             axes[1, 1].axis('off')
             axes[1, 1] = fig.add_subplot(224, projection='3d')
@@ -75,8 +75,8 @@ def estimate_evolution(id, plots=False):
 ########################################################################################################################
 if args.Simulation:
     Ancestral_deltas_file = "simulated_initial_all_possible_deltaSVM.txt"
-    Focal_deltas_file = f"simulated_{args.Simulation}_observed_deltaSVM.txt"
-    Output_file = f"simulations/MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
+    Focal_deltas_file = f"simul_{args.Simulation}_observed_deltaSVM.txt"
+    Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
