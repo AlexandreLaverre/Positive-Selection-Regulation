@@ -5,11 +5,14 @@ cluster=$2
 
 if [ ${cluster} = "local" ]; then
 	export pathData=/Users/alaverre/Documents/Detecting_positive_selection/data
+	export pathConda=/Users/alaverre/miniconda3/etc/profile.d/conda.sh
 else
 	export pathData=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data
+	export pathConda=/work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
 fi
 
 ########################################################
+EnsemblRelease=102
 
 if [ ${sp} = "dog" ]; then
 	spID="Canis_lupus_familiaris.CanFam3.1"
@@ -74,7 +77,7 @@ if [ ${sp} = "cat" ]; then
 	export genomesize=2300000000
 fi
 
-if [ ${sp} = "cattle" ]; then
+if [ ${sp} = "cow" ]; then
 	spID="GCA_000003205.6_Btau_5.0.1"
 	sp_name="Bos_taurus"
 	close_species="Bos_taurus,Bos_indicus,Bos_mutus"
@@ -121,8 +124,8 @@ if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "cattle" ]; then
 else
 	# Anotations from Ensembl
 	export genome_suffix=".dna_sm.toplevel.fa.gz"
-	export GTF_suffix=".102.gtf.gz"
-	export GFF_suffix=".102.gff3.gz"
+	export GTF_suffix=".${EnsemblRelease}.gtf.gz"
+	export GFF_suffix=".${EnsemblRelease}.gff3.gz"
 fi
 
 # Blacklisted regions files for ChIP-seq calling
