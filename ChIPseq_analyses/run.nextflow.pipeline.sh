@@ -2,7 +2,7 @@
 
 export sp=$1				        # i.e: dog human mouse ...
 export sample=$2			      # i.e: Wilson Schmidt Rensch ...
-export peaksType=$3         # i.e: narrow or broad
+export peaksType=$3         # i.e: Narrow or Broad
 export threads=$4			      # i.e: number of threads to use
 export cluster=$5			      # i.e: local or cluster
 export resume=${6:-"false"}	# i.e: resume or false
@@ -14,11 +14,11 @@ if [ ${cluster} = "local" ]; then
 	export container="conda"
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
-	export pathConda="/users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh"
+	export pathConda="/work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh"
 	export container="singularity"
 fi
 
-export pathResults=${path}/results/peaks_calling/${sp}/
+export pathResults=${path}/results/peaks_calling/${peaksType}Peaks/${sp}/
 export pathData=${path}/data
 export pathScripts=${path}/scripts/ChIPseq_analyses/logs
 
@@ -44,7 +44,7 @@ else
 fi
 
 
-if [ 0 -lt $(ls ${pathResults}/indexes/${spID}*.rev.2* 2>/dev/null | wc -w) ]; then
+if [ 0 -lt "$(ls ${pathResults}/indexes/${spID}*.rev.2* 2>/dev/null | wc -w)" ]; then
     echo "Indexes already done!"
     export index="--bwa_index ${pathResults}/indexes/ --bowtie2_index ${pathResults}/indexes/"
 else
@@ -64,36 +64,42 @@ else
 	resume=""
 fi
 
-if [ ${peaksType} == "narrow" ]; then
+if [ ${peaksType} == "Narrow" ]; then
 	peaksType="--narrow_peak"
 else
 	peaksType=""
 fi
 
 #########################################################################
-echo "#!/bin/bash" > ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+logFile=${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "#!/bin/bash" > "${logFile}"
 
 if [ ${cluster} = "cluster" ]; then
-	echo "#SBATCH --job-name=ChIP_calling_${sp}_${sample}" >>  ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --output=${pathScripts}/std_output_peaks_calling_${sp}_${sample}.txt" >>  ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --error=${pathScripts}/std_error_peaks_calling_${sp}_${sample}.txt" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --partition=cpu" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --mem=30G" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --cpus-per-task=${threads}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-	echo "#SBATCH --time=12:00:00" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+  {
+  echo "#SBATCH --job-name=ChIP_calling_${sp}_${sample}"
+	echo "#SBATCH --output=${pathScripts}/std_output_peaks_calling_${sp}_${sample}.txt"
+	echo "#SBATCH --error=${pathScripts}/std_error_peaks_calling_${sp}_${sample}.txt"
+	echo "#SBATCH --partition=cpu"
+	echo "#SBATCH --mem=30G"
+	echo "#SBATCH --cpus-per-task=${threads}"
+	echo "#SBATCH --time=12:00:00"
+  } >> "${logFile}"
+
 fi
 
-echo "source ${pathConda}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
-echo "conda activate nextflow" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "source ${pathConda}" >> "${logFile}"
+echo "conda activate nextflow" >> "${logFile}"
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
+      ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
+      -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> "${logFile}"
 
 #########################################################################
 
 if [ ${cluster} = "cluster" ]; then
-	sbatch ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	sbatch  "${logFile}"
 else
-	bash ${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
+	bash  "${logFile}"
 fi
 
 #########################################################################
