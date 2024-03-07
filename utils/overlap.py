@@ -229,11 +229,11 @@ if os.stat(output_file).st_size == 0:
         output.write("ID\tchr\tstart\tend\tnb_bp_window\n")  # \tgene_ID
 
     else:
-        output.write("ID\tchr\tstart\tend\toverlap_ID\n")
+        output.write("chr\tstart\tend\tID\toverlap_ID\n")
 
 for ref_pos, int_pos in dic_output.items():
     frag = ref_pos.split('\t')
-    output.write(frag[3] + '\t' + frag[0] + "\t" + frag[1] + "\t" + frag[2] + "\t")  # chr + start + end (ref 1)
+    output.write(frag[0] + "\t" + frag[1] + "\t" + frag[2] + "\t" + frag[3] + '\t')  # chr + start + end (ref 1)
     count = 0
     gene = []
     for i in int_pos:
