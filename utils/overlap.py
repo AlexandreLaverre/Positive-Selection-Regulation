@@ -164,9 +164,8 @@ for chr in ref_dic.keys():
 if args.keep_max:
     for ref, pos in dic_output.items():
         print("****")
-        print(ref)
         print(pos)
-        values = [val[2] for val in pos]
+        values = [val[2].split("_")[1] for val in pos]
         print(values)
 
 if args.count_overlap:
