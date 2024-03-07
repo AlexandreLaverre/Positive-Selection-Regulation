@@ -163,16 +163,12 @@ for chr in ref_dic.keys():
 
 if args.keep_max:
     for ref, pos in dic_output.items():
-        print("****")
-        print(dic_output[ref])
         # Keep only the overlap with the max value
         if len(pos) > 1:
             values = [float(val[2].split(":")[3]) for val in pos]
             max_index = values.index(max(values))
             pos = list(pos)[max_index]
             dic_output[ref] = {pos}
-            
-        print(dic_output[ref])
 
 
 if args.count_overlap:
