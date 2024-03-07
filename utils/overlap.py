@@ -119,7 +119,7 @@ if args.intraoverlap is not None:
         int_dic = collapse_intraoverlap(int_dic)
     if name_dic == "reference":
         ref_dic = collapse_intraoverlap(ref_dic)
-    print("Check intraoverlap in interest dictionary done !") if args.verbose else None
+    print(f"Check intraoverlap in {name_dic} dictionary done !") if args.verbose else None
 
 print("Running overlap... ") if args.verbose else None
 
