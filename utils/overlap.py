@@ -165,8 +165,10 @@ if args.keep_max:
     for ref, pos in dic_output.items():
         print("****")
         print(pos)
-        values = [val[2].split("_")[1] for val in pos]
+        print(len(pos))
+        values = [float(val[2].split("_")[1]) for val in pos]
         print(values)
+        print(max(values))
 
 if args.count_overlap:
     print("Counting base pairs...")
