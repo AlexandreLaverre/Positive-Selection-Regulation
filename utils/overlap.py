@@ -169,7 +169,7 @@ if args.keep_max:
             values = [float(val[2].split("_")[1]) for val in pos]
         print(values)
         print(max(values))
-        pos = {pos.index(max(values))}
+        pos = {list(pos).index(max(values))}
         print(pos)
 
 
