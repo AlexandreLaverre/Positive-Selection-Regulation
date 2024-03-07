@@ -168,7 +168,7 @@ if args.keep_max:
         #if len(pos) > 1:
         values = [float(val[2].split("_")[1]) for val in pos]
         max_index = values.index(max(values))
-        pos = pos[max_index]
+        pos = list(pos[max_index])
         dic_output[ref] = pos
 
         print(values)
