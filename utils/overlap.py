@@ -166,6 +166,8 @@ if args.keep_max:
         print("****")
         print(ref)
         print(pos)
+        values = [val[2] for val in pos]
+        print(values)
 
 if args.count_overlap:
     print("Counting base pairs...")
