@@ -10,7 +10,7 @@ parser.add_argument("reference_file", help="list of genomic coordinates")
 parser.add_argument("interest_file", help="list of interest genomic coordinates to be overlap")
 parser.add_argument("output_file", help="name of output file")
 parser.add_argument("--extend", nargs="?", default=0, const=0, type=int, help="allow for greater overlap (in base pairs) (default = 0)")
-parser.add_argument("--intraoverlap", action="store_true", help="check overlap in interest file")
+parser.add_argument("--intraoverlap", default="None", help="check overlap in interest or reference file")
 parser.add_argument("--count_overlap", action="store_true", help="count overlapping base pairs")
 parser.add_argument("--count_window", action="store_true", help="count interest base pairs in extended windows")
 parser.add_argument("--interest_ID", action="store_true", help="overlap interest output with ID format")
@@ -65,7 +65,7 @@ int_dic = sorted_dictionary(interest_file)
 print("Interest dictionary ready") if args.verbose else None
 
 
-# Testing intra-overlap in interest dic
+# Testing intra-overlap in dic
 def collapse_intraoverlap(dic):
     if list(dic.values())[0][0][0] != list(dic.values())[0][0][1]:
         print("Length of", name_dic, "seq. > 1 pb ") if args.verbose else None
@@ -113,9 +113,12 @@ def collapse_intraoverlap(dic):
         return dic
 
 
-if args.intraoverlap:
-    name_dic = 'interest'
-    int_dic = collapse_intraoverlap(int_dic)
+if args.intraoverlap is not None:
+    name_dic = args.intraoverlap
+    if name_dic == "interest":
+        int_dic = collapse_intraoverlap(int_dic)
+    if name_dic == "reference":
+        ref_dic = collapse_intraoverlap(ref_dic)
     print("Check intraoverlap in interest dictionary done !") if args.verbose else None
 
 print("Running overlap... ") if args.verbose else None
