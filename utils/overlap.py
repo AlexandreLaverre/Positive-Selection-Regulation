@@ -13,6 +13,7 @@ parser.add_argument("--extend", nargs="?", default=0, const=0, type=int, help="a
 parser.add_argument("--intraoverlap", default="None", help="check overlap in interest or reference file")
 parser.add_argument("--count_overlap", action="store_true", help="count overlapping base pairs")
 parser.add_argument("--count_window", action="store_true", help="count interest base pairs in extended windows")
+parser.add_argument("--keep_max", action="store_true", help="keep overlapID with the max value")
 parser.add_argument("--interest_ID", action="store_true", help="overlap interest output with ID format")
 parser.add_argument("--reference_ID", action="store_true", help="reference output with ID format")
 parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
@@ -43,6 +44,8 @@ def sorted_dictionary(file):
                 ID = str(i[3]) if args.reference_ID else str(i[0])+':'+str(i[1])+':'+str(i[2])
             else:
                 ID = str(i[3]) if args.interest_ID else chr + ':' + str(i[1]) + ':' + str(i[2])
+                if args.keep_max:
+                    ID = chr + ':' + str(i[1]) + ':' + str(i[2]) + "_" + str([3]) # add value
 
             pos = (int(i[1]), int(i[2]), ID)
 
@@ -133,7 +136,6 @@ for chr in ref_dic.keys():
         ref_pos = str(chr) + '\t' + str(start) + "\t" + str(end) + '\t' + str(pos[2])  # only ID
 
         if chr in int_dic.keys():
-
             # Initialization of first possible overlapping interest position
             i = first_i
             while i < len(int_dic[chr]) and int_dic[chr][i][1] < (start - args.extend):
@@ -158,6 +160,12 @@ for chr in ref_dic.keys():
 
         dic_output[ref_pos] = set(dic_output[ref_pos])
 
+
+if args.keep_max:
+    for ref, pos in dic_output.items():
+        print("****")
+        print(ref)
+        print(pos)
 
 if args.count_overlap:
     print("Counting base pairs...")
