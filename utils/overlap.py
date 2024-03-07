@@ -45,7 +45,7 @@ def sorted_dictionary(file):
             else:
                 ID = str(i[3]) if args.interest_ID else chr + ':' + str(i[1]) + ':' + str(i[2])
                 if args.keep_max:
-                    ID = chr + ':' + str(i[1]) + ':' + str(i[2]) + "_" + str(i[4])  # add value
+                    ID = chr + ':' + str(i[1]) + ':' + str(i[2]) + ":" + str(i[4])  # add value
 
             pos = (int(i[1]), int(i[2]), ID)
 
@@ -164,16 +164,16 @@ for chr in ref_dic.keys():
 if args.keep_max:
     for ref, pos in dic_output.items():
         print("****")
-        print(pos)
+        print(dic_output[ref])
         #if len(pos) > 1:
-        values = [float(val[2].split("_")[1]) for val in pos]
+        values = [float(val[2].split(":")[3]) for val in pos]
         max_index = values.index(max(values))
         pos = list(pos)[max_index]
         dic_output[ref] = pos
 
         print(values)
         print(max(values))
-        print(pos)
+        print(dic_output[ref])
 
 
 if args.count_overlap:
