@@ -45,7 +45,7 @@ def sorted_dictionary(file):
             else:
                 ID = str(i[3]) if args.interest_ID else chr + ':' + str(i[1]) + ':' + str(i[2])
                 if args.keep_max:
-                    ID = chr + ':' + str(i[1]) + ':' + str(i[2]) + "_" + str([3]) # add value
+                    ID = chr + ':' + str(i[1]) + ':' + str(i[2]) + "_" + str([4])  # add value
 
             pos = (int(i[1]), int(i[2]), ID)
 
