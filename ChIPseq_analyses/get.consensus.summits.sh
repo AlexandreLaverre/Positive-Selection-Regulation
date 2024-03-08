@@ -14,7 +14,7 @@ fi
 pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/macs2/narrowPeak
 
 ########################################################################################################################
-for TF in ${pathPeaks}/consensus
+for TF in `ls ${pathPeaks}/consensus`
 do
   # Merge all summits and overlap with consensus peaks
   cat ${pathPeaks}/${TF}_*summits.bed > ${pathPeaks}/${TF}_merge_summits.bed
