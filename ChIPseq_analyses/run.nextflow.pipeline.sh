@@ -8,6 +8,7 @@ export cluster=$5			      # i.e: local or cluster
 export resume=${6:-"false"}	# i.e: resume or false
 export skip=${7:-"false"}		# i.e: skip or false
 
+########################################################################################################################
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
 	export pathConda="/Users/alaverre/miniconda3/etc/profile.d/conda.sh"
@@ -27,7 +28,7 @@ mkdir -p ${pathResults}
 # Define parameters according to species
 source ${path}/scripts/params.sh ${sp} ${cluster}
 
-#########################################################################
+########################################################################################################################
 # Define input files
 
 export sampleID=${pathData}/ChIP-seq/${sp}/${sample}_samples_input.csv
@@ -70,7 +71,7 @@ else
 	peaksType=""
 fi
 
-#########################################################################
+########################################################################################################################
 logFile=${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "#!/bin/bash" > "${logFile}"
 
@@ -94,7 +95,7 @@ echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/$
       ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
       -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> "${logFile}"
 
-#########################################################################
+########################################################################################################################
 
 if [ ${cluster} = "cluster" ]; then
 	sbatch  "${logFile}"
@@ -102,4 +103,4 @@ else
 	bash  "${logFile}"
 fi
 
-#########################################################################
+########################################################################################################################
