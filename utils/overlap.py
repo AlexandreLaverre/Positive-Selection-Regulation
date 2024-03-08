@@ -19,11 +19,11 @@ parser.add_argument("--reference_ID", action="store_true", help="reference outpu
 parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
 args = parser.parse_args()
 
-#path = "/home/laverre/Documents/Regulatory_Landscape/data/" + args.specie + "/"
-path = os.getcwd() + "/"
-reference_file = path + args.reference_file
-interest_file = path + args.interest_file
-output_file = path + args.output_file
+if not os.path.isabs(args.reference_file):
+    path = os.getcwd() + "/"
+    args.reference_file = path + args.reference_file
+    args.interest_file = path + args.interest_file
+    args.output_file = path + args.output_file
 
 
 ### Create dictionary of infiles : {chr = [(start, end, ID),...]}
@@ -40,7 +40,7 @@ def sorted_dictionary(file):
             i = i.split("\t")
             chr = i[0]
             #chr = 'chr' + str(i[0].strip('chr'))    # Check if in "chr format"
-            if file == reference_file:
+            if file == args.reference_file:
                 ID = str(i[3]) if args.reference_ID else str(i[0])+':'+str(i[1])+':'+str(i[2])
             else:
                 ID = str(i[3]) if args.interest_ID else chr + ':' + str(i[1]) + ':' + str(i[2])
@@ -62,9 +62,9 @@ def sorted_dictionary(file):
     return dic
 
 
-ref_dic = sorted_dictionary(reference_file)
+ref_dic = sorted_dictionary(args.reference_file)
 print("Reference dictionary ready") if args.verbose else None
-int_dic = sorted_dictionary(interest_file)
+int_dic = sorted_dictionary(args.interest_file)
 print("Interest dictionary ready") if args.verbose else None
 
 
@@ -221,8 +221,8 @@ if args.count_window:
 
 
 print("Writting output... ") if args.verbose else None
-output = open(output_file, 'w')
-if os.stat(output_file).st_size == 0:
+output = open(args.output_file, 'w')
+if os.stat(args.output_file).st_size == 0:
     if args.count_overlap:
         output.write("ID\tchr\tstart\tend\toverlap_ID\tlength_frag\tnb_bp_overlap\t%overlap\n") #\tgene_ID
     elif args.count_window:
