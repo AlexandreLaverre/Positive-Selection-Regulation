@@ -22,7 +22,7 @@ do
 
   # Format consensus summits BED file
   cut -f 5 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}_consensus_summits_ID.txt
-  cut -f 4 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}__consensus_ID.txt
+  cut -f 4 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}_consensus_ID.txt
   sed -i "s/:/\t/g" ${pathPeaks}/${TF}_consensus_summits_ID.txt
   paste ${pathPeaks}/${TF}_consensus_summits_ID.txt ${pathPeaks}/${TF}_consensus_ID.txt | tail -n +2 > ${pathPeaks}/consensus/${TF}/${TF}.consensus_summits.bed
 
