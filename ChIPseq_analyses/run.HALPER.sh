@@ -26,8 +26,8 @@ for target in "${other_species[@]}"; do
   ######################################################################################################################
   # Write instructions for cluster
   mkdir -p "${pathResults}"
-  mkdir -p "${path}/scripts/homologous_peaks/logs/"
-  logFile=${path}/scripts/homologous_peaks/logs/bsub_HALPER_"${sp}"_"${TF}"_to_"${target}"
+  mkdir -p "${path}/scripts/ChIPseq_analyses/logs/"
+  logFile=${path}/scripts/ChIPseq_analyses/logs/bsub_HALPER_"${sp}"_"${TF}"_to_"${target}"
 
   echo "#!/bin/bash" > "${logFile}"
   if [ "${cluster}" = "cluster" ]; then
