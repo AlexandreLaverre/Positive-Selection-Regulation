@@ -10,7 +10,7 @@ export cluster=$4			      # i.e: local or cluster
 path=/beegfs/data/alaverre/PosSel/
 source ${path}/scripts/params.sh "${sp}" "${cluster}"
 pathData=${path}/results/peaks_calling/${sp}/${sample}/${TF}/
-pathResults=${path}/results/homologous_peaks/${sp}/${sample}/${TF}/
+pathResults=${path}/results/homologous_peaks/${sp}/
 pathHAL=/beegfs/banque/hal/241-mammalian-2020v2.hal
 
 all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_caroli" "Felis_catus" \
@@ -19,34 +19,56 @@ all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_c
 # Remove reference species from all to define target species separated by comma
 other_species=$(IFS=,; echo "${all_species[@]/$sp_name}")
 
-########################################################################################################################
-# Write instruction for HALPER
-logFile=${path}/scripts/homologous_peaks/logs//bsub_HALPER_"${sp}"_"${sample}"_"${TF}"
+for target in "${other_species[@]}"
+do
+  OutputFile=${pathResults}/HALPER_${sp}2${target}.bed
+  if [ -e "${OutputFile}" ]; then
+    echo "${TF}: ${sp} to ${target} HALPER already done!"
+  else
+  ######################################################################################################################
+  # Write instructions for cluster
+  mkdir -p "${pathResults}"
+  mkdir -p "${path}/scripts/homologous_peaks/logs/"
+  logFile=${path}/scripts/homologous_peaks/logs/bsub_HALPER_"${sp}"_"${TF}"_to_"${target}"
 
-echo "#!/bin/bash" > "${logFile}"
-if [ "${cluster}" = "cluster" ]; then
-	{
-  echo "#SBATCH --job-name=HALPER_${sp}_${sample}_${TF}"
-	echo "#SBATCH --partition=cpu"
-	echo "#SBATCH --mem=10G"
-	echo "#SBATCH --cpus-per-task=1"
-	echo "#SBATCH --time=12:00:00"
-	echo "#SBATCH --array=1-9"
-	} >> "${logFile}"
-fi
+  echo "#!/bin/bash" > "${logFile}"
+  if [ "${cluster}" = "cluster" ]; then
+    {
+    echo "#SBATCH --job-name=HALPER_${TF}_${sp}_to_${target}"
+    echo "#SBATCH --partition=cpu"
+    echo "#SBATCH --mem=5G"
+    echo "#SBATCH --cpus-per-task=2"
+    echo "#SBATCH --time=8:00:00"
+    } >> "${logFile}"
+  fi
 
-echo "source ${pathConda}" >> "${logFile}"
-echo "conda activate hal" >> "${logFile}"
+  ######################################################################################################################
+  # Write instructions for HALPER
+  {
+    # Lift summits
+    echo "halLiftover --bedType 4 ${pathHAL} ${sp} ${pathData}/${TF}.consensus_summits.bed ${target} \
+          ${pathResults}/${TF}.consensus_summits_to_${target}.bed &"
 
-echo "halper_map_peak_orthologs.sh -b ${pathData}/.narrowPeak -o ${pathResults} \
-      -s ${sp_name} -t ${other_species} -c ${pathHAL}" >> "${logFile}"
+    # Lift peaks
+    echo "halLiftover --bedType 4 ${pathHAL} ${sp} ${pathData}/${TF}.consensus_peaks.bed ${target} \
+          ${pathResults}/${TF}.consensus_peaks_to_${target}.bed"
+    echo "wait"
 
-########################################################################################################################
-# Run HALPER
-if [ "${cluster}" = "cluster" ]; then
-	sbatch "${logFile}"
-else
-	bash "${logFile}"
-fi
+    # Merge lifted regions with HALPER
+    echo "python3 -m orthologFind -max_frac 1.2 -min_frac 0.8 -protect_dist 5 -qFile ${pathData}/${TF}.consensus_peaks.bed \
+          -tFile ${pathResults}/${TF}.consensus_peaks_to_${target}.bed -sFile ${pathResults}/${TF}.consensus_summits_to_${target}.bed \
+          -oFile ${pathResults}/HALPER_${TF}_${sp}2${target}.bed -mult_keepone"
+
+  } >> "${logFile}"
+
+  ######################################################################################################################
+  # Run script
+  if [ "${cluster}" = "cluster" ]; then
+    echo "sbatch ${logFile}"
+  else
+    bash "${logFile}"
+  fi
+  fi
+done
 
 ########################################################################################################################
