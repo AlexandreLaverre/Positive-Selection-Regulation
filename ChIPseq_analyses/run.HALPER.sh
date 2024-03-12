@@ -16,7 +16,7 @@ all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_c
              "Canis_lupus_familiaris" "Oryctolagus_cuniculus" "Rattus_norvegicus" "Bos_taurus")
 
 # Remove reference species from all to define target species separated by comma
-other_species=$(IFS=,; echo "${all_species[@]/$sp}")
+other_species=$(IFS=" "; echo "${all_species[@]/$sp}")
 
 for target in "${other_species[@]}"
 do
