@@ -9,7 +9,7 @@ export cluster=$4			      # i.e: local or cluster
 # Define path and variables
 path=/beegfs/data/alaverre/PosSel/
 source ${path}/scripts/params.sh "${sp}" "${cluster}"
-pathData=${path}/results/peaks_calling/${sp}/${sample}/${TF}/
+pathData=${path}/results/peaks_calling/${sp}/
 pathResults=${path}/results/homologous_peaks/${sp}/
 pathHAL=/beegfs/banque/hal/241-mammalian-2020v2.hal
 
@@ -17,7 +17,7 @@ all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_c
              "Canis_lupus_familiaris" "Oryctolagus_cuniculus" "Rattus_norvegicus" "Bos_taurus")
 
 # Remove reference species from all to define target species separated by comma
-other_species=$(IFS=,; echo "${all_species[@]/$sp_name}")
+other_species=$(IFS=,; echo "${all_species[@]/$sp}")
 
 for target in "${other_species[@]}"
 do
