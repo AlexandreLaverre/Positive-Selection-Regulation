@@ -15,10 +15,13 @@ pathHAL=/beegfs/banque/hal/241-mammalian-2020v2.hal
 all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_caroli" "Felis_catus" \
              "Canis_lupus_familiaris" "Oryctolagus_cuniculus" "Rattus_norvegicus" "Bos_taurus")
 
+echo "${all_species[0]}"
 # Remove reference species from all to define target species separated by comma
-other_species=$(IFS=" "; echo "${all_species[@]/$sp}")
+other_species=$(IFS=","; echo "${all_species[@]/$sp}")
+echo "${other_species[0]}"
 
 for target in "${other_species[@]}"; do
+  echo "${target}"
   OutputFile=${pathResults}/HALPER_${sp}2${target}.bed
   if [ -e "${OutputFile}" ]; then
     echo "${TF}: ${sp} to ${target} HALPER already done!"
