@@ -18,8 +18,7 @@ all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_c
 # Remove reference species from all to define target species separated by comma
 other_species=$(IFS=" "; echo "${all_species[@]/$sp}")
 
-for target in "${other_species[@]}"
-do
+for target in "${other_species[@]}"; do
   OutputFile=${pathResults}/HALPER_${sp}2${target}.bed
   if [ -e "${OutputFile}" ]; then
     echo "${TF}: ${sp} to ${target} HALPER already done!"
