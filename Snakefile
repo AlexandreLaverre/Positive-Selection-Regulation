@@ -25,7 +25,6 @@ AncMethod = config["AncMethod"]
 cluster = config["cluster"]
 nbPart = 10
 
-
 if cluster == "cluster":
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
     split = "split"
@@ -40,8 +39,10 @@ suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
 pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
-TFs =  list(set([os.path.basename(BED).split('_')[1] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/broadPeak/*.broadPeak')])) ## remember to change 1 for 0
+TFs =  list(set([os.path.basename(BED).split('_')[1] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(TFs), "transcription factors" )
+
+include: 'rules/SVM_model.smk'
 
 workdir: pathResults
 
@@ -63,7 +64,7 @@ rule all:
 rule check_input_data:
     message: "Check if all the required data are present before starting."
     input:
-        PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/broadPeak/",
+        PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
         GenomeAlignment=f"{path}/data/genome_alignments/{sp}/triplet_ancestor.maf",
         SubstiMatrixes=f"{path}/results/substitution_matrix/{sp}/",
         ChromCorrespondence=f"{path}/data/genome_sequences/{sp}/chromosome_correspondence.txt"
@@ -75,7 +76,7 @@ rule check_input_data:
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
-    input: PeaksFolder = pathPeaks + "/bowtie2/mergedLibrary/macs2/broadPeak/",
+    input: PeaksFolder = pathPeaks + "/bowtie2/mergedLibrary/macs2/narrowPeak/",
            InputCheck = pathResults+ "/log/input_check.txt"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
@@ -85,7 +86,7 @@ rule GetPeaks:
 	        cp {input.PeaksFolder}/consensus/{wildcards.TF}/{wildcards.TF}.consensus_peaks.bed {output.Peaks} 
         else
             # peaks come from an unique sample
-            cp {input.PeaksFolder}/{wildcards.TF}*.broadPeak {output.Peaks}
+            cp {input.PeaksFolder}/{wildcards.TF}*.narrowPeak {output.Peaks}
         fi
         
         # Add meaningful ID for each peak
@@ -93,67 +94,6 @@ rule GetPeaks:
         cut -f 1-3 {output.Peaks} > {pathPeaks}/{wildcards.TF}_coord
         paste {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs > {output.Peaks}
         rm {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs
-        """
-
-rule GenerateNegativeSeq:
-    message: "Generate random sequences respecting the focal sequences composition for gkm training"
-    input:
-        BED_file = pathPeaks + "/{TF}.peaks.bed"
-    output:
-        Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
-        Negative_seq = pathResults + "/{TF}/Model/negSet.fa",
-        BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/{TF}.peaks.bed_UCSC_names"
-    log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
-    params: time="1:00:00",mem="5G",threads=1
-    shell:
-        """
-        mkdir -p {pathResults}/{wildcards.TF}/Model/
-        Rscript {pathScripts}/GenerateNegativeSeq.R {sp} {sample} {wildcards.TF} {input.BED_file} {cluster} &> {log.out}
-        touch {output.Positive_seq} {output.Negative_seq} {output.BED_UCSC}
-        """
-
-rule ModelTraining:
-    message: "Training of the gkm-SVM, kmer=10, 16 threads"
-    input:
-        Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
-        Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
-    output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
-    log: out = pathResults + "/log/{TF}/ModelTraining.out"
-    priority: 2
-    params: time="15:00:00", mem="5G", threads=nbThreads
-    shell:
-        """
-        gkmtrain -r 12 -l 10 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
-        """
-
-rule ModelValidation:
-    message: "Cross-validation of the model"
-    input:
-        Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
-        Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
-    output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
-    log: out = pathResults + "/log/{TF}/ModelValidation.out"
-    params: time="48:00:00", mem="5G", threads=nbThreads
-    shell:
-        """
-        gkmtrain -r 12 -l 10 -x 5 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
-        """
-
-rule ModelPrediction:
-    message: "Generate SVM weights for all possible 10-mers"
-    input:
-        Model = pathResults + "/{TF}/Model/{TF}.model.txt",
-        kmer_fasta = path + "/results/positive_selection/kmer.fa"
-    output:
-        PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
-        Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
-    log: out = pathResults + "/log/{TF}/ModelPrediction.out"
-    priority: 2
-    params: time="6:00:00", mem="2G", threads=nbThreads
-    shell:
-        """
-        gkmpredict -T {nbThreads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
-        touch {output.Prediction_done}
         """
 
 rule BED_split:
