@@ -1,3 +1,11 @@
+sp = config["sp"]
+sample = config["sample"]
+nbThreads = int(config["nbPart"])
+cluster = config["cluster"]
+path = config[cluster]["path"]
+pathResults = path + "/results/positive_selection/" + sp + "/" + sample
+pathScripts = path + "/scripts/detect_positive_selection"
+pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"

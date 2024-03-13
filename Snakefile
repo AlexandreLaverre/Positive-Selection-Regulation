@@ -1,7 +1,3 @@
-#! /usr/bin/env python
-import glob
-import os
-
 ########################################################################################################################
 ##### PIPELINE TO DETECT POSITIVE SELECTION  #####
 # Data requirements:
@@ -16,35 +12,25 @@ import os
 # Python modules: Bio, Bio.Seq, numpy, pandas, multiprocessing.pool, alive_progress
 
 ########################################################################################################################
+#! /usr/bin/env python
+import glob
+import os
+
+configfile: "config/TestEvol.yaml"
+include: 'rules/SVM_model.smk'
 
 sp = config["sp"]
 sample = config["sample"]
-nbThreads = int(config["nbPart"])
-nbRand = int(config["nbRand"])
 AncMethod = config["AncMethod"]
 cluster = config["cluster"]
-nbPart = 10
-
-if cluster == "cluster":
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
-    split = "split"
-    localrules: all, GetPeaks, BED_split, ConcatSeq
-else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection"
-    split = "gsplit"
-    localrules: all, GetPeaks, GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
-        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments
+path = config[cluster]["path"]
 
 suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
 pathResults = path + "/results/positive_selection/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
 pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
-TFs =  list(set([os.path.basename(BED).split('_')[1] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
-print("Running with :", ', '.join(TFs), "transcription factors" )
-
-include: 'rules/SVM_model.smk'
-
-workdir: pathResults
+#TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
+print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
@@ -52,14 +38,14 @@ if config["AlignType"] == "pairwise":
 else:
     ruleorder: GetSequencesMultiple > InferAncestralPairwise
 
+workdir: pathResults
 ########################################################################################################################
 
 rule all:
     input :
-        PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt", TF=TFs),
-        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=TFs),
-        model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=TFs)
-
+        PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt", TF=config["TFs"][sample]),
+        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=config["TFs"][sample]),
+        model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
 
 rule check_input_data:
     message: "Check if all the required data are present before starting."
@@ -103,7 +89,7 @@ rule BED_split:
     shell:
         """
         mkdir -p {pathResults}/log/
-        {split} -d -n l/{nbPart} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
+        {split} -d -n l/{config[nbPart]} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
         """
 
 rule InferAncestralPairwise:
@@ -135,7 +121,7 @@ rule GetSequencesMultiple:
 rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input:
-        Ancestral= lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done",part=range(100,100 + nbPart),TF=wildcards.TF)
+        Ancestral= lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done",part=range(100,100 + config["nbPart"]),TF=wildcards.TF)
     output:
         concat_ancestral = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
         concat_focal = pathResults + "/{TF}/sequences/all_focal_sequences.fa",
@@ -183,12 +169,12 @@ rule TestPosSel:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
-    output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(nbRand) + "permutations.txt")
-    threads: nbPart
+    output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt")
+    threads: config["nbPart"]
     priority: 2
-    params: time="15:00:00", mem="5G", threads=nbPart
+    params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {nbRand} {cluster} --NbThread {threads}
+        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {config[nbRand]} {cluster} --NbThread {threads}
         """
 
