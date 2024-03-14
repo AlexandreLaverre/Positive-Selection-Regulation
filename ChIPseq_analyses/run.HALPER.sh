@@ -33,7 +33,7 @@ for target in "${other_species[@]}"; do
   if [ "${cluster}" = "cluster" ]; then
     {
     echo "#SBATCH --job-name=HALPER_${TF}_${sp}_to_${target}"
-    echo "#SBATCH --partition=cpu"
+    echo "#SBATCH --partition=normal"
     echo "#SBATCH --mem=5G"
     echo "#SBATCH --cpus-per-task=2"
     echo "#SBATCH --time=8:00:00"
