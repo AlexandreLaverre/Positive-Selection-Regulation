@@ -22,7 +22,7 @@ export Alignment=${pathAlignment}/triplet_ancestor.maf
 
 ####################################################################################
 # Define names, chromosomes and files
-source ${path}/scripts/params.sh ${sp} ${cluster}
+source ${path}/scripts/config/params.sh ${sp} ${cluster}
 conda activate MAF
 
 #########################################################################

@@ -26,7 +26,7 @@ export pathScripts=${path}/scripts/ChIPseq_analyses/logs
 mkdir -p ${pathResults}
 
 # Define parameters according to species
-source ${path}/scripts/params.sh ${sp} ${cluster}
+source ${path}/scripts/config/params.sh ${sp} ${cluster}
 
 ########################################################################################################################
 # Define input files

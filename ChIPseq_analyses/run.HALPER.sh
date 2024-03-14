@@ -7,7 +7,7 @@ export cluster=$3 		      # i.e: local or cluster
 ########################################################################################################################
 # Define path and variables
 path=/beegfs/data/alaverre/PosSel/
-source ${path}/scripts/params.sh "${sp}" "${cluster}"
+source ${path}/scripts/config/params.sh "${sp}" "${cluster}"
 pathData=${path}/results/peaks_calling/${sp}/
 pathResults=${path}/results/homologous_peaks/${sp}/
 pathHAL=/beegfs/banque/hal/241-mammalian-2020v2.hal
