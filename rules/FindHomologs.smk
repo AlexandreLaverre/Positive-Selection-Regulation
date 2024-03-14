@@ -11,8 +11,8 @@ pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
 
 rule ConsensusSummits:
     message: "Get consensus summits"
-    input: BED_file = pathPeaks + "/{TF}.peaks.bed"
-    output: peaks = expand(pathPeaks + "/consensus/${TF}/${TF}.consensus_summits.bed", TF=TFs)
+    input: peaks = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_peaks.bed", TF=TFs)
+    output: summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=TFs)
     log: out = pathResults + "/log/ConsensusSummits.out"
     shell:
         """
@@ -21,23 +21,27 @@ rule ConsensusSummits:
 
 rule ChromosomeCorrespondence:
     message: "Get correspondence for chromosomes names between different assemblies"
-    input: ok
-    output: ok
-    log: out = pathResults + "/log/ConsensusSummits.out"
+    input:
+        Assembly1 = config[sp]["Ensembl_Assembly"],
+        Assembly2 = config[sp]["UCSC_Assembly"]
+    output: correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     shell:
         """
-        {pathScripts}/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {Assembly1} {Assembly2} {suffix} {cluster} &> {log.out}
+        {pathScripts}/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
         """
-
 
 rule ConvertCoordinates:
     message: "Convert coordinates to UCSC for human and mice"
-    input: BED_file = pathPeaks + "/{TF}.peaks.bed"
-    output: peaks = expand(pathPeaks + "/consensus/${TF}/${TF}.consensus_summits.bed", TF=TFs)
-    log: out = pathResults + "/log/ConsensusSummits.out"
+    input:
+        peaks = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_peaks.bed", TF=TFs),
+        summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=TFs),
+        correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+    output:
+        peaks = expand(pathPeaks + "/consensus/${TF}/${TF}.consensus_summits.bed", TF=TFs),
+        summits = expand(pathPeaks + "/consensus/${TF}/${TF}.consensus_summits.bed",TF=TFs)
     shell:
         """
-        python {pathScripts}/utils/convert.BED.chrNames.py {sp} {sample} {cluster} &> {log.out}
+        python {pathScripts}/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
         """
 
 rule runHALPER:
