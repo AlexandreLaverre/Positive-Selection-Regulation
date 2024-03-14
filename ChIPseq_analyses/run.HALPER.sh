@@ -19,7 +19,7 @@ all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_c
 other_species=($(IFS=" "; echo "${all_species[@]/$sp}"))
 
 for target in "${other_species[@]}"; do
-  OutputFile=${pathResults}/HALPER_${sp}2${target}.bed
+  OutputFile=${pathResults}/HALPER_${TF}_${sp}2${target}.bed
   if [ -e "${OutputFile}" ]; then
     echo "${TF}: ${sp} to ${target} HALPER already done!"
   else
