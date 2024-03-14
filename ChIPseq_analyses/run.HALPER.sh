@@ -9,7 +9,7 @@ export cluster=$3 		      # i.e: local or cluster
 path=/beegfs/data/alaverre/PosSel/
 source ${path}/scripts/config/params.sh "${sp}" "${cluster}"
 pathData=${path}/results/peaks_calling/${sp}/
-pathResults=${path}/results/homologous_peaks/${sp}/
+pathResults=${path}/results/homologous_peaks/${sp}/${TF}
 pathHAL=/beegfs/banque/hal/241-mammalian-2020v2.hal
 
 all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_caroli" "Felis_catus" \
