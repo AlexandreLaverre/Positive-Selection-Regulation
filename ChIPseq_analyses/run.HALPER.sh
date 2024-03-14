@@ -62,7 +62,7 @@ for target in "${other_species[@]}"; do
   ######################################################################################################################
   # Run script
   if [ "${cluster}" = "cluster" ]; then
-    echo "sbatch ${logFile}"
+    sbatch "${logFile}"
   else
     bash "${logFile}"
   fi
