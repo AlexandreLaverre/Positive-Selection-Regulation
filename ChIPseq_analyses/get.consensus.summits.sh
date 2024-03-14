@@ -16,6 +16,7 @@ pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/macs2/narrowPeak
 ########################################################################################################################
 for TF in `ls ${pathPeaks}/consensus`
 do
+  echo "$TF"
   # Merge all summits and overlap with consensus peaks
   cat ${pathPeaks}/${TF}_*summits.bed > ${pathPeaks}/${TF}_merge_summits.bed
   overlap.py ${pathPeaks}/consensus/${TF}/${TF}.consensus_peaks.bed ${pathPeaks}/${TF}_merge_summits.bed ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt --keep_max --reference_ID
