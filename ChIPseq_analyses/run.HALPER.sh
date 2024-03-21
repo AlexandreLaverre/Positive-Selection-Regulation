@@ -48,14 +48,15 @@ for target in "${other_species[@]}"; do
   ######################################################################################################################
   # Write instructions for HALPER
   {
+    #echo "conda activate hal"
     # Lift summits
-    echo "halLiftover --bedType 4 ${pathHAL} ${sp} ${pathData}/${TF}.consensus_summits.bed ${target} \
-          ${pathResults}/liftover/${TF}.consensus_summits_to_${target}.bed &"
+    #echo "halLiftover --bedType 4 ${pathHAL} ${sp} ${pathData}/${TF}.consensus_summits.bed ${target} \
+    #      ${pathResults}/liftover/${TF}.consensus_summits_to_${target}.bed &"
 
     # Lift peaks
-    echo "halLiftover --bedType 4 ${pathHAL} ${sp} ${pathData}/${TF}.consensus_peaks.bed ${target} \
-          ${pathResults}/liftover/${TF}.consensus_peaks_to_${target}.bed"
-    echo "wait"
+    #echo "halLiftover --bedType 4 ${pathHAL} ${sp} ${pathData}/${TF}.consensus_peaks.bed ${target} \
+    #     ${pathResults}/liftover/${TF}.consensus_peaks_to_${target}.bed"
+    #echo "wait"
 
     # Merge lifted regions with HALPER
     echo "python3 -m orthologFind -max_len 1000 -min_len 50 -protect_dist 5 \
