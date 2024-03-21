@@ -15,6 +15,7 @@
 #! /usr/bin/env python
 import glob
 import os
+from snakemake.io import expand, touch
 
 configfile: "config/TestEvol.yaml"
 include: 'rules/SVM_model.smk'

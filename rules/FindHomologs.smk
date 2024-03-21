@@ -1,3 +1,5 @@
+from snakemake.io import expand
+
 sp = config["sp"]
 sample = config["sample"]
 TFs = config["TFs"][sample]
