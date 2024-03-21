@@ -13,8 +13,10 @@ pathResults=${path}/results/homologous_peaks/${sp}/${TF}
 pathLogs=${path}/scripts/ChIPseq_analyses/logs
 pathHAL=/beegfs/banque/hal/241-mammalian-2020v2.hal
 
-all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_caroli" "Felis_catus" \
-             "Canis_lupus_familiaris" "Oryctolagus_cuniculus" "Rattus_norvegicus" "Bos_taurus")
+#all_species=("Homo_sapiens" "Macaca_mulatta" "Mus_musculus" "Mus_spretus" "Mus_caroli" "Felis_catus" \
+#             "Canis_lupus_familiaris" "Oryctolagus_cuniculus" "Rattus_norvegicus" "Bos_taurus")
+
+all_species=("Pan_troglodytes" "Callithrix_jacchus" "Microcebus_murinus" "Equus_caballus" "Manis_javanica" "Capra_hircus")
 
 # Remove reference species from all to define target species separated by comma
 other_species=($(IFS=" "; echo "${all_species[@]/$sp}"))
