@@ -28,12 +28,12 @@ spretus:
     UCSC_Assembly: GCA_001624865.1_SPRET_EiJ_v1.fa.gz
     Ensembl_Assembly: Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz
 cluster:
-    path: "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel"
-    split: "split"
+    path: /work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel
+    split: split
     localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits
 local:
-    path: "/Users/alaverre/Documents/Detecting_positive_selection"
-    split: "gsplit"
+    path: /Users/alaverre/Documents/Detecting_positive_selection
+    split: gsplit
     localrules: all, GetPeaks, GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction, BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments, ConsensusSummits
 
