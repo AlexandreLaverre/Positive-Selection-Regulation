@@ -27,9 +27,9 @@ cluster = config["cluster"]
 path = config[cluster]["path"]
 
 suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
-pathResults = path + "/results/positive_selection/" + sp + "/" + sample
+pathResults = path + "/results/positive_selection/NarrowPeaks/" + sp + "/" + sample
 pathScripts = path + "/scripts/detect_positive_selection"
-pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
+pathPeaks = path + "/results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 #TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
@@ -46,13 +46,13 @@ rule all:
     input :
         PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt", TF=config["TFs"][sample]),
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=config["TFs"][sample]),
-        model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
+        #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
 
 rule check_input_data:
     message: "Check if all the required data are present before starting."
     input:
         PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
-        GenomeAlignment=f"{path}/data/genome_alignments/{sp}/triplet_ancestor.maf",
+        GenomeAlignment=f"{path}/data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
         SubstiMatrixes=f"{path}/results/substitution_matrix/{sp}/",
         ChromCorrespondence=f"{path}/data/genome_sequences/{sp}/chromosome_correspondence.txt"
     output: Check=f"{pathResults}/log/input_check_{sp}_{sample}"

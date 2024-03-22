@@ -19,7 +19,7 @@ fi
 
 conda activate MAF
 
-pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf"
+pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf.gz"
 pathResults="${path}/results/positive_selection/${sp}/${sample}/${TF}/Alignments/"
 pathAlign="${pathResults}/MAFs/"
 
