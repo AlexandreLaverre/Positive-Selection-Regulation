@@ -13,11 +13,11 @@ else
 	export path=/Users/alaverre/Documents/Detecting_positive_selection/
 fi
 
-export pathGenomes=${path}/data/genome_sequences/${species}
 export pathScripts=${path}/scripts/compare_genome_assemblies
 
 ####################################################################################
 
-perl ${pathScripts}/chromosome.correspondence.pl --pathAssembly1=${pathGenomes}/${genome1} --pathAssembly2=${pathGenomes}/${genome2} --pathOutput=${pathGenomes}/chromosome_correspondence_${suffix}.txt
+perl ${pathScripts}/chromosome.correspondence.pl --pathAssembly1=${genome1} \
+      --pathAssembly2=${genome2} --pathOutput=${pathGenomes}/chromosome_correspondence_${suffix}.txt
 
 ####################################################################################
