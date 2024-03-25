@@ -91,7 +91,7 @@ rule GetPeaks:
 
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
-    input: BED_file = pathPeaks + "/{TF}.peaks.bed" + suffix
+    input: BED_file = pathPeaks + "/{TF}.peaks" + suffix + ".bed"
     output: touch(pathResults + "/log/{TF}/part{part}")
     shell:
         """
