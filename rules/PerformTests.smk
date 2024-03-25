@@ -27,8 +27,8 @@ rule PermutationTest:
 
 rule simulate_sequence:
     """Simulate sequence evolution according to a given number of substitutions and a new optimum value"""
-    input: original_seq =
-    output: simulated_seq =
+    input: original_seq = "test.txt"
+    output: simulated_seq = "test.txt"
     shell:
         """
         python /simulate_sequence_evolution.py {input.original_seq} {output.simulated_seq} {cluster}
@@ -37,15 +37,15 @@ rule simulate_sequence:
 rule get_all_svm:
     """Compute all possible and observed SVM"""
     input:
-        original_seq = ,
-        simulated_seq =
+        original_seq = "test.txt",
+        simulated_seq ="test.txt"
     output:
-        all_svm = ,
-        obs_svm =
-    threads: MaxThread
+        all_svm = "test.txt",
+        obs_svm = "test.txt"
+    threads: config["nbPart"]
     shell:
         """
-        python {path}/scripts/MaxLnl_Test/compute_all_deltaSVM.py {species} {sample} {TF} {cluster} --NbThread {threads}
+        python {path}/scripts/MaxLnl_Test/compute_all_deltaSVM.py {sp} {sample} {wildcards.TF} {cluster} --NbThread {threads}
         """
 
 
@@ -57,7 +57,7 @@ rule maxLL_test:
     output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 2
-    params: time="15:00:00", mem="5G", threads=nbThreads
+    params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
         gkmtrain -r 12 -l 10 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
