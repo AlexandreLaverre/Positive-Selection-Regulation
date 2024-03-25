@@ -14,7 +14,7 @@ rule ConsensusSummits:
     log: out = pathResults + "/log/ConsensusSummits_{TF}.out"
     shell:
         """
-        scripts/ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
+        /ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
         """
 
 rule ChromosomeCorrespondence:
@@ -25,7 +25,7 @@ rule ChromosomeCorrespondence:
     output: correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     shell:
         """
-        scripts/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
+        /utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
         """
 
 
@@ -36,5 +36,5 @@ rule runHALPER:
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:
         """
-        scripts/peaks_evolution/run.HALPER.sh {sp} {wildcards.TF} {cluster} &> {log.out}
+        /peaks_evolution/run.HALPER.sh {sp} {wildcards.TF} {cluster} &> {log.out}
         """

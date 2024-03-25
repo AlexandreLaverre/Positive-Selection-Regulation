@@ -59,9 +59,9 @@ rule check_input_data:
     message: "Check if all the required data are present before starting."
     input:
         PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
-        GenomeAlignment=f"data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
-        SubstiMatrixes=f"results/substitution_matrix/{sp}/",
-        ChromCorrespondence=f"data/genome_sequences/{sp}/chromosome_correspondence.txt"
+        GenomeAlignment=f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
+        SubstiMatrixes=f"../results/substitution_matrix/{sp}/",
+        ChromCorrespondence=f"../data/genome_sequences/{sp}/chromosome_correspondence.txt"
     output: Check=f"{pathResults}/log/input_check_{sp}_{sample}"
     shell:
         """
@@ -95,7 +95,7 @@ rule ConvertCoordinates:
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
         summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed",
-        correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+        correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
