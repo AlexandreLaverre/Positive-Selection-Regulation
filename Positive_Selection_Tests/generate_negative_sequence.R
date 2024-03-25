@@ -15,14 +15,14 @@ path = ifelse(cluster=="cluster", "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosS
 pathScripts = paste0(path, "/scripts/compare_genome_assemblies")
 pathResults = paste0(path, "/results/positive_selection/", species, "/", sample, "/", TF, "/Model")
 
-# Check if chrName conversion between Ensembl and UCSC is needed
 BED = read.table(BED_file)
-if (species != "rat"){      #rat BED already UCSC
-  message("Convert chromosome names to UCSC convention...")
-  system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
-  BED_file = paste0(BED_file, "_UCSC_names")
-}
 
+# Check if chrName conversion between Ensembl and UCSC is needed
+#if (species != "rat"){      #rat BED already UCSC
+#  message("Convert chromosome names to UCSC convention...")
+#  system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
+#  BED_file = paste0(BED_file, "_UCSC_names")
+#}
 
 if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm10.masked")}
 if (species == "human"){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}

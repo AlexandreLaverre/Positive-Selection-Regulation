@@ -6,7 +6,6 @@ cluster = config["cluster"]
 
 pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
 pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
-suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
@@ -32,7 +31,7 @@ rule GetPeaks:
 
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
-    input: BED_file=pathPeaks + "/{TF}.peaks" + suffix + ".bed"
+    input: BED_file = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
     output: touch(pathResults + "/log/{TF}/part{part}")
     shell:
         """
