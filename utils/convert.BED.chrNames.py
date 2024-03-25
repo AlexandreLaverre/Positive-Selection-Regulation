@@ -10,7 +10,7 @@ path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "clus
     else "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 Correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
-Consensus = f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/bowtie2/mergedLibrary/macs2/narrowPeak/consensus/"
+pathPeaks = f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/"
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -21,8 +21,8 @@ with open(Correspondence, 'r') as f1:
         Correspondence_dict[i[0]] = i[1]
 
 for data in ["peaks", "consensus_summits"]:
-    BED = f"{Consensus}/{TF}/{TF}.{data}.bed"
-    outfile = open(f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/{TF}.{data}_UCSC_names.bed", 'w')
+    BED = f"{pathPeaks}/{TF}.{data}.bed"
+    outfile = open(f"{pathPeaks}/{TF}.{data}_UCSC_names.bed", 'w')
     with open(BED, 'r') as f2:
         for i in f2.readlines():
             i = i.strip("\n")
@@ -34,6 +34,6 @@ for data in ["peaks", "consensus_summits"]:
                 new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}"
 
                 outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), str(i[3]), new_ID]) + '\n')
-    
+
     outfile.close()
 ####################################################################################################
