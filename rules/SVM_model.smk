@@ -1,9 +1,11 @@
+from snakemake.io import touch
+
 sp = config["sp"]
 sample = config["sample"]
-nbThreads = int(config["nbPart"])
+nbThreads = config["nbPart"]
 cluster = config["cluster"]
 
-pathResults = "../results/positive_selection/" + sp + "/" + sample
+pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
 pathScripts = "../scripts/Positive_Selection_Tests/"
 pathPeaks = "../results/peaks_calling/" + sp + "/" + sample
 
