@@ -14,7 +14,7 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 rule ConsensusSummits:
     message: "Get consensus summits"
     input: peaks = expand(pathPeaks + "/{TF}.peaks.bed", TF=config["TFs"][sample])
-    output: summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=config["TFs"][sample])
+    output: summits = expand(pathPeaks + "/{TF}.consensus_summits.bed", TF=config["TFs"][sample])
     log: out = pathResults + "/log/ConsensusSummits.out"
     shell:
         """
@@ -36,11 +36,11 @@ rule ConvertCoordinates:
     message: "Convert coordinates to UCSC for human and mice"
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
-        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed",
+        summits = pathPeaks + "/{TF}.consensus_summits.bed",
         correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits_UCSC_names.bed"
+        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
     shell:
         """
         python utils/convert.BED.chrNames.py {sp} {sample} {cluster}
@@ -50,7 +50,7 @@ rule runHALPER:
     message: "Get consensus summits"
     input:
         peaks = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed",
-        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits" + config[sp]["suffix"] + ".bed"
+        summits = pathPeaks + "/{TF}.consensus_summits" + config[sp]["suffix"] + ".bed"
     output: peaks = directory("../results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:

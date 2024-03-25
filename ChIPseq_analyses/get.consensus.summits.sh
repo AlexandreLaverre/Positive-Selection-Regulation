@@ -12,6 +12,7 @@ else
 fi
 
 pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/macs2/narrowPeak
+pathOutput=${path}/${sp}/${sample}
 
 ########################################################################################################################
 for TF in `ls ${pathPeaks}/consensus`
@@ -25,7 +26,7 @@ do
   cut -f 5 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}_consensus_summits_ID.txt
   cut -f 4 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}_consensus_ID.txt
   sed -i "s/:/\t/g" ${pathPeaks}/${TF}_consensus_summits_ID.txt
-  paste ${pathPeaks}/${TF}_consensus_summits_ID.txt ${pathPeaks}/${TF}_consensus_ID.txt | tail -n +2 > ${pathPeaks}/consensus/${TF}/${TF}.consensus_summits.bed
+  paste ${pathPeaks}/${TF}_consensus_summits_ID.txt ${pathPeaks}/${TF}_consensus_ID.txt | tail -n +2 > ${pathOutput}/${TF}.consensus_summits.bed
 
   # clean tmp files
   rm ${pathPeaks}/${TF}_merge_summits.bed ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt ${pathPeaks}/${TF}_consensus_summits_ID.txt ${pathPeaks}/${TF}_consensus_ID.txt
