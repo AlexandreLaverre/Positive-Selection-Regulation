@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export species=$1
-export genome1=$2
-export genome2=$3
-export suffix=$4
-export cluster=$5
+species=$1
+genome1=$(basename -- "$2")
+genome2=$(basename -- "$3")
+suffix=$4
+cluster=$5
 
 ####################################################################################
 if [ ${cluster} = "cluster" ]; then
@@ -18,7 +18,7 @@ export pathScripts=${path}/scripts/utils/compare_genome_assemblies
 
 ####################################################################################
 
-perl ${pathScripts}/chromosome.correspondence.pl --pathAssembly1=${genome1} \
-      --pathAssembly2=${genome2} --pathOutput=${pathGenomes}/chromosome_correspondence_${suffix}.txt
+perl ${pathScripts}/chromosome.correspondence.pl --pathAssembly1=${pathGenomes}/${genome1} \
+      --pathAssembly2=${pathGenomes}/${genome2} --pathOutput=${pathGenomes}/chromosome_correspondence_${suffix}.txt
 
 ####################################################################################

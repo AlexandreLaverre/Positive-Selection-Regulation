@@ -1,6 +1,6 @@
 # Implement rules to retrieve ChiP-seq consensus peaks summits and to find their homologous using HALPER
 
-from snakemake.io import directory
+from snakemake.io import directory, expand
 
 sp = config["sp"]
 sample = config["sample"]
@@ -13,12 +13,12 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ConsensusSummits:
     message: "Get consensus summits"
-    input: peaks = pathPeaks + "/{TF}.peaks.bed"
-    output: summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed"
-    log: out = pathResults + "/log/ConsensusSummits_{TF}.out"
+    input: peaks = expand(pathPeaks + "/{TF}.peaks.bed", TF=config["TFs"][sample])
+    output: summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=config["TFs"][sample])
+    log: out = pathResults + "/log/ConsensusSummits.out"
     shell:
         """
-        ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
+        ./ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
         """
 
 rule ChromosomeCorrespondence:
@@ -29,7 +29,7 @@ rule ChromosomeCorrespondence:
     output: correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     shell:
         """
-        utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
+        ./utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
         """
 
 rule ConvertCoordinates:
