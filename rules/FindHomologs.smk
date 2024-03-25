@@ -1,3 +1,5 @@
+from snakemake.io import directory
+
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
@@ -9,7 +11,7 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ConsensusSummits:
     message: "Get consensus summits"
-    input: peaks = pathPeaks + "/consensus/{TF}/{TF}.consensus_peaks.bed"
+    input: peaks = pathPeaks + "/{TF}.peaks.bed"
     output: summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed"
     log: out = pathResults + "/log/ConsensusSummits_{TF}.out"
     shell:
@@ -36,7 +38,7 @@ rule ConvertCoordinates:
         correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
+        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits_UCSC_names.bed"
     shell:
         """
         python scripts/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
@@ -44,8 +46,10 @@ rule ConvertCoordinates:
 
 rule runHALPER:
     message: "Get consensus summits"
-    input: BED_file = pathPeaks + "/{TF}.peaks.bed"
-    output: peaks = pathPeaks + "/consensus/{TF}/{TF}.HALPER.txt" #### TEMPORARY
+    input:
+        peaks = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed",
+        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits" + config[sp]["suffix"] + ".bed"
+    output: peaks = directory("../results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:
         """
