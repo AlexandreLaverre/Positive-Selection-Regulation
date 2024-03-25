@@ -4,8 +4,8 @@ sp = config["sp"]
 sample = config["sample"]
 cluster = config["cluster"]
 
-pathResults = "results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathPeaks = "results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
+pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 
 rule ConsensusSummits:
     message: "Get consensus summits"

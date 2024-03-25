@@ -27,9 +27,9 @@ AncMethod = config["AncMethod"]
 cluster = config["cluster"]
 
 suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
-pathResults = "results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathScripts = "scripts/detect_positive_selection"
-pathPeaks = "results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
+pathScripts = "../scripts/detect_positive_selection"
+pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 
 #TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
