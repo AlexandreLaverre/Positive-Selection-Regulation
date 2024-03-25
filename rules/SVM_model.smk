@@ -12,17 +12,16 @@ pathPeaks = "../results/peaks_calling/" + sp + "/" + sample
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
     input:
-        BED_file = pathPeaks + "/{TF}.peaks.bed"
+        BED = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
-        Negative_seq = pathResults + "/{TF}/Model/negSet.fa",
-        BED_UCSC = pathPeaks + "/{TF}.peaks.bed_UCSC_names"
+        Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     params: time="1:00:00",mem="5G",threads=1
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Model/
-        Rscript {pathScripts}/generate_negative_sequence.R {sp} {sample} {wildcards.TF} {input.BED_file} {cluster} &> {log.out}
+        Rscript {pathScripts}/generate_negative_sequence.R {sp} {sample} {wildcards.TF} {input.BED} {cluster} &> {log.out}
         """
 
 rule ModelTraining:
