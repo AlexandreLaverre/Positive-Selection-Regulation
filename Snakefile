@@ -28,7 +28,6 @@ cluster = config["cluster"]
 
 suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
 pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathScripts = "../scripts/detect_positive_selection"
 pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 
 #TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
@@ -110,7 +109,7 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
-        python {pathScripts}/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} {input.BED_file_part} {AncMethod} {cluster} &> {log.out}
+        python positive_selection_tests/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} {input.BED_file_part} {AncMethod} {cluster} &> {log.out}
         """
 
 rule GetSequencesMultiple:
@@ -122,7 +121,7 @@ rule GetSequencesMultiple:
     params: time="2:00:00",mem="1G",threads=1
     shell:
         """
-        {pathScripts}/extract_sequences_from_MAF.sh {sp} {sample} {wildcards.TF} {input.BED_file_part} {cluster} &> {log.out}
+        positive_selection_tests/extract_sequences_from_MAF.sh {sp} {sample} {wildcards.TF} {input.BED_file_part} {cluster} &> {log.out}
         """
 
 rule ConcatSeq:
@@ -182,6 +181,6 @@ rule TestPosSel:
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python {pathScripts}/testPosSelec.py {sp} {sample} {wildcards.TF} {config[nbRand]} {cluster} --NbThread {threads}
+        python positive_selection_tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {config[nbRand]} {cluster} --NbThread {threads}
         """
 
