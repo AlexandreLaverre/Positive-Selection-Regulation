@@ -19,6 +19,7 @@ configfile: 'config/TestEvol.yaml'
 include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
+include: 'rules/PerformTests.smk'
 
 sp = config["sp"]
 sample = config["sample"]
@@ -34,7 +35,7 @@ if cluster == "cluster":
     localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates
 else:
     localrules: all,GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
-        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel,ArchiveAlignments
+        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
@@ -62,19 +63,3 @@ rule check_input_data:
         """
         mkdir -p {pathResults}/log
         """
-
-rule TestPosSel:
-    message: "Test for positive selection between ancestral and focal sequences"
-    input:
-        PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
-        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
-        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
-    output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt")
-    threads: config["nbPart"]
-    priority: 2
-    params: time="15:00:00", mem="5G", threads=config["nbPart"]
-    shell:
-        """
-        python positive_selection_tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {config[nbRand]} {cluster} --NbThread {threads}
-        """
-

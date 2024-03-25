@@ -1,3 +1,5 @@
+# Implement rules to retrieve ChiP-seq consensus peaks summits and to find their homologous using HALPER
+
 from snakemake.io import directory
 
 sp = config["sp"]
