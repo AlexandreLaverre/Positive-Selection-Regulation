@@ -18,7 +18,7 @@ rule ConsensusSummits:
     log: out = pathResults + "/log/ConsensusSummits_{TF}.out"
     shell:
         """
-        /ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
+        ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
         """
 
 rule ChromosomeCorrespondence:
@@ -29,7 +29,7 @@ rule ChromosomeCorrespondence:
     output: correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     shell:
         """
-        /utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
+        utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
         """
 
 rule ConvertCoordinates:
@@ -43,7 +43,7 @@ rule ConvertCoordinates:
         summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits_UCSC_names.bed"
     shell:
         """
-        python scripts/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
+        python utils/convert.BED.chrNames.py {sp} {sample} {cluster}
         """
 
 rule runHALPER:
@@ -55,5 +55,5 @@ rule runHALPER:
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:
         """
-        /peaks_evolution/run.HALPER.sh {sp} {wildcards.TF} {cluster} &> {log.out}
+        peaks_evolution/run.HALPER.sh {sp} {wildcards.TF} {cluster} &> {log.out}
         """

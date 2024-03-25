@@ -32,9 +32,9 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
 if cluster == "cluster":
-    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates
+    localrules: all, check_input_data, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates
 else:
-    localrules: all,GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
+    localrules: all, check_input_data, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments
 
 # Define from which type of alignments ancestral sequences should be obtained
