@@ -45,7 +45,7 @@ rule ConvertCoordinates:
 rule runHALPER:
     message: "Get consensus summits"
     input: BED_file = pathPeaks + "/{TF}.peaks.bed"
-    output: peaks = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed"
+    output: peaks = pathPeaks + "/consensus/{TF}/{TF}.HALPER.txt" #### TEMPORARY
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:
         """
