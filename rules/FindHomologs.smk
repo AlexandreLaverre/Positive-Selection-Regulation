@@ -1,5 +1,3 @@
-from snakemake.io import expand
-
 sp = config["sp"]
 sample = config["sample"]
 cluster = config["cluster"]
@@ -22,7 +20,7 @@ rule ChromosomeCorrespondence:
     input:
         Assembly1 = config[sp]["Ensembl_Assembly"],
         Assembly2 = config[sp]["UCSC_Assembly"]
-    output: correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+    output: correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     shell:
         """
         /utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
