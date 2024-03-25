@@ -70,8 +70,8 @@ rule check_input_data:
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
-    input: PeaksFolder = pathPeaks + "/bowtie2/mergedLibrary/macs2/narrowPeak/",
-           InputCheck = pathResults+ "/log/input_check.txt"
+    input: PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
+           InputCheck = f"{pathResults}/log/input_check_{sp}_{sample}"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
@@ -103,7 +103,7 @@ rule ConvertCoordinates:
         """
         python scripts/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
         """
-    
+
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
     input: BED_file = pathPeaks + "/{TF}.peaks" + suffix + ".bed"
