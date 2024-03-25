@@ -30,6 +30,7 @@ suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
 pathResults = "results/positive_selection/NarrowPeaks/" + sp + "/" + sample
 pathScripts = "scripts/detect_positive_selection"
 pathPeaks = "results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+
 #TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
@@ -89,6 +90,20 @@ rule GetPeaks:
         rm {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs
         """
 
+rule ConvertCoordinates:
+    message: "Convert coordinates to UCSC for human and mice"
+    input:
+        peaks = pathPeaks + "/{TF}.peaks.bed",
+        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed",
+        correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+    output:
+        peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
+        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
+    shell:
+        """
+        python scripts/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
+        """
+    
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
     input: BED_file = pathPeaks + "/{TF}.peaks" + suffix + ".bed"
