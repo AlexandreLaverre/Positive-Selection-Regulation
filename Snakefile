@@ -22,11 +22,11 @@ include: 'rules/FindHomologs.smk'
 
 sp = config["sp"]
 sample = config["sample"]
-AncMethod = config["AncMethod"]
+peakType = config["peakType"]
 cluster = config["cluster"]
 
-pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 

@@ -2,10 +2,12 @@ from snakemake.io import expand, touch
 
 sp = config["sp"]
 sample = config["sample"]
+peakType = config["peakType"]
 cluster = config["cluster"]
 
-pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
@@ -50,7 +52,8 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
-        python positive_selection_tests/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} {input.BED_file_part} {AncMethod} {cluster} &> {log.out}
+        python positive_selection_tests/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
+        {input.BED_file_part} {config[AncMethod]} {cluster} &> {log.out}
         """
 
 rule GetSequencesMultiple:

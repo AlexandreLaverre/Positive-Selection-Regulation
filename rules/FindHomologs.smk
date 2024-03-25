@@ -1,9 +1,11 @@
 sp = config["sp"]
 sample = config["sample"]
+peakType = config["peakType"]
 cluster = config["cluster"]
 
-pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathPeaks = "../results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+
 
 rule ConsensusSummits:
     message: "Get consensus summits"

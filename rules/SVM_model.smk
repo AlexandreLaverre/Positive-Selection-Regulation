@@ -2,12 +2,14 @@ from snakemake.io import touch
 
 sp = config["sp"]
 sample = config["sample"]
+peakType = config["peakType"]
 nbThreads = config["nbPart"]
 cluster = config["cluster"]
 
-pathResults = "../results/positive_selection/NarrowPeaks/" + sp + "/" + sample
+pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 pathScripts = "../scripts/Positive_Selection_Tests/"
-pathPeaks = "../results/peaks_calling/" + sp + "/" + sample
+
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"

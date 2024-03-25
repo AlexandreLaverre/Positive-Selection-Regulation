@@ -1,6 +1,9 @@
 name: TestEvol
 nbPart: 10
 nbRand: 10000
+AlignType: 'MAF'
+AncMethod: 'parsimony'
+peakType: 'NarrowPeaks'
 TFs:
     Schmidt12: 'CTCF'
     Myers: 'CTCF'
