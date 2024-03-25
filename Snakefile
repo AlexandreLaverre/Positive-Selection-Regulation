@@ -58,10 +58,10 @@ rule check_input_data:
     message: "Check if all the required data are present before starting."
     input:
         PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
-        GenomeAlignment=f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
-        SubstiMatrixes=f"../results/substitution_matrix/{sp}/",
-        ChromCorrespondence=f"../data/genome_sequences/{sp}/chromosome_correspondence.txt"
-    output: Check=f"{pathResults}/log/input_check_{sp}_{sample}"
+        GenomeAlignment= f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
+        SubstiMatrixes= f"../results/substitution_matrix/{sp}/",
+        ChromCorrespondence= f"../data/genome_sequences/{sp}/chromosome_correspondence.txt"
+    output: Check= f"{pathResults}/log/input_check_{sp}_{sample}"
     shell:
         """
         mkdir -p {pathResults}/log
@@ -87,20 +87,6 @@ rule GetPeaks:
         cut -f 1-3 {output.Peaks} > {pathPeaks}/{wildcards.TF}_coord
         paste {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs > {output.Peaks}
         rm {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs
-        """
-
-rule ConvertCoordinates:
-    message: "Convert coordinates to UCSC for human and mice"
-    input:
-        peaks = pathPeaks + "/{TF}.peaks.bed",
-        summits = pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed",
-        correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
-    output:
-        peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
-    shell:
-        """
-        python scripts/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
         """
 
 rule BED_split:
