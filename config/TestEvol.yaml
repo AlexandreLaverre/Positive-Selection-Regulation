@@ -15,23 +15,21 @@ nbRand: 10000
 #        - 'CEBPA'
 #        - 'HNF4A'
 #        - 'FOXA1'
-#human:
-#    UCSC_Assembly: 'GCF_000001405.38_GRCh38.p12_genomic.fna.gz'
-#    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
-#mouse:
-#    UCSC_Assembly: 'GCF_000001635.26_GRCm38.p6_genomic.fna.gz'
-#    Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa.gz'
-#caroli:
-#    UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
-#    Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
-#spretus:
-#    UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa.gz'
-#    Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
+human:
+    UCSC_Assembly: 'GCF_000001405.38_GRCh38.p12_genomic.fna.gz'
+    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
+mouse:
+    UCSC_Assembly: 'GCF_000001635.26_GRCm38.p6_genomic.fna.gz'
+    Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa.gz'
+caroli:
+    UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
+    Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
+spretus:
+    UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa.gz'
+    Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
 #cluster:
-#    path: '/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel'
 #    split: 'split'
 #local:
-#    path: '/Users/alaverre/Documents/Detecting_positive_selection'
 #    split: 'gsplit'
 
 

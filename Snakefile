@@ -24,12 +24,11 @@ sp = config["sp"]
 sample = config["sample"]
 AncMethod = config["AncMethod"]
 cluster = config["cluster"]
-path = config[cluster]["path"]
 
 suffix = "_UCSC_names" if sp in ["human", "mouse", "spretus", "caroli"] else ""
-pathResults = path + "/results/positive_selection/NarrowPeaks/" + sp + "/" + sample
-pathScripts = path + "/scripts/detect_positive_selection"
-pathPeaks = path + "/results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
+pathResults = "./results/positive_selection/NarrowPeaks/" + sp + "/" + sample
+pathScripts = "./scripts/detect_positive_selection"
+pathPeaks = "./results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 #TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
@@ -58,9 +57,9 @@ rule check_input_data:
     message: "Check if all the required data are present before starting."
     input:
         PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
-        GenomeAlignment=f"{path}/data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
-        SubstiMatrixes=f"{path}/results/substitution_matrix/{sp}/",
-        ChromCorrespondence=f"{path}/data/genome_sequences/{sp}/chromosome_correspondence.txt"
+        GenomeAlignment=f"./data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
+        SubstiMatrixes=f"./results/substitution_matrix/{sp}/",
+        ChromCorrespondence=f"./data/genome_sequences/{sp}/chromosome_correspondence.txt"
     output: Check=f"{pathResults}/log/input_check_{sp}_{sample}"
     shell:
         """

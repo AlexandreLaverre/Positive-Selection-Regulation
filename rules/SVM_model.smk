@@ -2,10 +2,10 @@ sp = config["sp"]
 sample = config["sample"]
 nbThreads = int(config["nbPart"])
 cluster = config["cluster"]
-path = config[cluster]["path"]
-pathResults = path + "/results/positive_selection/" + sp + "/" + sample
-pathScripts = path + "/scripts/detect_positive_selection"
-pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
+
+pathResults = "./results/positive_selection/" + sp + "/" + sample
+pathScripts = "./scripts/detect_positive_selection"
+pathPeaks = "./results/peaks_calling/" + sp + "/" + sample
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
@@ -14,7 +14,7 @@ rule GenerateNegativeSeq:
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa",
-        BED_UCSC = path + "/results/peaks_calling/" + sp + "/" + sample + "/{TF}.peaks.bed_UCSC_names"
+        BED_UCSC = "./results/peaks_calling/" + sp + "/" + sample + "/{TF}.peaks.bed_UCSC_names"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     params: time="1:00:00",mem="5G",threads=1
     shell:
@@ -54,7 +54,7 @@ rule ModelPrediction:
     message: "Generate SVM weights for all possible 10-mers"
     input:
         Model = pathResults + "/{TF}/Model/{TF}.model.txt",
-        kmer_fasta = path + "/results/positive_selection/kmer.fa"
+        kmer_fasta = "./results/positive_selection/kmer.fa"
     output:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
