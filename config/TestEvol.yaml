@@ -19,11 +19,11 @@ TFs:
         - 'HNF4A'
         - 'FOXA1'
 human:
-    UCSC_Assembly: 'GCF_000001405.38_GRCh38.p12_genomic.fna.gz'
+    UCSC_Assembly: 'hg38.fa.gz'
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 mouse:
-    UCSC_Assembly: 'GCF_000001635.26_GRCm38.p6_genomic.fna.gz'
+    UCSC_Assembly: 'mm10.fa.gz'
     Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 caroli:

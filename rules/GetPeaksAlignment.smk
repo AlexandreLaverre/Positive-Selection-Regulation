@@ -66,7 +66,7 @@ rule GetSequencesMultiple:
     params: time="2:00:00",mem="1G",threads=1
     shell:
         """
-        positive_selection_tests/extract_sequences_from_MAF.sh {sp} {sample} {wildcards.TF} {input.BED_file_part} {cluster} &> {log.out}
+        ./Positive_Selection_Tests/extract_sequences_from_MAF.sh {sp} {sample} {wildcards.TF} {input.BED_file_part} {cluster} &> {log.out}
         """
 
 rule ConcatSeq:

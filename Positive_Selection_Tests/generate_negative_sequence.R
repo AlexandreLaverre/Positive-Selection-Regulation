@@ -19,8 +19,8 @@ BED = read.table(BED_file)
 
 # Check if chrName conversion between Ensembl and UCSC is needed
 #if (species != "rat"){      #rat BED already UCSC
-#  message("Convert chromosome names to UCSC convention...")
-#  system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
+  #message("Convert chromosome names to UCSC convention...")
+  #system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
 #  BED_file = paste0(BED_file, "_UCSC_names")
 #}
 

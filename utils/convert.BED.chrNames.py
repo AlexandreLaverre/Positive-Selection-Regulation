@@ -31,9 +31,9 @@ for data in ["peaks", "consensus_summits"]:
             old = str(i[0])
             if old in Correspondence_dict.keys():
                 new_chr = str(Correspondence_dict[old])
-                new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}"
+                new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{str(i[3])}"
 
-                outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), str(i[3]), new_ID]) + '\n')
+                outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), new_ID]) + '\n')
 
     outfile.close()
 ####################################################################################################
