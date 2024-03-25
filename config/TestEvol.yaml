@@ -1,20 +1,20 @@
 name: TestEvol
 nbPart: 10
 nbRand: 10000
-#TFs:
-#    Schmidt12: 'CTCF'
-#    Myers: 'CTCF'
-#    Schmidt10: 'CEBPA'
-#    Rensch: 'CEBPA'
-#    Wilson:
-#        - 'CEBPA'
-#        - 'HNF4A'
-#        - 'FOXA1'
-#        - 'HNF6'
-#    Stefflova:
-#        - 'CEBPA'
-#        - 'HNF4A'
-#        - 'FOXA1'
+TFs:
+    Schmidt12: 'CTCF'
+    Myers: 'CTCF'
+    Schmidt10: 'CEBPA'
+    Rensch: 'CEBPA'
+    Wilson:
+        - 'CEBPA'
+        - 'HNF4A'
+        - 'FOXA1'
+        - 'HNF6'
+    Stefflova:
+        - 'CEBPA'
+        - 'HNF4A'
+        - 'FOXA1'
 human:
     UCSC_Assembly: 'GCF_000001405.38_GRCh38.p12_genomic.fna.gz'
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
