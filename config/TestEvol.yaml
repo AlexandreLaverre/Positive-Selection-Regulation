@@ -27,10 +27,9 @@ caroli:
 spretus:
     UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa.gz'
     Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
-#cluster:
-#    split: 'split'
-#local:
-#    split: 'gsplit'
+split:
+    cluster: 'split'
+    local: 'gsplit'
 
 
 
