@@ -14,7 +14,7 @@ else
 fi
 
 export pathGenomes=${path}/data/genome_sequences/${species}
-export pathScripts=${path}/scripts/compare_genome_assemblies
+export pathScripts=${path}/scripts/utils/compare_genome_assemblies
 
 ####################################################################################
 
