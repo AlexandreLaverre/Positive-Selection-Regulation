@@ -46,7 +46,6 @@ if config["AlignType"] == "pairwise":
 else:
     ruleorder: GetSequencesMultiple > InferAncestralPairwise
 
-workdir: pathResults
 ########################################################################################################################
 
 rule all:
