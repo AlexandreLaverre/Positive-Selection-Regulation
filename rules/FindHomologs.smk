@@ -34,12 +34,12 @@ rule ChromosomeCorrespondence:
 rule ConvertCoordinates:
     message: "Convert coordinates to UCSC for human and mice"
     input:
-        peaks = expand(pathPeaks + "/{TF}.peaks.bed", TF=TFs),
-        summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=TFs),
+        peaks = expand(pathPeaks + "/{TF}.peaks.bed", TF=config["TFs"][sample]),
+        summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=config["TFs"][sample]),
         correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
-        peaks = expand(pathPeaks + "/{TF}.peaks_UCSC_names.bed", TF=TFs),
-        summits = expand(pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed",TF=TFs)
+        peaks = expand(pathPeaks + "/{TF}.peaks_UCSC_names.bed", TF=config["TFs"][sample]),
+        summits = expand(pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed",TF=config["TFs"][sample])
     shell:
         """
         python {pathScripts}/utils/convert.BED.chrNames.py {sp} {sample} {cluster}
