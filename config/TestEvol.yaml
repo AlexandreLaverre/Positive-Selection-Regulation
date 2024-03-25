@@ -19,20 +19,20 @@ TFs:
         - 'HNF4A'
         - 'FOXA1'
 human:
-    UCSC_Assembly: 'GCF_000001405.38_GRCh38.p12_genomic.fna'
-    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa'
+    UCSC_Assembly: 'GCF_000001405.38_GRCh38.p12_genomic.fna.gz'
+    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 mouse:
-    UCSC_Assembly: 'GCF_000001635.26_GRCm38.p6_genomic.fna'
-    Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa'
+    UCSC_Assembly: 'GCF_000001635.26_GRCm38.p6_genomic.fna.gz'
+    Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 caroli:
-    UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa'
-    Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa'
+    UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
+    Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 spretus:
-    UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa'
-    Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa'
+    UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa.gz'
+    Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 split:
     cluster: 'split'
