@@ -33,6 +33,12 @@ pathPeaks = path + "/results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 #TFs =  list(set([os.path.basename(BED).split('_')[0] for BED in glob.glob(pathPeaks + '/bowtie2/mergedLibrary/macs2/narrowPeak/*.narrowPeak')])) ## remember to change 1 for 0
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
+if cluster == "cluster":
+    localrules: all, GetPeaks, BED_split, ConcatSeq
+else:
+    localrules: all,GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
+        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel,ArchiveAlignments
+
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
     ruleorder: InferAncestralPairwise > GetSequencesMultiple

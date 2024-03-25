@@ -23,12 +23,9 @@ spretus:
 cluster:
     path: '/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel'
     split: 'split'
-    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits
 local:
     path: '/Users/alaverre/Documents/Detecting_positive_selection'
     split: 'gsplit'
-    localrules: all, GetPeaks, GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction, BED_split,
-        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,TestPosSel, ArchiveAlignments, ConsensusSummits
 
 
 
