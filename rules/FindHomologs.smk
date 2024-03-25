@@ -27,9 +27,10 @@ rule ChromosomeCorrespondence:
         Assembly1 = f"../data/genome_sequences/{sp}/" + config[sp]["Ensembl_Assembly"],
         Assembly2 = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"]
     output: correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+    log: out=pathResults + "/log/ChromosomeCorrespondence.out"
     shell:
         """
-        ./utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
+        ./utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster} &> {log.out}
         """
 
 rule ConvertCoordinates:
