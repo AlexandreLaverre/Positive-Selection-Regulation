@@ -57,9 +57,9 @@ rule check_input_data:
         PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
         GenomeAlignment= f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
         SubstiMatrixes= f"../results/substitution_matrix/{sp}/",
-        ChromCorrespondence= f"../data/genome_sequences/{sp}/chromosome_correspondence.txt"
-    output: Check= f"{pathResults}/log/input_check_{sp}_{sample}"
+    output: check= f"{pathResults}/log/input_check_{sp}_{sample}"
     shell:
         """
         mkdir -p {pathResults}/log
+        touch {output.check}
         """
