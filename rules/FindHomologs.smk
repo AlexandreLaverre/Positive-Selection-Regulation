@@ -5,10 +5,9 @@ sample = config["sample"]
 TFs = config["TFs"][sample]
 cluster = config["cluster"]
 
-path = config[cluster]["path"]
-pathResults = path + "/results/positive_selection/" + sp + "/" + sample
-pathScripts = path + "/scripts/detect_positive_selection"
-pathPeaks = path + "/results/peaks_calling/" + sp + "/" + sample
+pathResults = "/results/positive_selection/" + sp + "/" + sample
+pathScripts = "/scripts/detect_positive_selection"
+pathPeaks = "/results/peaks_calling/NarrowPeaks/" + sp + "/" + sample
 
 
 rule ConsensusSummits:
@@ -26,7 +25,7 @@ rule ChromosomeCorrespondence:
     input:
         Assembly1 = config[sp]["Ensembl_Assembly"],
         Assembly2 = config[sp]["UCSC_Assembly"]
-    output: correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+    output: correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     shell:
         """
         {pathScripts}/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {cluster}
@@ -35,12 +34,12 @@ rule ChromosomeCorrespondence:
 rule ConvertCoordinates:
     message: "Convert coordinates to UCSC for human and mice"
     input:
-        peaks = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_peaks.bed", TF=TFs),
+        peaks = expand(pathPeaks + "/{TF}.peaks.bed", TF=TFs),
         summits = expand(pathPeaks + "/consensus/{TF}/{TF}.consensus_summits.bed", TF=TFs),
-        correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+        correspondence = f"data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
-        peaks = expand(pathPeaks + "/consensus/${TF}/${TF}.consensus_summits.bed", TF=TFs),
-        summits = expand(pathPeaks + "/consensus/${TF}/${TF}.consensus_summits.bed",TF=TFs)
+        peaks = expand(pathPeaks + "/{TF}.peaks_UCSC_names.bed", TF=TFs),
+        summits = expand(pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed",TF=TFs)
     shell:
         """
         python {pathScripts}/utils/convert.BED.chrNames.py {sp} {sample} {cluster}

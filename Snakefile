@@ -19,6 +19,7 @@ from snakemake.io import expand, touch
 
 configfile: 'config/TestEvol.yaml'
 include: 'rules/SVM_model.smk'
+inclue: 'rules/FindHomologs.smk'
 
 sp = config["sp"]
 sample = config["sample"]
