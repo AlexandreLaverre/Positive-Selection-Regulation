@@ -12,11 +12,14 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
-    input: PeaksFolder=f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
-        InputCheck=f"{pathResults}/log/input_check_{sp}_{sample}"
-    output: Peaks=pathPeaks + "/{TF}.peaks.bed"
+    input:
+        PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
+        GenomeAlignment = f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
+        SubstiMatrixes = f"../results/substitution_matrix/{sp}/"
+    output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
+        mkdir -p {pathResults}/log
         if [ -d {input.PeaksFolder}/consensus/{wildcards.TF} ]; then
             # peaks come from a consensus of several samples
 	        cp {input.PeaksFolder}/consensus/{wildcards.TF}/{wildcards.TF}.consensus_peaks.bed {output.Peaks} 

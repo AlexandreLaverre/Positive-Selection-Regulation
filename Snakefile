@@ -32,9 +32,9 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
 if cluster == "cluster":
-    localrules: all, check_input_data, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates
+    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates
 else:
-    localrules: all, check_input_data, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
+    localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments
 
 # Define from which type of alignments ancestral sequences should be obtained
@@ -50,16 +50,3 @@ rule all:
         PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt", TF=config["TFs"][sample]),
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=config["TFs"][sample]),
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
-
-rule check_input_data:
-    message: "Check if all the required data are present before starting."
-    input:
-        PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
-        GenomeAlignment= f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
-        SubstiMatrixes= f"../results/substitution_matrix/{sp}/",
-    output: check= f"{pathResults}/log/input_check_{sp}_{sample}"
-    shell:
-        """
-        mkdir -p {pathResults}/log
-        touch {output.check}
-        """
