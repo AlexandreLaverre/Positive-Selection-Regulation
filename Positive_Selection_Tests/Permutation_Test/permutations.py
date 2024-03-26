@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog")
 parser.add_argument("sample", help="Study name: Wilson Schmidt...")
 parser.add_argument("TF", help="Transcription Factor: CEBPA CTCF ...")
-parser.add_argument("peaksType", help="NarrowPeaks or BroadPeaks")
+parser.add_argument("peakType", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("--NbRand", default=10000, type=int, help="Number of random substitutions permutations per sequence (default=10k")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 parser.add_argument("-S", "--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
@@ -32,7 +32,7 @@ sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
 if args.Simulation:
-    pathSelection = f"{path}/results/positive_selection/{args.peaksType}/{args.species}/{args.sample}/{args.TF}/"
+    pathSelection = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Focal_fasta = f"{pathSelection}/sequences/simul_{args.Simulation}_evolution.fa"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
@@ -49,11 +49,11 @@ if args.Simulation:
     # Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
     # Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
-    pathSelection = f"{path}/results/positive_selection/{args.peaksType}/{args.species}/{args.sample}/{args.TF}/"
+    pathSelection = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
     Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
-    NegativeSet = f"{path}/results/positive_selection/{args.peaksType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
+    NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
 pathSubMat = f"{path}/results/substitution_matrix/{args.species}/"
