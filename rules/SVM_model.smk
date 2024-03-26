@@ -1,4 +1,4 @@
-from snakemake.io import touch
+from snakemake.io import touch, directory
 
 sp = config["sp"]
 sample = config["sample"]
@@ -16,7 +16,7 @@ rule GenerateNegativeSeq:
     input:
         BED = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
     output:
-        pathModel = pathResults + "/{TF}/Model/",
+        pathModel = directory(pathResults + "/{TF}/Model/"),
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
