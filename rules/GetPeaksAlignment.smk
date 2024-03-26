@@ -76,9 +76,9 @@ rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input:
         AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF),
-        pathAncestral = directory(pathResults + "/{TF}/Alignments/ancestral_sequences"),
-        pathFocal= directory(pathResults + "/{TF}/Alignments/focal_sequences"),
-        pathSister= directory(pathResults + "/{TF}/Alignments/sister_sequences")
+        pathAncestral = pathResults + "/{TF}/Alignments/ancestral_sequences",
+        pathFocal= pathResults + "/{TF}/Alignments/focal_sequences",
+        pathSister= pathResults + "/{TF}/Alignments/sister_sequences"
     output:
         list_ancestral = pathResults + "/{TF}/Alignments/list_ancestral.txt",
         concat_ancestral=pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
