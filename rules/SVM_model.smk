@@ -35,27 +35,27 @@ rule ModelTraining:
     output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 2
-    params: time="15:00:00", mem="5G", threads=nbThreads
+    params: time="15:00:00", mem="5G", threads=16
     shell:
         """
-        gkmtrain -r 12 -l 10 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -T 16 {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelValidation:
-    message: "Cross-validation of the model"
+    message: "Cross-validation of the model, 4 threads"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
-    params: time="48:00:00", mem="5G", threads=nbThreads
+    params: time="48:00:00", mem="5G", threads=4
     shell:
         """
-        gkmtrain -r 12 -l 10 -x 5 -T {nbThreads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -x 5 -T 4 {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelPrediction:
-    message: "Generate SVM weights for all possible 10-mers"
+    message: "Generate SVM weights for all possible 10-mers, 4 threads"
     input:
         Model = pathResults + "/{TF}/Model/{TF}.model.txt",
         kmer_fasta = "../results/positive_selection/kmer.fa"
@@ -64,8 +64,8 @@ rule ModelPrediction:
         Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
-    params: time="6:00:00", mem="2G", threads=nbThreads
+    params: time="6:00:00", mem="2G", threads=4
     shell:
         """
-        gkmpredict -T {nbThreads} {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
+        gkmpredict -T 4 {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
         """
