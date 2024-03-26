@@ -8,24 +8,23 @@ cluster = config["cluster"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
-
+PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input:
-        PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/",
         GenomeAlignment = f"../data/genome_alignments/{sp}/triplet_ancestor.maf.gz",
         SubstiMatrixes = f"../results/substitution_matrix/{sp}/"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
         mkdir -p {pathResults}/log
-        if [ -d {input.PeaksFolder}/consensus/{wildcards.TF} ]; then
+        if [ -d {PeaksFolder}/consensus/{wildcards.TF} ]; then
             # peaks come from a consensus of several samples
-	        cp {input.PeaksFolder}/consensus/{wildcards.TF}/{wildcards.TF}.consensus_peaks.bed {output.Peaks} 
+	        cp {PeaksFolder}/consensus/{wildcards.TF}/{wildcards.TF}.consensus_peaks.bed {output.Peaks} 
         else
             # peaks come from an unique sample
-            cp {input.PeaksFolder}/{wildcards.TF}*.narrowPeak {output.Peaks}
+            cp {PeaksFolder}/{wildcards.TF}*.narrowPeak {output.Peaks}
         fi
 
         # Add meaningful ID for each peak
