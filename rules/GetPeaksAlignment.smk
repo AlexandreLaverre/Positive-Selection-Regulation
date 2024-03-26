@@ -1,5 +1,5 @@
 # Implement rules to retrieve aligned ancestral sequences of ChiP-seq peaks
-from snakemake.io import expand, touch
+from snakemake.io import expand, touch, directory
 
 sp = config["sp"]
 sample = config["sample"]
@@ -75,8 +75,12 @@ rule GetSequencesMultiple:
 rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input:
-        Ancestral=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF)
+        AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF),
+        pathAncestral = directory(pathResults + "/{TF}/Alignments/ancestral_sequences"),
+        pathFocal= directory(pathResults + "/{TF}/Alignments/focal_sequences"),
+        pathSister= directory(pathResults + "/{TF}/Alignments/sister_sequences")
     output:
+        list_ancestral = pathResults + "/{TF}/Alignments/list_ancestral.txt",
         concat_ancestral=pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
         concat_focal=pathResults + "/{TF}/sequences/all_focal_sequences.fa",
         concat_focal_filtered=pathResults + "/{TF}/sequences/filtered_focal_sequences.fa",
@@ -87,19 +91,18 @@ rule ConcatSeq:
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """
-        cd {pathResults}/{wildcards.TF}/Alignments/
-        mkdir -p {pathResults}/{wildcards.TF}/sequences/
+        mkdir -p {pathResults}/{wildcards.TF}/Alignments/sequences/
         # Get all non empty ancestral sequences in one file
-        find ancestral_sequences -name "*nogap.fa" -size +0 | xargs basename -s _nogap.fa > list_ancestral.txt
-        find ancestral_sequences -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
+        find {input.pathAncestral} -name "*nogap.fa" -size +0 | xargs basename -s _nogap.fa > {output.list_ancestral}
+        find {input.pathAncestral} -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file
-        find focal_sequences -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
-        seqtk subseq {output.concat_focal} {pathResults}/{wildcards.TF}/Alignments/list_ancestral.txt > {output.concat_focal_filtered}
+        find {input.pathFocal} -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
+        seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
         # Get all corresponding sister species's sequences in one file
-        find sister_sequences -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
-        seqtk subseq {output.concat_sister} {pathResults}/{wildcards.TF}/Alignments/list_ancestral.txt > {output.concat_sister_filtered}
+        find {input.pathSister} -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
+        seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
 
         # Make sequences in uppercase to remove potential soft repeat mask 
         awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
