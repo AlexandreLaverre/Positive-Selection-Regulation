@@ -62,7 +62,8 @@ rule InferAncestralPairwise:
 rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
     input: BED_file_part = pathResults + "/log/{TF}/part{part}"
-    output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
+    output:
+        Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done"),
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}.out"
     params: time="2:00:00",mem="1G",threads=1
     shell:
@@ -75,9 +76,6 @@ rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input:
         AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF),
-        pathAncestral = pathResults + "/{TF}/Alignments/ancestral_sequences",
-        pathFocal= pathResults + "/{TF}/Alignments/focal_sequences",
-        pathSister= pathResults + "/{TF}/Alignments/sister_sequences"
     output:
         list_ancestral = pathResults + "/{TF}/Alignments/list_ancestral.txt",
         concat_ancestral=pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
@@ -90,17 +88,21 @@ rule ConcatSeq:
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """
+        pathAncestral="{pathResults}/{wildcards.TF}/Alignments/ancestral_sequences"
+        pathFocal="{pathResults}/{wildcards.TF}/Alignments/focal_sequences"
+        pathSister="{pathResults}/{wildcards.TF}/Alignments/sister_sequences"
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/sequences/
+        
         # Get all non empty ancestral sequences in one file
-        find {input.pathAncestral} -name "*nogap.fa" -size +0 | xargs basename -s _nogap.fa > {output.list_ancestral}
-        find {input.pathAncestral} -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
+        find $pathAncestral -name "*nogap.fa" -size +0 | xargs basename -s _nogap.fa > {output.list_ancestral}
+        find $pathAncestral -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file
-        find {input.pathFocal} -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
+        find pathFocal -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
         seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
         # Get all corresponding sister species's sequences in one file
-        find {input.pathSister} -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
+        find pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
         seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
 
         # Make sequences in uppercase to remove potential soft repeat mask 
