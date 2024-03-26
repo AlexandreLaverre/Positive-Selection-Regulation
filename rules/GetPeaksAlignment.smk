@@ -45,10 +45,10 @@ rule BED_split:
 rule InferAncestralPairwise:
     message: "Infer ancestral sequences from pairwise alignments"
     input:
-        BED_file_part=pathResults + "/log/{TF}/part{part}",
-        Positive_seq=pathResults + "/{TF}/Model/posSet.fa"
+        BED_file_part = pathResults + "/log/{TF}/part{part}",
+        Positive_seq = pathResults + "/{TF}/Model/posSet.fa"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
-    log: out=pathResults + "/log/{TF}/GetAncestral_part{part}.out"
+    log: out = pathResults + "/log/{TF}/GetAncestral_part{part}.out"
     params: time="2:00:00",mem="1G",threads=1
     shell:
         """
@@ -59,14 +59,14 @@ rule InferAncestralPairwise:
 
 rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
-    input:
-        BED_file_part=pathResults + "/log/{TF}/part{part}"
+    input: BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
-    log: out=pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}.out"
+    log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}.out"
     params: time="2:00:00",mem="1G",threads=1
     shell:
         """
-        ./Positive_Selection_Tests/extract_sequences_from_MAF.sh {sp} {sample} {wildcards.TF} {input.BED_file_part} {cluster} &> {log.out}
+        pathAlignment={pathResults}/{wildcards.TF}/Alignments/
+        ./Positive_Selection_Tests/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} &> {log.out}
         """
 
 rule ConcatSeq:

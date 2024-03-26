@@ -1,10 +1,9 @@
 #!/bin/bash
 
 sp=$1    		  # e.g: human
-sample=$2     # e.g: Wilson
-TF=$3	        # e.g: CEBPA
-BED_file=$4
-cluster=$5    # e.g: local
+pathResults=$2
+BED_file=$3
+cluster=$4    # e.g: local
 
 #########################################################################
 # Define paths
@@ -20,7 +19,6 @@ fi
 conda activate MAF
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf.gz"
-pathResults="${path}/results/positive_selection/${sp}/${sample}/${TF}/Alignments/"
 pathAlign="${pathResults}/MAFs/"
 
 if [ ! -f "${pathGenomeAlign}" ]; then

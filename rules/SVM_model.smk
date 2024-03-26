@@ -16,14 +16,15 @@ rule GenerateNegativeSeq:
     input:
         BED = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
     output:
+        pathModel = pathResults + "{TF}/Model/",
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     params: time="1:00:00",mem="5G",threads=1
     shell:
         """
-        mkdir -p {pathResults}/{wildcards.TF}/Model/
-        Rscript {pathScripts}/generate_negative_sequence.R {sp} {sample} {wildcards.TF} {input.BED} {cluster} &> {log.out}
+        mkdir -p {output.pathModel}
+        Rscript {pathScripts}/generate_negative_sequence.R {sp} {input.BED} {output.pathModel} {cluster} &> {log.out}
         """
 
 rule ModelTraining:
