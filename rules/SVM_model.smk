@@ -16,7 +16,7 @@ rule GenerateNegativeSeq:
     input:
         BED = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
     output:
-        pathModel = pathResults + "{TF}/Model/",
+        pathModel = pathResults + "/{TF}/Model/",
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
