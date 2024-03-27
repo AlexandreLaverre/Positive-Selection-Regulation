@@ -24,7 +24,7 @@ rule PermutationTest:
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {peakType} \
-        {config[nbRand]} {cluster} --NbThread {threads} &> {log.out}
+        --NbRand {config[nbRand]} --{cluster} --NbThread {threads} &> {log.out}
         """
 
 #rule simulate_sequence:
