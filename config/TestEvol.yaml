@@ -1,6 +1,7 @@
 name: TestEvol
 nbPart: 10
 nbRand: 10000
+nbBin: 50
 AlignType: 'MAF'
 AncMethod: 'parsimony'
 peakType: 'NarrowPeaks'
@@ -35,9 +36,9 @@ spretus:
     Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 rat:
-    UCSC_Assembly: ''
-    Ensembl_Assembly: ''
-    suffix: ''
+    UCSC_Assembly: 'rn6.fa.gz'
+    Ensembl_Assembly: 'Rattus_norvegicus.Rnor_6.0.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
 macaca:
     UCSC_Assembly: ''
     Ensembl_Assembly: ''

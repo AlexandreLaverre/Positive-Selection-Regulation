@@ -13,6 +13,7 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog ...")
 parser.add_argument("sample", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
+parser.add_argument("peakType", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("-N", "--node", default="ancestral",
                     help="From which node to compute deltas: ancestral, focal or sister (default=ancestral)")
 parser.add_argument("-S", "--Simulation", default=False,
@@ -29,7 +30,7 @@ if args.cluster:
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
-pathResults = f"{path}/results/positive_selection/{args.species}/{args.sample}"
+pathResults = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
