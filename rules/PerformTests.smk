@@ -37,7 +37,7 @@ rule ComputeAllDeltaSVM:
         ObsSVM = pathResults + "/{TF}/deltas/ancestral_to_observed_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeAllDeltaSVM.out"
     threads: config["nbPart"]
-    params: time="15:00:00", mem="5G", threads=config["nbPart"]
+    params: time="2:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
