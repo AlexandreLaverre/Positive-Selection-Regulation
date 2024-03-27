@@ -49,7 +49,7 @@ def evaluate_time(ancestral_seq):
     with open(ancestral_seq, 'r') as file:
         num_lines = sum(1 for _ in file)
         time = num_lines/ (1500*config["nbPart"])+1
-        cluster_time = f"{time}:00:00"
+        cluster_time = f"{round(time)}:00:00"
     return cluster_time
 
 rule MaxLLTest:
