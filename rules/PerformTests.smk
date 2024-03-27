@@ -40,7 +40,7 @@ rule ComputeAllDeltaSVM:
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python  Positive_Selection_Tests/Permutation_Test/MaxLnl_Test/compute_all_deltaSVM.py {sp} \
+        python  Positive_Selection_Tests/MaxLnl_Test/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} --{cluster} -T {threads} &> {log.out}
         """
 
