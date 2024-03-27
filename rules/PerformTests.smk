@@ -40,7 +40,7 @@ rule ComputeAllDeltaSVM:
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python  Positive_Selection_Tests/MaxLnl_Test/compute_all_deltaSVM.py {sp} \
+        python  Positive_Selection_Tests/Max_Lnl_Test/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} --{cluster} -T {threads} &> {log.out}
         """
 
@@ -63,7 +63,7 @@ rule MaxLLTest:
     params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
     shell:
         """
-        python Positive_Selection_Tests/Permutation_Test/MaxLnl_Test/MaxLL_estimation.py ${sp} \
+        python Positive_Selection_Tests/Max_Lnl_Test/MaxLL_estimation.py ${sp} \
         ${sample}/{wildcards.TF} {peakType} -T {threads} --NbBin {params.nbBin} --{cluster} &> {log.out}
         """
 
