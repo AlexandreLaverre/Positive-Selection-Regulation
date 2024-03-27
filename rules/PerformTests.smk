@@ -19,10 +19,12 @@ rule PermutationTest:
     output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt")
     threads: config["nbPart"]
     priority: 2
+    log: out=pathResults + "/log/{TF}/PermutationTest.out"
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {peakType} {config[nbRand]} {cluster} --NbThread {threads}
+        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {peakType} \
+        {config[nbRand]} {cluster} --NbThread {threads} &> {log.out}
         """
 
 #rule simulate_sequence:
