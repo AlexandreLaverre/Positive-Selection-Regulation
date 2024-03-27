@@ -32,7 +32,7 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
 if cluster == "cluster":
-    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates
+    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates
 else:
     localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments
