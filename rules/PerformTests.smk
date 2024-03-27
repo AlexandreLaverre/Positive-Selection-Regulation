@@ -63,8 +63,8 @@ rule MaxLLTest:
     params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
     shell:
         """
-        python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py ${sp} \
-        ${sample}/{wildcards.TF} {peakType} -T {threads} --NbBin {params.nbBin} --{cluster} &> {log.out}
+        python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} \
+        {sample}/{wildcards.TF} {peakType} -T {threads} --NbBin {params.nbBin} --{cluster} &> {log.out}
         """
 
 #rule simulate_sequence:
