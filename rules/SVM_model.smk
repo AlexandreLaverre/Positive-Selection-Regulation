@@ -59,9 +59,7 @@ rule ModelPrediction:
     input:
         Model = pathResults + "/{TF}/Model/{TF}.model.txt",
         kmer_fasta = "../results/positive_selection/kmer.fa"
-    output:
-        PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
-        Prediction_done = pathResults + "/log/{TF}/ModelPrediction_done"
+    output: PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
     params: time="1:00:00", mem="2G", threads=1
