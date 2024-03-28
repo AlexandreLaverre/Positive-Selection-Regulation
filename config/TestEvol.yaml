@@ -11,7 +11,6 @@ TFs:
     Schmidt10: ['CEBPA']
     Rensch: ['CEBPA']
     Wilson:
-        - 'CEBPA'
         - 'HNF4A'
         - 'FOXA1'
         - 'HNF6'
