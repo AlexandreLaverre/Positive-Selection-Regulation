@@ -83,7 +83,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --partition=cpu"
 	echo "#SBATCH --mem=30G"
 	echo "#SBATCH --cpus-per-task=${threads}"
-	echo "#SBATCH --time=12:00:00"
+	echo "#SBATCH --time=15:00:00"
   } >> "${logFile}"
 
 fi
