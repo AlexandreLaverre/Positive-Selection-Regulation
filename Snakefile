@@ -22,7 +22,7 @@ include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 
 sp = config["sp"]
-sample = config["sample"]
+sample = config["sample"]  # config[sp]["sample"]
 peakType = config["peakType"]
 cluster = config["cluster"]
 
