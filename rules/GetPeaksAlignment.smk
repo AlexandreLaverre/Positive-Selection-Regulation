@@ -98,11 +98,11 @@ rule ConcatSeq:
         find $pathAncestral -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file
-        find pathFocal -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
+        find $pathFocal -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
         seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
         # Get all corresponding sister species's sequences in one file
-        find pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
+        find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
         seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
 
         # Make sequences in uppercase to remove potential soft repeat mask 
