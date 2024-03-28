@@ -6,10 +6,10 @@ AlignType: 'MAF'
 AncMethod: 'parsimony'
 peakType: 'NarrowPeaks'
 TFs:
-    Schmidt12: 'CTCF'
-    Myers: 'CTCF'
-    Schmidt10: 'CEBPA'
-    Rensch: 'CEBPA'
+    Schmidt12: ['CTCF']
+    Myers: ['CTCF']
+    Schmidt10: ['CEBPA']
+    Rensch: ['CEBPA']
     Wilson:
         - 'CEBPA'
         - 'HNF4A'
