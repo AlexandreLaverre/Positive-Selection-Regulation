@@ -40,9 +40,9 @@ rat:
     Ensembl_Assembly: 'Rattus_norvegicus.Rnor_6.0.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
 macaca:
-    UCSC_Assembly: ''
-    Ensembl_Assembly: ''
-    suffix: ''
+    UCSC_Assembly: 'rheMac8.fa.gz'
+    Ensembl_Assembly: 'sup2kb_GCA_000772875.3_Mmul_8.0.1_genomic.fna.gz'
+    suffix: '_UCSC_names'
 dog:
     UCSC_Assembly: ''
     Ensembl_Assembly: ''
