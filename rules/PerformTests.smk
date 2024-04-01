@@ -48,7 +48,7 @@ def evaluate_time(ancestral_seq):
     # Calculate time needed to perform MaxLL, considering 1500 peaks per hour and per thread.
     with open(ancestral_seq, 'r') as file:
         num_lines = sum(1 for _ in file)
-        time = num_lines/ (1500*config["nbPart"])+1
+        time = num_lines/ (1500*config["nbPart"])+2
         cluster_time = f"{round(time)}:00:00"
     return cluster_time
 
