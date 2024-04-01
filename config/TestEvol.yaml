@@ -10,6 +10,7 @@ TFs:
     Myers: ['CTCF']
     Schmidt10: ['CEBPA']
     Rensch: ['CEBPA']
+    Kern: ['CTCF']
     Wilson:
         - 'CEBPA'
         - 'HNF4A'
