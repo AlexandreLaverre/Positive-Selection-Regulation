@@ -72,9 +72,9 @@ chicken:
     suffix: ''
     sample: ['Schmidt10']
 cat:
-    UCSC_Assembly: ''
-    Ensembl_Assembly: ''
-    suffix: ''
+    UCSC_Assembly: 'felCat8.fa.gz'
+    Ensembl_Assembly: 'sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.fna.gz'
+    suffix: '_UCSC_names'
     sample: ['Schmidt10', 'Rensch']
 split:
     cluster: 'split'
