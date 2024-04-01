@@ -62,6 +62,10 @@ dog:
     Ensembl_Assembly: 'Canis_lupus_familiaris.CanFam3.1.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
     sample: ['Wilson', 'Rensch', 'Schmidt12']
+rabbit:
+    UCSC_Assembly: 'oryCun2.fa.gz'
+    Ensembl_Assembly: 'Oryctolagus_cuniculus.OryCun2.0.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
 chicken:
     UCSC_Assembly: ''
     Ensembl_Assembly: ''
