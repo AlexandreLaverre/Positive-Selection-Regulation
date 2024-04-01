@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # coding=utf-8
 import sys
+import os
 
 sp = sys.argv[1]
 sample = sys.argv[2]
 TF = sys.argv[3]
+subMatrix = sys.argv[4]
 
 path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "cluster" \
     else "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 Correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
 pathPeaks = f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/"
+pathMatrix = f"{path}/results/substitution_matrix/{sp}/"
+chromosomes = [os.path.splitext(file)[0] for file in os.listdir(pathMatrix)]
 
 ####################################################################################################
 Correspondence_dict = {}
@@ -31,9 +35,11 @@ for data in ["peaks", "consensus_summits"]:
             old = str(i[0])
             if old in Correspondence_dict.keys():
                 new_chr = str(Correspondence_dict[old])
-                new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{str(i[3])}"
 
-                outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), new_ID]) + '\n')
+                # Filter chromosomes based on substitution matrix.
+                if old in chromosomes or new_chr in chromosomes:
+                    new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{str(i[3])}"
+                    outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), new_ID]) + '\n')
 
     outfile.close()
 ####################################################################################################
