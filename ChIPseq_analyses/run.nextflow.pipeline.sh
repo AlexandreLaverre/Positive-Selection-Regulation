@@ -81,9 +81,9 @@ if [ ${cluster} = "cluster" ]; then
 	echo "#SBATCH --output=${pathScripts}/std_output_peaks_calling_${sp}_${sample}.txt"
 	echo "#SBATCH --error=${pathScripts}/std_error_peaks_calling_${sp}_${sample}.txt"
 	echo "#SBATCH --partition=cpu"
-	echo "#SBATCH --mem=30G"
+	echo "#SBATCH --mem=50G"
 	echo "#SBATCH --cpus-per-task=${threads}"
-	echo "#SBATCH --time=15:00:00"
+	echo "#SBATCH --time=20:00:00"
   } >> "${logFile}"
 
 fi
@@ -93,7 +93,7 @@ echo "conda activate nextflow" >> "${logFile}"
 
 echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
       ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
-      -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip} ${resume}" >> "${logFile}"
+      -with-conda true ${index} --max_memory '50.GB' --max_cpus ${threads} ${skip} ${resume}" >> "${logFile}"
 
 ########################################################################################################################
 
