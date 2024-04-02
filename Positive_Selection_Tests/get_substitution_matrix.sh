@@ -7,7 +7,7 @@ export cluster=$2
 
 if [ ${cluster} = "local" ]; then
 	export path=/Users/alaverre/Documents/Detecting_positive_selection
-	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
+	source /opt/homebrew/Caskroom/mambaforge/base/etc/profile.d/conda.sh
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
 	source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
