@@ -65,7 +65,7 @@ dog:
     sample: ['Wilson', 'Rensch', 'Schmidt12']
 rabbit:
     UCSC_Assembly: 'oryCun2.fa.gz'
-    Ensembl_Assembly: 'Oryctolagus_cuniculus.OryCun2.0.dna_sm.toplevel.fa.gz'
+    Ensembl_Assembly: 'GCA_000003625.1_OryCun2.0_genomic.fna.gz'
     suffix: ''
 chicken:
     UCSC_Assembly: 'galGal6.fa.gz'
