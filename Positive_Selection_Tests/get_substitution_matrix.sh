@@ -18,7 +18,7 @@ export pathAlignment=${path}/data/genome_alignments/${sp}/
 export pathGFF=${path}/data/genome_sequences/${sp}/
 
 export SpeciesTree=${path}/data/species_trees/${sp}_tree.nk
-export Alignment=${pathAlignment}/triplet_ancestor.maf
+export Alignment=${pathAlignment}/triplet_ancestor.maf.gz
 
 ####################################################################################
 # Define names, chromosomes and files
