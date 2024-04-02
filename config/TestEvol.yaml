@@ -66,7 +66,7 @@ dog:
 rabbit:
     UCSC_Assembly: 'oryCun2.fa.gz'
     Ensembl_Assembly: 'Oryctolagus_cuniculus.OryCun2.0.dna_sm.toplevel.fa.gz'
-    suffix: '_UCSC_names'
+    suffix: ''
 chicken:
     UCSC_Assembly: 'galGal6.fa.gz'
     Ensembl_Assembly: 'Gallus_gallus.GRCg6a.dna_sm.toplevel.fa.gz'
@@ -75,7 +75,7 @@ chicken:
 cat:
     UCSC_Assembly: 'felCat8.fa.gz'
     Ensembl_Assembly: 'sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.fna.gz'
-    suffix: '_UCSC_names'
+    suffix: ''
     sample: ['Schmidt10', 'Rensch']
 split:
     cluster: 'split'
