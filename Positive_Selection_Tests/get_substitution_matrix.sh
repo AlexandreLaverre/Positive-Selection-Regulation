@@ -10,7 +10,7 @@ if [ ${cluster} = "local" ]; then
 	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
 else
 	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
-	source /users/alaverre/Tools/mambaforge/etc/profile.d/conda.sh
+	source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
 fi
 
 export pathResults=${path}/results/substitution_matrix/${sp}/
