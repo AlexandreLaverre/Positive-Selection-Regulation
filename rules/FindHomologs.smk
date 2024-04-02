@@ -49,8 +49,8 @@ rule ConvertCoordinates:
 rule runHALPER:
     message: "Get consensus summits"
     input:
-        peaks = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed",
-        summits = pathPeaks + "/{TF}.consensus_summits" + config[sp]["suffix"] + ".bed"
+        peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
+        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
     output: peaks = directory("../results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:

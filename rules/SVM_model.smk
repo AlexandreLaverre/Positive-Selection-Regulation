@@ -14,7 +14,7 @@ pathScripts = "../scripts/Positive_Selection_Tests/"
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
     input:
-        BED = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
+        BED = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"

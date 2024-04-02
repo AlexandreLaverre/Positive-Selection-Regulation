@@ -61,7 +61,7 @@ macaca:
 dog:
     UCSC_Assembly: 'canFam3.fa.gz'
     Ensembl_Assembly: 'Canis_lupus_familiaris.CanFam3.1.dna_sm.toplevel.fa.gz'
-    suffix: '_UCSC_names'
+    suffix: ''
     sample: ['Wilson', 'Rensch', 'Schmidt12']
 rabbit:
     UCSC_Assembly: 'oryCun2.fa.gz'
