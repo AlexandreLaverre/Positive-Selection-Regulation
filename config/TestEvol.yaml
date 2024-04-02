@@ -54,7 +54,7 @@ rat:
 macaca:
     UCSC_Assembly: 'rheMac8.fa.gz'
     Ensembl_Assembly: 'sup2kb_GCA_000772875.3_Mmul_8.0.1_genomic.fna.gz'
-    suffix: '_UCSC_names'
+    suffix: ''
     sample:
         - 'Wilson'
         - 'Schmidt12'
