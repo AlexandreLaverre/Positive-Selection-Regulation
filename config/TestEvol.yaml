@@ -70,7 +70,7 @@ rabbit:
 chicken:
     UCSC_Assembly: 'galGal6.fa.gz'
     Ensembl_Assembly: 'Gallus_gallus.GRCg6a.dna_sm.toplevel.fa.gz'
-    suffix: '_UCSC_names'
+    suffix: ''
     sample: ['Schmidt10']
 cat:
     UCSC_Assembly: 'felCat8.fa.gz'
