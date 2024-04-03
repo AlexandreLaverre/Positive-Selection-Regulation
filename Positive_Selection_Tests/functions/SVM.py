@@ -174,17 +174,18 @@ def normalised_mutations_probability(seq, sub_prob, sub_prob_norm):
 
 # Mutate a sequence N time according to positional and directional probabilities
 def mutate_seq_from_proba(seq, normed_pos_proba, sub_prob_norm, n_sub):
+    mut_seq = seq.copy()
     # draw positions
     rand_pos = np.random.choice(np.arange(normed_pos_proba.size), p=normed_pos_proba, replace=False, size=n_sub)
     # draw directions
     for pos in rand_pos:
-        old_nuc = seq[pos]
+        old_nuc = mut_seq[pos]
         directions = list(sub_prob_norm[old_nuc].keys())
         proba = list(sub_prob_norm[old_nuc].values())
         new_nuc = np.random.choice(directions, p=proba)
-        seq[pos] = new_nuc
+        mut_seq[pos] = new_nuc
 
-    return ''.join(seq)
+    return ''.join(mut_seq)
 
 
 def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
@@ -199,7 +200,7 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
 
 def mutate_from_ids(seq, ids):
     ids = [ids] if type(ids) is not list else ids
-    seq = list(seq)
+    seq = list(seq.copy())
     for sub in ids:
         id_pos = sub.split(":")[0]
         pos = int(id_pos.strip("pos"))
