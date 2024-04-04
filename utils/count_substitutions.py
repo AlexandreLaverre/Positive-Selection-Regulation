@@ -29,7 +29,7 @@ def get_sub_number(seq_ref, seq_alt):
         raise ValueError("Reference and target sequences don't have the same length!")
 
     subs = {"".join(sub): 0 for sub in combinations}
-
+    print(subs.keys())
     for base1, base2 in zip(seq_ref, seq_alt):
         if base1 != base2:
             subs[f"{base1}{base2}"] += 1
