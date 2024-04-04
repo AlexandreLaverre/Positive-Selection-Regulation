@@ -20,7 +20,6 @@ Target_Path = f"{path}/sequences/filtered_focal_sequences_upper.fa"
 Output = open(f"{path}/sequences/focal_substitutions_stats.txt", "w")
 
 nuc = ['A', 'T', 'C', 'G']
-combinations = itertools.permutations(nuc, 2)
 
 ########################################################################################################################
 # Get substitutions of each type per sequence
@@ -55,7 +54,7 @@ if len(TargetSeqs) == 0:
 
 ########################################################################################################################
 
-permutation = ["".join(sub) for sub in combinations]
+permutation = ["".join(sub) for sub in itertools.permutations(nuc, 2)]
 Output.write('\t'.join(["ID", "Length", "GC_Content", "NbSub"]) + '\t' + '\t'.join(permutation) + '\t' +
              '\t'.join(["Weak2Weak", "Weak2Strong", "Strong2Strong", "Strong2Weak"]) + "\n")
 
