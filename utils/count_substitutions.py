@@ -64,7 +64,7 @@ for ID in SeqIDs:
 
     substitutions = get_sub_number(ref_seq, target_seq)
     substitution_number = list(substitutions.values())
-    Nsub = str(sum(substitution_number))
+    Nsub = str(sum(substitution_number[0:12]))
 
     Output.write('\t'.join([ID, str(len(ref_seq)), GC_content, Nsub, '\t'.join(map(str, substitution_number))]) + "\n")
 
