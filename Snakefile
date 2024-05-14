@@ -20,6 +20,7 @@ include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
+include: 'rules/Polymorphism.smk'
 
 sp = config["sp"]
 sample = config["sample"]  # config[sp]["sample"]
