@@ -9,13 +9,12 @@ BED_file = args[2]
 pathResults = args[3]
 cluster = args[4]
 
-path = ifelse(cluster=="cluster", "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel", "/Users/alaverre/Documents/Detecting_positive_selection")
-
-pathScripts = paste0(path, "/scripts/utils/compare_genome_assemblies")
-
 BED = read.table(BED_file)
 
 # Check if chrName conversion between Ensembl and UCSC is needed
+# path = ifelse(cluster=="cluster", "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel", "/Users/alaverre/Documents/Detecting_positive_selection")
+# pathScripts = paste0(path, "/scripts/utils/compare_genome_assemblies")
+
 #if (species != "rat"){      #rat BED already UCSC
   #message("Convert chromosome names to UCSC convention...")
   #system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
@@ -34,8 +33,9 @@ if (species == "chicken"){genome <- getBSgenome("BSgenome.Ggallus.UCSC.galGal6.m
 #if (species == "pig"){genome <- getBSgenome("BSgenome.Sscrofa.UCSC.susScr3.masked")}
 if (species == "spretus"){genome <- getBSgenome("BSgenome.Mspretus.GenBank.SPRET.masked")}
 if (species == "caroli"){genome <- getBSgenome("BSgenome.Mcaroli.GenBank.CAROLI.EIJ.masked")}
+if (species == "zebrafish"){genome <- getBSgenome("BSgenome.Drerio.UCSC.danRer11.masked")}
 
-
+seqnames(genome)
 # For new genomes, check if available first, else create it via BSgenome forge
 #available.genomes()
 #BiocManager::install("BSgenome.Mmusculus.UCSC.mm10.masked")
@@ -44,7 +44,11 @@ if (species == "caroli"){genome <- getBSgenome("BSgenome.Mcaroli.GenBank.CAROLI.
 # Generate negative sequences
 set.seed(12)
 
-genNullSeqs(BED_file, genome = genome, nMaxTrials=50,
+# Select at least 5000 sequences or same number as positive set
+max_seq = max(nrow(BED), 5000)
+xfold= as.integer(max_seq/nrow(BED))
+
+genNullSeqs(BED_file, genome = genome, nMaxTrials=50, xfold=xfold,
             outputBedFN = paste0(pathResults,'/negSet.bed'), 
             outputPosFastaFN = paste0(pathResults,'/posSet.fa'),
             outputNegFastaFN = paste0(pathResults,'/negSet.fa'))
