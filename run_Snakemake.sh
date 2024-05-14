@@ -25,8 +25,8 @@ fi
 conda activate TestPos
 
 ##################################################################
-
-snakemake ${dryRun} --rerun-triggers mtime -j 64 --config sp=${species} sample=${sample}  \
+# mtime or input
+snakemake ${dryRun} --rerun-triggers input -j 64 --config sp=${species} sample=${sample}  \
           cluster=${cluster} nbPart=${nbThreads} --rerun-incomplete \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
           -c {params.threads} --mem={params.mem} -t {params.time}"
