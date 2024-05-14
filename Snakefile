@@ -26,14 +26,16 @@ sp = config["sp"]
 sample = config["sample"]  # config[sp]["sample"]
 peakType = config["peakType"]
 cluster = config["cluster"]
+chroms = [f"chr{i}" for i in range(1, 22)] + ["chrX"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPolymorphism = f"../../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
 
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
 if cluster == "cluster":
-    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates
+    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF
 else:
     localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments
@@ -51,4 +53,5 @@ rule all:
         PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt", TF=config["TFs"][sample]),
         MaxLLTest = expand(pathResults + "/{TF}/MLE_summary_" + str(config["nbBin"]) + "bins.csv", TF=config["TFs"][sample]),
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=config["TFs"][sample]),
+        overlap_vcf= expand(pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz", TF=config["TFs"][sample], chrom=chroms)
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
