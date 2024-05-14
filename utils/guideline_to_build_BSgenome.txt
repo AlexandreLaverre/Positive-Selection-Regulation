@@ -9,9 +9,9 @@ i.e: https://hgdownload.soe.ucsc.edu/hubs/GCA/001/624/865/GCA_001624865.1/
 
 - .fa.gz : genome sequence
 - .out : RepeatMasker output				/!\ if random number of space, reformat it using /reformat_out_file.py
-- .2bit : binary genome 					/!\ if not found, run fasta22bit:
+- .2bit : binary genome 				/!\ if not found, run fasta22bit:
 - .gaps or .agp : assembly gaps 			/!\ if agp, need to add this line to the masked-seed: AGAPSfiles_type: "agp"
-- .trf : Tandem Repeat Finder output		
+- .trf.bed.gz : Tandem Repeat Finder output		
 
 # If no .trf file:
 gunzip .fa.gz
