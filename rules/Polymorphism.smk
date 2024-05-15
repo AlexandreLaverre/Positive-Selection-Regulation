@@ -43,7 +43,7 @@ rule RetrieveSNPDeltaSVM:
         ancestral_seq = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
         MaxLL_estimations = pathResults + "/{TF}/MLE_summary_50bins.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
-    params: time="1:00:00",mem="10G",threads=1
+    params: time="1:00:00",mem="5G",threads=1
     shell:
         """ python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.ancestral_seq} {input.MaxLL_estimations} {output} """
 
