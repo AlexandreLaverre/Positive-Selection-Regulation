@@ -9,7 +9,7 @@ chroms = [f"chr{i}" for i in range(1, 22)] + ["chrX"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
-pathPolymorphism = f"../../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
+pathPolymorphism = f"../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
 
 rule DownloadVCF:
     message: "Download polymorphism data from VCF files of 1000 Genomes Project"
@@ -32,7 +32,6 @@ rule VCF_BED_overlap:
     params: time="2:00:00",mem="1G",threads=1
     shell:
         """ 
-        mkdir -p $pathPolymorphism/{wildcards.TF}/VCF/
         bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
         """
 
