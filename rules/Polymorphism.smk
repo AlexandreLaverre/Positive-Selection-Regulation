@@ -29,7 +29,7 @@ rule VCF_BED_overlap:
         vcf = '../data/polymorphism/human_1000genomes/ALL.{chrom}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz',
         BED_peaks = expand(pathPeaks + "/{TF}.peaks_UCSC_names.bed", TF=config["TFs"][sample])
     output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
-    params: time="2:00:00",mem="1G",threads=1
+    params: time="1:00:00",mem="1G",threads=1
     shell:
         """ 
         bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
