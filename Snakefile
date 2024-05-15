@@ -53,5 +53,5 @@ rule all:
         PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt", TF=config["TFs"][sample]),
         MaxLLTest = expand(pathResults + "/{TF}/MLE_summary_" + str(config["nbBin"]) + "bins.csv", TF=config["TFs"][sample]),
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=config["TFs"][sample]),
-        overlap_vcf= expand(pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz", TF=config["TFs"][sample], chrom=chroms)
+        SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt", TF=config["TFs"][sample], chrom=chroms)
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
