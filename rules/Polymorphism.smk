@@ -31,7 +31,10 @@ rule VCF_BED_overlap:
     output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="2:00:00",mem="1G",threads=1
     shell:
-        """ bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} """
+        """ 
+        mkdir -p $pathPolymorphism/{wildcards.TF}/VCF/
+        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
+        """
 
 rule RetrieveSNPDeltaSVM:
     message: "Filter SNPs and retrieve corresponding deltaSVM and MLE estimations"
