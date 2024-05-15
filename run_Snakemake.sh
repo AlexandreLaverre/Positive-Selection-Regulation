@@ -29,7 +29,9 @@ conda activate TestPos
 snakemake ${dryRun} --rerun-triggers input -j 64 --config sp=${species} sample=${sample}  \
           cluster=${cluster} nbPart=${nbThreads} --rerun-incomplete \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
-          -c {params.threads} --mem={params.mem} -t {params.time}"
+          -c {params.threads} --mem={params.mem} -t {params.time}" --cleanup-metadata ['../results/peaks_calling/NarrowPeaks/human/Wilson/CEBPA.consensus_summits.bed', '../results/peaks_calling/NarrowPeaks/human/Wilson/CEBPA.peaks_UCSC_names.bed']
 
-#--cleanup-metadata ../results/peaks_calling/NarrowPeaks/human/Wilson/CEBPA.consensus_summits.bed
+
+#--cleanup-metadata ['../results/peaks_calling/NarrowPeaks/human/Wilson/CEBPA.consensus_summits.bed', '../results/peaks_calling/NarrowPeaks/human/Wilson/CEBPA.peaks_UCSC_names.bed']
+
 ##################################################################
