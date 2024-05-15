@@ -13,6 +13,9 @@ TFs:
     Kern: ['CTCF']
     Wilson:
         - 'CEBPA'
+        - 'HNF4A'
+        - 'FOXA1'
+        - 'HNF6'
     Stefflova:
         - 'CEBPA'
         - 'HNF4A'
