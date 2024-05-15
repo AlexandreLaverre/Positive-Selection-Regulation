@@ -30,7 +30,7 @@ chroms = [f"chr{i}" for i in range(1, 22)] + ["chrX"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
-pathPolymorphism = f"../../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
+pathPolymorphism = f"../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
 
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
