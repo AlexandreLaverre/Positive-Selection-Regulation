@@ -26,7 +26,7 @@ rule DownloadVCF:
 rule VCF_BED_overlap:
     message: "Overlap VCF with ChIP-seq peaks to filter SNP"
     input:
-        vcf = rules.DownloadVCF.output,
+        vcf = '../data/polymorphism/human_1000genomes/ALL.{chrom}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz',
         BED_peaks = expand(pathPeaks + "/{TF}.peaks_UCSC_names.bed", TF=config["TFs"][sample])
     output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="2:00:00",mem="1G",threads=1
