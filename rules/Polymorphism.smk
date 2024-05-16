@@ -57,5 +57,5 @@ rule ComputeSelectionCoefficient:
     output: pathPolymorphism + "/{TF}/SelectionCoefficient/{chrom}.txt"
     params: time="1:00:00",mem="1G",threads=1
     shell:
-        """ python peaks_evolution/Compute.py {input} {output} """
+        """ python peaks_evolution/ComputeSelectionCoefficient.py {input} {output} """
 

@@ -50,7 +50,6 @@ for SNP in VCF.iterrows():
     start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
     original_length = end-start
     aligned_length = len(FocalSeq[ID].seq)
-
     if aligned_length != original_length:
         continue
 
