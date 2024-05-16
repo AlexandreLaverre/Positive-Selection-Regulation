@@ -41,11 +41,14 @@ rule RetrieveSNPDeltaSVM:
         vcf = rules.VCF_BED_overlap.output,
         AllSVM = pathResults + "/{TF}/deltas/ancestral_all_possible_deltaSVM.txt",
         ancestral_seq = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
+        genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MaxLL_estimations = pathResults + "/{TF}/MLE_summary_50bins.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
     params: time="1:00:00",mem="5G",threads=1
     shell:
-        """ python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.ancestral_seq} {input.MaxLL_estimations} {output} """
+        """ 
+        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.ancestral_seq} {input.genome} {input.MaxLL_estimations} {output} 
+        """
 
 rule ComputeSelectionCoefficient:
     message: "Compute selection coefficient for each SNP"
