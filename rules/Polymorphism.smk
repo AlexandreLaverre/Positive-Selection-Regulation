@@ -15,7 +15,7 @@ rule DownloadVCF:
     message: "Download polymorphism data from VCF files of 1000 Genomes Project"
     output: expand("../data/polymorphism/human_1000genomes/ALL.{chrom}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz", chrom=chroms)
     params: pathVCF = "../data/polymorphism/human_1000genomes"
-    log: out = pathResults + "/log/DownloadVCF.out"
+    log: out = pathPolymorphism + "/log/DownloadVCF.out"
     shell:
         """
         mkdir -p {params.pathVCF}
@@ -44,10 +44,11 @@ rule RetrieveSNPDeltaSVM:
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MaxLL_estimations = pathResults + "/{TF}/MLE_summary_50bins.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
+    log: out = pathPolymorphism + "/log/{TF}_SNP_to_delta_{chrom}.out"
     params: time="1:00:00",mem="5G",threads=1
     shell:
         """ 
-        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.ancestral_seq} {input.genome} {input.MaxLL_estimations} {output} 
+        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.ancestral_seq} {input.genome} {input.MaxLL_estimations} {output} &> {log.out}
         """
 
 rule ComputeSelectionCoefficient:

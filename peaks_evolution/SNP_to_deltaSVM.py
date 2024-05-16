@@ -6,13 +6,13 @@ from Bio import SeqIO
 import pandas as pd
 import gzip
 
-#path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
-#vcf_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/VCF/filtered_chr21.vcf.gz'
-#deltaSVM_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/deltas/ancestral_all_possible_deltaSVM.txt'
-#seq_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/sequences/filtered_focal_sequences_upper.fa'
-#maxLL_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/MLE_summary_50bins.csv'
-#output_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/SNP_to_deltaSVM.txt'
-#genome_file = "/Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/human/hg38.fa.gz"
+path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
+vcf_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/VCF/filtered_chr21.vcf.gz'
+deltaSVM_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/deltas/ancestral_all_possible_deltaSVM.txt'
+seq_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/sequences/filtered_focal_sequences_upper.fa'
+maxLL_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/MLE_summary_50bins.csv'
+output_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/SNP_to_deltaSVM.txt'
+genome_file = "/Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/human/hg38.fa.gz"
 
 VCF = pd.read_csv(sys.argv[1], sep='\t', header=None, compression='gzip', skiprows=20)
 DeltaSVM = pd.read_csv(sys.argv[2], sep='\t', header=0)
@@ -21,7 +21,7 @@ genome = SeqIO.to_dict(SeqIO.parse(gzip.open(sys.argv[4], "rt"), "fasta"))
 MaxLL = pd.read_csv(sys.argv[5], header=0)
 output = open(sys.argv[6], 'w')
 
-# Correctly retrieve the header
+# Correctly retrieve VCF header
 with gzip.open(sys.argv[1], 'rt') as file:
     for line in file:
         if line.startswith('#CHROM'):

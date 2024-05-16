@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export species=$1				# i.e: human dog ...
-export sample=$2				# i.e: CEBPA HNF4A ...
-export cluster=$3				# i.e: local or cluster
+export species=$1				  # i.e: human dog ...
+export sample=$2				  # i.e: CEBPA HNF4A ...
+export cluster=$3				  # i.e: local or cluster
 export nbThreads=$4				# i.e: int (number of part for parallelization)
-export dryRun=${5:-""}				# i.e: -n or nothing (run snakemake in dry-run mode)"
+export dryRun=${5:-""}		# i.e: -n or nothing (run snakemake in dry-run mode)"
 
 export Prefix=${species}_${sample}
 
