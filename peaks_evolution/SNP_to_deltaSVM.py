@@ -35,7 +35,7 @@ for SNP in VCF.iterrows():
     SNP_pos = int(SNP[1]['POS']-1)
     ref, alt = SNP[1]['REF'], SNP[1]['ALT']
     freq = [pop.split('=')[1] for pop in SNP[1]['INFO'].split(';')[4:8]]
-    nb_alt, nb_tot = SNP[1]['INFO'].split(';')[0], SNP[1]['INFO'].split(';')[1]
+    nb_alt, nb_tot = SNP[1]['INFO'].split(';')[0].split('=')[1], SNP[1]['INFO'].split(';')[1].split('=')[1]
 
     assert genome[chr].seq[SNP_pos].upper() == ref, "Reference does not correspond to the genome sequence."
 
