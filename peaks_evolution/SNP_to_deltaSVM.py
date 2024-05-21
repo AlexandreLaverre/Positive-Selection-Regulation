@@ -27,7 +27,7 @@ VCF.columns = header + ["chr", "start", "end", "PeakID"]
 # Write header
 tab = '\t'
 pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
-output.write("ID\tPos\tRef\tAlt\t"+'\t'.join(pop)+"\tLength\tFlag\tDeltaSVM\tStabParam\tSelCoefStab\tAlphaPos\tBetaPos\tSelCoefPos\n")
+output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t"+'\t'.join(pop)+"\tLength\tFlag\tDeltaSVM\tStabParam\tSelCoefStab\tAlphaPos\tBetaPos\tSelCoefPos\n")
 
 for SNP in VCF.iterrows():
     ID = SNP[1]['PeakID']
@@ -35,6 +35,7 @@ for SNP in VCF.iterrows():
     SNP_pos = int(SNP[1]['POS']-1)
     ref, alt = SNP[1]['REF'], SNP[1]['ALT']
     freq = [pop.split('=')[1] for pop in SNP[1]['INFO'].split(';')[4:8]]
+    nb_alt, nb_tot = SNP[1]['INFO'].split(';')[0], SNP[1]['INFO'].split(';')[1]
 
     assert genome[chr].seq[SNP_pos].upper() == ref, "Reference does not correspond to the genome sequence."
 
@@ -82,7 +83,7 @@ for SNP in VCF.iterrows():
     Coef_Pos = ML.coeff_selection(SNP_deltaSVM, [Pos_params['AlphaPos'], Pos_params['BetaPos']], SVM_bounds)
 
     # Write output
-    output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{tab.join(freq)}\t{original_length}\t{flag}\t"
+    output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{nb_alt}\t{nb_tot}\t{tab.join(freq)}\t{original_length}\t{flag}\t"
                  f"{SNP_deltaSVM}\t{Stab_param}\t{Coef_Stab}\t"
                  f"{Pos_params['AlphaPos']}\t{Pos_params['BetaPos']}\t{Coef_Pos}\n")
 
