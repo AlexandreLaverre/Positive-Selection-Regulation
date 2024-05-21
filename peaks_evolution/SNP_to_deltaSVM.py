@@ -5,7 +5,10 @@ import sys
 from Bio import SeqIO
 import pandas as pd
 import gzip
+sys.path.append("Positive_Selection_Tests/functions/")
+import MLEvol as ML
 
+# Read input files
 VCF = pd.read_csv(sys.argv[1], sep='\t', header=None, compression='gzip', skiprows=20)
 DeltaSVM = pd.read_csv(sys.argv[2], sep='\t', header=0)
 FocalSeq = SeqIO.to_dict(SeqIO.parse(open(sys.argv[3]), "fasta"))
@@ -24,13 +27,14 @@ VCF.columns = header + ["chr", "start", "end", "PeakID"]
 # Write header
 tab = '\t'
 pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
-output.write("ID\tPos\tRef\tAlt\t"+'\t'.join(pop)+"\tDeltaSVM\tStabParam\tAlphaPos\tBetaPos\tLength\tMin\tMax\tFlag\n")
+output.write("ID\tPos\tRef\tAlt\t"+'\t'.join(pop)+"\tDeltaSVM\tStabParam\tAlphaPos\tBetaPos\tLength\tFlag\n")
 
 for SNP in VCF.iterrows():
     ID = SNP[1]['PeakID']
     chr = SNP[1]['#CHROM']
     SNP_pos = int(SNP[1]['POS']-1)
     ref, alt = SNP[1]['REF'], SNP[1]['ALT']
+    freq = [pop.split('=')[1] for pop in SNP[1]['INFO'].split(';')[4:8]]
 
     assert genome[chr].seq[SNP_pos].upper() == ref, "Reference does not correspond to the genome sequence."
 
@@ -51,17 +55,15 @@ for SNP in VCF.iterrows():
     if ID not in MaxLL['ID'].values:
         continue
     else:
-        stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
-        pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
+        Stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
+        Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
 
-    # Relative position in sequence and frequency in populations
+    # Relative position in sequence
     pos = SNP_pos - start
     assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "Position does not correspond to the genome sequence."
 
-    # Check that ref or alt allele is in ancestral sequence and get deltaSVM
+    # Get deltaSVM calculated from Ancestral sequence
     allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
-    svm_bounds = [min(allSVM), max(allSVM)]
-    freq = [pop.split('=')[1] for pop in SNP[1]['INFO'].split(';')[4:8]]
 
     # Ref = Ancestral
     if pd.isna(allSVM[f"pos{pos}:{ref}"]):
@@ -74,9 +76,14 @@ for SNP in VCF.iterrows():
     else:
         continue
 
+    # Compute selection coefficient
+    SVM_bounds = [min(allSVM), max(allSVM)]
+    Coef_Stab = ML.coeff_selection(SNP_deltaSVM, [Stab_param], SVM_bounds)
+    Coef_Pos = ML.coeff_selection(SNP_deltaSVM, [Pos_params['AlphaPos'], Pos_params['BetaPos']], SVM_bounds)
+
     # Write output
-    output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{tab.join(freq)}\t{SNP_deltaSVM}\t{stab_param}"
-                 f"\t{pos_params['AlphaPos']}\t{pos_params['BetaPos']}\t{original_length}"
-                 f"\t{tab.join(svm_bounds)}\t{flag}\n")
+    output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{tab.join(freq)}\t{original_length}\t{flag}\t"
+                 f"{SNP_deltaSVM}\t{Stab_param}\t{Coef_Stab}\t"
+                 f"{Pos_params['AlphaPos']}\t{Pos_params['BetaPos']}\t{Coef_Pos}\n")
 
 output.close()
