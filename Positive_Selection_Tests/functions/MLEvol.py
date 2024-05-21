@@ -8,7 +8,8 @@ from scipy.optimize import minimize
 from scipy.stats import chi2
 
 
-def proba_fixation(delta, params, delta_bounds):
+# Function to calculate the probability of fixation given delta and parameters
+def coeff_selection(delta, params, delta_bounds):
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
     max_delta = max(np.abs(delta_bounds))
@@ -37,12 +38,12 @@ def proba_substitution(params, mutations_proba, bins_values):
         min_bin = bins_values[b]
         max_bin = bins_values[b + 1]
         mean_bin = (max_bin + min_bin) / 2
-        output_array[b] = p * proba_fixation(mean_bin, params, delta_bounds)
+        output_array[b] = p * coeff_selection(mean_bin, params, delta_bounds)
     sum_output = np.sum(output_array)
     if sum_output == 0:
         return output_array
     else:
-        return output_array / sum_output
+        return output_array / sum_output 
 
 
 def loglikelihood(deltas, params, hist_mutations):
@@ -53,7 +54,7 @@ def loglikelihood(deltas, params, hist_mutations):
     digitized_deltas = np.searchsorted(bins_values, deltas, side='left') - 1
     models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in digitized_deltas]
 
-    if min(models_lk) <= 0.0:
+    if min(models_lk) <= 0.0:  # Avoid log(0)
         return -np.infty
     return np.sum(np.log(models_lk))
 

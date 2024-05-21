@@ -250,7 +250,7 @@ def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins=False):
             delta_bounds = [min(all_deltas), max(all_deltas)]
             proba_substitution = np.zeros(n_deltas)
             for d in range(n_deltas):
-                proba_substitution[d] = ML.proba_fixation(all_deltas[d], params, delta_bounds)
+                proba_substitution[d] = ML.coeff_selection(all_deltas[d], params, delta_bounds)
 
     # Weighted probability of mutations for each position*direction (length_seq*3)
     proba_mutation = normalised_mutations_probability(original_seq, sub_mat[0], sub_mat[1])
