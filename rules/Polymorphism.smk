@@ -45,7 +45,7 @@ rule RetrieveSNPDeltaSVM:
         MaxLL_estimations = pathResults + "/{TF}/MLE_summary_50bins.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
     log: out = pathPolymorphism + "/log/{TF}_SNP_to_delta_{chrom}.out"
-    params: time="1:00:00",mem="5G",threads=1
+    params: time="1:00:00",mem="8G",threads=1
     shell:
         """ 
         python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} {input.genome} {input.MaxLL_estimations} {output} &> {log.out}
