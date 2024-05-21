@@ -27,7 +27,7 @@ VCF.columns = header + ["chr", "start", "end", "PeakID"]
 # Write header
 tab = '\t'
 pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
-output.write("ID\tPos\tRef\tAlt\t"+'\t'.join(pop)+"\tDeltaSVM\tStabParam\tAlphaPos\tBetaPos\tLength\tFlag\n")
+output.write("ID\tPos\tRef\tAlt\t"+'\t'.join(pop)+"\tLength\tFlag\tDeltaSVM\tStabParam\tSelCoefStab\tAlphaPos\tBetaPos\tSelCoefPos\n")
 
 for SNP in VCF.iterrows():
     ID = SNP[1]['PeakID']
