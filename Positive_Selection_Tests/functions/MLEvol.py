@@ -31,7 +31,7 @@ def coeff_selection(delta, params, delta_bounds):
 
 def proba_substitution(params, mutations_proba, bins_values):
     n_bins = len(mutations_proba)
-    delta_bounds = [min(bins_values), max(bins_values)]
+    delta_bounds = [np.nanmin(bins_values), np.nanmax(bins_values)]
     output_array = np.zeros(n_bins)
     for b in range(n_bins):
         p = mutations_proba[b]

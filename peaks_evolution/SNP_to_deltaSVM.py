@@ -2,22 +2,31 @@
 # coding=utf-8
 
 import sys
+import numpy as np
 from Bio import SeqIO
 import pandas as pd
 import gzip
 sys.path.append("Positive_Selection_Tests/functions/")
 import MLEvol as ML
 
+path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
+vcf_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/VCF/filtered_chr21.vcf.gz'
+deltaSVM_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/deltas/ancestral_all_possible_deltaSVM.txt'
+focal_seq_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/sequences/filtered_focal_sequences.fa'
+genome_file = "/Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/human/hg38.fa.gz"
+maxLL_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/MLE_summary_50bins.csv'
+output_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/SNP_to_deltaSVM_chr21.txt'
+
 # Read input files
-VCF = pd.read_csv(sys.argv[1], sep='\t', header=None, compression='gzip', skiprows=20)
-DeltaSVM = pd.read_csv(sys.argv[2], sep='\t', header=0)
-FocalSeq = SeqIO.to_dict(SeqIO.parse(open(sys.argv[3]), "fasta"))
-genome = SeqIO.to_dict(SeqIO.parse(gzip.open(sys.argv[4], "rt"), "fasta"))
-MaxLL = pd.read_csv(sys.argv[5], header=0)
-output = open(sys.argv[6], 'w')
+VCF = pd.read_csv(vcf_file, sep='\t', header=None, compression='gzip', skiprows=20)
+DeltaSVM = pd.read_csv(deltaSVM_file, sep='\t', header=0)
+FocalSeq = SeqIO.to_dict(SeqIO.parse(open(focal_seq_file), "fasta"))
+genome = SeqIO.to_dict(SeqIO.parse(gzip.open(genome_file, "rt"), "fasta"))
+MaxLL = pd.read_csv(maxLL_file, header=0)
+output = open(output_file, 'w')
 
 # Correctly retrieve VCF header
-with gzip.open(sys.argv[1], 'rt') as file:
+with gzip.open(vcf_file, 'rt') as file:
     for line in file:
         if line.startswith('#CHROM'):
             header = line.strip('\t').split('\t')
@@ -80,7 +89,7 @@ for SNP in VCF.iterrows():
         continue
 
     # Compute selection coefficient
-    SVM_bounds = [min(allSVM), max(allSVM)]
+    SVM_bounds = [np.nanmin(allSVM), np.nanmax(allSVM)]
     Coef_Stab = ML.coeff_selection(SNP_deltaSVM, [Stab_param], SVM_bounds)
     Coef_Pos = ML.coeff_selection(SNP_deltaSVM, [Pos_params['AlphaPos'], Pos_params['BetaPos']], SVM_bounds)
 
