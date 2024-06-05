@@ -56,5 +56,5 @@ rule MergeAllChromosome:
     input: lambda wildcards: expand(pathPolymorphism + "/{{TF}}/SNP_to_deltaSVM/{chrom}.txt", chrom=chroms)
     output: pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
     shell:
-        """cat {input} | sort -u | {output} """
+        """cat {input} | sort -u > {output} """
 
