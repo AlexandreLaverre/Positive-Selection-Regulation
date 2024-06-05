@@ -1,4 +1,4 @@
-# Implement rules to retrieve ChiP-seq consensus peaks summits and to find their homologous using HALPER
+# Implement rules to download human polymorphism data, retrieve the estimated deltaSVM for SNP and compute their coefficient of selection
 from snakemake.io import expand
 
 sp = config["sp"]
@@ -35,7 +35,7 @@ rule VCF_BED_overlap:
         bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
         """
 
-rule RetrieveSNPDeltaSVM:
+rule RetrieveSNPDeltaSVM_Selection:
     message: "Filter SNPs and retrieve corresponding deltaSVM and MLE estimations"
     input:
         vcf = rules.VCF_BED_overlap.output,
@@ -51,11 +51,10 @@ rule RetrieveSNPDeltaSVM:
         python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} {input.genome} {input.MaxLL_estimations} {output} &> {log.out}
         """
 
-rule ComputeSelectionCoefficient:
+rule MergeAllChromosome:
     message: "Compute selection coefficient for each SNP"
-    input: rules.RetrieveSNPDeltaSVM.output
-    output: pathPolymorphism + "/{TF}/SelectionCoefficient/{chrom}.txt"
-    params: time="1:00:00",mem="1G",threads=1
+    input: expand(pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt", chrom=chroms)
+    output: pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
     shell:
-        """ python peaks_evolution/ComputeSelectionCoefficient.py {input} {output} """
+        """cat {input} | sort -u | {output} """
 
