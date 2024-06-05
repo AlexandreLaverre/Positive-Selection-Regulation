@@ -53,7 +53,7 @@ rule RetrieveSNPDeltaSVM_Selection:
 
 rule MergeAllChromosome:
     message: "Compute selection coefficient for each SNP"
-    input: expand(pathPolymorphism + "/{wildcards.TF}/SNP_to_deltaSVM/{chrom}.txt", chrom=chroms)
+    input: rules.RetrieveSNPDeltaSVM_Selection.output
     output: pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
     shell:
         """cat {input} | sort -u | {output} """
