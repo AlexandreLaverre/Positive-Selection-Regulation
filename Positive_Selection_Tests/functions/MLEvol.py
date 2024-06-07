@@ -9,7 +9,7 @@ from scipy.stats import chi2
 
 
 # Function to calculate the probability of fixation given delta and parameters
-def coeff_selection(delta, params, delta_bounds):
+def coeff_selection_s(delta, params, delta_bounds):
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
     max_delta = max(np.abs(delta_bounds))
@@ -19,6 +19,10 @@ def coeff_selection(delta, params, delta_bounds):
     if w_mutant < 1.e-10:
         return 0.0
     s = np.log(w_mutant / w_ancestral)
+    return s
+
+
+def proba_fixation_s(s):
     if abs(s) < 1.e-4:
         return 1.0 + s / 2
     elif s > 10:
@@ -27,6 +31,12 @@ def coeff_selection(delta, params, delta_bounds):
         return - s * np.exp(s)
     else:
         return s / (1 - np.exp(-s))
+
+
+# Function to calculate the probability of fixation given delta and parameters
+def coeff_selection(delta, params, delta_bounds):
+    s = coeff_selection_s(delta, params, delta_bounds)
+    return proba_fixation_s(s)
 
 
 def proba_substitution(params, mutations_proba, bins_values):
@@ -43,7 +53,7 @@ def proba_substitution(params, mutations_proba, bins_values):
     if sum_output == 0:
         return output_array
     else:
-        return output_array / sum_output 
+        return output_array / sum_output
 
 
 def loglikelihood(deltas, params, hist_mutations):
