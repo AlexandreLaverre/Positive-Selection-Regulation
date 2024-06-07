@@ -37,7 +37,7 @@ tab = '\t'
 pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
 output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t" + '\t'.join(pop) + "\tLength\tFlag\t" +
              "DeltaSVM\tConclusion\tStabParam\tSelCoefStab\tProbabStab\t" +
-             "\tAlphaPos\tBetaPos\tSelCoefPos\tProbabPos\n")
+             "AlphaPos\tBetaPos\tSelCoefPos\tProbabPos\n")
 
 for SNP in VCF.iterrows():
     ID = SNP[1]['PeakID']
