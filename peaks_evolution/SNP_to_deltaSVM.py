@@ -36,8 +36,7 @@ VCF.columns = header + ["chr", "start", "end", "PeakID"]
 tab = '\t'
 pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
 output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t" + '\t'.join(pop) + "\tLength\tFlag\t" +
-             "DeltaSVM\tConclusion\tStabParam\tSelCoefStab\tProbabStab\t" +
-             "AlphaPos\tBetaPos\tSelCoefPos\tProbabPos\n")
+             "DeltaSVM\tSelCoefStab\tProbabStab\tSelCoefPos\tProbabPos\n")
 
 for SNP in VCF.iterrows():
     ID = SNP[1]['PeakID']
@@ -68,7 +67,6 @@ for SNP in VCF.iterrows():
     else:
         Stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
         Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
-        Conclusion = MaxLL.loc[MaxLL['ID'] == ID, "Conclusion"].iloc[0]
 
     # Relative position in sequence
     pos = SNP_pos - start
@@ -98,7 +96,6 @@ for SNP in VCF.iterrows():
 
     # Write output
     output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{nb_alt}\t{nb_tot}\t{tab.join(freq)}\t{original_length}\t{flag}\t"
-                 f"{SNP_deltaSVM}\t{Conclusion}\t{Stab_param}\t{Coef_Stab}\t{Probab_Stab}\t"
-                 f"{Pos_params['AlphaPos']}\t{Pos_params['BetaPos']}\t{Coef_Pos}\t{Probab_Pos}\n")
+                 f"{SNP_deltaSVM}\t{Coef_Stab}\t{Probab_Stab}\t{Coef_Pos}\t{Probab_Pos}\n")
 
 output.close()
