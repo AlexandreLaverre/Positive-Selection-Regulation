@@ -7,19 +7,19 @@ export threads=$4
 
 path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/peaks_calling/NarrowPeaks
 pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/
-pathLogs=${pathPeaks}/deepTools/coverage/logs
-mkdir -p "$pathLogs"
+pathResults=${pathPeaks}/deepTools/coverage/
+mkdir -p "${pathResults}/logs" "${pathResults}/${TF}"
 
 for pathBam in "$pathPeaks"/*"$TF"*bam; do
   bam=$(basename "$pathBam")
   indiv=$(echo "$bam" | cut -d "." -f1 | cut -d "_" -f2)
   input="input_DNA_${indiv}.mLb.clN.sorted.bam"
-  logFile="${pathLogs}/bsub_BAM_coverage_${sp}_${TF}_${indiv}.sh"
+  logFile="${pathResults}/logs/bsub_BAM_coverage_${sp}_${TF}_${indiv}.sh"
 
   { echo "#!/bin/bash"
     echo "#SBATCH --job-name=BAM_coverage_${sp}_${TF}_${indiv}"
-    echo "#SBATCH --output=${pathLogs}/std_output_BAM_coverage_${sp}_${TF}_${indiv}.txt"
-    echo "#SBATCH --error=${pathLogs}/std_error_BAM_coverage_${sp}_${TF}_${indiv}.txt"
+    echo "#SBATCH --output=${pathResults}/logs/std_output_BAM_coverage_${sp}_${TF}_${indiv}.txt"
+    echo "#SBATCH --error=${pathResults}/logs/std_error_BAM_coverage_${sp}_${TF}_${indiv}.txt"
     echo "#SBATCH --partition=cpu"
     echo "#SBATCH --mem=10G"
     echo "#SBATCH --cpus-per-task=${threads}"
@@ -30,7 +30,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     # Obtain normalized reads count
     echo "bamCompare -b1 ${pathBam} \
     -b2 ${pathPeaks}/${input} \
-    -o ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_bgNorm.bw \
+    -o ${pathResults}/${TF}/${indiv}_bgNorm.bw \
     --binSize 1 \
     --normalizeUsing BPM \
     --centerReads \
@@ -43,10 +43,10 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -a 1000 -b 0 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
-    -S ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_bgNorm.bw \
-    -o ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_matrix.gz \
+    -S ${pathResults}/${TF}/${indiv}_bgNorm.bw \
+    -o ${pathResults}/${TF}/${indiv}_matrix.gz \
     -p ${threads} \
-    --outFileSortedRegions ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_peaks.bed"
+    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks.bed"
 
   } > "${logFile}"
 
