@@ -11,9 +11,8 @@ pathLogs=${pathPeaks}/deepTools/coverage/logs
 mkdir -p "$pathLogs"
 
 for bam in "$pathPeaks"/*"$TF"*bam; do
-  indiv=extracted=$(echo "$bam" | cut -d "." -f1 | cut -d "_" -f2)
+  indiv=$(echo "$bam" | cut -d "." -f1 | cut -d "_" -f2)
   input="input_DNA_${indiv}.mLb.clN.sorted.bam"
-
   logFile="${pathLogs}/bsub_BAM_coverage_${sp}_${TF}_${indiv}.sh"
 
   { echo "#!/bin/bash"
@@ -49,7 +48,7 @@ for bam in "$pathPeaks"/*"$TF"*bam; do
 
   } > "${logFile}"
 
-  sbatch "${logFile}"
+  #sbatch "${logFile}"
 done
 
 
