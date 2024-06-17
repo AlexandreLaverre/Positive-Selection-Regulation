@@ -32,7 +32,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -b2 ${pathPeaks}/${input} \
     -o ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_bgNorm.bw \
     --binSize 1 \
-    --normalizeUsing BPM \2
+    --normalizeUsing BPM \
     --centerReads \
     -p ${threads} \
     --scaleFactorsMethod None 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
@@ -49,7 +49,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
 
   } > "${logFile}"
 
-  #sbatch "${logFile}"
+  sbatch "${logFile}"
 done
 
 
