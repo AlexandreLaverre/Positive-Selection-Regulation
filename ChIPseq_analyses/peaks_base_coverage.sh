@@ -1,0 +1,57 @@
+#!/bin/bash
+
+export sp=$1				        # i.e: dog human mouse ...
+export sample=$2			      # i.e: Wilson Schmidt Rensch ...
+export TF=$3			          # i.e: CEBPA CTCF HNF4A ...
+export threads=$4
+
+path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/peaks_calling/NarrowPeaks
+pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/
+pathLogs=${pathPeaks}/deepTools/coverage/logs
+mkdir -p "$pathLogs"
+
+for bam in "$pathPeaks"/*"$TF"*bam; do
+  logFile=${pathLogs}/bsub_BAM_coverage_${sp}_${TF}_${indiv}.sh
+  indiv=extracted=$(echo "$bam" | cut -d "." -f1 | cut -d "_" -f2)
+  input="input_DNA_${indiv}.mLb.clN.sorted.bam"
+
+  { echo "#!/bin/bash"
+    echo "#SBATCH --job-name=BAM_coverage_${sp}_${TF}_${indiv}"
+    echo "#SBATCH --output=${pathLogs}/std_output_BAM_coverage_${sp}_${TF}_${indiv}.txt"
+    echo "#SBATCH --error=${pathLogs}/std_error_BAM_coverage_${sp}_${TF}_${indiv}.txt"
+    echo "#SBATCH --partition=cpu"
+    echo "#SBATCH --mem=10G"
+    echo "#SBATCH --cpus-per-task=${threads}"
+    echo "#SBATCH --time=20:00:00"
+    echo "source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh"
+    echo "mamba activate deeptools"
+
+    # Obtain normalized reads count
+    echo "bamCompare -b1 ${bam} \
+    -b2 ${pathPeaks}/${input} \
+    -o ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_bgNorm.bw \
+    --binSize 1 \
+    --normalizeUsing BPM \2
+    --centerReads \
+    -p ${threads} \
+    --scaleFactorsMethod None 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
+
+    # Matrix for all samples
+    echo "computeMatrix reference-point --referencePoint TSS \
+    -a 1000 -b 0 \
+    -bs 1 \
+    -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
+    -S ${TF}_${indiv}_bgNorm.bw \
+    -o ${TF}_${indiv}_matrix.gz \
+    -p ${threads} \
+    --outFileSortedRegions ${TF}_${indiv}_peaks.bed"
+
+  } > "${logFile}"
+
+  sbatch "${logFile}"
+done
+
+
+
+
+
