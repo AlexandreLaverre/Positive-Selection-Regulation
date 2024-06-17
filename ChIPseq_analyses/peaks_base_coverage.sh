@@ -10,7 +10,8 @@ pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/
 pathLogs=${pathPeaks}/deepTools/coverage/logs
 mkdir -p "$pathLogs"
 
-for bam in "$pathPeaks"/*"$TF"*bam; do
+for pathBam in "$pathPeaks"/*"$TF"*bam; do
+  bam=$(basename "$pathBam")
   indiv=$(echo "$bam" | cut -d "." -f1 | cut -d "_" -f2)
   input="input_DNA_${indiv}.mLb.clN.sorted.bam"
   logFile="${pathLogs}/bsub_BAM_coverage_${sp}_${TF}_${indiv}.sh"
@@ -27,7 +28,7 @@ for bam in "$pathPeaks"/*"$TF"*bam; do
     echo "mamba activate deeptools"
 
     # Obtain normalized reads count
-    echo "bamCompare -b1 ${bam} \
+    echo "bamCompare -b1 ${pathBam} \
     -b2 ${pathPeaks}/${input} \
     -o ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_bgNorm.bw \
     --binSize 1 \
