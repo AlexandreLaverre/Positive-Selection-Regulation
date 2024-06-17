@@ -25,7 +25,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     echo "#SBATCH --cpus-per-task=${threads}"
     echo "#SBATCH --time=20:00:00"
     echo "source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh"
-    echo "mamba activate deeptools"
+    echo "conda activate deeptools"
 
     # Obtain normalized reads count
     echo "bamCompare -b1 ${pathBam} \
