@@ -34,6 +34,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     --binSize 1 \
     --normalizeUsing BPM \
     --centerReads \
+    --region 20 \
     -p ${threads} \
     --scaleFactorsMethod None 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
 
