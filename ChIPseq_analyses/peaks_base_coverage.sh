@@ -43,10 +43,10 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -a 1000 -b 0 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
-    -S ${TF}_${indiv}_bgNorm.bw \
-    -o ${TF}_${indiv}_matrix.gz \
+    -S ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_bgNorm.bw \
+    -o ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_matrix.gz \
     -p ${threads} \
-    --outFileSortedRegions ${TF}_${indiv}_peaks.bed"
+    --outFileSortedRegions ${pathPeaks}/deepTools/coverage/${TF}_${indiv}_peaks.bed"
 
   } > "${logFile}"
 
