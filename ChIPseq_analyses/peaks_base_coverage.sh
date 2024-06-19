@@ -30,20 +30,20 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     # Obtain normalized reads count
     echo "bamCompare -b1 ${pathBam} \
     -b2 ${pathPeaks}/${input} \
-    -o ${pathResults}/${TF}/${indiv}_bgNorm.bw \
+    -o ${pathResults}/${TF}/${indiv}_bgNorm_SES.bw \
     --binSize 1 \
-    --normalizeUsing BPM \
+    --sampleLength 500 \
     --centerReads \
     -p ${threads} \
-    --scaleFactorsMethod None 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
+    --scaleFactorsMethod SES 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
 
-    # Matrix for all samples
+    # Matrix for each sample
     echo "computeMatrix reference-point --referencePoint TSS \
     -a 1000 -b 0 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
-    -S ${pathResults}/${TF}/${indiv}_bgNorm.bw \
-    -o ${pathResults}/${TF}/${indiv}_matrix.gz \
+    -S ${pathResults}/${TF}/${indiv}_bgNorm_SES.bw \
+    -o ${pathResults}/${TF}/${indiv}_matrix_SES.gz \
     -p ${threads} \
     --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks.bed"
 
