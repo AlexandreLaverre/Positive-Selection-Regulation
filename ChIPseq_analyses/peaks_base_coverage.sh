@@ -32,10 +32,10 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -b2 ${pathPeaks}/${input} \
     -o ${pathResults}/${TF}/${indiv}_bgNorm_SES.bw \
     --binSize 1 \
-    --sampleLength 500 \
+    --scaleFactorsMethod SES \
+    --sampleLength 1000 \
     --centerReads \
-    -p ${threads} \
-    --scaleFactorsMethod SES 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
+    -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
 
     # Matrix for each sample
     echo "computeMatrix reference-point --referencePoint TSS \
@@ -45,7 +45,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -S ${pathResults}/${TF}/${indiv}_bgNorm_SES.bw \
     -o ${pathResults}/${TF}/${indiv}_matrix_SES.gz \
     -p ${threads} \
-    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks.bed"
+    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_SES.bed"
 
   } > "${logFile}"
 
