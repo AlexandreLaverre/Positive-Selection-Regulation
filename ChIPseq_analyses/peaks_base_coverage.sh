@@ -34,7 +34,6 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     --binSize 1 \
     --scaleFactorsMethod readCount \
     --effectiveGenomeSize 2913022398 \
-    --region 20 \
     -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
     #    --centerReads --sampleLength 1000 --normalizeUsing RPKM \
 
