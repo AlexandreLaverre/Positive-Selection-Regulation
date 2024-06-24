@@ -17,13 +17,15 @@ def coeff_selection_s(delta, params, delta_bounds):
     w_mutant = stats.beta.pdf(scaled_delta, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
     if w_mutant < 1.e-10:
-        return 0.0
+        return -np.infty
     s = np.log(w_mutant / w_ancestral)
     return s
 
 
 def proba_fixation_s(s):
-    if abs(s) < 1.e-4:
+    if s == -np.infty:
+        return 0.0
+    elif abs(s) < 1.e-4:
         return 1.0 + s / 2
     elif s > 10:
         return s
