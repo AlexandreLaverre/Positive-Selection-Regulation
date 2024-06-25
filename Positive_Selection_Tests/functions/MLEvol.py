@@ -7,6 +7,46 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import chi2
 
+################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
+DeltaSVM = pd.read_csv("/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/positive_selection/NarrowPeaks/human/Wilson/HNF6/deltas/ancestral_all_possible_deltaSVM.txt", sep='\t', header=0)
+AllObsSVM = pd.read_csv("/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/positive_selection/NarrowPeaks/human/Wilson/HNF6/deltas/ancestral_to_observed_deltaSVM.txt", sep='\t', header=None, names=range(150+4))
+AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
+
+ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
+all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
+obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0]
+
+# SVM score distribution: affinity of all possible deltas for a sequence
+all_svm = all_svm_row.dropna().values.tolist()
+obs_svm = obs_svm_row.dropna().values.tolist()
+hist_mutations = np.histogram(all_svm, bins=50)
+########################################################################################################################
+
+
+
+# Function to get the quantiles of the SVM distribution
+def get_svm_quantiles(all_svm, obs_svm, NbQuant=25):
+    neg_svm = [x for x in all_svm if x < 0]
+    pos_svm = [x for x in all_svm if x > 0]
+
+    obs_bin = []
+    # Ensure that all substitutions don't fall into the same quantile
+    while len(set(obs_bin)) < 2:
+        # split the distribution into Nb quantiles on each side of the distribution
+        neg_quant, neg_bins = pd.qcut(neg_svm, q=NbQuant, retbins=True)
+        pos_quant, pos_bins = pd.qcut(pos_svm, q=NbQuant, retbins=True)
+        bins_values = list(neg_bins) + list(pos_bins)[1:]  # merge bins and remove the first of pos_bins
+
+        # Get the quantile of the observed values
+        obs_bin = np.searchsorted(bins_values, obs_svm, side='left') - 1
+        NbQuant += 5
+
+    # Get the probability of each quantile
+    quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
+    quant_proba = quant_count / np.sum(quant_count)
+
+    return quant_proba, bins_values, obs_bin
+
 
 # Function to calculate the probability of fixation given delta and parameters
 def coeff_selection_s(delta, params, delta_bounds):
@@ -58,33 +98,38 @@ def proba_substitution(params, mutations_proba, bins_values):
         return output_array / sum_output
 
 
-def loglikelihood(deltas, params, hist_mutations):
-    bins_values = hist_mutations[1]
-    mutations_proba = hist_mutations[0] / np.sum(hist_mutations[0])
+def loglikelihood(obs_svm, params, all_svm):
+    #bins_values = hist_mutations[1]
+    #mutations_proba = hist_mutations[0] / np.sum(hist_mutations[0])
+    #digitized_deltas = np.searchsorted(bins_values, obs_svm, side='left') - 1
+    mutations_proba, bins_values, digitized_deltas = get_svm_quantiles(all_svm, obs_svm)
     subs_proba = proba_substitution(params, mutations_proba, bins_values)
-
-    digitized_deltas = np.searchsorted(bins_values, deltas, side='left') - 1
     models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in digitized_deltas]
 
     if min(models_lk) <= 0.0:  # Avoid log(0)
         return -np.infty
-    return np.sum(np.log(models_lk))
+    lnl = np.sum(np.log(models_lk))
+    if len(params) == 2:
+        print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}, beta: {params[1]:.3g}")
+    elif len(params) == 1:
+        print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}")
+    return lnl
 
 
-def run_estimations(hist_svm, obs_svm, alpha=0.05, verbose=False):
+def run_estimations(all_svm, obs_svm, alpha=0.05, verbose=False):
     # Null model: no param.
-    ll_neutral = loglikelihood(obs_svm, [], hist_svm)
+    ll_neutral = loglikelihood(obs_svm, [], all_svm)
 
     # Stabilizing selection: alpha = beta
     bounds = [(0.0, np.inf)]
-    model_purif = minimize(lambda theta: -loglikelihood(obs_svm, theta, hist_svm), np.array([1.0]),
+    model_purif = minimize(lambda theta: -loglikelihood(obs_svm, theta, all_svm), np.array([1.0]),
                            bounds=bounds, method="Nelder-Mead")
     ll_purif = -model_purif.fun
 
     # Positive selection
     bounds = [(0.0, np.inf), (0.0, np.inf)]
     initial_guess = np.array([1.0, 1.0])
-    model_pos = minimize(lambda theta: -loglikelihood(obs_svm, theta, hist_svm), initial_guess,
+    model_pos = minimize(lambda theta: -loglikelihood(obs_svm, theta, all_svm), initial_guess,
                          bounds=bounds, method="Nelder-Mead")
     ll_pos = -model_pos.fun
 
@@ -114,8 +159,8 @@ def run_estimations(hist_svm, obs_svm, alpha=0.05, verbose=False):
 
     # Create a DataFrame
     result = pd.DataFrame({"Nmut": [len(obs_svm)], "SumObs": [np.sum(obs_svm)], "MeanObs": [np.mean(obs_svm)],
-                           "VarObs": [np.var(obs_svm)], "MedSVM": [np.median(hist_svm[1])],
-                           "MinSVM": [np.min(hist_svm[1])], "MaxSVM": [np.max(hist_svm[1])],
+                           "VarObs": [np.var(obs_svm)], "MedSVM": [np.median(all_svm)],
+                           "MinSVM": [np.min(all_svm)], "MaxSVM": [np.max(all_svm)],
                            "AlphaPurif": [model_purif.x[0]], "AlphaPos": [model_pos.x[0]], "BetaPos": [model_pos.x[1]],
                            "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit],
                            "LL_neutral": [ll_neutral], "LL_purif": [ll_purif], "LL_pos": [ll_pos],
@@ -162,15 +207,15 @@ def general_plot(all_deltas, obs, svm_distribution, purif, pos, scenario, test, 
 
 
 # Plot the minimization process for each sequence
-def plot_model(obs, hist_svm, model_params, ax, model_type="Stabilizing", bounds=None):
+def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=None):
     k = 0.5
     if model_type == "Stabilizing":
         alpha_min = max([bounds[0][0], model_params[0] * k])
         alpha_max = min([bounds[0][1], model_params[0] * (2 - k)])
         alpha_range = np.linspace(alpha_min, alpha_max, 100)  # Std range
-        ll_values = [-loglikelihood(obs, [std], hist_svm) for std in alpha_range]
+        ll_values = [-loglikelihood(obs, [std], all_svm) for std in alpha_range]
         ax.plot(alpha_range, ll_values, label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], -loglikelihood(obs, model_params, hist_svm), color='red', marker='o',
+        ax.scatter(model_params[0], -loglikelihood(obs, model_params, all_svm), color='red', marker='o',
                    label="Minimized Point")
         ax.set_xlabel("Parameter: Standard Deviation")
         ax.set_ylabel("Log-Likelihood")
@@ -187,15 +232,19 @@ def plot_model(obs, hist_svm, model_params, ax, model_type="Stabilizing", bounds
 
         alpha_values, beta_values = np.meshgrid(alpha_range, beta_range)
         ll_values = np.array(
-            [[-loglikelihood(obs, [std, mean], hist_svm) for std in alpha_range] for mean in beta_range])
+            [[-loglikelihood(obs, [std, mean], all_svm) for std in alpha_range] for mean in beta_range])
 
         # Plotting the log-likelihood surface
         ax.plot_surface(alpha_values, beta_values, ll_values, cmap='viridis', alpha=0.8,
                         label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], model_params[1], -loglikelihood(obs, model_params, hist_svm), color='red',
+        ax.scatter(model_params[0], model_params[1], -loglikelihood(obs, model_params, all_svm), color='red',
                    marker='o', label="Minimized Point")
         ax.invert_xaxis()
         ax.set_xlabel("Parameter: $\\alpha$")
         ax.set_ylabel("Parameter: $\\beta$")
         ax.set_zlabel("Log-Likelihood")
         ax.set_title(f"Minimization Process - {model_type} Selection Model")
+
+
+results, model = run_estimations(all_svm, obs_svm)
+print(results)
