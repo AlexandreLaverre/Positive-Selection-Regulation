@@ -7,62 +7,47 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import chi2
 
-################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
-DeltaSVM = pd.read_csv("/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/positive_selection/NarrowPeaks/human/Wilson/HNF6/deltas/ancestral_all_possible_deltaSVM.txt", sep='\t', header=0)
-AllObsSVM = pd.read_csv("/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/positive_selection/NarrowPeaks/human/Wilson/HNF6/deltas/ancestral_to_observed_deltaSVM.txt", sep='\t', header=None, names=range(150+4))
-AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
 
-ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
-all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
-obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0]
-
-# SVM score distribution: affinity of all possible deltas for a sequence
-all_svm = all_svm_row.dropna().values.tolist()
-obs_svm = obs_svm_row.dropna().values.tolist()
-hist_mutations = np.histogram(all_svm, bins=50)
-########################################################################################################################
-
-
-
-# Function to get the quantiles of the SVM distribution
-def get_svm_quantiles(all_svm, obs_svm, NbQuant=25):
-    neg_svm = [x for x in all_svm if x < 0]
+# Get the quantiles of the SVM distribution of each side
+def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
+    neg_svm = [x for x in all_svm if x <= 0]
     pos_svm = [x for x in all_svm if x > 0]
 
-    obs_bin = []
+    obs_quant = []
     # Ensure that all substitutions don't fall into the same quantile
-    while len(set(obs_bin)) < 2:
+    while len(set(obs_quant)) < 2:
         # split the distribution into Nb quantiles on each side of the distribution
-        neg_quant, neg_bins = pd.qcut(neg_svm, q=NbQuant, retbins=True)
-        pos_quant, pos_bins = pd.qcut(pos_svm, q=NbQuant, retbins=True)
+        neg_quant, neg_bins = pd.qcut(neg_svm, q=n_quant, retbins=True)
+        pos_quant, pos_bins = pd.qcut(pos_svm, q=n_quant, retbins=True)
         bins_values = list(neg_bins) + list(pos_bins)[1:]  # merge bins and remove the first of pos_bins
 
         # Get the quantile of the observed values
-        obs_bin = np.searchsorted(bins_values, obs_svm, side='left') - 1
-        NbQuant += 5
+        obs_quant = np.searchsorted(bins_values, obs_svm, side='left') - 1
+        n_quant += 5
 
     # Get the probability of each quantile
     quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
     quant_proba = quant_count / np.sum(quant_count)
 
-    return quant_proba, bins_values, obs_bin
+    return quant_proba, obs_quant
 
 
-# Function to calculate the probability of fixation given delta and parameters
-def coeff_selection_s(delta, params, delta_bounds):
+# Selection coefficient from delta's quantile and model's parameters
+def coeff_selection(quant_delta, params):
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
-    max_delta = max(np.abs(delta_bounds))
-    scaled_delta = (delta + max_delta) / (2 * max_delta)
-    w_mutant = stats.beta.pdf(scaled_delta, a=alpha, b=beta)
+    w_mutant = stats.beta.pdf(quant_delta, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
     if w_mutant < 1.e-10:
         return -np.infty
     s = np.log(w_mutant / w_ancestral)
+    if s == np.infty:
+        print(f"Coeff Sel --> Quantile: {quant_delta}, w_mutant: {w_mutant}, w_ancestral: {w_ancestral}, alpha: {alpha}, beta: {beta}")
     return s
 
 
-def proba_fixation_s(s):
+# Scaled fixation probability from selection coefficient
+def proba_fixation(s):
     if s == -np.infty:
         return 0.0
     elif abs(s) < 1.e-4:
@@ -75,22 +60,26 @@ def proba_fixation_s(s):
         return s / (1 - np.exp(-s))
 
 
-# Function to calculate the probability of fixation given delta and parameters
-def coeff_selection(delta, params, delta_bounds):
-    s = coeff_selection_s(delta, params, delta_bounds)
-    return proba_fixation_s(s)
-
-
-def proba_substitution(params, mutations_proba, bins_values):
+# Get probability of substitution for each quantile: P(Mut) * P(Fix)
+def proba_substitution(params, mutations_proba):
     n_bins = len(mutations_proba)
-    delta_bounds = [np.nanmin(bins_values), np.nanmax(bins_values)]
     output_array = np.zeros(n_bins)
-    for b in range(n_bins):
-        p = mutations_proba[b]
-        min_bin = bins_values[b]
-        max_bin = bins_values[b + 1]
-        mean_bin = (max_bin + min_bin) / 2
-        output_array[b] = p * coeff_selection(mean_bin, params, delta_bounds)
+    for quant in range(n_bins):
+        # Probability of mutation
+        proba_mut = mutations_proba[quant]
+
+        # Probability of fixation
+        quant_val = (quant+1)/(n_bins+1)  # quantile needs to be between 0<quant<1
+        s = coeff_selection(quant_val, params)
+        proba_fix = proba_fixation(s)
+
+        output_array[quant] = proba_mut * proba_fix
+        if proba_fix == np.infty:
+            print(f"Proba Sub --> Quantile: {quant}, s: {s}, proba_mut: {proba_mut}, proba_fix: {proba_fix}")
+            print("STOP")
+            exit()
+
+    # Scaled output
     sum_output = np.sum(output_array)
     if sum_output == 0:
         return output_array
@@ -99,20 +88,17 @@ def proba_substitution(params, mutations_proba, bins_values):
 
 
 def loglikelihood(obs_svm, params, all_svm):
-    #bins_values = hist_mutations[1]
-    #mutations_proba = hist_mutations[0] / np.sum(hist_mutations[0])
-    #digitized_deltas = np.searchsorted(bins_values, obs_svm, side='left') - 1
-    mutations_proba, bins_values, digitized_deltas = get_svm_quantiles(all_svm, obs_svm)
-    subs_proba = proba_substitution(params, mutations_proba, bins_values)
-    models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in digitized_deltas]
+    mutations_proba, obs_quant = get_svm_quantiles(all_svm, obs_svm)
+    subs_proba = proba_substitution(params, mutations_proba)
+    models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_quant]
 
     if min(models_lk) <= 0.0:  # Avoid log(0)
         return -np.infty
     lnl = np.sum(np.log(models_lk))
-    if len(params) == 2:
-        print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}, beta: {params[1]:.3g}")
-    elif len(params) == 1:
-        print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}")
+    # if len(params) == 2:
+    #    print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}, beta: {params[1]:.3g}")
+    # elif len(params) == 1:
+    #    print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}")
     return lnl
 
 
@@ -246,5 +232,20 @@ def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=
         ax.set_title(f"Minimization Process - {model_type} Selection Model")
 
 
-results, model = run_estimations(all_svm, obs_svm)
-print(results)
+################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
+DeltaSVM = pd.read_csv("ancestral_all_possible_deltaSVM.txt", sep='\t', header=0)
+AllObsSVM = pd.read_csv("ancestral_to_observed_deltaSVM.txt", sep='\t', header=None, names=range(150+4))
+AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
+
+ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
+for ID in AllObsSVM['ID']:
+    all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
+    obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0]
+    all_svm = all_svm_row.dropna().values.tolist()
+    obs_svm = obs_svm_row.dropna().values.tolist()
+    print(f"Obs SVM:{obs_svm}")
+    results, model = run_estimations(all_svm, obs_svm)
+    print(results)
+
+########################################################################################################################
+
