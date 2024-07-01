@@ -40,6 +40,8 @@ Thumbs.db
 # Environment and working directory
 ######################
 detect_positive_selection/venv/
+Positive_Selection_Tests/functions/*.csv
+Positive_Selection_Tests/functions/plots*
 ChIPseq_analyses/work/
 .idea/
 .snakemake/
