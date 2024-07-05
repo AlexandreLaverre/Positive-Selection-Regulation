@@ -3,15 +3,13 @@
 import os
 import numpy as np
 from scipy import stats
-from matplotlib.lines import Line2D
-import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.optimize import minimize
-from scipy.stats import chi2
+from collections import Counter
+import matplotlib.pyplot as plt
 
 
 # Get the quantiles of the SVM distribution of each side
-def get_svm_quantiles(all_svm, obs_svm, n_quant=25):
+def get_svm_quantiles(all_svm, obs_svm, n_quant):
     neg_svm = [x for x in all_svm if x <= 0]
     pos_svm = [x for x in all_svm if x > 0]
 
@@ -38,10 +36,8 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=25):
 
 
 # Selection coefficient from delta's quantile and model's parameters
-def coeff_selection(quant_delta, params):
+def coeff_selection(quant_delta, alpha, beta):
     assert 0 < quant_delta < 1
-    alpha = params[0] if len(params) > 0 else 1.0
-    beta = params[1] if len(params) == 2 else alpha
     w_mutant = stats.beta.pdf(quant_delta, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
     if w_ancestral < 1.e-10:
@@ -67,7 +63,7 @@ def proba_fixation(s):
 
 
 # Get probability of substitution for each quantile: P(Mut) * P(Fix)
-def proba_substitution(params, mutations_proba):
+def proba_substitution(alpha, beta, mutations_proba):
     n_bins = len(mutations_proba)
     output_array = np.zeros(n_bins)
     delta = 1 / (2 * n_bins)
@@ -77,7 +73,7 @@ def proba_substitution(params, mutations_proba):
 
         # Probability of fixation
         quant_val = quant / n_bins + delta  # quantile needs to be between 0<quant<1
-        s = coeff_selection(quant_val, params)
+        s = coeff_selection(quant_val, alpha, beta)
         proba_fix = proba_fixation(s)
 
         output_array[quant] = proba_mut * proba_fix
@@ -90,199 +86,131 @@ def proba_substitution(params, mutations_proba):
         return output_array / sum_output
 
 
-def loglikelihood(obs_svm, params, all_svm, lambda_rate=0.0):
-    if len(params) == 1 and params[0] < 1e-10:
-        return -np.infty
-    if len(params) == 2 and (params[0] < 1e-10 or params[1] < 1e-10):
-        return -np.infty
-    mutations_proba, obs_bins, obs_quant = get_svm_quantiles(all_svm, obs_svm)
-    subs_proba = proba_substitution(params, mutations_proba)
+def loglikelihood(mutations_proba, obs_bins, alpha, beta):
+    subs_proba = proba_substitution(alpha, beta, mutations_proba)
     models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_bins]
 
     if min(models_lk) <= 0.0:  # Avoid log(0)
         return -np.infty
     lnl = np.sum(np.log(models_lk))
-
-    # Add a penalty params far from 1.0
-    if lambda_rate > 0.0 and len(params) == 1:
-        lnl -= lambda_rate * abs(np.log(params[0]))
-    if lambda_rate > 0.0 and len(params) == 2:
-        lnl -= lambda_rate * (abs(np.log(params[0])) + abs(np.log(params[1])) + abs(np.log(params[0] / params[1]))) / 3
-
     return lnl
 
 
-def AIC_weight(ll_neutral, ll_purif, ll_pos, df_purif, df_pos):
-    aic_neutral = -2 * ll_neutral
-    aic_purif = -2 * ll_purif + 2 * df_purif
-    aic_pos = -2 * ll_pos + 2 * df_pos
-    max_aic = min(aic_neutral, aic_purif, aic_pos)
-    weights = np.exp(-0.5 * (np.array([aic_neutral, aic_purif, aic_pos]) - max_aic))
-    return weights / np.sum(weights)
+def logprior(alpha, beta):
+    # Add a penalty params far from 1.0
+    # lnp = stats.gamma.logpdf(alpha, a=2, scale=0.5) + stats.gamma.logpdf(beta, a=2, scale=0.5)
+    lnp = abs(np.log(alpha)) + abs(np.log(beta))
+    return -lnp
 
 
-def conclusion_purif(alpha):
-    return "Stabilizing (m=0.5)" if alpha > 1.0 else "Disruptive (m=0.5)"
+def logprob(mutations_proba, obs_bins, alpha, beta):
+    return logprior(alpha, beta), loglikelihood(mutations_proba, obs_bins, alpha, beta),
 
 
-def conclusion_pos(alpha, beta):
-    if alpha > 1.0 and beta > 1.0:
-        return f"Stabilizing (m={alpha/(alpha+beta):.2f})"
-    if alpha > 1.0 > beta:
-        return "Directional (+)"
-    if alpha < 1.0 < beta:
-        return "Directional (-)"
+def move_param(logprob_value, logprob_func, param, tuning):
+    m = tuning * (np.random.uniform() - 0.5)
+    new_param = np.exp(m) * param
+    new_logprob = logprob_func(new_param)
+
+    deltalogprob = sum(new_logprob) - sum(logprob_value) + m
+    accepted = (np.log(np.random.uniform()) < deltalogprob)
+    if accepted:
+        return new_param, new_logprob
     else:
-        return f"Disruptive (m={alpha/(alpha+beta):.2f})"
+        return param, logprob_value
 
 
-def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, lambda_rate=0.05, verbose=False, ID=""):
-    # Null model: no param.
-    ll_neutral = loglikelihood(obs_svm, [], all_svm)
-
-    # Stabilizing selection: alpha = beta
-    bounds = [(0.0, np.inf)]
-    model_purif = minimize(lambda theta: -loglikelihood(obs_svm, theta, all_svm, lambda_rate), np.array([1.0]),
-                           bounds=bounds, method="Nelder-Mead")
-    ll_purif = loglikelihood(obs_svm, model_purif.x, all_svm)
-
-    # Positive selection
-    bounds = [(0.0, np.inf), (0.0, np.inf)]
-    initial_guess = np.array([1.0, 1.0])
-    model_pos = minimize(lambda theta: -loglikelihood(obs_svm, theta, all_svm, lambda_rate), initial_guess,
-                         bounds=bounds, method="Nelder-Mead")
-    ll_pos = loglikelihood(obs_svm, model_pos.x, all_svm)
-
-    # Likelihood ratio test:
-    lrt_null_purif = -2 * (ll_neutral - ll_purif)
-    lrt_purif_pos = -2 * (ll_purif - ll_pos)
-
-    p_value_null_purif = chi2.sf(lrt_null_purif, 1)
-    p_value_purif_pos = chi2.sf(lrt_purif_pos, 1)
-    p_value_null_pos = chi2.sf(lrt_purif_pos, 2)
-    conclusion = "Neutral"
-    if p_value_null_purif < alpha_threshold:
-        conclusion = conclusion_purif(model_purif.x[0])
-    if p_value_purif_pos < p_value_null_purif and p_value_purif_pos < alpha_threshold:
-        conclusion = conclusion_pos(model_pos.x[0], model_pos.x[1])
-
-    df_purif = 1 if (lambda_rate == 0.0) else int(abs(model_purif.x[0] - 1.0) > 1.e-10)
-    df_pos = 2 if (lambda_rate == 0.0) else (int(abs(model_pos.x[0] - 1.0) > 1.e-10) +
-                                             int(abs(model_pos.x[1] - 1.0) > 1.e-10))
-    weight_neutral, weight_purif, weight_pos = AIC_weight(ll_neutral, ll_purif, ll_pos, df_purif, df_pos)
-    conclusion_weighted = "None"
-    if weight_neutral > max(weight_purif, weight_pos):
-        conclusion_weighted = "Neutral"
-    if weight_purif > max(weight_neutral, weight_pos):
-        conclusion_weighted = conclusion_purif(model_purif.x[0])
-    if weight_pos > max(weight_neutral, weight_purif):
-        conclusion_weighted = conclusion_pos(model_pos.x[0], model_pos.x[1])
-
-    if verbose:
-        print(f"  LnL neutral    : {ll_neutral:.2f}")
-        print(f"  LnL stabilizing: {ll_purif:.4f}, alpha: {model_purif.x[0]:.3g}, beta: {model_purif.x[0]:.3g}")
-        print(f"  LnL positive   : {ll_pos:.4f}, alpha: {model_pos.x[0]:.3g}, beta: {model_pos.x[1]:.3g}")
-        print(f"  LRT null vs purif: {lrt_null_purif:.2f}, p-value: {p_value_null_purif:.2g}")
-        print(f"  LRT purif vs pos : {lrt_purif_pos:.2f}, p-value: {p_value_purif_pos:.2g}")
-        print("  Conclusion:", conclusion)
-
-    # Create a DataFrame
-    result = pd.DataFrame(
-        {"ID": [ID], "Nmut": [len(obs_svm)], "SumObs": [np.sum(obs_svm)], "MeanObs": [np.mean(obs_svm)],
-         "VarObs": [np.var(obs_svm)], "MedSVM": [np.median(all_svm)],
-         "MinSVM": [np.min(all_svm)], "MaxSVM": [np.max(all_svm)],
-         "AlphaPurif": [model_purif.x[0]], "AlphaPos": [model_pos.x[0]], "BetaPos": [model_pos.x[1]],
-         "NdfPurif": [df_purif], "NdfPos": [df_pos],
-         "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit],
-         "LL_neutral": [ll_neutral], "LL_purif": [ll_purif], "LL_pos": [ll_pos],
-         "LRT_null_purif": [lrt_null_purif], "LRT_purif_pos": [lrt_purif_pos],
-         "p_value_null_purif": [p_value_null_purif], "p_value_purif_pos": [p_value_purif_pos],
-         "p_value_null_pos": [p_value_null_pos], "Conclusion": [conclusion],
-         "w_neutral": [weight_neutral], "w_purif": [weight_purif], "w_pos": [weight_pos],
-         "Conclusion_weighted": [conclusion_weighted]})
-
-    return result, [model_purif, model_pos, bounds]
+def move_mcmc(mutations_proba, obs_bins, alpha, beta, logprob_value, tuning, iter_per_point):
+    for i in range(iter_per_point):
+        alpha, logprob_value = move_param(logprob_value,
+                                          lambda x: logprob(mutations_proba, obs_bins, x, beta), alpha, tuning)
+        beta, logprob_value = move_param(logprob_value,
+                                         lambda x: logprob(mutations_proba, obs_bins, alpha, x), beta, tuning)
+    return alpha, beta, logprob_value
 
 
-# Plot the results for each sequence
-def general_plot(all_deltas, obs, svm_distribution, purif, pos, scenario, test, sub_ax1, sub_ax2):
-    sub_ax1.hist(all_deltas, bins=50, density=True, alpha=0.7, label="All mutations")
-    sub_ax1.plot(sorted(all_deltas), svm_distribution(sorted(all_deltas)))
-    for obs_value in obs:
-        sub_ax1.axvline(obs_value, color='red', linestyle='--')
-    sub_ax1.axvline(0.0, color='black', linestyle='-')
-    sub_ax1.set_xlabel("deltaSVM")
-    sub_ax1.set_ylabel("Density")
+def run_mcmc(all_svm, obs_svm, n_quant, n_points, iter_per_point, tuning, alpha, beta):
+    mutations_proba, obs_bins, obs_quant = get_svm_quantiles(all_svm, obs_svm, n_quant)
 
-    legend_elements = [Line2D([0], [0], color='blue', linestyle='-', linewidth=0.1,
-                              label=f'All: m={round(np.mean(all_deltas), 2)}, std={round(np.std(all_deltas), 2)}'),
-                       Line2D([0], [0], color='red', linestyle='--', linewidth=0.1,
-                              label=f'Sub: m={round(np.mean(obs), 2)}, std={round(np.std(obs), 2)}')]
-    sub_ax1.legend(handles=legend_elements)
-    sub_ax1.set_title(f'{scenario}')
+    logprob_value = logprob(mutations_proba, obs_bins, alpha, beta)
+    # Initialize the chain
+    chain_params = [(alpha, beta)]
+    chain_logprob = [logprob_value]
 
-    # Plot of observed Sub and fitted distribution
-    mutations_proba, obs_bins, obs_quant = get_svm_quantiles(all_deltas, obs)
-    neu_subs_proba = proba_substitution([], mutations_proba)
-    purif_subs_proba = proba_substitution(purif.x, mutations_proba)
-    pos_subs_proba = proba_substitution(pos.x, mutations_proba)
+    # Run the MCMC
+    for i in range(n_points):
+        alpha, beta, logprob_value = move_mcmc(mutations_proba, obs_bins, alpha, beta, logprob_value, tuning,
+                                               iter_per_point)
+        chain_params.append((alpha, beta))
+        chain_logprob.append(logprob_value)
 
-    # Bar plot neutral subs
-    sub_ax2.plot(np.arange(len(neu_subs_proba)), neu_subs_proba, color='blue', alpha=0.5,
-                 label=f'Neutral: $\\alpha=\\beta=1.0$')
-    sub_ax2.plot(np.arange(len(neu_subs_proba)), purif_subs_proba, color="red",
-                 label=f'Purif: $\\alpha=\\beta={purif.x[0]:.2g}$')
-    sub_ax2.plot(np.arange(len(neu_subs_proba)), pos_subs_proba, color="green",
-                 label=f'Pos: $\\alpha={pos.x[0]:.2g}, \\beta={pos.x[1]:.2g}$')
-
-    for obs_value in obs_bins:
-        sub_ax2.axvline(obs_value, color='red', linestyle='-', linewidth=0.01)
-    sub_ax2.axvline(len(neu_subs_proba) // 2, color='black', linestyle='-', linewidth=0.05)
-
-    sub_ax2.set_xlabel("deltaSVM")
-    sub_ax2.set_ylabel("Density")
-    sub_ax2.legend()
-    sub_ax2.set_title(f'Maximum Likelihood Estimation: {test}')
+    return np.array(chain_params), np.array(chain_logprob)
 
 
-# Plot the minimization process for each sequence
-def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=None, lambda_rate=0.0):
-    if model_type == "Stabilizing":
-        alpha_min = max([bounds[0][0], model_params[0] * 0.5])
-        alpha_max = min([bounds[0][1], model_params[0] * 1.5])
-        alpha_range = np.linspace(alpha_min, alpha_max, 50)  # Std range
-        ll_values = [loglikelihood(obs, [a], all_svm, lambda_rate) for a in alpha_range]
-        ax.plot(alpha_range, ll_values, label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], loglikelihood(obs, model_params, all_svm, lambda_rate), color='red', marker='o',
-                   label="Maximum likelihood")
-        ax.set_xlabel("Parameter: $\\alpha=\\beta$")
-        ax.set_ylabel("Log-Likelihood")
-        ax.set_title(f"Minimization Process - {model_type} Selection Model")
-        ax.legend()
+def conclusion(alpha, beta):
+    if alpha > 1.0 and beta > 1.0:
+        return "Stabilizing " + ("(+)" if alpha > beta else "(-)")
+    elif alpha > 1.0 > beta:
+        return "Directional (+)"
+    elif alpha < 1.0 < beta:
+        return "Directional (-)"
+    elif alpha < 1.0 and beta < 1.0:
+        return "Disruptive " + ("(+)" if alpha > beta else "(-)")
+    else:
+        assert alpha == 1.0 and beta == 1.0
+        return "Neutral"
 
-    elif model_type == "Directional":
-        alpha_min = max([bounds[0][0], model_params[0] * 0.5])
-        alpha_max = min([bounds[0][1], model_params[0] * 1.5])
-        beta_min = max([bounds[1][0], model_params[1] * 0.5])
-        beta_max = min([bounds[1][1], model_params[1] * 1.5])
-        alpha_range = np.linspace(alpha_min, alpha_max, 10)
-        beta_range = np.linspace(beta_min, beta_max, 10)
 
-        alpha_values, beta_values = np.meshgrid(alpha_range, beta_range)
-        ll_values = np.array(
-            [[loglikelihood(obs, [a, b], all_svm, lambda_rate) for a in alpha_range] for b in beta_range])
+def chain_results(input_chain_params, burnin):
+    # Remove burnin
+    n_burnin = int(burnin * len(input_chain_params))
+    chain_params = input_chain_params[n_burnin:]
+    post_mean_alpha, post_mean_beta = np.mean(chain_params, axis=0)
+    print(f"Posterior mean alpha: {post_mean_alpha:.2f}, beta: {post_mean_beta:.2f}")
+    chain_beta_exp = chain_params[:, 0] / (chain_params[:, 0] + chain_params[:, 1])
+    post_mean_beta_exp = np.mean(chain_beta_exp)
+    print(f"Posterior mean beta_exp: {post_mean_beta_exp:.2f}")
+    conclusion_list = [conclusion(alpha, beta) for alpha, beta in chain_params]
+    conclusion_count = Counter(conclusion_list)
+    conclusion_proba = {k: conclusion_count[k] / len(conclusion_list) for k in sorted(conclusion_count.keys())}
+    print(f"Conclusions: {conclusion_proba}")
+    return post_mean_alpha, post_mean_beta, post_mean_beta_exp, conclusion_proba
 
-        # Plotting the log-likelihood surface
-        ax.plot_surface(alpha_values, beta_values, ll_values, cmap='viridis', alpha=0.8,
-                        label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], model_params[1], loglikelihood(obs, model_params, all_svm, lambda_rate),
-                   color='red',
-                   marker='o', label="Maximum likelihood")
-        ax.invert_xaxis()
-        ax.set_xlabel("Parameter: $\\alpha$")
-        ax.set_ylabel("Parameter: $\\beta$")
-        ax.set_zlabel("Log-Likelihood")
-        ax.set_title(f"Minimization Process - {model_type} Selection Model")
+
+def plot_trace(chain_params, chain_logprob, ID, burnin):
+    n_burnin = int(burnin * len(chain_params))
+    fig, axes = plt.subplots(2, 2, figsize=(16, 9))
+    axes[0, 0].plot(chain_params[:, 0], label="alpha")
+    axes[0, 0].plot(chain_params[:, 1], label="beta")
+    axes[0, 0].axhline(y=1.0, color='r', linestyle='--')
+    axes[0, 0].axvline(x=n_burnin, color='black', linestyle='-')
+    axes[0, 0].set_title("Trace of alpha and beta")
+    axes[0, 0].legend()
+    axes[0, 1].plot(chain_logprob[:, 0])
+    axes[0, 1].axvline(x=n_burnin, color='black', linestyle='-')
+    axes[0, 1].set_title("Log prior")
+    axes[1, 0].plot(chain_logprob[:, 1])
+    axes[1, 0].axvline(x=n_burnin, color='black', linestyle='-')
+    axes[1, 0].set_title("Log likelihood")
+    axes[1, 1].plot(chain_logprob[:, 0] + chain_logprob[:, 1])
+    axes[1, 1].axvline(x=n_burnin, color='black', linestyle='-')
+    axes[1, 1].set_title("Log posterior")
+    plt.savefig(f"plots_Bayes/{ID}_trace.png")
+    plt.close()
+
+
+def run_estimations(all_svm, obs_svm, ID, alpha, beta):
+    n_points, iter_per_point = 20000, 1
+    n_quant = 25
+    tuning = 0.1
+    burnin = 0.5
+    chain_params, chain_logprob = run_mcmc(all_svm, obs_svm, n_quant, n_points, iter_per_point, tuning, alpha, beta)
+    plot_trace(chain_params, chain_logprob, ID, burnin)
+    post_mean_alpha, post_mean_beta, post_mean_beta_exp, conclusion_proba = chain_results(chain_params, burnin)
+    dico_results = {"ID": [ID], "alpha": [post_mean_alpha], "beta": [post_mean_beta], "m": [post_mean_beta_exp]}
+    for k, v in conclusion_proba.items():
+        dico_results[k] = [v]
+    return pd.DataFrame(dico_results)
 
 
 ################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
@@ -291,33 +219,18 @@ AllObsSVM = pd.read_csv("ancestral_to_observed_deltaSVM.txt", sep='\t', header=N
 AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
 
 # ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
-for penalized_rate in [0.0, 0.05, 0.1, 0.2]:
-    os.makedirs(f"plots_{penalized_rate}", exist_ok=True)
-    result_list = []
-    for ID in AllObsSVM['ID']:
-        all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
-        obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0]
-        all_svm = all_svm_row.dropna().values.tolist()
-        obs_svm = obs_svm_row.dropna().values.tolist()
-        print(f"Obs SVM:{obs_svm}")
-        results, models = run_estimations(all_svm, obs_svm, 0.05, penalized_rate, ID=ID)
-        print(results)
-        fig, axes = plt.subplots(2, 2, figsize=(14, 14))
-        axes[1, 1].axis('off')
-        axes[1, 1] = fig.add_subplot(224, projection='3d')
-        gaussian_mutation = stats.gaussian_kde(all_svm)
-        general_plot(all_svm, obs_svm, gaussian_mutation, models[0], models[1], ID, results["Conclusion_weighted"][0],
-                     axes[0, 0], axes[0, 1])
+os.makedirs(f"plots_Bayes", exist_ok=True)
+result_list = []
+for ID_row in AllObsSVM['ID'][:20]:
+    all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID_row, "pos0:A":].iloc[0].dropna().values.tolist()
+    obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID_row, 4:].iloc[0].dropna().values.tolist()
+    print(f"Obs SVM:{obs_svm_row}")
+    results_1 = run_estimations(all_svm_row, obs_svm_row, f"{ID_row}_1", 0.1, 0.1)
+    result_list.append(results_1)
+    results_2 = run_estimations(all_svm_row, obs_svm_row, f"{ID_row}_2", 10.0, 10.0)
+    result_list.append(results_2)
 
-        plot_model(obs_svm, all_svm, models[0].x, axes[1, 0], model_type="Stabilizing", bounds=models[2],
-                   lambda_rate=penalized_rate)
-        plot_model(obs_svm, all_svm, models[1].x, axes[1, 1], model_type="Directional", bounds=models[2],
-                   lambda_rate=penalized_rate)
-        plt.savefig(f'plots_{penalized_rate}/MLE_summary_{ID}.pdf')
-        plt.close(fig)
-        plt.clf()
-        result_list.append(results)
-
-    final_results = pd.concat(result_list)
-    final_results.to_csv(f"MLE_results_{penalized_rate}.csv", index=False)
-    ########################################################################################################################
+final_results = pd.concat(result_list, axis=0)
+final_results.fillna(0.0, inplace=True)
+final_results.to_csv(f"Bayesian_results.csv", index=False)
+########################################################################################################################
