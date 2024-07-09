@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from alive_progress import alive_bar
 from multiprocessing import Pool
 
+np.random.seed(0)
+
 GREEN = "#8FB03E"
 RED = "#EB6231"
 YELLOW = "#E29D26"
@@ -129,7 +131,7 @@ def move_param(logprob_value, logprob_func, param, tuning):
         return param, logprob_value
 
 
-def move_gibbs(mutations_proba, obs_bins, alpha, beta, logprob_value, tuning, iter_per_point=1):
+def move_gibbs(mutations_proba, obs_bins, alpha, beta, logprob_value, tuning, iter_per_point=10):
     for i in range(iter_per_point):
         alpha, logprob_value = move_param(logprob_value,
                                           lambda x: logprob(mutations_proba, obs_bins, x, beta), alpha, tuning)
@@ -143,18 +145,21 @@ def run_mcmc(all_svm, obs_svm, n_quant, n_points, alpha, beta):
 
     logprob_value = logprob(mutations_proba, obs_bins, alpha, beta)
     # Initialize the chain
-    chain_params = [(alpha, beta)]
+    chain_params = [[alpha, beta]]
     chain_logprob = [logprob_value]
 
     # Run the MCMC
     for i in range(n_points):
         alpha, beta, logprob_value = move_gibbs(mutations_proba, obs_bins, alpha, beta, logprob_value, 0.05)
         alpha, beta, logprob_value = move_gibbs(mutations_proba, obs_bins, alpha, beta, logprob_value, 0.15)
-        cdf_50 = stats.beta.cdf(0.5, a=alpha, b=beta)
-        chain_params.append((alpha, beta, cdf_50))
+        chain_params.append((alpha, beta))
         chain_logprob.append(logprob_value)
 
-    return np.array(chain_params), np.array(chain_logprob)
+    chain_params = np.array(chain_params)
+    chain_logprob = np.array(chain_logprob)
+    cdf_50 = stats.beta.cdf(0.5, a=chain_params[:, 0], b=chain_params[:, 1])
+    chain_params = np.column_stack((chain_params, cdf_50))
+    return chain_params, chain_logprob
 
 
 def conclusion(alpha, beta):
@@ -175,14 +180,13 @@ def chain_results(input_chain_params, burnin):
     # Remove burnin
     n_burnin = int(burnin * len(input_chain_params))
     chain_params = input_chain_params[n_burnin:]
-    post_mean_alpha, post_mean_beta = np.mean(chain_params, axis=0)
+    post_mean_alpha, post_mean_beta, post_mean_cdf_50 = np.mean(chain_params, axis=0)
     # print(f"Posterior mean alpha: {post_mean_alpha:.2f}, beta: {post_mean_beta:.2f}")
     chain_beta_exp = chain_params[:, 0] / (chain_params[:, 0] + chain_params[:, 1])
     post_mean_beta_exp = np.mean(chain_beta_exp)
     # print(f"Posterior mean beta_exp: {post_mean_beta_exp:.2f}")
-    post_mean_cdf_50 = np.mean(chain_params[:, 2])
     # print(f"Posterior mean cdf_50: {post_mean_cdf_50:.2f}")
-    conclusion_list = [conclusion(alpha, beta) for alpha, beta in chain_params]
+    conclusion_list = [conclusion(alpha, beta) for alpha, beta, cdf_50 in chain_params]
     conclusion_count = Counter(conclusion_list)
     conclusion_proba = {k: conclusion_count[k] / len(conclusion_list) for k in sorted(conclusion_count.keys())}
     # print(f"Conclusions: {conclusion_proba}")
@@ -208,7 +212,7 @@ def plot_trace(chain_params_list, chain_logprob_list, ID, burnin):
         color = colors[i % len(colors)]
         axes[0, 0].plot(chain_params[:, 0], label=f"Chain {i + 1} - α", color=color, linestyle="--")
         axes[0, 0].plot(chain_params[:, 1], label=f"Chain {i + 1} - β", color=color, linestyle="-")
-    axes[0, 0].axhline(y=1.0, color='r', linestyle='--')
+    axes[0, 0].axhline(y=1.0, color='black', linestyle='--')
     axes[0, 0].axvline(x=n_burnin, color='black', linestyle='-')
     axes[0, 0].set_title("Trace of α and β")
     axes[0, 0].legend()
@@ -231,7 +235,7 @@ def plot_trace(chain_params_list, chain_logprob_list, ID, burnin):
 
 
 def run_estimations(all_svm, obs_svm, ID, alpha, beta, burnin):
-    n_points = 40000
+    n_points = 10000
     n_quant = 25
     chain_params, chain_logprob = run_mcmc(all_svm, obs_svm, n_quant, n_points, alpha, beta)
     save_trace(chain_params, chain_logprob, ID)
@@ -261,7 +265,7 @@ def get_row_estimate(ID, burnin=0.5):
 
 os.makedirs(f"plots_Bayes_{exp_name}", exist_ok=True)
 os.makedirs(f"trace_Bayes_{exp_name}", exist_ok=True)
-NbThread = 8
+NbThread = 4
 NRows = 100
 # ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
 if __name__ == '__main__':
