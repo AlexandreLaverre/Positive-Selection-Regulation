@@ -1,30 +1,27 @@
 #!/usr/bin/env python
 # coding=utf-8
-import os
 import numpy as np
-from scipy import stats
+from scipy.stats import beta
 import matplotlib.pyplot as plt
-
-
-def f(x):
-    scale = 1
-    return stats.norm.logpdf(np.log10(x), scale=scale, loc=0.0)
-
-
-def norm_distribution_log(x):
-    # normal distribution in log scale
-    return -0.5 * np.log(2 * np.pi) - 0.5 * np.power(x, 2)
-
-
-def log_likelihood(x):
-    return norm_distribution_log(np.log10(x))
-
+from BayesEvolNumba import log_scaling_param as numpy_log_scaling_param
+from BayesEvol import log_scaling_param as scipy_log_scaling_param
 
 x_list = np.logspace(-4, 4, 100)
-y_list = [f(x) for x in x_list]
-y_list2 = [log_likelihood(x) for x in x_list]
+y_list = [scipy_log_scaling_param(x) for x in x_list]
+y_list2 = [numpy_log_scaling_param(x) for x in x_list]
 plt.xscale("log")
-plt.axvline(1)
-plt.plot(x_list, y_list)
-plt.plot(x_list, y_list2)
+plt.axvline(1, color="black", linestyle="--")
+plt.plot(x_list, y_list, label="Scipy")
+plt.plot(x_list, y_list2, label="Numba", linestyle="--")
+plt.show()
+
+from BayesEvolNumba import beta_distribution as numpy_beta_distribution
+x_list = np.linspace(0, 1, 100)
+a, b = 0.5, 2
+y_list = [beta.pdf(x, a, b) for x in x_list]
+y_list2 = [numpy_beta_distribution(x, a, b) for x in x_list]
+plt.plot(x_list, y_list, label="Scipy")
+plt.plot(x_list, y_list2, label="Numba", linestyle="--")
+plt.axvline(0.5, color="black", linestyle="--")
+plt.legend()
 plt.show()

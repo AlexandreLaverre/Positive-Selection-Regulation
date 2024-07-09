@@ -42,6 +42,7 @@ Thumbs.db
 detect_positive_selection/venv/
 Positive_Selection_Tests/functions/*.csv
 Positive_Selection_Tests/functions/plots*
+Positive_Selection_Tests/functions/trace*
 ChIPseq_analyses/work/
 .idea/
 .snakemake/

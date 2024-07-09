@@ -21,15 +21,15 @@ np.random.seed(0)
 
 
 # Beta distribution probability density function
-@nb.jit(nb.float64(nb.float64, nb.float64, nb.float64), nopython=True)
-def beta_distribution(x, a, b):
-    beta_val = np.math.gamma(a + b) / (np.math.gamma(a) * np.math.gamma(b))
-    return np.power(x, a - 1) * np.power(1 - x, b - 1) / beta_val
+@nb.jit(nopython=True)
+def beta_distribution(x: float, a: float, b: float) -> float:
+    inv_beta = np.math.gamma(a + b) / (np.math.gamma(a) * np.math.gamma(b))
+    return np.power(x, a - 1) * np.power(1 - x, b - 1) * inv_beta
 
 
 # Selection coefficient from delta's quantile and model's parameters
-@nb.jit(nb.float64(nb.float64, nb.float64, nb.float64), nopython=True)
-def coeff_selection(quant_delta, alpha, beta):
+@nb.jit(nopython=True)
+def coeff_selection(quant_delta: float, alpha: float, beta: float) -> float:
     assert 0 < quant_delta < 1
     w_mutant = beta_distribution(quant_delta, a=alpha, b=beta)
     w_ancestral = beta_distribution(0.5, a=alpha, b=beta)
@@ -40,8 +40,8 @@ def coeff_selection(quant_delta, alpha, beta):
 
 
 # Scaled fixation probability from selection coefficient
-@nb.jit(nb.float64(nb.float64), nopython=True)
-def proba_fixation(s):
+@nb.jit(nopython=True)
+def proba_fixation(s: float) -> float:
     if s == -np.infty:
         return 0.0
     elif abs(s) < 1.e-4:
@@ -55,8 +55,8 @@ def proba_fixation(s):
 
 
 # Get probability of substitution for each quantile: P(Mut) * P(Fix)
-@nb.jit(nb.float64[:](nb.float64, nb.float64, nb.float64[:]), nopython=True)
-def proba_substitution(alpha, beta, mutations_proba):
+@nb.jit(nopython=True)
+def proba_substitution(alpha: float, beta: float, mutations_proba: np.ndarray) -> np.ndarray:
     n_bins = len(mutations_proba)
     output_array = np.zeros(n_bins)
     delta = 1 / (2 * n_bins)
@@ -80,8 +80,8 @@ def proba_substitution(alpha, beta, mutations_proba):
 
 
 # Log likelihood of the model
-@nb.jit(nb.float64(nb.float64[:], nb.int64[:], nb.float64, nb.float64), nopython=True)
-def loglikelihood(mutations_proba, obs_bins, alpha, beta):
+@nb.jit(nopython=True)
+def loglikelihood(mutations_proba: np.ndarray, obs_bins: np.ndarray, alpha: float, beta: float) -> float:
     subs_proba = proba_substitution(alpha, beta, mutations_proba)
     models_lk = np.array([subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_bins])
 
@@ -92,29 +92,29 @@ def loglikelihood(mutations_proba, obs_bins, alpha, beta):
 
 
 # Normal distribution in log scale
-@nb.jit(nb.float64(nb.float64), nopython=True)
-def norm_distribution_log(x):
+@nb.jit(nopython=True)
+def norm_distribution_log(x: float) -> float:
     # normal distribution in log scale
     return -0.5 * np.log(2 * np.pi) - 0.5 * np.power(x, 2)
 
 
 # Log scaling parameter
-@nb.jit(nb.float64(nb.float64), nopython=True)
-def log_scaling_param(x):
+@nb.jit(nopython=True)
+def log_scaling_param(x: float) -> float:
     # normal distribution in log scale, with x = log10(x)
     return norm_distribution_log(np.log10(x))
 
 
 # Log prior of the model
-@nb.jit(nb.float64(nb.float64, nb.float64), nopython=True)
-def logprior(alpha, beta):
+@nb.jit(nopython=True)
+def logprior(alpha: float, beta: float) -> float:
     return log_scaling_param(alpha) + log_scaling_param(beta)
 
 
 # Move alpha parameter with Metropolis-Hastings
-@nb.jit(nb.types.UniTuple(nb.float64, 3)(
-    nb.float64, nb.float64, nb.float64[:], nb.int64[:], nb.float64, nb.float64, nb.float64), nopython=True)
-def move_alpha(lnp, lnl, mutations_proba, obs_bins, alpha, beta, tuning):
+@nb.jit(nopython=True)
+def move_alpha(lnp: float, lnl: float, mutations_proba: np.ndarray, obs_bins: np.ndarray,
+               alpha: float, beta: float, tuning: float) -> (float, float, float):
     m = tuning * (np.random.uniform() - 0.5)
     new_alpha = np.exp(m) * alpha
     new_lnp = logprior(new_alpha, beta)
@@ -128,9 +128,9 @@ def move_alpha(lnp, lnl, mutations_proba, obs_bins, alpha, beta, tuning):
 
 
 # Move beta parameter with Metropolis-Hastings
-@nb.jit(nb.types.UniTuple(nb.float64, 3)(
-    nb.float64, nb.float64, nb.float64[:], nb.int64[:], nb.float64, nb.float64, nb.float64), nopython=True)
-def move_beta(lnp, lnl, mutations_proba, obs_bins, alpha, beta, tuning):
+@nb.jit(nopython=True)
+def move_beta(lnp: float, lnl: float, mutations_proba: np.ndarray, obs_bins: np.ndarray,
+              alpha: float, beta: float, tuning: float) -> (float, float, float):
     m = tuning * (np.random.uniform() - 0.5)
     new_beta = np.exp(m) * beta
     new_lnp = logprior(alpha, new_beta)
@@ -143,9 +143,9 @@ def move_beta(lnp, lnl, mutations_proba, obs_bins, alpha, beta, tuning):
         return beta, lnp, lnl
 
 
-@nb.jit(nb.types.UniTuple(nb.float64, 4)(
-    nb.float64[:], nb.int64[:], nb.float64, nb.float64, nb.float64, nb.float64, nb.float64), nopython=True)
-def move_gibbs(mutations_proba, obs_bins, alpha, beta, lnp, lnl, tuning):
+@nb.jit(nopython=True)
+def move_gibbs(mutations_proba: np.ndarray, obs_bins: np.ndarray, alpha: float, beta: float, lnp: float, lnl: float,
+               tuning: float) -> (float, float, float, float):
     iter_per_point = 10
     for i in range(iter_per_point):
         alpha, lnp, lnl = move_alpha(lnp, lnl, mutations_proba, obs_bins, alpha, beta, tuning)
@@ -153,9 +153,9 @@ def move_gibbs(mutations_proba, obs_bins, alpha, beta, lnp, lnl, tuning):
     return alpha, beta, lnp, lnl
 
 
-@nb.jit(nb.types.UniTuple(nb.float64[:, :], 2)(
-    nb.float64[:], nb.int64[:], nb.int64, nb.float64, nb.float64), nopython=True)
-def mcmc(mutations_proba, obs_bins, n_points, alpha, beta):
+@nb.jit(nopython=True)
+def mcmc(mutations_proba: np.ndarray, obs_bins: np.ndarray, n_points: int,
+         alpha: float, beta: float) -> (np.ndarray, np.ndarray):
     lnp = logprior(alpha, beta)
     lnl = loglikelihood(mutations_proba, obs_bins, alpha, beta)
     # Initialize the chain
@@ -305,7 +305,7 @@ def get_row_estimate(ID, burnin=0.5):
     obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0].dropna().values.tolist()
     # print(f"Obs SVM:{obs_svm_row}")
     results_1, cl_1, cp_1 = run_estimations(all_svm_row, obs_svm_row, f"{ID}_1", 0.1, 0.1, burnin)
-    results_2, cl_2, cp_2 = run_estimations(all_svm_row, obs_svm_row, f"{ID}_2", 4.0, 4.0, burnin)
+    results_2, cl_2, cp_2 = run_estimations(all_svm_row, obs_svm_row, f"{ID}_2", 10.0, 10.0, burnin)
     results_3, cl_3, cp_3 = run_estimations(all_svm_row, obs_svm_row, f"{ID}_3", 1.0, 1.0, burnin)
     plot_trace([cp_1, cp_2, cp_3], [cl_1, cl_2, cl_3], ID, burnin)
     return results_1, results_2, results_3
@@ -313,7 +313,7 @@ def get_row_estimate(ID, burnin=0.5):
 
 os.makedirs(f"plots_Bayes_{exp_name}", exist_ok=True)
 os.makedirs(f"trace_Bayes_{exp_name}", exist_ok=True)
-NbThread = 4
+NbThread = 8
 NRows = 100
 # ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
 if __name__ == '__main__':
