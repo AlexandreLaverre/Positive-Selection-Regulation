@@ -41,6 +41,22 @@ def calculate_svm(seq, svm_dict, kmer_len=10):
     return round(svm, 7)
 
 
+# Calculate SVM from sliding windows
+def calculate_svm_per_pos(seq, pos, svm_dict, kmer_len=10):
+    if kmer_len != 10:
+        kmer_len = len(list(svm_dict.keys())[0])
+    svm = 0
+    for window in range(kmer_len):  # sliding window of kmer length
+        start = pos-window
+        end = start+kmer_len
+        if start < 0 or end > len(seq):  # if the window is out of the sequence
+            continue
+        kmer = seq[start:end]
+        svm += svm_dict[kmer]  # sum of SVM for each kmer
+
+    return round(svm, 7)
+
+
 # Calculate delta SVM from sliding windows
 def calculate_delta(seq_ref, seq_alt, svm_dict, kmer_len=10):
     if kmer_len != 10:
@@ -247,16 +263,17 @@ def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins=False):
 
         else:
             # Compute probability of fixation for all deltas
-            delta_bounds = [np.nanmin(all_deltas), np.nanmax(all_deltas)]
-            proba_substitution = np.zeros(n_deltas)
+            #delta_bounds = [np.nanmin(all_deltas), np.nanmax(all_deltas)]
+            proba_fixation = np.zeros(n_deltas)
             for d in range(n_deltas):
-                proba_substitution[d] = ML.coeff_selection(all_deltas[d], params, delta_bounds)
+                s = ML.coeff_selection(all_deltas[d], params)
+                proba_fixation[d] = ML.proba_fixation(s)
 
     # Weighted probability of mutations for each position*direction (length_seq*3)
     proba_mutation = normalised_mutations_probability(original_seq, sub_mat[0], sub_mat[1])
 
-    # Final probability = proba_mut * proba_sub
-    output_array = [mut * sub for mut, sub in zip(proba_mutation, proba_substitution)]
+    # Final probability = proba_mut * proba_fix
+    output_array = [mut * fix for mut, fix in zip(proba_mutation, proba_fixation)]
     sum_output = np.sum(output_array)
 
     return list(output_array / sum_output) if sum_output != 0 else list(output_array)
