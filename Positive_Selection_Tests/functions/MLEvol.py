@@ -13,36 +13,37 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
     neg_svm = [x for x in all_svm if x <= 0]
     pos_svm = [x for x in all_svm if x > 0]
 
-    obs_quant = []
+    obs_bins = []
     # Ensure that all substitutions don't fall into the same quantile
-    while len(set(obs_quant)) < 2:
+    while len(set(obs_bins)) < 2:
         # split the distribution into Nb quantiles on each side of the distribution
         neg_quant, neg_bins = pd.qcut(neg_svm, q=n_quant, retbins=True)
         pos_quant, pos_bins = pd.qcut(pos_svm, q=n_quant, retbins=True)
         bins_values = list(neg_bins) + list(pos_bins)[1:]  # merge bins and remove the first of pos_bins
 
-        # Get the quantile of the observed values
-        obs_quant = np.searchsorted(bins_values, obs_svm, side='left') - 1
+        # Get the bin of the observed values
+        obs_bins = np.searchsorted(bins_values, obs_svm, side='left') - 1
         n_quant += 5
 
     # Get the probability of each quantile
     quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
     quant_proba = quant_count / np.sum(quant_count)
 
-    return quant_proba, obs_quant
+    return quant_proba, obs_bins
 
 
 # Selection coefficient from delta's quantile and model's parameters
 def coeff_selection(quant_delta, params):
+    assert 0 < quant_delta < 1  # Quantile needs to be between 0<quant<1
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
     w_mutant = stats.beta.pdf(quant_delta, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
-    if w_mutant < 1.e-10:
+    # if w_ancestral < 1.e-10:
+    #    print(f"q:{quant_delta:.2f}, w_m:{w_mutant:.2g}, w_a:{w_ancestral:.2g}, alpha:{alpha:.2f}, beta:{beta:.2f}")
+    if w_mutant < 1.e-10 or w_ancestral < 1.e-10:
         return -np.infty
     s = np.log(w_mutant / w_ancestral)
-    if s == np.infty:
-        print(f"Coeff Sel --> Quantile: {quant_delta}, w_mutant: {w_mutant}, w_ancestral: {w_ancestral}, alpha: {alpha}, beta: {beta}")
     return s
 
 
@@ -64,20 +65,17 @@ def proba_fixation(s):
 def proba_substitution(params, mutations_proba):
     n_bins = len(mutations_proba)
     output_array = np.zeros(n_bins)
+    delta = 1 / (2 * n_bins)
     for quant in range(n_bins):
         # Probability of mutation
         proba_mut = mutations_proba[quant]
 
         # Probability of fixation
-        quant_val = (quant+1)/(n_bins+1)  # quantile needs to be between 0<quant<1
+        quant_val = quant/n_bins+delta  # quantile needs to be between 0<quant<1
         s = coeff_selection(quant_val, params)
         proba_fix = proba_fixation(s)
 
         output_array[quant] = proba_mut * proba_fix
-        if proba_fix == np.infty:
-            print(f"Proba Sub --> Quantile: {quant}, s: {s}, proba_mut: {proba_mut}, proba_fix: {proba_fix}")
-            print("STOP")
-            exit()
 
     # Scaled output
     sum_output = np.sum(output_array)
@@ -87,37 +85,58 @@ def proba_substitution(params, mutations_proba):
         return output_array / sum_output
 
 
-def loglikelihood(obs_svm, params, all_svm):
-    mutations_proba, obs_quant = get_svm_quantiles(all_svm, obs_svm)
+def loglikelihood(mutations_proba, obs_bins, params):
+    if len(params) == 1 and params[0] < 1e-10:
+        return -np.infty
+    if len(params) == 2 and (params[0] < 1e-10 or params[1] < 1e-10):
+        return -np.infty
+
     subs_proba = proba_substitution(params, mutations_proba)
-    models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_quant]
+    models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_bins]
 
     if min(models_lk) <= 0.0:  # Avoid log(0)
         return -np.infty
     lnl = np.sum(np.log(models_lk))
-    # if len(params) == 2:
-    #    print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}, beta: {params[1]:.3g}")
-    # elif len(params) == 1:
-    #    print(f"LnL: {lnl:.5g}, alpha: {params[0]:.3g}")
+
     return lnl
 
 
-def run_estimations(all_svm, obs_svm, alpha=0.05, verbose=False):
+def conclusion_purif(alpha):
+    return "Stabilizing (m=0.5)" if alpha > 1.0 else "Disruptive (m=0.5)"
+
+
+def conclusion_pos(alpha, beta):
+    if alpha > 1.0 and beta > 1.0:
+        return f"Stabilizing (m={alpha/(alpha+beta):.2f})"
+    if alpha > 1.0 > beta:
+        return "Directional (+)"
+    if alpha < 1.0 < beta:
+        return "Directional (-)"
+    else:
+        return f"Disruptive (m={alpha/(alpha+beta):.2f})"
+
+
+def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, verbose=False):
+    # Get the quantiles of the SVM distribution
+    mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm)
+
     # Null model: no param.
-    ll_neutral = loglikelihood(obs_svm, [], all_svm)
+    ll_neutral = loglikelihood(mutations_proba, obs_bins, [])
 
     # Stabilizing selection: alpha = beta
     bounds = [(0.0, np.inf)]
-    model_purif = minimize(lambda theta: -loglikelihood(obs_svm, theta, all_svm), np.array([1.0]),
+    model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, theta), np.array([1.0]),
                            bounds=bounds, method="Nelder-Mead")
     ll_purif = -model_purif.fun
+    ll_purif_log = loglikelihood(mutations_proba, obs_bins, model_purif.x)
 
     # Positive selection
     bounds = [(0.0, np.inf), (0.0, np.inf)]
     initial_guess = np.array([1.0, 1.0])
-    model_pos = minimize(lambda theta: -loglikelihood(obs_svm, theta, all_svm), initial_guess,
+    model_pos = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, theta), initial_guess,
                          bounds=bounds, method="Nelder-Mead")
     ll_pos = -model_pos.fun
+    ll_pos_log = loglikelihood(mutations_proba, obs_bins, model_pos.x)
 
     models = [model_purif, model_pos, bounds]
 
@@ -130,10 +149,10 @@ def run_estimations(all_svm, obs_svm, alpha=0.05, verbose=False):
     p_value_null_pos = chi2.sf(lrt_purif_pos, 2)
 
     conclusion = "Neutral model"
-    if p_value_null_purif < alpha:
-        conclusion = "Stabilizing model"
-    if p_value_purif_pos < p_value_null_purif and p_value_purif_pos < alpha:
-        conclusion = "Positive model"
+    if p_value_null_purif < alpha_threshold:
+        conclusion = conclusion_purif(model_purif.x[0])
+    if p_value_purif_pos < p_value_null_purif and p_value_purif_pos < alpha_threshold:
+        conclusion = conclusion_pos(model_pos.x[0], model_pos.x[1])
 
     if verbose:
         print(f"  LnL neutral    : {ll_neutral:.2f}")
@@ -194,14 +213,15 @@ def general_plot(all_deltas, obs, svm_distribution, purif, pos, scenario, test, 
 
 # Plot the minimization process for each sequence
 def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=None):
+    mutations_proba, obs_bins, obs_quant = get_svm_quantiles(all_svm, obs)
     k = 0.5
     if model_type == "Stabilizing":
         alpha_min = max([bounds[0][0], model_params[0] * k])
         alpha_max = min([bounds[0][1], model_params[0] * (2 - k)])
         alpha_range = np.linspace(alpha_min, alpha_max, 100)  # Std range
-        ll_values = [-loglikelihood(obs, [std], all_svm) for std in alpha_range]
+        ll_values = [loglikelihood(mutations_proba, obs_bins, [std]) for std in alpha_range]
         ax.plot(alpha_range, ll_values, label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], -loglikelihood(obs, model_params, all_svm), color='red', marker='o',
+        ax.scatter(model_params[0], loglikelihood(mutations_proba, obs_bins, model_params), color='red', marker='o',
                    label="Minimized Point")
         ax.set_xlabel("Parameter: Standard Deviation")
         ax.set_ylabel("Log-Likelihood")
@@ -218,12 +238,12 @@ def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=
 
         alpha_values, beta_values = np.meshgrid(alpha_range, beta_range)
         ll_values = np.array(
-            [[-loglikelihood(obs, [std, mean], all_svm) for std in alpha_range] for mean in beta_range])
+            [[loglikelihood(mutations_proba, obs_bins, [std, mean]) for std in alpha_range] for mean in beta_range])
 
         # Plotting the log-likelihood surface
         ax.plot_surface(alpha_values, beta_values, ll_values, cmap='viridis', alpha=0.8,
                         label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], model_params[1], -loglikelihood(obs, model_params, all_svm), color='red',
+        ax.scatter(model_params[0], model_params[1], loglikelihood(mutations_proba, obs_bins, model_params), color='red',
                    marker='o', label="Minimized Point")
         ax.invert_xaxis()
         ax.set_xlabel("Parameter: $\\alpha$")
