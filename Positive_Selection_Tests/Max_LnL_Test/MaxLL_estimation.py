@@ -52,7 +52,7 @@ def estimate_evolution(id, plots=False):
     obs_svm = obs_svm_row.dropna().values.tolist()
     #hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
-    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01)
+    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_quant=args.NbBin)
     estimations.insert(0, "ID", [id])
 
     if plots:
@@ -81,7 +81,7 @@ if args.Simulation:
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_50bins_quantile_treshold_0.01.csv"
+    Output_file = f"MLE_summary_{args.NbBin}bins_quantile_treshold_0.01.csv"
 
 All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))

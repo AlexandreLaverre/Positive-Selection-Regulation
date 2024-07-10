@@ -9,16 +9,16 @@ from scipy.stats import chi2
 
 
 # Get the quantiles of the SVM distribution of each side
-def get_svm_quantiles(all_svm, obs_svm, n_quant=25):
+def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
     neg_svm = [x for x in all_svm if x <= 0]
     pos_svm = [x for x in all_svm if x > 0]
 
     obs_bins = []
     # Ensure that all substitutions don't fall into the same quantile
     while len(set(obs_bins)) < 2:
-        # split the distribution into Nb quantiles on each side of the distribution
-        neg_quant, neg_bins = pd.qcut(neg_svm, q=n_quant, retbins=True)
-        pos_quant, pos_bins = pd.qcut(pos_svm, q=n_quant, retbins=True)
+        # split the distribution into Nb quantiles/2 on each side of the distribution
+        neg_quant, neg_bins = pd.qcut(neg_svm, q=n_quant/2, retbins=True)
+        pos_quant, pos_bins = pd.qcut(pos_svm, q=n_quant/2, retbins=True)
         bins_values = list(neg_bins) + list(pos_bins)[1:]  # merge bins and remove the first of pos_bins
 
         # Get the bin of the observed values
@@ -116,9 +116,9 @@ def conclusion_pos(alpha, beta):
         return f"Disruptive (m={alpha/(alpha+beta):.2f})"
 
 
-def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, verbose=False):
+def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_quant=50, verbose=False):
     # Get the quantiles of the SVM distribution
-    mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=25)
+    mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_quant)
     total_bins = len(mutations_proba)
 
     # Null model: no param.
