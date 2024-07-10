@@ -29,7 +29,7 @@ plots = False
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
 
 pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
@@ -50,9 +50,9 @@ def estimate_evolution(id, plots=False):
     # SVM score distribution: affinity of all possible deltas for a sequence
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
-    hist_svm = np.histogram(all_svm, bins=args.NbBin)
+    #hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
-    estimations, models = ML.run_estimations(hist_svm, obs_svm, alpha_threshold=0.01)
+    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01)
     estimations.insert(0, "ID", [id])
 
     if plots:
@@ -64,8 +64,8 @@ def estimate_evolution(id, plots=False):
             axes[1, 1] = fig.add_subplot(224, projection='3d')
             ML.general_plot(all_svm, obs_svm, gaussian_mutation, models[0], models[1], id, estimations["Conclusion"][0],
                             axes[0, 0], axes[0, 1])
-            ML.plot_model(obs_svm, hist_svm, models[0].x, axes[1, 0], model_type="Stabilizing", bounds=models[2])
-            ML.plot_model(obs_svm, hist_svm, models[1].x, axes[1, 1], model_type="Positive", bounds=models[2])
+            ML.plot_model(obs_svm, all_svm, models[0].x, axes[1, 0], model_type="Stabilizing", bounds=models[2])
+            ML.plot_model(obs_svm, all_svm, models[1].x, axes[1, 1], model_type="Positive", bounds=models[2])
             pdf.savefig()
             plt.close(fig)
             plt.clf()
@@ -81,7 +81,7 @@ if args.Simulation:
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_{args.NbBin}bins.csv"
+    Output_file = f"MLE_summary_50bins_quantile_treshold_0.01.csv"
 
 All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
