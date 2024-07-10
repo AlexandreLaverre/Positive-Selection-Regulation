@@ -51,7 +51,7 @@ for Nsim in range(num_simulations):
         print(f'Simulation {simul} {Nsim}')
         obs_svm = Simul_Obs_SVM[simul]
 
-        estimations, models = ML.run_estimations(All_SVM, obs_svm, alpha=0.05, verbose=True)
+        estimations, models = ML.run_estimations(All_SVM, obs_svm, alpha_threshold=0.01, verbose=True)
         estimations["Scenario"] = [simul]
 
         if output:
