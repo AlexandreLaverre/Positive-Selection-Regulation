@@ -67,7 +67,7 @@ for (TF in TFS){
   
   # Reads Coverage
   pathCoverage = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/peaks_calling/NarrowPeaks/human/Wilson/bowtie2/mergedLibrary/deepTools/coverage/"
-  coverage_files <- list.files(paste0(pathCoverage,"/", TF), pattern = "\\matrix.gz$")
+  coverage_files <- list.files(paste0(pathCoverage,"/", TF), pattern = "\\matrix_readCount.gz$")
   coverage <- list()
   for (file in coverage_files){
     cov <- read.table(gzfile(paste(pathCoverage, TF, file, sep="/")), skip=1)
@@ -139,7 +139,7 @@ for (TF in TFS){
   
   #################################################################################
   # Compare correl phastCons vs Delta
-  pdf(paste0("/Users/alaverre/Documents/Detecting_positive_selection/results/figures/", TF, "_scores_correlations_along_peaks_sum.pdf"))
+  pdf(paste0("/Users/alaverre/Documents/Detecting_positive_selection/results/figures/", TF, "_scores_correlations_along_peaks_readCount.pdf"))
   
   # Correlation Spearman
   data <- data.frame(
