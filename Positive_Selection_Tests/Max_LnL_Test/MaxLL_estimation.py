@@ -41,28 +41,6 @@ if plots:
     from mpl_toolkits.mplot3d import Axes3D
 
 
-def collapse_outlier(svm, threshold=0.01):
-    distrib_new = svm[0].copy().tolist()
-
-    # Find number of values that represent the threshold
-    n_treshold = round(threshold * sum(distrib_new))
-
-    # Find the index of the 1% and collapse all values below
-    cumulative_values = np.cumsum(distrib_new)
-    index_1perc = np.searchsorted(cumulative_values, n_treshold)
-    distrib_new[index_1perc] = cumulative_values[index_1perc]
-
-    # Find the index of the 99% and collapse all values above
-    rev_cumulative_values = np.cumsum(distrib_new[::-1])
-    rev_index_99perc = np.searchsorted(rev_cumulative_values, n_treshold)
-    index_99perc = (len(distrib_new) - 1) - rev_index_99perc
-    distrib_new[index_99perc] = rev_cumulative_values[rev_index_99perc]
-
-    distrib_new = distrib_new[index_1perc:index_99perc + 1]
-
-    return distrib_new
-
-
 ########################################################################################################################
 def estimate_evolution(id, plots=False):
     # Retrieve the corresponding deltas for each ID
@@ -72,18 +50,15 @@ def estimate_evolution(id, plots=False):
     # SVM score distribution: affinity of all possible deltas for a sequence
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
-    hist_svm = np.histogram(all_svm, bins=NbBin)
+    hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
-    # Remove outliers
-    hist_svm[0] = collapse_outlier(hist_svm[0], threshold=0.01)
-
-    #estimations, models = ML.run_estimations(hist_svm, obs_svm, alpha=0.01)
-    #estimations.insert(0, "ID", [id])
+    estimations, models = ML.run_estimations(hist_svm, obs_svm, alpha_threshold=0.01)
+    estimations.insert(0, "ID", [id])
 
     if plots:
         # fit a kernel distribution on our data
         gaussian_mutation = stats.gaussian_kde(all_svm)
-        with PdfPages(f'{pathResults}/Figures/MLE_summary_{id}.pdf') as pdf:
+        with PdfPages(f'{pathResults}/Tests/MLE_summary_{id}.pdf') as pdf:
             fig, axes = plt.subplots(2, 2, figsize=(14, 14))
             axes[1, 1].axis('off')
             axes[1, 1] = fig.add_subplot(224, projection='3d')
@@ -95,14 +70,14 @@ def estimate_evolution(id, plots=False):
             plt.close(fig)
             plt.clf()
 
-    return count_zero
+    return estimations
 
 
 ########################################################################################################################
 if args.Simulation:
     Ancestral_deltas_file = "simulated_initial_all_possible_deltaSVM.txt"
-    Focal_deltas_file = f"simul_{Simulation}_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_simulated_{Simulation}_{NbBin}bins.csv"
+    Focal_deltas_file = f"simul_{args.Simulation}_observed_deltaSVM.txt"
+    Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
