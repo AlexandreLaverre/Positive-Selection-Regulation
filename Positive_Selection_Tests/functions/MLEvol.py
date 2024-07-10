@@ -9,7 +9,7 @@ from scipy.stats import chi2
 
 
 # Get the quantiles of the SVM distribution of each side
-def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
+def get_svm_quantiles(all_svm, obs_svm, n_quant=25):
     neg_svm = [x for x in all_svm if x <= 0]
     pos_svm = [x for x in all_svm if x > 0]
 
@@ -118,7 +118,8 @@ def conclusion_pos(alpha, beta):
 
 def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, verbose=False):
     # Get the quantiles of the SVM distribution
-    mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm)
+    mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=25)
+    total_bins = len(mutations_proba)
 
     # Null model: no param.
     ll_neutral = loglikelihood(mutations_proba, obs_bins, [])
@@ -128,7 +129,6 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, verbose=False):
     model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, theta), np.array([1.0]),
                            bounds=bounds, method="Nelder-Mead")
     ll_purif = -model_purif.fun
-    ll_purif_log = loglikelihood(mutations_proba, obs_bins, model_purif.x)
 
     # Positive selection
     bounds = [(0.0, np.inf), (0.0, np.inf)]
@@ -136,7 +136,6 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, verbose=False):
     model_pos = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, theta), initial_guess,
                          bounds=bounds, method="Nelder-Mead")
     ll_pos = -model_pos.fun
-    ll_pos_log = loglikelihood(mutations_proba, obs_bins, model_pos.x)
 
     models = [model_purif, model_pos, bounds]
 
@@ -167,7 +166,7 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, verbose=False):
                            "VarObs": [np.var(obs_svm)], "MedSVM": [np.median(all_svm)],
                            "MinSVM": [np.min(all_svm)], "MaxSVM": [np.max(all_svm)],
                            "AlphaPurif": [model_purif.x[0]], "AlphaPos": [model_pos.x[0]], "BetaPos": [model_pos.x[1]],
-                           "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit],
+                           "NiterPurif": [model_purif.nit], "NiterPos": [model_pos.nit], "Nbins": [total_bins],
                            "LL_neutral": [ll_neutral], "LL_purif": [ll_purif], "LL_pos": [ll_pos],
                            "LRT_null_purif": [lrt_null_purif], "LRT_purif_pos": [lrt_purif_pos],
                            "p_value_null_purif": [p_value_null_purif], "p_value_purif_pos": [p_value_purif_pos],
