@@ -17,8 +17,8 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
     # Ensure that all substitutions don't fall into the same quantile
     while len(set(obs_bins)) < 2:
         # split the distribution into Nb quantiles/2 on each side of the distribution
-        neg_quant, neg_bins = pd.qcut(neg_svm, q=n_quant/2, retbins=True)
-        pos_quant, pos_bins = pd.qcut(pos_svm, q=n_quant/2, retbins=True)
+        neg_quant, neg_bins = pd.qcut(neg_svm, q=int(n_quant/2), retbins=True)
+        pos_quant, pos_bins = pd.qcut(pos_svm, q=int(n_quant/2), retbins=True)
         bins_values = list(neg_bins) + list(pos_bins)[1:]  # merge bins and remove the first of pos_bins
 
         # Get the bin of the observed values
@@ -264,7 +264,7 @@ for ID in AllObsSVM['ID']:
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
     print(f"Obs SVM:{obs_svm}")
-    results, model = run_estimations(all_svm, obs_svm)
+    results, model = run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_quant=50, verbose=False)
     print(results)
 
 ########################################################################################################################
