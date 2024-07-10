@@ -33,10 +33,10 @@ dataMod<-function(deltaSVM) {
 ## five fold cross validation 
 path <- "/Users/alaverre/Documents/Detecting_positive_selection/"
 pathData <- paste0(path, "Tools/JialinTool/")
-pathResults <- paste0(path, "results/positive_selection/rerun_Jialin_corrected/")
+pathResults <- paste0(path, "results/positive_selection/BroadPeaks/rerun_Jialin_corrected/")
 
-pdf(paste0(pathResults, "Rerun_allResults.pdf"))
-cv<-fread(paste0(pathData, "data/mouse/mouse_SVM_model/CEBPA/bl6-CEBPA_gkmtrain.cvpred.txt"))
+pdf(paste0(pathResults, "Rerun_allResults.pdf"), width=9)
+cv<-fread(paste0(pathData, "data/mouse/SVM_model/CEBPA/bl6-CEBPA_gkmtrain.cvpred.txt"))
 colnames(cv)<-c("position","prediction","real_state","cv_number")
 pred <- prediction(cv$prediction, cv$real_state) 
 perf <- performance( pred, "tpr", "fpr" )
@@ -77,7 +77,7 @@ text(x=c(1,2,3),y=-0.02,cex=2,srt = 45,adj = 1,labels = c("Conserved","Gain","Lo
 
 #########** validate positive selection based on binding intensity **########
 ## use conserved binding sites as an example 
-binding_intensity<-fread(paste0(pathData, "data/mouse/mouse_ChIP-Seq/bl6_CEBPA.txt"))
+binding_intensity<-fread(paste0(pathData, "data/mouse/ChIP-Seq/bl6_CEBPA.txt"))
 binding_intensity$chr<-paste0(rep("chr",nrow(binding_intensity)),binding_intensity$chr)
 colnames(binding_intensity)[c(2,3)]<-c("start","end")
 deltaSVM_intensity<-merge(deltaSVMcons,binding_intensity,by=c("chr","start","end"))
@@ -100,7 +100,7 @@ legend("topleft",legend=paste("p=",signif(wtest$p.value,3)),bty = 'n')
 #####*** take CEBPA binding sites as an example ***#####
 #####** check the performance of trained model to distinguish binding sites and random sequences **#####
 ## five fold cross validation 
-cv<-fread(paste0(pathData, "data/human/human_SVM_model/CEBPA/hsap_CEBPA_gkmtrain.cvpred.txt"))
+cv<-fread(paste0(pathData, "data/human/SVM_model/CEBPA/hsap_CEBPA_gkmtrain.cvpred.txt"))
 colnames(cv)<-c("position","prediction","real_state","cv_number")
 pred <- prediction(cv$prediction, cv$real_state) 
 perf <- performance( pred, "tpr", "fpr" )
@@ -127,7 +127,7 @@ hist(deltaSVM$pValue,breaks = 60,main="CEBPA binding sites",xlab="Pvalue",xlim=c
 
 #########** validation for positive selection  **########
 #####* compare the ratio of #substitutions and #polymorphisms betwween positive and non-positive sites  *#####
-sub_poly_Numb<-read.table(paste0(pathData, "data/human/human_substitutions_polymorphisms/CEBPA_sub_poly.txt"),header = T)
+sub_poly_Numb<-read.table(paste0(pathData, "data/human/substitutions_polymorphisms/CEBPA_sub_poly.txt"),header = T)
 sub_poly_Numb$subNumb<-as.numeric(as.character(sub_poly_Numb$subNumb))
 sub_poly_Numb$polyNumb<-as.numeric(as.character(sub_poly_Numb$polyNumb))
 sub_poly_Numb<-na.omit(sub_poly_Numb)
@@ -184,7 +184,7 @@ legend("topleft",legend=paste("p=",signif(wtest$p.value,3)),bty = 'n',cex=1.5)
 #####**** fly analysis ****#####
 #####*** check the performance of trained model to distinguish binding sites and random sequences ***#####
 ## five fold cross validation 
-cv<-fread(paste0(pathData, "data/fly/fly_SVM_model/CTCF/dmel_CTCF_gkmtrain.cvpred.txt"))
+cv<-fread(paste0(pathData, "data/fly/SVM_model/CTCF/dmel_CTCF_gkmtrain.cvpred.txt"))
 colnames(cv)<-c("position","prediction","real_state","cv_number")
 pred <- prediction(cv$prediction, cv$real_state) 
 perf <- performance( pred, "tpr", "fpr" )
@@ -225,7 +225,7 @@ text(x=c(1,2),y=-0.02,cex=2,srt = 45,adj = 1,labels = c("Conserved","Gain"),xpd 
 #####**** huamn CTCF adaptive evolution between tissues ****#####
 #####*** check the performance of trained model to distinguish binding sites and random sequences ***#####
 ## five fold cross validation 
-cv<-fread(paste0(pathData, "data/human/human_CTCF_adaptation/human_SVM_model/all_merged_ctcf_gkmtrain.cvpred.txt"))
+cv<-fread(paste0(pathData, "data/human/CTCF_adaptation/human_SVM_model/all_merged_ctcf_gkmtrain.cvpred.txt"))
 colnames(cv)<-c("position","prediction","real_state","cv_number")
 pred <- prediction(cv$prediction, cv$real_state) 
 perf <- performance( pred, "tpr", "fpr" )
@@ -249,7 +249,7 @@ hist(deltaSVM$pValue,breaks = 50,main=" ",xlab="Pvalue",xlim=c(0,1),
      cex.lab=n,cex.axis=n,cex.main=2,col=pal[3])
 
 #####*** positive selection and pleitropy ***#####
-organNumb<-fread(paste0(pathData, "data/human/human_CTCF_adaptation/human_ctcf_binding/all_merged_annotated.bed"))
+organNumb<-fread(paste0(pathData, "data/human/CTCF_adaptation/human_ctcf_binding/all_merged_annotated.bed"))
 ## from the fourth column, if the value > 0, indicating this binding site is expressed in this tissue
 colnames(organNumb)<-c("chr","start","end","adrenal gland","B cell","esophagus muscularis mucosa","retinal pigment epithelial cell",
                        "omental fat pad","gastrocnemius medialis","astrocyte of the cerebellum","astrocyte of the spinal cord",
@@ -302,15 +302,15 @@ plotColor<-c(pal[6],pal[2],"black",pal[10],pal[5],pal[4], pal[2],pal[2],pal[1],p
 plotLegend<-c("Nervous system","Male reproductive system","Immune system","Endocrine system","Integumentary system","Respiratory system",
               "Cardiovascular system","Digestive system","Female reproductive system","Skeletomuscular system")
 plot(c(1:29),organProp$prop, ylab="Proportion of positive binding sites", main="Human CTCF binding sites",xlab="", 
-     pch=16,cex=2,xaxt="n",cex.lab=1.5,cex.main=1.5, cex.axis=1.5,type="p",col=plotColor, ylim=c(0.02,0.04))
+     pch=16,cex=2,xaxt="n",cex.lab=1.5,cex.main=1.5, cex.axis=1.5,type="p",col=plotColor, ylim=c(0.01,0.025))
 legend("topright",legend=plotLegend,col = unique(rev(plotColor)),cex=0.9,
-       pch=rep(16,times=10),pt.cex=2,bty="n",inset=c(-0.51,0),xpd = TRUE)
+       pch=rep(16,times=10),pt.cex=2,bty="n",inset=c(-0.3,0),xpd = TRUE)
 abline(v=c(1:29),col="grey", lty=4)
 axis(side = 1, at = c(1:29), labels=F)
 text(c(1:29), 0.0185, srt = 45,cex=1, adj = 1,labels = organProp$organ, xpd = TRUE)
 
 #####*** number of substitutions for non positive sites in different tissues ***#####
-humanChimp_subsNumb<-fread(paste0(pathData, "data/human/human_CTCF_adaptation/human_chimp_substitutions/humanChimp_subNumb.txt"))
+humanChimp_subsNumb<-fread(paste0(pathData, "data/human/CTCF_adaptation/human_chimp_substitutions/humanChimp_subNumb.txt"))
 colnames(humanChimp_subsNumb)<-c("chr","start","end","subNumb")
 deltaSVMorgNumb_subsNumb<-merge(deltaSVMorgNumb,humanChimp_subsNumb,by=c("chr","start","end"))
 numbSub<-c()
@@ -346,7 +346,7 @@ text(c(1:29), 0.0129, srt = 45,cex=1, adj = 1,labels = organSub$organ, xpd = TRU
 #####**** mouse CTCF adaptive evolution between tissues ****#####
 #####*** check the performance of trained model to distinguish binding sites and random sequences ***#####
 ## five fold cross validation 
-cv<-fread(paste0(pathData, "data/mouse/mouse_CTCF_adaptation/mouse_SVM_model/all_merged_ctcf__gkmtrain.cvpred.txt"))
+cv<-fread(paste0(pathData, "data/mouse/CTCF_adaptation/mouse_SVM_model/all_merged_ctcf__gkmtrain.cvpred.txt"))
 colnames(cv)<-c("position","prediction","real_state","cv_number")
 pred <- prediction(cv$prediction, cv$real_state) 
 perf <- performance( pred, "tpr", "fpr" )
@@ -371,7 +371,7 @@ hist(deltaSVM$pValue,breaks = 50,main=" ",xlab="Pvalue",xlim=c(0,1),
      cex.lab=n,cex.axis=n,cex.main=2,col=pal[3])
 
 #####*** positive selection and pleitropy ***#####
-organNumb<-fread(paste0(pathData, "data/mouse/mouse_CTCF_adaptation/mouse_ctcf_binding/all_merged_annotated.bed"))
+organNumb<-fread(paste0(pathData, "data/mouse/CTCF_adaptation/mouse_ctcf_binding/all_merged_annotated.bed"))
 ## from the fourth column, if the value > 0, indicating this binding site is expressed in this tissue
 colnames(organNumb)<-c("chr","start","end","bone marrow","cerebellum","cortical plate","heart","kidney","liver",
                        "lung","olfactory bulb","small intestine","testis","thymus")
@@ -410,7 +410,7 @@ par(mar=c(10, 5, 2, 8) + 0.1)
 plotColor<-c(pal[10],pal[1],pal[4],pal[1],pal[1],pal[5],pal[10],pal[7],pal[9],"blue",pal[8])
 plotLegend<-c("Respiratory system","Excretory system","Endocrine system","Cardiovascular system","Immune system","Male reproductive system","Nervous system","Digestive system")
 plot(c(1:11),organProp$prop, ylab="Proportion of positive binding sites", main="Mouse CTCF binding sites",xlab="", pch=16,cex=2,
-     xaxt="n", type="p",col=plotColor,cex.lab=1.5,cex.main=1.5, cex.axis=1.5, ylim=c(0.02,0.04))
+     xaxt="n", type="p",col=plotColor,cex.lab=1.5,cex.main=1.5, cex.axis=1.5, ylim=c(0.01,0.02))
 legend("topright",legend=plotLegend,col = unique(rev(plotColor)),cex=1,
        pch=rep(16,times=11),pt.cex=2,bty="n",inset=c(-0.52,0),xpd = TRUE)
 abline(v=c(1:11),col="grey", lty=4)
@@ -419,7 +419,7 @@ text(c(1:11), 0.0185, srt = 45, cex=1.3,adj = 1,labels = organProp$organ, xpd = 
 
 
 #####*** number of substitutions for non positive sites in different tissues ***#####
-mouseSpret_subsNumb<-fread(paste0(pathData, "data/mouse/mouse_CTCF_adaptation/mouse_spret_substitutions/mouseSpret_subNumb.txt"))
+mouseSpret_subsNumb<-fread(paste0(pathData, "data/mouse/CTCF_adaptation/mouse_spret_substitutions/mouseSpret_subNumb.txt"))
 colnames(mouseSpret_subsNumb)<-c("chr","start","end","subNumb")
 deltaSVMorgNumb_subsNumb<-merge(deltaSVMorgNumb,mouseSpret_subsNumb,by=c("chr","start","end"))
 numbSub<-c()

@@ -4,7 +4,7 @@ library(stringr)
 library(dplyr)
 
 par(xpd = TRUE)
-path = "/Users/alaverre/Documents/Detecting_positive_selection/results/positive_selection/human/Wilson/CEBPA/"
+path = "/Users/alaverre/Documents/Detecting_positive_selection/results/positive_selection/BroadPeaks/human/Wilson/CEBPA/"
 pathFigure = "/Users/alaverre/Documents/Detecting_positive_selection/results/figures/"
 col=c("forestgreen", "deepskyblue3", "firebrick")
 names(col) = c("Positive model", "Stabilizing model", "Neutral model")
@@ -92,14 +92,16 @@ simul$Scenario <- factor(simul$Scenario, levels=c("Positive", "Stabilizing", "Ra
 
 ################################################################################
 ### Scenario to Conclusion
-pdf(paste0(pathFigure, "Comparisons_scenario_conclusion_", epistasis, ".pdf"), width=8, height=6)
+pdf(paste0(pathFigure, "Simulation_comparisons_scenario_conclusion_", epistasis, ".pdf"), width=8, height=6)
 par(xpd = TRUE)
 par(mfrow=c(1,1))
 
 # Total Scenario ~ Conclusion Max LL
-barplot(table(simul$Conclusion, simul$Scenario), col=col, las=1, xlab="Scenario", ylab="Nb simulation", cex.lab=1.2, cex.names=1.2)
-legend("top", legend=names(col), fill=col, bty="n", ncol=3, inset = c(0, -0.25), cex=1.5)
-text(x=2, y=1300, labels="Likelihood Ratio Test Conclusion", cex=1.8)
+barplot(table(simul$Conclusion, simul$Scenario), col=col, las=1, xlab="Scenario", 
+        ylab="Nb simulation", cex.lab=1.4, cex.names=1.4, names=c("Directional", "Stabilising", "Random"))
+
+legend("top", legend=c("Directional", "Stabilising", "Null"), fill=col, bty="n", ncol=3, inset = c(0, -0.17), cex=1.4)
+text(x=2, y=1200, labels="Test Conclusion", cex=1.5)
 
 # Total Scenario ~ Conclusion Test Permut
 a <- table(simul$signif, simul$Scenario)
@@ -118,7 +120,7 @@ dev.off()
 
 ################################################################################
 # Plot probabilities of substitutions
-pdf(paste0(pathFigure, "/Substitutions_probabilities_deltaSVM_no_epistasis.pdf"), width=8, height=7)
+pdf(paste0(pathFigure, "/Simulation_substitutions_probabilities_deltaSVM_no_epistasis.pdf"), width=8, height=7)
 par(xpd = F)
 par(mfrow=c(2,2))
 for (sel in selection){
@@ -294,7 +296,7 @@ boxplot(simul$VarObs~simul$Conclusion*simul$Scenario, notch=F, outline=F,
         xlab="Scenario", ylab="Var Delta Obs", col=col)
 #legend("top", legend=names(col), fill=col, bty="n", ncol=3, inset = c(0, -0.25))
 
-boxplot(simul$Nmut~simul$Conclusion*simul$Scenario, notch=T, outline=F,
+boxplot(simul$Nmut~simul$Conclusion*simul$Scenario, notch=F, outline=F,
         names=c("", "Positive", "", "", "Stabilizing", "","", "Random", ""),
         xlab="Scenario", ylab="Nb subsitution", col=col)
 
@@ -378,14 +380,20 @@ polygon(c(seq_along(df$median), rev(seq_along(df$median))), c(df$conf_low, rev(d
 dev.off()
 
 ################################################################################
-alpha=1
-beta=40
+alpha=646
+beta=2971
 
 ### 
 p = seq(0, 1, length=1000)
 #create plot of Beta distribution with shape parameters 2 and 10
-plot(p, dbeta(p, alpha, beta), type='l', main=paste("A=", alpha, "; B=", beta), ylab="Density")
+plot(p, dbeta(p, alpha, beta), type='l', ylab="Relative Fixation Probability", xlab=expression(Delta*" SVM"), 
+     las=1, col="forestgreen", lwd=3, cex.axis=1, cex.lab=1.2, main="Beta distributions", axes=T)
 
 
-
+lines(p, dbeta(p, 20, 20), col="navy", lwd=3)
+lines(p, rep(5, length(p)), col="firebrick", lwd=3)
+axis(1, at=c(0, 0.25, 0.5, 0.75, 1), labels=c(-5, -2.5, 0, 2.5, 5))
+axis(2, at=c(0, 2.5, 5, 7.5, 10), labels=c(0, 0.5, 1, 1.5, 2), las=2)
+legend("topleft", legend=c("Null", "Stabilising", "Directional"), lty=c(1,1,1), lwd=3,
+       col=c("firebrick", "navy", "forestgreen"), cex=1.2)
 

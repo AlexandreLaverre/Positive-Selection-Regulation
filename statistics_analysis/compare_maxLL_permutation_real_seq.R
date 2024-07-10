@@ -15,7 +15,7 @@ all_MLE_list <- list()
 for (sp in species){
   for (samp in sample){
     for (TF in TFs){
-      MLE.file <- paste0(path, "MLE/", sp, "_", samp, "_", TF, "_MLE_summary_50bins.csv")
+      MLE.file <- paste0(path, "real_peaks/", sp, "_", samp, "_", TF, "_MLE_summary_50bins.csv")
       delta.file <- paste0(path, "observed_deltas/", sp, "_", samp, "_", TF, "_deltas_ancestral_to_observed_deltaSVM.txt")
       permut.file <- paste0(path, "permutations_test/", sp, "_", samp, "_", TF, "_PosSelTest_deltaSVM_10000permutations.txt")
       
