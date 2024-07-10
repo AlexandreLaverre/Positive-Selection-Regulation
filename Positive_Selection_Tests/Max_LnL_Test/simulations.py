@@ -32,7 +32,7 @@ for Nsim in range(num_simulations):
     print(f'Simulation {Nsim}')
     # SVM score distribution: affinity of all possible deltas for a sequence
     All_SVM = np.random.normal(-1, 3, 3000)
-    hist_SVM = np.histogram(All_SVM, bins=n_bins)
+    #hist_SVM = np.histogram(All_SVM, bins=n_bins)
 
     stab_weights = np.array([stats.norm.pdf(svm, loc=0, scale=1) for svm in All_SVM])
     stab_weights /= np.sum(stab_weights)
@@ -51,7 +51,7 @@ for Nsim in range(num_simulations):
         print(f'Simulation {simul} {Nsim}')
         obs_svm = Simul_Obs_SVM[simul]
 
-        estimations, models = ML.run_estimations(hist_SVM, obs_svm, alpha=0.05, verbose=True)
+        estimations, models = ML.run_estimations(All_SVM, obs_svm, alpha=0.05, verbose=True)
         estimations["Scenario"] = [simul]
 
         if output:
@@ -65,8 +65,8 @@ for Nsim in range(num_simulations):
                 axes[1, 1] = fig.add_subplot(224, projection='3d')
                 ML.general_plot(All_SVM, obs_svm, gaussian_mutation, models[0], models[1], simul,
                                 estimations["Conclusion"][0], axes[0, 0], axes[0, 1])
-                ML.plot_model(obs_svm, hist_SVM, models[0].x, axes[1, 0], model_type="Stabilizing", bounds=models[2])
-                ML.plot_model(obs_svm, hist_SVM, models[1].x, axes[1, 1], model_type="Positive", bounds=models[2])
+                ML.plot_model(obs_svm, All_SVM, models[0].x, axes[1, 0], model_type="Stabilizing", bounds=models[2])
+                ML.plot_model(obs_svm, All_SVM, models[1].x, axes[1, 1], model_type="Positive", bounds=models[2])
                 pdf.savefig()
                 plt.close(fig)
                 plt.clf()
