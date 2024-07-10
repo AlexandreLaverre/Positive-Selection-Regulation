@@ -52,7 +52,7 @@ def estimate_evolution(id, plots=False):
     obs_svm = obs_svm_row.dropna().values.tolist()
     #hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
-    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_quant=args.NbBin)
+    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_quant=50)
     estimations.insert(0, "ID", [id])
 
     if plots:
