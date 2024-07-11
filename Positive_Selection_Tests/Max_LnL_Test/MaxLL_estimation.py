@@ -96,8 +96,8 @@ if __name__ == '__main__':
         with multiprocessing.Pool(args.NbThread) as pool:
             # Run function for each sequence in parallel
             for result in pool.imap_unordered(estimate_evolution, SeqIDs):
-                bar()  # print progress bar
                 if result is not None:
+                    bar()  # print progress bar
                     dfs.append(result)
 
     # Concatenate all individual DataFrames

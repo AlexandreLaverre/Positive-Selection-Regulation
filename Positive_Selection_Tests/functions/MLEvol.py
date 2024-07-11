@@ -102,18 +102,18 @@ def loglikelihood(mutations_proba, obs_bins, params):
 
 
 def conclusion_purif(alpha):
-    return "Stabilizing (m=0.5)" if alpha > 1.0 else "Disruptive (m=0.5)"
+    return "Stabilizing" if alpha > 1.0 else "Disruptive"
 
 
 def conclusion_pos(alpha, beta):
     if alpha > 1.0 and beta > 1.0:
-        return f"Stabilizing (m={alpha/(alpha+beta):.2f})"
+        return f"Stabilizing"
     if alpha > 1.0 > beta:
-        return "Directional (+)"
+        return "Directional"
     if alpha < 1.0 < beta:
-        return "Directional (-)"
+        return "Directional"
     else:
-        return f"Disruptive (m={alpha/(alpha+beta):.2f})"
+        return f"Disruptive"
 
 
 def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_quant=50, verbose=False):
