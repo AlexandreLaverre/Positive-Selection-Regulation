@@ -131,7 +131,11 @@ def conclusion_pos(alpha, beta):
         return f"Disruptive"
 
 
-def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=50, bins="hist", verbose=False):
+def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="hist", verbose=False):
+    # Check if there are at least 2 different substitutions
+    if len(set(obs_svm)) < 2:
+        return None
+
     # Get the bin of the SVM distribution
     if bins == "quantile":
         mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
@@ -277,17 +281,24 @@ AllObsSVM = pd.read_csv("ancestral_to_observed_deltaSVM.txt", sep='\t', header=N
 AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
 
 #ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
+ID = "chr10:4815556:4816023_10:4815556:4816023:Interval_3226"
 result_list = []
 for ID in AllObsSVM['ID']:
-    print(ID)
     all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
     obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0]
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
     results, model = run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_bin=50, bins="quantile", verbose=False)
-    result_list.append(results)
 
-final_results = pd.concat(result_list)
-final_results.to_csv(f"MLE_results_test_quantile.csv", index=False)
+    if results["Conclusion"][0] != "Neutral model":
+        print(ID)
+        print(results)
+
+
+
+#result_list.append(results)
+
+#final_results = pd.concat(result_list)
+#final_results.to_csv(f"MLE_results_test_quantile.csv", index=False)
 ########################################################################################################################
 '''
