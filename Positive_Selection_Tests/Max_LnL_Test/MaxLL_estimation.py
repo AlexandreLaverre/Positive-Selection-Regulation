@@ -26,8 +26,7 @@ args = parser.parse_args()
 maxSub = 150
 maxLength = 1000
 plots = False
-print(args.Bins)
-print(args.NbBin)
+
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
@@ -54,7 +53,7 @@ def estimate_evolution(id, plots=False):
     obs_svm = obs_svm_row.dropna().values.tolist()
     #hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
-    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_bin={args.NbBin}, bins={args.Bins})
+    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_bin=args.NbBin, bins=args.Bins)
     estimations.insert(0, "ID", [id])
 
     if plots:
