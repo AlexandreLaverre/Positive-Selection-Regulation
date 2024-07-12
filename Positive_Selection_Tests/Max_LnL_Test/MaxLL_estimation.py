@@ -26,7 +26,8 @@ args = parser.parse_args()
 maxSub = 150
 maxLength = 1000
 plots = False
-
+print(args.Bins)
+print(args.NbBin)
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
