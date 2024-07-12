@@ -99,7 +99,6 @@ if __name__ == '__main__':
             for result in pool.imap_unordered(estimate_evolution, SeqIDs):
                 if result is not None:
                     bar()  # print progress bar
-                    print(result)
                     dfs.append(result)
 
     # Concatenate all individual DataFrames
