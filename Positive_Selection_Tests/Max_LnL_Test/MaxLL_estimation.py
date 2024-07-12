@@ -19,7 +19,7 @@ parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or Br
 parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for deltasSVM (default=50)")
 parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
-parser.add_argument("--Bins", default="hist", help="Method to cut SVM distribution (hist or quantile)")
+parser.add_argument("--Bins", default="hist", type=str, help="Method to cut SVM distribution (hist or quantile)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
