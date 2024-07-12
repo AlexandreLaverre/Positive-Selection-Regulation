@@ -132,6 +132,7 @@ def conclusion_pos(alpha, beta):
 
 
 def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=50, bins="hist", verbose=False):
+    print(bins)
     # Get the bin of the SVM distribution
     if bins == "quantile":
         mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
