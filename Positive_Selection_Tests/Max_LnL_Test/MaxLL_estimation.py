@@ -96,7 +96,7 @@ if __name__ == '__main__':
     with alive_bar(len(SeqIDs)) as bar:  # progress bar
         with multiprocessing.Pool(args.NbThread) as pool:
             # Run function for each sequence in parallel
-            for result in pool.imap_unordered(estimate_evolution, SeqIDs):
+            for result in pool.imap(estimate_evolution, SeqIDs):
                 if result is not None:
                     bar()  # print progress bar
                     dfs.append(result)
