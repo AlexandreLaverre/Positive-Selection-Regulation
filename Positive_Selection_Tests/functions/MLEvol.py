@@ -15,7 +15,7 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
 
     obs_bins = []
     # Ensure that all substitutions don't fall into the same quantile
-    while len(set(obs_bins)) < 2:
+    while len(set(obs_bins)) < 2 or n_quant < 200:
         # split the distribution into Nb quantiles/2 on each side of the distribution
         neg_quant, neg_bins = pd.qcut(neg_svm, q=int(n_quant/2), retbins=True, duplicates='drop')
         pos_quant, pos_bins = pd.qcut(pos_svm, q=int(n_quant/2), retbins=True, duplicates='drop')
