@@ -32,6 +32,23 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
     return quant_proba, obs_bins
 
 
+def get_svm_hist(all_svm, obs_svm, n_bin=50):
+    obs_bins = []
+    # Ensure that all substitutions don't fall into the same bin
+    while len(set(obs_bins)) < 2:
+        hist_svm = np.histogram(all_svm, bins=n_bin)
+        bins_values = hist_svm[1]
+
+        # Get the bin of the observed values
+        obs_bins = np.searchsorted(bins_values, obs_svm, side='left') - 1
+        n_bin += 5
+
+    # Get the probability of each quantile
+    bin_proba = hist_svm[0] / np.sum(hist_svm[0])
+
+    return bin_proba, obs_bins
+
+
 # Selection coefficient from delta's quantile and model's parameters
 def coeff_selection(quant_delta, params):
     assert 0 < quant_delta < 1  # Quantile needs to be between 0<quant<1
@@ -39,8 +56,6 @@ def coeff_selection(quant_delta, params):
     beta = params[1] if len(params) == 2 else alpha
     w_mutant = stats.beta.pdf(quant_delta, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
-    # if w_ancestral < 1.e-10:
-    #    print(f"q:{quant_delta:.2f}, w_m:{w_mutant:.2g}, w_a:{w_ancestral:.2g}, alpha:{alpha:.2f}, beta:{beta:.2f}")
     if w_mutant < 1.e-10 or w_ancestral < 1.e-10:
         return -np.infty
     s = np.log(w_mutant / w_ancestral)
@@ -109,16 +124,20 @@ def conclusion_pos(alpha, beta):
     if alpha > 1.0 and beta > 1.0:
         return f"Stabilizing"
     if alpha > 1.0 > beta:
-        return "Directional"
+        return "Directional (+)"
     if alpha < 1.0 < beta:
-        return "Directional"
+        return "Directional (-)"
     else:
         return f"Disruptive"
 
 
-def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_quant=50, verbose=False):
-    # Get the quantiles of the SVM distribution
-    mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_quant)
+def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=50, bins="hist", verbose=False):
+    # Get the bin of the SVM distribution
+    if bins == "quantile":
+        mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
+    elif bins == "hist":
+        mutations_proba, obs_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
+
     total_bins = len(mutations_proba)
 
     # Null model: no param.
@@ -251,22 +270,24 @@ def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=
         ax.set_title(f"Minimization Process - {model_type} Selection Model")
 
 
-'''
+
 ################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
 DeltaSVM = pd.read_csv("ancestral_all_possible_deltaSVM.txt", sep='\t', header=0)
 AllObsSVM = pd.read_csv("ancestral_to_observed_deltaSVM.txt", sep='\t', header=None, names=range(150+4))
 AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
 
-ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
+#ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
+result_list = []
 for ID in AllObsSVM['ID']:
+    print(ID)
     all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
     obs_svm_row = AllObsSVM.loc[AllObsSVM['ID'] == ID, 4:].iloc[0]
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
-    print(f"Obs SVM:{obs_svm}")
-    results, model = run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_quant=50, verbose=False)
-    print(results)
+    results, model = run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_bin=50, bins="quantile", verbose=False)
+    result_list.append(results)
 
+final_results = pd.concat(result_list)
+final_results.to_csv(f"MLE_results_test_quantile.csv", index=False)
 ########################################################################################################################
-'''
 
