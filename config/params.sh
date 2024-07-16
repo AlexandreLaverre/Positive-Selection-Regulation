@@ -20,7 +20,7 @@ if [ ${sp} = "dog" ]; then
 	close_species="Canis_lupus_familiaris,Lycaon_pictus,Vulpes_vulpes" #Canis_lupus_lupus
 	anc_name="Anc04" # Anc09
 	chroms=({1..38} "MT" "X")
-	export genomesize=2237684358 # from 50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
+	export genomesize=2237684358 # from gsize50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
 fi
 
 if [ ${sp} = "human" ]; then
@@ -113,10 +113,19 @@ if [ ${sp} = "caroli" ]; then
 	export genomesize=2307679482 # using the same as Mus_musculus
 fi
 
+if [ ${sp} = "drosophila" ]; then
+	spID="dmel-all-r6.36"
+	sp_name="Drosophila_melanogaster"
+	close_species="Drosophila_melanogaster,Drosophila_simulans,Drosophila_yakuba"
+	anc_name="40"
+	chroms=("X" "2L" "2R" "3L" "3R" "4" "Y" "MT")
+	export genomesize=123548253 # from dm6 gsize50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
+fi
+
 ########################################################
 # Files prefix and suffix according to source
 
-if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "rabbit" ] || [ ${sp} = "cow" ]; then
+if [ ${sp} = "macaca" ] || [ ${sp} = "cat" ] || [ ${sp} = "rabbit" ] || [ ${sp} = "cow" ] || [ ${sp} = "drosophila" ]; then
 	# Anotations from NCBI
 	export genome_suffix="_genomic.fna.gz"
 	export GTF_suffix="_genomic.gtf.gz"
