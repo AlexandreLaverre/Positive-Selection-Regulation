@@ -118,7 +118,7 @@ if [ ${sp} = "drosophila" ]; then
 	sp_name="Drosophila_melanogaster"
 	close_species="Drosophila_melanogaster,Drosophila_simulans,Drosophila_yakuba"
 	anc_name="40"
-	chroms=("X" "2L" "2R" "3L" "3R" "4" "Y" "MT")
+	chroms=("X" "2L" "2R" "3L" "3R" "4" "Y")
 	export genomesize=123548253 # from dm6 gsize50: https://github.com/nf-core/chipseq/blob/51eba00b32885c4d0bec60db3cb0a45eb61e34c5/conf/igenomes.config
 fi
 

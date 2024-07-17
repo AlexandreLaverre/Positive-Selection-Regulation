@@ -54,11 +54,11 @@ do
 	if [ -s "${pathAlign}"/"${ID}".mfa ]; then
 	
 	    # Keep only focal and ancestral sequences
-	    #seqkit grep -p ${sp_name} -p "${anc_name}" "${pathAlign}"/"${ID}".mfa > "${pathAlign}"/"${ID}"_anc_foc.mfa
+	    seqkit grep -p "$sp_name" -p "$anc_name" "${pathAlign}"/"${ID}".mfa > "${pathAlign}"/"${ID}"_anc_foc.mfa
 
 	    # Remove GAP
-	    trimal -nogaps -keepheader -in "${pathAlign}"/"${ID}".mfa -out "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa
-	    rm "${pathAlign}"/"${ID}".mfa # "${pathAlign}"/"${ID}"_anc_foc.mfa
+	    trimal -nogaps -keepheader -in "${pathAlign}"/"${ID}"_anc_foc.mfa -out "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa
+	    rm "${pathAlign}"/"${ID}".mfa "${pathAlign}"/"${ID}"_anc_foc.mfa
 
 	    # Check if alignment still exists after removing GAPs
 	    if [ -f "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa ]; then

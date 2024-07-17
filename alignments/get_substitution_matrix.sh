@@ -79,7 +79,7 @@ do
 	        	fi
 		fi
 		
-		# Change MAF to PHYLIP format
+		# Change MAF to PHYLIP format for phyML
 		phylip_file="${pathAlignment}/per_chrom/PHYLIPs/${chr}.exons_masked.phylip"
 		
 		if [ -e ${phylip_file} ]; then
