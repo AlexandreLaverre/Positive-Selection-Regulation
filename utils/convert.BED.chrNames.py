@@ -25,6 +25,8 @@ with open(Correspondence, 'r') as f1:
 
 for data in ["peaks", "consensus_summits"]:
     BED = f"{pathPeaks}/{TF}.{data}.bed"
+    if not os.path.exists(BED):
+        continue
     outfile = open(f"{pathPeaks}/{TF}.{data}_UCSC_names.bed", 'w')
     with open(BED, 'r') as f2:
         for i in f2.readlines():

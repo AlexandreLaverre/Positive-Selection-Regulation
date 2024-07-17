@@ -33,7 +33,7 @@ rule ChromosomeCorrespondence:
         """
 
 rule ConvertCoordinates:
-    message: "Convert coordinates to UCSC for human and mice"
+    message: "Convert coordinates to UCSC"
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
         summits = pathPeaks + "/{TF}.consensus_summits.bed",
