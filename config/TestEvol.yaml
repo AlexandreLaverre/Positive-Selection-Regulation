@@ -77,6 +77,11 @@ cat:
     Ensembl_Assembly: 'sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.fna.gz'
     suffix: ''
     sample: ['Schmidt10', 'Rensch']
+drosophila:
+    UCSC_Assembly: 'dm6.fa.gz'
+    Ensembl_Assembly: 'dmel-all-r6.36_genomic.fna.gz'
+    suffix: '_UCSC_names'
+    sample: ['Ni12']
 split:
     cluster: 'split'
     local: 'gsplit'
