@@ -34,12 +34,13 @@ for data in ["peaks", "consensus_summits"]:
             i = i.split("\t")
 
             old = str(i[0])
+            peak_ID = str(i[3]) if data == "peaks" else str(i[3].split(":")[3])
             if old in Correspondence_dict.keys():
                 new_chr = str(Correspondence_dict[old])
 
                 # Filter chromosomes based on substitution matrix.
                 if old in chromosomes or new_chr in chromosomes:
-                    new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{str(i[3])}"
+                    new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{peak_ID}"
                     outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), new_ID]) + '\n')
 
     outfile.close()
