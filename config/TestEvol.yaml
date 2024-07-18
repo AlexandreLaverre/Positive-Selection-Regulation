@@ -81,7 +81,7 @@ cat:
 drosophila:
     UCSC_Assembly: 'dm6.fa.gz'
     Ensembl_Assembly: 'dmel-all-r6.36_genomic.fna.gz'
-    suffix: '_UCSC_names'
+    suffix: ''
     sample: ['Ni12']
 split:
     cluster: 'split'
