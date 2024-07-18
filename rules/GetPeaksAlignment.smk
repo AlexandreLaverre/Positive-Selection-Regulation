@@ -55,7 +55,7 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
-        python positive_selection_tests/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
+        python positive_selection_tests/alignments/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
         {input.BED_file_part} {config[AncMethod]} {cluster} &> {log.out}
         """
 
@@ -69,7 +69,7 @@ rule GetSequencesMultiple:
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
-        ./Positive_Selection_Tests/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} &> {log.out}
+        ./Positive_Selection_Tests/alignments/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} &> {log.out}
         """
 
 rule ConcatSeq:
