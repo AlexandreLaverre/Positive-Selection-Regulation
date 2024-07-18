@@ -34,7 +34,7 @@ for data in ["peaks", "consensus_summits"]:
             i = i.split("\t")
 
             old = str(i[0])
-            peak_ID = str(i[3]) if data == "peaks" else str(i[3].split(":")[3])
+            peak_ID = str(i[3]) if data == "consensus_summits" else str(i[3].split(":")[3])
             if old in Correspondence_dict.keys():
                 new_chr = str(Correspondence_dict[old])
 
