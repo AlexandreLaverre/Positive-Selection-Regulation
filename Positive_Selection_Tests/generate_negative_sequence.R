@@ -34,11 +34,12 @@ if (species == "chicken"){genome <- getBSgenome("BSgenome.Ggallus.UCSC.galGal6.m
 if (species == "spretus"){genome <- getBSgenome("BSgenome.Mspretus.GenBank.SPRET.masked")}
 if (species == "caroli"){genome <- getBSgenome("BSgenome.Mcaroli.GenBank.CAROLI.EIJ.masked")}
 if (species == "zebrafish"){genome <- getBSgenome("BSgenome.Drerio.UCSC.danRer11.masked")}
+if (species == "drosophila"){genome <- getBSgenome("BSgenome.Dmelanogaster.UCSC.dm6.masked")}
 
 seqnames(genome)
 # For new genomes, check if available first, else create it via BSgenome forge
 #available.genomes()
-#BiocManager::install("BSgenome.Mmusculus.UCSC.mm10.masked")
+#BiocManager::install("BSgenome.Dmelanogaster.UCSC.dm6.masked")
 
 ###############################################################################
 # Generate negative sequences
