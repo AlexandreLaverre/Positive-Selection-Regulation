@@ -57,8 +57,8 @@ rule MaxLLTest:
     input:
         AllSVM = pathResults + "/{TF}/deltas/ancestral_all_possible_deltaSVM.txt",
         ObsSVM = pathResults + "/{TF}/deltas/ancestral_to_observed_deltaSVM.txt"
-    output: touch(pathResults + "/{TF}/MLE_summary_{nbBin}bins.csv")
-    log: out = pathResults + "/log/{TF}/MaxLLTest_{nbBin}.out"
+    output: touch(pathResults + "/{TF}/MLE_summary_{BinType}_{nbBin}bins_threshold_{threshold}.csv")
+    log: out = pathResults + "/log/{TF}/MaxLLTest_{BinType}_{nbBin}_{threshold}.out"
     threads: config["nbPart"]
     params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
             threshold=config["threshold"], time=lambda wildcards, input: evaluate_time(input.AllSVM)

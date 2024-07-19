@@ -27,6 +27,9 @@ sample = config["sample"]  # config[sp]["sample"]
 peakType = config["peakType"]
 cluster = config["cluster"]
 chroms = [f"chr{i}" for i in range(1, 22)] + ["chrX"]
+BinType = str(config["BinType"])
+nbBin = str(config["nbBin"])
+threshold = str(config["threshold"])
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
@@ -51,7 +54,7 @@ else:
 rule all:
     input :
         PosSelTest = expand(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt", TF=config["TFs"][sample]),
-        MaxLLTest = expand(pathResults + "/{TF}/MLE_summary_" + str(config["nbBin"]) + "bins.csv", TF=config["TFs"][sample]),
+        MaxLLTest = expand(pathResults + "/{TF}/MLE_summary_"+ BinType + "_" + nbBin + "bins_threshold_" + threshold + ".csv", TF=config["TFs"][sample]),
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz", TF=config["TFs"][sample]),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
