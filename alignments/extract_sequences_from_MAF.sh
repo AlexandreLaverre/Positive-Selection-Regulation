@@ -42,8 +42,6 @@ mafsInRegion "$BED_file" -outDir "${pathAlign}"/ "$pathGenomeAlign"
 # Retrieve ancestral and focal sequences
 for ID in `cat "$BED_file" | cut -f 4`
 do
-	#ID=$(echo ${line} | cut -f 4 -d ' ')
-	#echo "${ID}"
 	align="${pathAlign}"/"${ID}".maf
 
 	# Convert to FASTA
@@ -64,13 +62,13 @@ do
 	    if [ -f "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa ]; then
 		    # Get focal and ancestral sequences separately
 		    seqkit grep -p "$sp_name" "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa > "${pathResults}"/focal_sequences/"${ID}"_nogap.fa
-		    seqkit grep -p "$sister_name" "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa > "${pathResults}"/sister_sequences/"${ID}"_nogap.fa
         seqkit grep -p "$anc_name" "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa > "${pathResults}"/ancestral_sequences/"${ID}"_nogap.fa
+        #seqkit grep -p "$sister_name" "${pathAlign}"/"${ID}"_anc_foc_nogap.mfa > "${pathResults}"/sister_sequences/"${ID}"_nogap.fa
 
 		    # Change species names to ID
 		    sed -i "s/${sp_name}/${ID}/g" "${pathResults}"/focal_sequences/"${ID}"_nogap.fa
-		    sed -i "s/${sister_name}/${ID}/g" "${pathResults}"/sister_sequences/"${ID}"_nogap.fa
 		    sed -i "s/${anc_name}/${ID}/g" "${pathResults}"/ancestral_sequences/"${ID}"_nogap.fa
+		    #sed -i "s/${sister_name}/${ID}/g" "${pathResults}"/sister_sequences/"${ID}"_nogap.fa
 	    else
 	    	echo "${ID}" >> "${pathResults}"/missing.txt
 	    fi
