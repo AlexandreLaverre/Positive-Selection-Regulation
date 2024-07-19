@@ -274,6 +274,7 @@ def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=
         ax.set_title(f"Minimization Process - {model_type} Selection Model")
 
 
+'''
 ################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
 DeltaSVM = pd.read_csv("ancestral_all_possible_deltaSVM.txt", sep='\t', header=0)
 AllObsSVM = pd.read_csv("ancestral_to_observed_deltaSVM.txt", sep='\t', header=None, names=range(150+4))
@@ -293,4 +294,4 @@ for ID in AllObsSVM['ID']:
 #final_results = pd.concat(result_list)
 #final_results.to_csv(f"MLE_results_test_quantile.csv", index=False)
 ########################################################################################################################
-
+'''
