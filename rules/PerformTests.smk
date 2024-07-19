@@ -60,11 +60,13 @@ rule MaxLLTest:
     output: touch(pathResults + "/{TF}/MLE_summary_{nbBin}bins.csv")
     log: out = pathResults + "/log/{TF}/MaxLLTest_{nbBin}.out"
     threads: config["nbPart"]
-    params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
+    params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
+            threshold=config["threshold"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
     shell:
         """
-        python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} \
-        {sample}/{wildcards.TF} {peakType} -T {threads} --NbBin {params.nbBin} --{cluster} &> {log.out}
+        python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
+        --peakType {peakType} --Bins {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
+        -T {threads} --{cluster} &> {log.out}
         """
 
 #rule simulate_sequence:

@@ -134,7 +134,7 @@ def conclusion_pos(alpha, beta):
 def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="hist", verbose=False):
     # Check if there are at least 2 different substitutions
     if len(set(obs_svm)) < 2:
-        return None
+        return None, None
 
     # Get the bin of the SVM distribution
     if bins == "quantile":
@@ -274,14 +274,12 @@ def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=
         ax.set_title(f"Minimization Process - {model_type} Selection Model")
 
 
-'''
 ################################# !!!!!!! Temporary to test manually !!!!!!! ###########################################
 DeltaSVM = pd.read_csv("ancestral_all_possible_deltaSVM.txt", sep='\t', header=0)
 AllObsSVM = pd.read_csv("ancestral_to_observed_deltaSVM.txt", sep='\t', header=None, names=range(150+4))
 AllObsSVM.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(AllObsSVM.columns[4:])
 
 #ID = "chr13:86947569:86947706_13:86947569:86947706:Interval_6751"
-ID = "chr10:4815556:4816023_10:4815556:4816023:Interval_3226"
 result_list = []
 for ID in AllObsSVM['ID']:
     all_svm_row = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
@@ -290,15 +288,9 @@ for ID in AllObsSVM['ID']:
     obs_svm = obs_svm_row.dropna().values.tolist()
     results, model = run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_bin=50, bins="quantile", verbose=False)
 
-    if results["Conclusion"][0] != "Neutral model":
-        print(ID)
-        print(results)
-
-
-
-#result_list.append(results)
+    result_list.append(results)
 
 #final_results = pd.concat(result_list)
 #final_results.to_csv(f"MLE_results_test_quantile.csv", index=False)
 ########################################################################################################################
-'''
+

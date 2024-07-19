@@ -20,6 +20,7 @@ parser.add_argument("--NbBin", default=50, type=int, required=False, help="Numbe
 parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 parser.add_argument("--Bins", default="hist", type=str, help="Method to cut SVM distribution (hist or quantile)")
+parser.add_argument("--threshold", default="0.01", type=float, help="Significance threshold for the test (default=0.01)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
@@ -51,9 +52,12 @@ def estimate_evolution(id, plots=False):
     # SVM score distribution: affinity of all possible deltas for a sequence
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
-    #hist_svm = np.histogram(all_svm, bins=args.NbBin)
 
-    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=0.01, min_bin=args.NbBin, bins=args.Bins)
+    if len(set(obs_svm)) < 2:
+        print(f"{id} has not enough substitutions with distinct effect to perform the test")
+        return None
+
+    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=args.threshold, min_bin=args.NbBin, bins=args.Bins)
     estimations.insert(0, "ID", [id])
 
     if plots:
@@ -82,7 +86,7 @@ if args.Simulation:
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_{args.Bins}_{args.NbBin}bins_treshold_0.01.csv"
+    Output_file = f"MLE_summary_{args.Bins}_{args.NbBin}bins_treshold_{args.threshold}.csv"
 
 All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
@@ -91,12 +95,13 @@ Obs_SVM_All_seq.columns = ['ID', 'SVM', 'Total_deltaSVM', 'NbSub'] + list(Obs_SV
 ########################################################################################################################
 SeqIDs = set(Obs_SVM_All_seq['ID'])
 dfs = []
+
 # protect the entry point
 if __name__ == '__main__':
     with alive_bar(len(SeqIDs)) as bar:  # progress bar
         with multiprocessing.Pool(args.NbThread) as pool:
             # Run function for each sequence in parallel
-            for result in pool.imap(estimate_evolution, SeqIDs):
+            for result in pool.imap_unordered(estimate_evolution, SeqIDs):
                 if result is not None:
                     bar()  # print progress bar
                     dfs.append(result)
