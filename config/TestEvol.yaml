@@ -23,6 +23,7 @@ TFs:
         - 'CEBPA'
         - 'HNF4A'
         - 'FOXA1'
+    CTCF_binding: ['CTCF']
 human:
     UCSC_Assembly: 'hg38.fa.gz'
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
@@ -30,6 +31,7 @@ human:
     sample:
         - 'Wilson'
         - 'Schmidt12'
+        - 'CTCF_binding'
 mouse:
     UCSC_Assembly: 'mm10.fa.gz'
     Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa.gz'
