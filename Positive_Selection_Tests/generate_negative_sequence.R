@@ -36,7 +36,7 @@ if (species == "caroli"){genome <- getBSgenome("BSgenome.Mcaroli.GenBank.CAROLI.
 if (species == "zebrafish"){genome <- getBSgenome("BSgenome.Drerio.UCSC.danRer11.masked")}
 if (species == "drosophila"){genome <- getBSgenome("BSgenome.Dmelanogaster.UCSC.dm6.masked")}
 
-seqnames(genome)
+#seqnames(genome)
 # For new genomes, check if available first, else create it via BSgenome forge
 #available.genomes()
 #BiocManager::install("BSgenome.Dmelanogaster.UCSC.dm6.masked")
