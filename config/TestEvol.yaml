@@ -39,6 +39,7 @@ mouse:
     sample:
         - 'Wilson'
         - 'Schmidt12'
+        - 'CTCF_binding'
 caroli:
     UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
     Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
