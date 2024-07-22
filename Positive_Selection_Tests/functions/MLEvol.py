@@ -121,14 +121,17 @@ def conclusion_purif(alpha):
 
 
 def conclusion_pos(alpha, beta):
-    if alpha > 1.0 and beta > 1.0:
-        return f"Stabilizing"
-    if alpha > 1.0 > beta:
-        return "Directional (+)"
-    if alpha < 1.0 < beta:
-        return "Directional (-)"
-    else:
-        return f"Disruptive"
+    m = alpha/(alpha+beta)
+    if m > 0.5:
+        return f"Directional (+)"
+    if m < 0.5:
+        return f"Directional (-)"
+    #if alpha > 1.0 > beta:
+    #    return "Directional (+)"
+    #if alpha < 1.0 < beta:
+    #    return "Directional (-)"
+    #if alpha < 1.0 and beta < 1.0:
+    #    return f"Disruptive"
 
 
 def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="hist", verbose=False):
