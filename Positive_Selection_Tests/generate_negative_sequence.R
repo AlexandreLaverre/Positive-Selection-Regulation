@@ -49,7 +49,7 @@ set.seed(12)
 max_seq = max(nrow(BED), 5000)
 xfold= as.integer(max_seq/nrow(BED))
 
-genNullSeqs(BED_file, genome = genome, nMaxTrials=50, xfold=xfold,
+genNullSeqs(BED_file, genome = genome, nMaxTrials=100, xfold=xfold,
             outputBedFN = paste0(pathResults,'/negSet.bed'), 
             outputPosFastaFN = paste0(pathResults,'/posSet.fa'),
             outputNegFastaFN = paste0(pathResults,'/negSet.fa'))
