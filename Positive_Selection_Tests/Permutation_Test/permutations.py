@@ -84,14 +84,13 @@ def test_positive_selection(seq_name):
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
 
     # Get corresponding substitution matrix
-    chromosome = seq_name.split(':')[0]  # remember to change "_" by ":" if not Jialin results.
+    chromosome = seq_name.split('_')[0]  # remember to change "_" by ":" if not Jialin results.
     if chromosome in SubMats.keys():
         sub_mat_proba = SubMats[chromosome] if args.Evol != 'uniform' else SubMat_uniform
         sub_mat_proba_normed = SubMats_norm[chromosome] if args.Evol != 'uniform' else SubMat_uniform
 
         # Number of substitutions between Ancestral and Focal sequences
         nb_sub = SVM.get_sub_number(ancestral_seq, focal_seq)
-        print(seq_name, nb_sub, len(focal_seq))
         if nb_sub > 1 and len(focal_seq) > 40:
             focalSVM = SVM.calculate_svm(focal_seq, SVM_dict)
             # Get observed and random deltas
