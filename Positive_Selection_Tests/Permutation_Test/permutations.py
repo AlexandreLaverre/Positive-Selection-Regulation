@@ -53,7 +53,7 @@ else:
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
     Output = open(pathSelection + "PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
-    NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
+    #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
 pathSubMat = f"{path}/results/substitution_matrix/{args.species}/"
@@ -91,7 +91,7 @@ def test_positive_selection(seq_name):
 
         # Number of substitutions between Ancestral and Focal sequences
         nb_sub = SVM.get_sub_number(ancestral_seq, focal_seq)
-
+        print(seq_name, nb_sub, len(focal_seq))
         if nb_sub > 1 and len(focal_seq) > 40:
             focalSVM = SVM.calculate_svm(focal_seq, SVM_dict)
             # Get observed and random deltas
