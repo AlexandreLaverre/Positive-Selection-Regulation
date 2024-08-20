@@ -144,6 +144,8 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="h
         mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
     elif bins == "hist":
         mutations_proba, obs_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
+    else:
+        raise ValueError("Bins method should be 'quantile' or 'hist'")
 
     total_bins = len(mutations_proba)
 
