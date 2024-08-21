@@ -21,7 +21,7 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
         pos_quant, pos_bins = pd.qcut(pos_svm, q=int(n_quant/2), retbins=True, duplicates='drop')
         bins_values = list(neg_bins) + list(pos_bins)[1:]  # merge bins and remove the first of pos_bins
 
-        # Get the bin of the observed values
+        # Get the quantiles of the observed values
         obs_bins = np.searchsorted(bins_values, obs_svm, side='left') - 1
         n_quant += 5
 
@@ -29,7 +29,11 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
     quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
     quant_proba = quant_count / np.sum(quant_count)
 
-    return quant_proba, obs_bins
+    # Scaling the bins values to be between 0 and 1
+    delta = 1 / (2 * n_quant)
+    scaled_bins = [(i / n_quant) + delta for i in range(n_quant)]
+
+    return quant_proba, obs_bins, scaled_bins
 
 
 def get_svm_hist(all_svm, obs_svm, n_bin=50):
@@ -43,19 +47,31 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
         obs_bins = np.searchsorted(bins_values, obs_svm, side='left') - 1
         n_bin += 5
 
-    # Get the probability of each quantile
+    # Get the probability of each bin
     bin_proba = hist_svm[0] / np.sum(hist_svm[0])
 
-    return bin_proba, obs_bins
+    # Scaling the bins values to be centered on 0.5
+    scaled_bins = []
+    delta_bounds = [min(bins_values), max(bins_values)]
+    for b in bins_values:
+        min_bin = bins_values[b]
+        max_bin = bins_values[b + 1]
+        mean_bin = (max_bin + min_bin) / 2
+        max_delta = max(np.abs(delta_bounds))
+        scaled_b = (mean_bin + max_delta) / (2 * max_delta)
+        scaled_bins.append(scaled_b)
+
+    return bin_proba, obs_bins, scaled_bins
 
 
 # Selection coefficient from delta's quantile and model's parameters
-def coeff_selection(quant_delta, params):
-    assert 0 < quant_delta < 1  # Quantile needs to be between 0<quant<1
+def coeff_selection(bin_val, params):
+    assert 0 < bin_val < 1  # bin value needs to be between 0 and 1
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
-    w_mutant = stats.beta.pdf(quant_delta, a=alpha, b=beta)
+    w_mutant = stats.beta.pdf(bin_val, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
+
     if w_mutant < 1.e-10 or w_ancestral < 1.e-10:
         return -np.infty
     s = np.log(w_mutant / w_ancestral)
@@ -76,21 +92,18 @@ def proba_fixation(s):
         return s / (1 - np.exp(-s))
 
 
-# Get probability of substitution for each quantile: P(Mut) * P(Fix)
-def proba_substitution(params, mutations_proba):
-    n_bins = len(mutations_proba)
-    output_array = np.zeros(n_bins)
-    delta = 1 / (2 * n_bins)
-    for quant in range(n_bins):
+# Get probability of substitution for each bin: P(Mut) * P(Fix)
+def proba_substitution(params, mutations_proba, scaled_bins):
+    output_array = np.zeros(len(scaled_bins))
+    for b in range(scaled_bins):
         # Probability of mutation
-        proba_mut = mutations_proba[quant]
+        proba_mut = mutations_proba[b]
 
         # Probability of fixation
-        quant_val = quant/n_bins+delta  # quantile needs to be between 0<quant<1
-        s = coeff_selection(quant_val, params)
+        s = coeff_selection(scaled_bins[b], params)
         proba_fix = proba_fixation(s)
 
-        output_array[quant] = proba_mut * proba_fix
+        output_array[b] = proba_mut * proba_fix
 
     # Scaled output
     sum_output = np.sum(output_array)
@@ -100,13 +113,13 @@ def proba_substitution(params, mutations_proba):
         return output_array / sum_output
 
 
-def loglikelihood(mutations_proba, obs_bins, params):
+def loglikelihood(mutations_proba, obs_bins, scaled_bins, params):
     if len(params) == 1 and params[0] < 1e-10:
         return -np.infty
     if len(params) == 2 and (params[0] < 1e-10 or params[1] < 1e-10):
         return -np.infty
 
-    subs_proba = proba_substitution(params, mutations_proba)
+    subs_proba = proba_substitution(params, mutations_proba, scaled_bins)
     models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_bins]
 
     if min(models_lk) <= 0.0:  # Avoid log(0)
@@ -141,9 +154,9 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="h
 
     # Get the bin of the SVM distribution
     if bins == "quantile":
-        mutations_proba, obs_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
+        mutations_proba, obs_bins, scaled_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
     elif bins == "hist":
-        mutations_proba, obs_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
+        mutations_proba, obs_bins, scaled_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
     else:
         raise ValueError("Bins method should be 'quantile' or 'hist'")
 
