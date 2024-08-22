@@ -31,7 +31,7 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
 
     # Scaling the bins values to be between 0 and 1
     delta = 1 / (2 * n_quant)
-    scaled_bins = [(i / n_quant) + delta for i in range(n_quant)]
+    scaled_bins = [(i / n_quant) + delta for i in range(len(quant_proba))]
 
     return quant_proba, obs_bins, scaled_bins
 
@@ -51,15 +51,14 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
     bin_proba = hist_svm[0] / np.sum(hist_svm[0])
 
     # Scaling the bins values to be centered on 0.5
-    scaled_bins = []
+    scaled_bins = np.zeros(len(bin_proba))
     delta_bounds = [min(bins_values), max(bins_values)]
-    for b in bins_values:
+    for b in range(len(bin_proba)):
         min_bin = bins_values[b]
         max_bin = bins_values[b + 1]
         mean_bin = (max_bin + min_bin) / 2
         max_delta = max(np.abs(delta_bounds))
-        scaled_b = (mean_bin + max_delta) / (2 * max_delta)
-        scaled_bins.append(scaled_b)
+        scaled_bins[b] = (mean_bin + max_delta) / (2 * max_delta)
 
     return bin_proba, obs_bins, scaled_bins
 
@@ -95,7 +94,7 @@ def proba_fixation(s):
 # Get probability of substitution for each bin: P(Mut) * P(Fix)
 def proba_substitution(params, mutations_proba, scaled_bins):
     output_array = np.zeros(len(scaled_bins))
-    for b in range(scaled_bins):
+    for b in range(len(scaled_bins)):
         # Probability of mutation
         proba_mut = mutations_proba[b]
 
@@ -163,18 +162,18 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="h
     total_bins = len(mutations_proba)
 
     # Null model: no param.
-    ll_neutral = loglikelihood(mutations_proba, obs_bins, [])
+    ll_neutral = loglikelihood(mutations_proba, obs_bins, scaled_bins, [])
 
     # Stabilizing selection: alpha = beta
     bounds = [(0.0, np.inf)]
-    model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, theta), np.array([1.0]),
+    model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, scaled_bins, theta), np.array([1.0]),
                            bounds=bounds, method="Nelder-Mead")
     ll_purif = -model_purif.fun
 
     # Positive selection
     bounds = [(0.0, np.inf), (0.0, np.inf)]
     initial_guess = np.array([1.0, 1.0])
-    model_pos = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, theta), initial_guess,
+    model_pos = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, scaled_bins, theta), initial_guess,
                          bounds=bounds, method="Nelder-Mead")
     ll_pos = -model_pos.fun
 
@@ -252,16 +251,20 @@ def general_plot(all_deltas, obs, svm_distribution, purif, pos, scenario, test, 
 
 
 # Plot the minimization process for each sequence
-def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=None):
-    mutations_proba, obs_bins, obs_quant = get_svm_quantiles(all_svm, obs)
+def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bins="hist", min_bin=50, bounds=None):
+    if bins == "quantile":
+        mutations_proba, obs_bins, scaled_bins = get_svm_quantiles(all_svm, obs, n_quant=min_bin)
+    elif bins == "hist":
+        mutations_proba, obs_bins, scaled_bins = get_svm_hist(all_svm, obs, n_bin=min_bin)
+
     k = 0.5
     if model_type == "Stabilizing":
         alpha_min = max([bounds[0][0], model_params[0] * k])
         alpha_max = min([bounds[0][1], model_params[0] * (2 - k)])
         alpha_range = np.linspace(alpha_min, alpha_max, 100)  # Std range
-        ll_values = [loglikelihood(mutations_proba, obs_bins, [std]) for std in alpha_range]
+        ll_values = [loglikelihood(mutations_proba, obs_bins, scaled_bins, [std]) for std in alpha_range]
         ax.plot(alpha_range, ll_values, label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], loglikelihood(mutations_proba, obs_bins, model_params), color='red', marker='o',
+        ax.scatter(model_params[0], loglikelihood(mutations_proba, obs_bins, scaled_bins, model_params), color='red', marker='o',
                    label="Minimized Point")
         ax.set_xlabel("Parameter: Standard Deviation")
         ax.set_ylabel("Log-Likelihood")
@@ -278,12 +281,12 @@ def plot_model(obs, all_svm, model_params, ax, model_type="Stabilizing", bounds=
 
         alpha_values, beta_values = np.meshgrid(alpha_range, beta_range)
         ll_values = np.array(
-            [[loglikelihood(mutations_proba, obs_bins, [std, mean]) for std in alpha_range] for mean in beta_range])
+            [[loglikelihood(mutations_proba, obs_bins, scaled_bins, [std, mean]) for std in alpha_range] for mean in beta_range])
 
         # Plotting the log-likelihood surface
         ax.plot_surface(alpha_values, beta_values, ll_values, cmap='viridis', alpha=0.8,
                         label=f"{model_type} Selection Model")
-        ax.scatter(model_params[0], model_params[1], loglikelihood(mutations_proba, obs_bins, model_params), color='red',
+        ax.scatter(model_params[0], model_params[1], loglikelihood(mutations_proba, obs_bins, scaled_bins, model_params), color='red',
                    marker='o', label="Minimized Point")
         ax.invert_xaxis()
         ax.set_xlabel("Parameter: $\\alpha$")
