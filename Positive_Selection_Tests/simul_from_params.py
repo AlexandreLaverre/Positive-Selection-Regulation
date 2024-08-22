@@ -19,9 +19,8 @@ TF = "Wilson/CEBPA"
 path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
 pathResult = f"{path}/positive_selection/{species}/{TF}/"
 
-max_mut = 10
+max_sub = 25
 NbThread = 8
-maxSub = 150
 maxLength = 1000
 Nbin = False
 epistasis = True
@@ -58,7 +57,7 @@ def get_simulated_sequences(seq_id):
     if 20 <= seq_length <= 1000:
         chromosome = seq_id.split(':')[0]
         sub_mat = [SubMats[chromosome], SubMats_norm[chromosome]]
-        nsub = np.random.randint(2, max_mut+1)
+        nsub = np.random.randint(2, max_sub+1)
 
         all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == seq_id, "pos0:A":f"pos{seq_length-1}:G"].iloc[0]
         all_svm_no_nan = all_svm_row.dropna()
