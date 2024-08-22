@@ -35,10 +35,11 @@ rule ModelTraining:
     output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 2
-    params: time="20:00:00", mem="5G", threads=16
+    threads: 16
+    params: time="20:00:00", mem="5G"
     shell:
         """
-        gkmtrain -r 12 -l 10 -T 16 {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelValidation:
