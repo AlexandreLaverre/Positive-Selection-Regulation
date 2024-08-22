@@ -12,7 +12,7 @@ import pandas as pd
 sys.path.append("/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
-
+np.random.seed(1234)
 ####################################################################################################
 species = "human"
 TF = "Wilson/CEBPA"

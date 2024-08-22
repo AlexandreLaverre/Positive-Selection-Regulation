@@ -7,6 +7,7 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import chi2
 
+np.random.seed(1234)
 
 # Get the quantiles of the SVM distribution of each side
 def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
@@ -15,7 +16,7 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
 
     obs_bins = []
     # Ensure that all substitutions don't fall into the same quantile
-    while len(set(obs_bins)) < 2 or n_quant < 200:
+    while len(set(obs_bins)) < 2:
         # split the distribution into Nb quantiles/2 on each side of the distribution
         neg_quant, neg_bins = pd.qcut(neg_svm, q=int(n_quant/2), retbins=True, duplicates='drop')
         pos_quant, pos_bins = pd.qcut(pos_svm, q=int(n_quant/2), retbins=True, duplicates='drop')
@@ -24,6 +25,8 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
         # Get the quantiles of the observed values
         obs_bins = np.searchsorted(bins_values, obs_svm, side='left') - 1
         n_quant += 5
+        if n_quant > 200:
+            break
 
     # Get the probability of each quantile
     quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
@@ -46,6 +49,8 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
         # Get the bin of the observed values
         obs_bins = np.searchsorted(bins_values, obs_svm, side='left') - 1
         n_bin += 5
+        if n_bin > 200:
+            break
 
     # Get the probability of each bin
     bin_proba = hist_svm[0] / np.sum(hist_svm[0])

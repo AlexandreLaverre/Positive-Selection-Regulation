@@ -10,6 +10,7 @@ from alive_progress import alive_bar
 import sys
 sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
 import SVM_functions as SVM
+np.random.seed(1234)
 
 path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
 species = "human"
