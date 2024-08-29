@@ -15,6 +15,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species common name (e.g: human dog)")
 parser.add_argument("sample", help="Study and Transcription Factor: Wilson/CEBPA Schmidt/CTCF...")
+parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for deltasSVM (default=50)")
 parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
@@ -30,7 +31,7 @@ if args.cluster:
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
-pathResults = f'{path}/results/positive_selection/BroadPeaks/{args.species}/{args.sample}/'
+pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol_old as ML
 
