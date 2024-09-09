@@ -65,7 +65,7 @@ rule MaxLLTest:
     shell:
         """
         python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
-        --peakType {peakType} --Bins {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
+        --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
         -T {threads} --{cluster} &> {log.out}
         """
 
