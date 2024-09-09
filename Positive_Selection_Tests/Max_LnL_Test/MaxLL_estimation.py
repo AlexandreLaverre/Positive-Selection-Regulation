@@ -9,6 +9,7 @@ import warnings
 import argparse
 import sys
 
+np.random.seed(1234)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ########################################################################################################################
@@ -19,7 +20,7 @@ parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or Br
 parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for deltasSVM (default=50)")
 parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
-parser.add_argument("--Bins", default="hist", type=str, help="Method to cut SVM distribution (hist or quantile)")
+parser.add_argument("--binType", default="quantile", type=str, help="Method to cut SVM distribution (hist or quantile)")
 parser.add_argument("--threshold", default="0.01", type=float, help="Significance threshold for the test (default=0.01)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
@@ -31,7 +32,7 @@ plots = False
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
@@ -57,7 +58,7 @@ def estimate_evolution(id, plots=False):
         print(f"{id} has not enough substitutions with distinct effect to perform the test")
         return None
 
-    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=args.threshold, min_bin=args.NbBin, bins=args.Bins)
+    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=args.threshold, min_bin=args.NbBin, bins=args.binType)
     estimations.insert(0, "ID", [id])
 
     if plots:
@@ -82,11 +83,11 @@ def estimate_evolution(id, plots=False):
 if args.Simulation:
     Ancestral_deltas_file = "simulated_initial_all_possible_deltaSVM.txt"
     Focal_deltas_file = f"simul_{args.Simulation}_observed_deltaSVM.txt"
-    Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.NbBin}bins.csv"
+    Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv2"
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_{args.Bins}_{args.NbBin}bins_threshold_{args.threshold}.csv"
+    Output_file = f"MLE_summary_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv"
 
 All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))

@@ -6,8 +6,8 @@ import matplotlib as mat
 import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import chi2
-
 np.random.seed(1234)
+
 
 # Get the quantiles of the SVM distribution of each side
 def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
