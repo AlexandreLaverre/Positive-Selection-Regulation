@@ -36,7 +36,7 @@ else:
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol as ML
-pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
 
 
 if plots:
