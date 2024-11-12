@@ -14,7 +14,7 @@ np.random.seed(1234)
 
 path = f"/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/"
 species = "human"
-TF = "Wilson/HNF6"
+TF = "Schmidt12/CTCF"
 PathSequence = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/sequences/"
 PathModel = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/Model/kmer_predicted_weight.txt"
 
@@ -27,43 +27,42 @@ Nsimul = 5000
 ####################################################################################################
 def get_simulated_sequences(seq_id, method=Simu_method):
     original_seq = str(initial_sequences[seq_id].seq)
-    if 20 <= len(original_seq) <= 1000:
-        chromosome = seq_id.split(':')[0]
-        sub_mat_proba = SubMats[chromosome]
-        sub_mat_proba_norm = SubMats_norm[chromosome]
-        nsub = np.random.randint(2, max_mut+1)
+    chromosome = seq_id.split(':')[0]
+    sub_mat_proba = SubMats[chromosome]
+    sub_mat_proba_norm = SubMats_norm[chromosome]
+    nsub = np.random.randint(2, max_mut+1)
 
-        if method == "500_rounds":
-            # Simulate 500 sequences
-            random_seq = SVM.get_random_seqs(original_seq, sub_mat_proba, sub_mat_proba_norm, n_sub=nsub, n_rand=500)
-            deltas = {}
-            for seq in random_seq:
-                deltas[seq] = SVM.calculate_delta(original_seq, seq, SVM_dict)
+    if method == "500_rounds":
+        # Simulate 500 sequences
+        random_seq = SVM.get_random_seqs(original_seq, sub_mat_proba, sub_mat_proba_norm, n_sub=nsub, n_rand=500)
+        deltas = {}
+        for seq in random_seq:
+            deltas[seq] = SVM.calculate_delta(original_seq, seq, SVM_dict)
 
-            # Stabilising selection: find the lowest change in delta
-            stab_id = min(deltas, key=lambda k: abs(deltas[k]))
+        # Stabilising selection: find the lowest change in delta
+        stab_id = min(deltas, key=lambda k: abs(deltas[k]))
 
-            # Positive selection: find the highest change in delta
-            pos_id = max(deltas, key=lambda k: abs(deltas[k]))
+        # Positive selection: find the highest change in delta
+        pos_id = max(deltas, key=lambda k: abs(deltas[k]))
 
-            # Random drift: find a random seq
-            rand_id = random.choice(list(deltas.keys()))
+        # Random drift: find a random seq
+        rand_id = random.choice(list(deltas.keys()))
 
-        elif method == "deltas":
-            deltas = SVM.compute_all_delta(original_seq, SVM_dict)
-            deltas = {k: v for k, v in deltas.items() if v not in [None, "NA"]}
-            for k, v in deltas.items():
-                deltas[k] = float(v)
+    elif method == "deltas":
+        deltas = SVM.compute_all_delta(original_seq, SVM_dict)
+        deltas = {k: v for k, v in deltas.items() if v not in [None, "NA"]}
+        for k, v in deltas.items():
+            deltas[k] = float(v)
 
-            stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
-            pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="positive")
-            rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
+        stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
+        pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="positive")
+        rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
 
-        stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
-        pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description="")
-        null_seq = SeqRecord(Seq(rand_id), id=seq_id, description="")
+    stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
+    pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description="")
+    null_seq = SeqRecord(Seq(rand_id), id=seq_id, description="")
 
-        return seq_id, stab_seq, pos_seq, null_seq
+    return seq_id, stab_seq, pos_seq, null_seq
 
 
 ####################################################################################################
@@ -82,10 +81,10 @@ seq_ids = []
 for ID in initial_sequences.keys():
     nb_sub = SVM.get_sub_number(ancestral_sequences[ID], initial_sequences[ID])
     chr = ID.split(':')[0]
-    if chr in SubMats.keys() and nb_sub > 1:
+    if chr in SubMats.keys() and 20 <= len(initial_sequences[ID]) <= 1000 and nb_sub > 1:
         seq_ids.append(ID)
 
-    if len(seq_ids) == Nsimul+1:
+    if len(seq_ids) == Nsimul:
         break
 
 Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
