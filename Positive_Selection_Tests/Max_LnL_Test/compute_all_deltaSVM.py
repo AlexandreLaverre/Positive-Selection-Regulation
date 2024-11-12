@@ -86,7 +86,7 @@ os.makedirs(f"{pathResults}/deltas/", exist_ok=True)
 if args.Simulation:
     FocalSeqs = {}
     # Define input and output files
-    output_files['all'] = open(f"{pathResults}/deltas/simul_{args.Simulation}_initial_all_possible_deltaSVM.txt", "w")
+    output_files['all'] = open(f"{pathResults}/deltas/focal_all_possible_deltaSVM.txt", "w")
     targets = ["stabilising", "neutral", "positive"]
     for evol in targets:
         output_files[evol] = open(f"{pathResults}/deltas/simul_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
