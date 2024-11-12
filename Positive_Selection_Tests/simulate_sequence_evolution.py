@@ -8,19 +8,20 @@ import random
 from multiprocessing import Pool
 from alive_progress import alive_bar
 import sys
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/')
-import SVM_functions as SVM
+sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/functions/')
+import SVM
 np.random.seed(1234)
 
-path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
+path = f"/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/"
 species = "human"
-TF = "Wilson/CEBPA"
-PathSequence = f"{path}/positive_selection/{species}/{TF}/sequences/"
-PathModel = f"{path}/positive_selection/{species}/{TF}/Model/kmer_predicted_weight.txt"
+TF = "Wilson/HNF6"
+PathSequence = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/sequences/"
+PathModel = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/Model/kmer_predicted_weight.txt"
 
-max_mut = 10
-Simu_method = "500_rounds"
+max_mut = 20
+Simu_method = "deltas"
 NbThread = 8
+Nsimul = 5000
 
 
 ####################################################################################################
@@ -50,8 +51,10 @@ def get_simulated_sequences(seq_id, method=Simu_method):
 
         elif method == "deltas":
             deltas = SVM.compute_all_delta(original_seq, SVM_dict)
+            deltas = {k: v for k, v in deltas.items() if v not in [None, "NA"]}
             for k, v in deltas.items():
                 deltas[k] = float(v)
+
             stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
             pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="positive")
             rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
@@ -78,10 +81,11 @@ ancestral_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_a
 seq_ids = []
 for ID in initial_sequences.keys():
     nb_sub = SVM.get_sub_number(ancestral_sequences[ID], initial_sequences[ID])
-    if nb_sub > 1:
+    chr = ID.split(':')[0]
+    if chr in SubMats.keys() and nb_sub > 1:
         seq_ids.append(ID)
 
-    if len(seq_ids) == 1001:
+    if len(seq_ids) == Nsimul+1:
         break
 
 Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
