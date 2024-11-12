@@ -81,9 +81,9 @@ def estimate_evolution(id, plots=False):
 
 ########################################################################################################################
 if args.Simulation:
-    Ancestral_deltas_file = "simulated_initial_all_possible_deltaSVM.txt"
+    Ancestral_deltas_file = "focal_all_possible_deltaSVM.txt"
     Focal_deltas_file = f"simul_{args.Simulation}_observed_deltaSVM.txt"
-    Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv2"
+    Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv"
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
