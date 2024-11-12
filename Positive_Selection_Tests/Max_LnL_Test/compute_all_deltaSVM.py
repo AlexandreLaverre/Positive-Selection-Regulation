@@ -90,7 +90,8 @@ if args.Simulation:
     targets = ["stabilising", "neutral", "positive"]
     for evol in targets:
         output_files[evol] = open(f"{pathResults}/deltas/simul_{args.Simulation}_{evol}_observed_deltaSVM.txt", "w")
-        FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/simul_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
+        # Get focal sequences
+        FocalSeqs[evol] = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/simulated_sequences_by_{args.Simulation}_{evol}_evolution.fa"), "fasta"))
 
     # Get initial sequences
     AncestralSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_sequences.fa"), "fasta"))
