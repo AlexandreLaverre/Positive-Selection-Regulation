@@ -36,7 +36,7 @@ if [ ${cluster} = "cluster" ]; then
 
 else
 	export pathScripts=/Users/alaverre/Documents/Detecting_positive_selection/scripts/detect_positive_selection/Positive_Selection_Tests/Max_LnL_Test/
-	python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} -T ${nbThread} --NbBin ${nbBin}
+	python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} -T ${nbThread} --NbBin ${nbBin} -S ${simul}
 fi
 
 ##################################################################
