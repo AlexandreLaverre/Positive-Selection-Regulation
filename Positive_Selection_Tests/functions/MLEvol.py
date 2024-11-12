@@ -195,7 +195,7 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="h
     conclusion = "Neutral model"
     if p_value_null_purif < alpha_threshold:
         conclusion = conclusion_purif(model_purif.x[0])
-    if p_value_purif_pos < p_value_null_purif and p_value_purif_pos < alpha_threshold:
+    if p_value_purif_pos < alpha_threshold:  # p_value_purif_pos < p_value_null_purif and
         conclusion = conclusion_pos(model_pos.x[0], model_pos.x[1])
 
     if verbose:
