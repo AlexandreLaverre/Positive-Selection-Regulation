@@ -9,8 +9,6 @@ import random
 from multiprocessing import Pool
 from alive_progress import alive_bar
 import sys
-sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/Positive_Selection_Tests/functions/')
-import SVM
 np.random.seed(1234)
 
 parser = argparse.ArgumentParser()
@@ -20,11 +18,18 @@ parser.add_argument("Method", help="How to simulate: deltas, 500_rounds")
 parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
 parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=20)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
+parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
-path = f"/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/"
-PathSequence = f"{path}/positive_selection/NarrowPeaks/{args.species}/{args.TF}/sequences/"
-PathModel = f"{path}/positive_selection/NarrowPeaks/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
+if args.cluster:
+    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
+else:
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+
+PathSequence = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/sequences/"
+PathModel = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
+sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+import SVM
 
 ####################################################################################################
 def get_simulated_sequences(seq_id, method=args.Method):
