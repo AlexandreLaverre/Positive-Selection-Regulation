@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+import argparse
 import numpy as np
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -12,25 +13,26 @@ sys.path.append('/Users/alaverre/Documents/Detecting_positive_selection/scripts/
 import SVM
 np.random.seed(1234)
 
+parser = argparse.ArgumentParser()
+parser.add_argument("species", help="Species name: human dog ...")
+parser.add_argument("TF", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
+parser.add_argument("Method", help="How to simulate: deltas, 500_rounds")
+parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
+parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=20)")
+parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
+args = parser.parse_args()
+
 path = f"/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/"
-species = "human"
-TF = "Schmidt12/CTCF"
-PathSequence = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/sequences/"
-PathModel = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/Model/kmer_predicted_weight.txt"
-
-max_mut = 20
-Simu_method = "deltas"
-NbThread = 8
-Nsimul = 5000
-
+PathSequence = f"{path}/positive_selection/NarrowPeaks/{args.species}/{args.TF}/sequences/"
+PathModel = f"{path}/positive_selection/NarrowPeaks/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
 
 ####################################################################################################
-def get_simulated_sequences(seq_id, method=Simu_method):
+def get_simulated_sequences(seq_id, method=args.Method):
     original_seq = str(initial_sequences[seq_id].seq)
     chromosome = seq_id.split(':')[0]
     sub_mat_proba = SubMats[chromosome]
     sub_mat_proba_norm = SubMats_norm[chromosome]
-    nsub = np.random.randint(2, max_mut+1)
+    nsub = np.random.randint(2, args.MaxMut+1)
 
     if method == "500_rounds":
         # Simulate 500 sequences
@@ -70,7 +72,7 @@ def get_simulated_sequences(seq_id, method=Simu_method):
 SVM_dict = SVM.get_svm_dict(PathModel)
 
 # Get substitution matrix for each chromosome
-SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/substitution_matrix/{species}/")
+SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/substitution_matrix/{args.species}/")
 
 # Get initial sequences
 initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_focal_sequences.fa"), "fasta"))
@@ -84,7 +86,7 @@ for ID in initial_sequences.keys():
     if chr in SubMats.keys() and 20 <= len(initial_sequences[ID]) <= 1000 and nb_sub > 1:
         seq_ids.append(ID)
 
-    if len(seq_ids) == Nsimul:
+    if len(seq_ids) == args.Nsimul:
         break
 
 Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
@@ -92,7 +94,7 @@ Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
 ####################################################################################################
 if __name__ == '__main__':
     with alive_bar(len(seq_ids)) as bar:  # progress bar
-        with Pool(NbThread) as pool:
+        with Pool(args.NbThread) as pool:
             # Run function for each sequence in parallel
             for results in pool.imap_unordered(get_simulated_sequences, seq_ids):
                 bar()
@@ -104,7 +106,7 @@ if __name__ == '__main__':
     dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
 
     for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_by_{Simu_method}_{dict_name}_evolution.fa", 'w') as output:
+        with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################
