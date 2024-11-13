@@ -236,7 +236,8 @@ def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random"):
     else:
         side = np.random.choice([0.99, 0.01])
         mean = np.quantile(deltas, side) if evol == "positive" else 0
-        weights = np.array([stats.norm.pdf(svm, loc=mean, scale=0.5) for svm in deltas])
+        sd = 0.5 if evol == "positive" else 0.1
+        weights = np.array([stats.norm.pdf(svm, loc=mean, scale=sd) for svm in deltas])
         weights /= np.sum(weights)
         sampled_sub = np.random.choice(list(dic_deltas.keys()), size=n_sub, p=weights, replace=False)
 
