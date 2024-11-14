@@ -32,7 +32,7 @@ plots = False
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol as ML

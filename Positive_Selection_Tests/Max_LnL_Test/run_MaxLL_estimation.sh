@@ -5,7 +5,8 @@ export sample=$2				# i.e: Wilson/CEBPA Schmidt/HNF4A ...
 export nbThread=$3				# i.e: int (number of part for parallelization)
 export nbBin=$4					# i.e: int (number of bins for all deltas distribution)
 export cluster=$5				# i.e: local or cluster
-export simul=${6:-False}				# i.e: int (number of bins for all deltas distribution)
+export method=$6				# i.e: local or cluster
+export simul=${7:-False}				# i.e: int (number of bins for all deltas distribution)
 
 export Prefix=${species}_${sample/\//_}
 
@@ -31,7 +32,7 @@ if [ ${cluster} = "cluster" ]; then
 	echo "source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	echo "conda activate TestPos" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
-	echo "python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} -T ${nbThread} --NbBin ${nbBin} -S ${simul} --cluster" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
+	echo "python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} -T ${nbThread} --NbBin ${nbBin} -S ${simul} --binType ${method} --cluster" >> ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 	sbatch ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 else
