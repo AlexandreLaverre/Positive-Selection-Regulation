@@ -215,7 +215,8 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
 
 
 def mutate_from_ids(seq, ids):
-    ids = list(ids) if type(ids) is not list else ids
+    ids = [ids] if type(ids) is not list else ids
+    seq = list(seq) if type(seq) is not list else seq
     seq = list(seq.copy())
     for sub in ids:
         id_pos = sub.split(":")[0]
@@ -229,12 +230,12 @@ def mutate_from_ids(seq, ids):
     return ''.join(seq)
 
 
-def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random"):
+def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random", quantile=0.01):
     deltas = np.array(list(dic_deltas.values()))
     if evol == "random":
         sampled_sub = np.random.choice(list(dic_deltas.keys()), size=n_sub, replace=False)
     else:
-        side = np.random.choice([0.99, 0.01])
+        side = np.random.choice([100-quantile, 0+quantile])
         mean = np.quantile(deltas, side) if evol == "positive" else 0
         sd = 0.5 if evol == "positive" else 0.1
         weights = np.array([stats.norm.pdf(svm, loc=mean, scale=sd) for svm in deltas])
@@ -250,7 +251,7 @@ def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins=False):
     n_deltas = len(all_deltas)
     # If random: all substitutions probabilities = 1
     if len(params) == 0:
-        proba_substitution = np.ones(n_deltas)
+        proba_fixation = np.ones(n_deltas)
     else:
         if n_bins:
             # Weighted probability of substitutions for each bin
@@ -261,14 +262,14 @@ def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins=False):
 
             # Find back the probability for each bin of deltas
             deltas_bin = np.searchsorted(bins_values, all_deltas, side='left') - 1
-            proba_substitution = [proba_substi_bin[i] if i >= 0 else proba_substi_bin[0] for i in deltas_bin]
+            proba_fixation = [proba_substi_bin[i] if i >= 0 else proba_substi_bin[0] for i in deltas_bin]
 
         else:
             # Compute probability of fixation for all deltas
             #delta_bounds = [np.nanmin(all_deltas), np.nanmax(all_deltas)]
             proba_fixation = np.zeros(n_deltas)
             for d in range(n_deltas):
-                s = ML.coeff_selection(all_deltas[d], params)
+                s = ML.coeff_selection(all_deltas[d], params)  # /! take bin values now
                 proba_fixation[d] = ML.proba_fixation(s)
 
     # Weighted probability of mutations for each position*direction (length_seq*3)

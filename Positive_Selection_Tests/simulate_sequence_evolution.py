@@ -18,13 +18,15 @@ parser.add_argument("Method", help="How to simulate: deltas, 500_rounds")
 parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
 parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=20)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
+parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for positive selection (default=0.01)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/results/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+
 
 PathSequence = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/sequences/"
 PathModel = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
@@ -62,7 +64,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
             deltas[k] = float(v)
 
         stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
-        pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="positive")
+        pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, quantile=args.quantile, evol="positive")
         rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
 
     stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
@@ -77,7 +79,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
 SVM_dict = SVM.get_svm_dict(PathModel)
 
 # Get substitution matrix for each chromosome
-SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/substitution_matrix/{args.species}/")
+SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/cluster/results/substitution_matrix/{args.species}/")
 
 # Get initial sequences
 initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_focal_sequences.fa"), "fasta"))
@@ -110,8 +112,11 @@ if __name__ == '__main__':
 
     dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
 
-    for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
-            SeqIO.write(dic.values(), output, 'fasta')
+    with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{args.quantile}_positive_evolution.fa", 'w') as output:
+        SeqIO.write(dictionaries["positive"].values(), output, 'fasta')
+
+    #for dict_name, dic in dictionaries.items():
+    #    with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
+    #        SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################
