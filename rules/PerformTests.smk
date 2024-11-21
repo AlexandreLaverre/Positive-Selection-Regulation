@@ -15,7 +15,7 @@ rule PermutationTest:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
-    output: touch(pathResults + "/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt")
+    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt")
     threads: config["nbPart"]
     priority: 2
     log: out=pathResults + "/log/{TF}/PermutationTest.out"
@@ -57,7 +57,7 @@ rule MaxLLTest:
     input:
         AllSVM = pathResults + "/{TF}/deltas/ancestral_all_possible_deltaSVM.txt",
         ObsSVM = pathResults + "/{TF}/deltas/ancestral_to_observed_deltaSVM.txt"
-    output: touch(pathResults + "/{TF}/MLE_summary_{BinType}_{nbBin}bins_threshold_{threshold}.csv")
+    output: touch(pathResults + "/{TF}/Tests/MLE_summary_{BinType}_{nbBin}bins_threshold_{threshold}.csv")
     log: out = pathResults + "/log/{TF}/MaxLLTest_{BinType}_{nbBin}_{threshold}.out"
     threads: config["nbPart"]
     params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],

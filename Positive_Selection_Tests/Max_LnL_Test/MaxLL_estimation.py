@@ -88,7 +88,7 @@ if args.Simulation:
 else:
     Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
     Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
-    Output_file = f"MLE_summary_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv"
+    Output_file = f"Tests/MLE_summary_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv"
 
 All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))
