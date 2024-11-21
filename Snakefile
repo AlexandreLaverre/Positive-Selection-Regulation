@@ -28,7 +28,7 @@ peakType = config["peakType"]
 cluster = config["cluster"]
 threshold = str(config["threshold"])
 
-species = config["species"]
+species = config["sp"]
 samples = config[sp]["sample"]
 
 pathResults = f"../results/positive_selection/{peakType}/"
