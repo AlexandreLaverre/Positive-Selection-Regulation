@@ -52,9 +52,9 @@ else:
 ########################################################################################################################
 rule all:
     input :
-        MaxLLTest = expand(pathResults + "/{TF}/Tests/MLE_summary_" + str(config["BinType"]) + "_" + str(config["nbBin"]) + "bins_threshold_" + str(config["threshold"]) + ".csv", TF=config["TFs"][sample]),
-        PosSelTest = expand(pathResults + "/{TF}/Test/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt",TF=config["TFs"][sample]),
-        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=config["TFs"][sample]),
+        MaxLLTest = expand(pathResults + "{sp}/{sample}/{TF}/Tests/MLE_summary_" + str(config["BinType"]) + "_" + str(config["nbBin"]) + "bins_threshold_" + str(config["threshold"]) + ".csv", TF=config["TFs"][sample]),
+        PosSelTest = expand(pathResults + "{sp}/{sample}/{TF}/Test/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt",TF=config["TFs"][sample]),
+        archive= expand(pathResults + "{sp}/{sample}/{TF}/alignments.archive.tar.gz",TF=config["TFs"][sample]),
 
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
