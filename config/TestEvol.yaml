@@ -2,7 +2,7 @@ name: TestEvol
 nbPart: 10
 nbRand: 10000
 nbBin: 50
-BinType: 'quantile'
+BinType: 'hist'
 threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
@@ -68,11 +68,12 @@ dog:
     UCSC_Assembly: 'canFam3.fa.gz'
     Ensembl_Assembly: 'Canis_lupus_familiaris.CanFam3.1.dna_sm.toplevel.fa.gz'
     suffix: ''
-    sample: ['Wilson', 'Rensch', 'Schmidt12']
+    sample: ['Wilson', 'Schmidt12']
 rabbit:
     UCSC_Assembly: 'oryCun2.fa.gz'
     Ensembl_Assembly: 'GCA_000003625.1_OryCun2.0_genomic.fna.gz'
     suffix: ''
+    sample: ['Rensch']
 chicken:
     UCSC_Assembly: 'galGal6.fa.gz'
     Ensembl_Assembly: 'Gallus_gallus.GRCg6a.dna_sm.toplevel.fa.gz'
@@ -82,7 +83,7 @@ cat:
     UCSC_Assembly: 'felCat8.fa.gz'
     Ensembl_Assembly: 'sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.fna.gz'
     suffix: ''
-    sample: ['Schmidt10', 'Rensch']
+    sample: ['Myers', 'Rensch']
 drosophila:
     UCSC_Assembly: 'dm6.fa.gz'
     Ensembl_Assembly: 'dmel-all-r6.36_genomic.fna.gz'
