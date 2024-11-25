@@ -5,6 +5,10 @@ export sample=$2			      # i.e: Wilson Schmidt Rensch ...
 export TF=$3			          # i.e: CEBPA CTCF HNF4A ...
 export threads=$4
 
+if [[ $species == "human" ]]; then GenomeSize=2913022398; fi
+if [[ $species == "drosophila" ]]; then GenomeSize=142573017; fi
+if [[ $species == "mouse" ]]; then GenomeSize=2652783500; fi
+
 path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/peaks_calling/NarrowPeaks
 pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/
 pathResults=${pathPeaks}/deepTools/coverage/
@@ -33,7 +37,7 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -o ${pathResults}/${TF}/${indiv}_bgNorm_readCount.bw \
     --binSize 1 \
     --scaleFactorsMethod readCount \
-    --effectiveGenomeSize 2913022398 \
+    --effectiveGenomeSize ${GenomeSize} \
     -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
     #    --centerReads --sampleLength 1000 --normalizeUsing RPKM \
 
