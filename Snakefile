@@ -56,8 +56,8 @@ rule all:
         PosSelTest = expand(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt",TF=config["TFs"][sample]),
         archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=config["TFs"][sample]),
 
+        model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample]),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
-        #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample])
 
 # TMP run on all species
 #FinalFiles= expand([
