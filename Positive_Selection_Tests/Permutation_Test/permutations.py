@@ -33,7 +33,7 @@ import SVM
 
 if args.Simulation:
     pathSelection = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
-    Focal_fasta = f"{pathSelection}/sequences/simul_{args.Simulation}_evolution.fa"
+    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_{args.Simulation}_evolution.fa"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
 
