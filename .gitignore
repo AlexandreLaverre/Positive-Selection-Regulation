@@ -6,6 +6,8 @@
 *.exe
 *.o
 *.so
+*.afdesign
+*~
 
 # Packages #
 ############
@@ -48,3 +50,5 @@ ChIPseq_analyses/work/
 .snakemake/
 */__pycache__/
 */*/__pycache__/
+out/
+*_bibtex.bib
