@@ -32,6 +32,7 @@ PathSequence = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.spe
 PathModel = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
+import MLEvol
 
 ####################################################################################################
 def get_simulated_sequences(seq_id, method=args.Method):
@@ -66,7 +67,44 @@ def get_simulated_sequences(seq_id, method=args.Method):
         stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
         pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, quantile=args.quantile, evol="positive")
         rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
+    elif method == "beta":
+        deltas = SVM.compute_all_delta(original_seq, SVM_dict)
+        deltas = {k: float(v) for k, v in deltas.items() if v not in [None, "NA"]}
 
+        # Sort deltas by value
+        deltas = {k: v for k, v in sorted(deltas.items(), key=lambda item: item[1])}
+        deltas_pos = {k: v for k, v in deltas.items() if v >= 0}
+        deltas_neg = {k: v for k, v in deltas.items() if v < 0}
+
+        # Transform deltas to phenotype: min=0, max=1, midpoint of the distribution = 0.5 (for delta = 0)
+        pheno_pos = {k: 0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i, k in enumerate(deltas_pos.keys())}
+        pheno = {k: 0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i, k in enumerate(deltas_neg.keys())}
+        pheno.update(pheno_pos)
+        assert len(pheno) == len(deltas)
+        assert min(pheno.values()) > 0.
+        assert max(pheno.values()) < 1.
+        mut_ids = list(deltas.keys())
+        for i in range(1, len(pheno)):
+            assert pheno[mut_ids[i]] > pheno[mut_ids[i - 1]]
+        assert list(pheno.keys()) == list(deltas.keys())
+
+        pos_nuc_list = [(int(i.split(":")[0].replace("pos", "")), i.split(":")[1]) for i in mut_ids]
+        mut_rates = np.array([sub_mat_proba[original_seq[pos]][nuc] for pos, nuc in pos_nuc_list])
+        assert not np.isnan(mut_rates).any()
+
+        # Phenotype array
+        pheno_array = np.array(list(pheno.values()))
+        rand_sub_rates = MLEvol.proba_substitution([], mut_rates, pheno_array)
+        stab_sub_rates = MLEvol.proba_substitution([130], mut_rates, pheno_array)
+        p = random.sample([40, 4], k=2)
+        pos_sub_rates = MLEvol.proba_substitution(p, mut_rates, pheno_array)
+
+        rand_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, rand_sub_rates, nsub)
+        stab_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, stab_sub_rates, nsub)
+        pos_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, pos_sub_rates, nsub)
+    else:
+        print("Method not recognized")
+        exit(1)
     stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
     pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description="")
     null_seq = SeqRecord(Seq(rand_id), id=seq_id, description="")

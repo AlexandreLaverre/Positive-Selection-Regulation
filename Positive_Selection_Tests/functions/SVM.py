@@ -1,5 +1,6 @@
 import random
 from Bio.Seq import Seq
+import gzip
 import os
 import pandas
 import numpy as np
@@ -10,12 +11,17 @@ import MLEvol as ML
 all_nuc = ["A", "T", "C", "G"]
 
 
+# Open a file with gzip if it is a .gz file
+def open_file(path, rw="r"):
+    return gzip.open(path, f'{rw}t') if path.endswith(".gz") else open(path, rw)
+
+
 ########################################################################################################################
 ##################################### Deltas associated functions ######################################################
 # Get SVM score for each kmer of a given model
 def get_svm_dict(path_model):
     svm_dict = {}
-    with open(path_model, 'r') as model:
+    with open_file(path_model, 'r') as model:
         for i in model.readlines():
             i = i.strip("\n")
             i = i.split("\t")
@@ -246,6 +252,12 @@ def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random", quantile=0.01):
 
     return mutate_seq
 
+def mutate_from_sub_rates(seq, mut_ids, sub_rates, n_sub):
+    # Replace NaN values by 0
+    sub_rates = np.nan_to_num(sub_rates)
+    sampled_sub = np.random.choice(mut_ids, size=n_sub, p=sub_rates, replace=False)
+    mutate_seq = mutate_from_ids(list(seq), sampled_sub)
+    return mutate_seq
 
 def proba_delta_mut(original_seq, sub_mat, all_deltas, params, n_bins=False):
     n_deltas = len(all_deltas)
