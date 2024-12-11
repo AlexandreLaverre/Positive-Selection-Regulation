@@ -16,13 +16,14 @@ np.random.seed(1234)
 ####################################################################################################
 species = "human"
 TF = "Wilson/CEBPA"
-path = f"/Users/alaverre/Documents/Detecting_positive_selection/results/"
-pathResult = f"{path}/positive_selection/{species}/{TF}/"
+path = f"/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/"
+pathResult = f"{path}/positive_selection/NarrowPeaks/{species}/{TF}/"
 
-max_sub = 25
-NbThread = 8
+max_sub = 20
+NbThread = 1
 maxLength = 1000
-Nbin = False
+bin = "quantile" # or "hist"
+Nbin = 50
 epistasis = True
 BackMutation = False
 prefix = f"{'epistasis' if epistasis else 'independent_SVM'}_{'with_backMut' if BackMutation else 'without_backMut'}"
@@ -59,6 +60,8 @@ def get_simulated_sequences(seq_id):
         sub_mat = [SubMats[chromosome], SubMats_norm[chromosome]]
         nsub = np.random.randint(2, max_sub+1)
 
+        print(seq_id)
+        print(seq_length-1)
         all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == seq_id, "pos0:A":f"pos{seq_length-1}:G"].iloc[0]
         all_svm_no_nan = all_svm_row.dropna()
         init_sub_id = all_svm_no_nan.index.tolist()
