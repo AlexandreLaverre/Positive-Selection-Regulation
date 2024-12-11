@@ -215,7 +215,7 @@ def get_random_seqs(seq, sub_prob, sub_prob_norm, n_sub, n_rand=1):
 
 
 def mutate_from_ids(seq, ids):
-    ids = [ids] if type(ids) is not list else ids
+    ids = list(ids) if type(ids) is not list else ids
     seq = list(seq) if type(seq) is not list else seq
     seq = list(seq.copy())
     for sub in ids:
@@ -235,7 +235,7 @@ def mutate_from_deltas(seq, dic_deltas, n_sub, evol="random", quantile=0.01):
     if evol == "random":
         sampled_sub = np.random.choice(list(dic_deltas.keys()), size=n_sub, replace=False)
     else:
-        side = np.random.choice([100-quantile, 0+quantile])
+        side = np.random.choice([1-quantile, 0+quantile])
         mean = np.quantile(deltas, side) if evol == "positive" else 0
         sd = 0.5 if evol == "positive" else 0.1
         weights = np.array([stats.norm.pdf(svm, loc=mean, scale=sd) for svm in deltas])
