@@ -52,3 +52,4 @@ ChIPseq_analyses/work/
 */*/__pycache__/
 out/
 *_bibtex.bib
+*.png
