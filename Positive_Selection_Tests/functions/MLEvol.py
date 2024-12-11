@@ -143,12 +143,6 @@ def conclusion_pos(alpha, beta):
         return f"Directional (+)"
     if m < 0.5:
         return f"Directional (-)"
-    #if alpha > 1.0 > beta:
-    #    return "Directional (+)"
-    #if alpha < 1.0 < beta:
-    #    return "Directional (-)"
-    #if alpha < 1.0 and beta < 1.0:
-    #    return f"Disruptive"
 
 
 def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="hist", verbose=False):
@@ -170,7 +164,7 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="h
     ll_neutral = loglikelihood(mutations_proba, obs_bins, scaled_bins, [])
 
     # Stabilizing selection: alpha = beta
-    bounds = [(0.0, np.inf)]
+    bounds = [(1.0, np.inf)]
     model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, scaled_bins, theta), np.array([1.0]),
                            bounds=bounds, method="Nelder-Mead")
     ll_purif = -model_purif.fun
@@ -195,7 +189,7 @@ def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="h
     conclusion = "Neutral model"
     if p_value_null_purif < alpha_threshold:
         conclusion = conclusion_purif(model_purif.x[0])
-    if p_value_purif_pos < alpha_threshold and p_value_null_pos < alpha_threshold:  # p_value_purif_pos < p_value_null_purif and
+    if p_value_null_pos < alpha_threshold and p_value_purif_pos < alpha_threshold:
         conclusion = conclusion_pos(model_pos.x[0], model_pos.x[1])
 
     if verbose:
