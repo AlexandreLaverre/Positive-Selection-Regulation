@@ -16,7 +16,7 @@ parser.add_argument("species", help="Species name: human dog ...")
 parser.add_argument("TF", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
 parser.add_argument("Method", help="How to simulate: deltas, 500_rounds")
 parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
-parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=20)")
+parser.add_argument("-M", "--MaxMut", default=10, type=int, help="Number of maximum mutation (default=10)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for positive selection (default=0.01)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
@@ -34,7 +34,17 @@ sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 import MLEvol
 
+
 ####################################################################################################
+def add_background_neutral(vec_proba, mut_rates, prop_neutral=0.1):
+    assert np.isclose(np.sum(vec_proba), 1.0)
+    assert 0 <= prop_neutral <= 1
+    vec_proba *= (1 - prop_neutral)
+    vec_proba += prop_neutral * mut_rates / np.sum(mut_rates)
+    assert np.isclose(np.sum(vec_proba), 1.0)
+    return vec_proba
+
+
 def get_simulated_sequences(seq_id, method=args.Method):
     original_seq = str(initial_sequences[seq_id].seq)
     chromosome = seq_id.split(':')[0]
@@ -67,6 +77,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
         stab_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="stabilising")
         pos_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, quantile=args.quantile, evol="positive")
         rand_id = SVM.mutate_from_deltas(original_seq, deltas, nsub, evol="random")
+
     elif method == "beta":
         deltas = SVM.compute_all_delta(original_seq, SVM_dict)
         deltas = {k: float(v) for k, v in deltas.items() if v not in [None, "NA"]}
@@ -95,9 +106,12 @@ def get_simulated_sequences(seq_id, method=args.Method):
         # Phenotype array
         pheno_array = np.array(list(pheno.values()))
         rand_sub_rates = MLEvol.proba_substitution([], mut_rates, pheno_array)
-        stab_sub_rates = MLEvol.proba_substitution([130], mut_rates, pheno_array)
-        p = random.sample([40, 4], k=2)
+        stab_sub_rates = MLEvol.proba_substitution([500], mut_rates, pheno_array)
+        stab_sub_rates = add_background_neutral(stab_sub_rates, mut_rates, prop_neutral=0.01)
+
+        p = random.sample([50, 1], k=2)
         pos_sub_rates = MLEvol.proba_substitution(p, mut_rates, pheno_array)
+        pos_sub_rates = add_background_neutral(pos_sub_rates, mut_rates, prop_neutral=0.01)
 
         rand_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, rand_sub_rates, nsub)
         stab_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, stab_sub_rates, nsub)
@@ -105,6 +119,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
     else:
         print("Method not recognized")
         exit(1)
+
     stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
     pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description="")
     null_seq = SeqRecord(Seq(rand_id), id=seq_id, description="")
@@ -150,11 +165,11 @@ if __name__ == '__main__':
 
     dictionaries = {'stabilising': Stabilised_dict, 'positive': Positive_dict, 'neutral': Neutral_dict}
 
-    with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{args.quantile}_positive_evolution.fa", 'w') as output:
-        SeqIO.write(dictionaries["positive"].values(), output, 'fasta')
+    #with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{args.quantile}_positive_evolution.fa", 'w') as output:
+    #    SeqIO.write(dictionaries["positive"].values(), output, 'fasta')
 
-    #for dict_name, dic in dictionaries.items():
-    #    with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
-    #        SeqIO.write(dic.values(), output, 'fasta')
+    for dict_name, dic in dictionaries.items():
+        with open(f"{PathSequence}/simulated_sequences_by_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
+            SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################
