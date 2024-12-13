@@ -32,12 +32,16 @@ plots = False
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol as ML
-pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+import SVM
 
+pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+
+# Get substitution matrix for each chromosome
+SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/cluster/results/substitution_matrix/{args.species}/")
 
 if plots:
     import matplotlib.pyplot as plt
@@ -47,6 +51,9 @@ if plots:
 
 ########################################################################################################################
 def estimate_evolution(id, plots=False):
+    chromosome = id.split(':')[0]
+    sub_mat_proba = SubMats[chromosome]
+
     # Retrieve the corresponding deltas for each ID
     all_svm_row = All_SVM_All_seq.loc[All_SVM_All_seq['ID'] == id, "pos0:A":].iloc[0]
     obs_svm_row = Obs_SVM_All_seq.loc[Obs_SVM_All_seq['ID'] == id, 4:].iloc[0]
@@ -55,11 +62,27 @@ def estimate_evolution(id, plots=False):
     all_svm = all_svm_row.dropna().values.tolist()
     obs_svm = obs_svm_row.dropna().values.tolist()
 
+    # Get column names of the original sequence (deltaSVM=NA)
+    seq_len = int(len(all_svm)/3)
+    original_seq = all_svm_row[all_svm_row.isna()].index.tolist()[0:seq_len]
+
+    # Get all svm ids (pos:nuc:sub)
+    all_svm_id = []
+    for pos_id in original_seq:
+        pos = pos_id.split(":")[0]
+        nuc = pos_id.split(":")[1]
+        for sub in ["A", "T", "C", "G"]:
+            if nuc != sub:
+                all_svm_id.append(pos + ":" + nuc + ":" + sub)
+
     if len(set(obs_svm)) < 2:
         print(f"{id} has not enough substitutions with distinct effect to perform the test")
         return None
 
-    estimations, models = ML.run_estimations(all_svm, obs_svm, alpha_threshold=args.threshold, min_bin=args.NbBin, bins=args.binType)
+    # Run the Maximum Likelihood Estimation
+    estimations, models = ML.run_estimations(all_svm=all_svm, all_svm_id=all_svm_id, obs_svm=obs_svm,
+                                             sub_mat_proba=sub_mat_proba, alpha_threshold=args.threshold,
+                                             min_bin=args.NbBin, bins=args.binType)
     estimations.insert(0, "ID", [id])
 
     if plots:
