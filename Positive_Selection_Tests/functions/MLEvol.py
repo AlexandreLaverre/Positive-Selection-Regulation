@@ -9,8 +9,17 @@ from scipy.stats import chi2
 np.random.seed(1234)
 
 
+def sum_nuc_probs(nuc_changes, sub_mat_proba):
+    # Get the nucleotide probabilities for each substitution
+    sum_rate = 0
+    for i in range(len(nuc_changes)):
+        pos, source, target = nuc_changes[i].split(":")
+        sum_rate += sub_mat_proba[source][target]
+    return sum_rate
+
+
 # Get the quantiles of the SVM distribution of each side
-def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
+def get_svm_quantiles(all_svm, obs_svm, all_svm_ids, sub_mat_proba, n_quant=50):
     neg_svm = [x for x in all_svm if x <= 0]
     pos_svm = [x for x in all_svm if x > 0]
 
@@ -30,6 +39,18 @@ def get_svm_quantiles(all_svm, obs_svm, n_quant=50):
 
     # Get the probability of each quantile
     quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
+    # Sort the SVM values and keep the nuc_changes in the same order
+    sorted_svn, sorted_changes = zip(*sorted(zip(all_svm, all_svm_ids)))
+    min_quant = 0
+    for i in range(len(quant_count)):
+        # extract the SVM changes for each quantile
+        max_quant = min_quant + quant_count[i]
+        quant_changes = sorted_changes[min_quant:max_quant]
+        assert len(quant_changes) == quant_count[i]
+        # Get the nucleotide probabilities for each substitution
+        quant_count[i] = sum_nuc_probs(quant_changes, sub_mat_proba)
+        min_quant = max_quant
+
     quant_proba = quant_count / np.sum(quant_count)
 
     # Scaling the bins values to be between 0 and 1
@@ -76,7 +97,7 @@ def coeff_selection(bin_val, params):
     w_mutant = stats.beta.pdf(bin_val, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
 
-    if w_mutant < 1.e-10 or w_ancestral < 1.e-10:
+    if w_mutant < 1.e-20 or w_ancestral < 1.e-20:
         return -np.infty
     s = np.log(w_mutant / w_ancestral)
     return s
@@ -145,14 +166,14 @@ def conclusion_pos(alpha, beta):
         return f"Directional (-)"
 
 
-def run_estimations(all_svm, obs_svm, alpha_threshold=0.05, min_bin=100, bins="hist", verbose=False):
+def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold=0.05, min_bin=100, bins="hist", verbose=False):
     # Check if there are at least 2 different substitutions
     if len(set(obs_svm)) < 2:
         return None, None
 
     # Get the bin of the SVM distribution
     if bins == "quantile":
-        mutations_proba, obs_bins, scaled_bins = get_svm_quantiles(all_svm, obs_svm, n_quant=min_bin)
+        mutations_proba, obs_bins, scaled_bins = get_svm_quantiles(all_svm, obs_svm, all_svm_id, sub_mat_proba, n_quant=min_bin)
     elif bins == "hist":
         mutations_proba, obs_bins, scaled_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
     else:
