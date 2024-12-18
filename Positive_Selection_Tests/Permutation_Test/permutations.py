@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("species", help="Species name: human dog")
 parser.add_argument("sample", help="Study name: Wilson Schmidt...")
 parser.add_argument("TF", help="Transcription Factor: CEBPA CTCF ...")
-parser.add_argument("peakType", help="NarrowPeaks or BroadPeaks")
+parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("--NbRand", default=10000, type=int, help="Number of random substitutions permutations per sequence (default=10k")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 parser.add_argument("-S", "--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
@@ -32,8 +32,8 @@ sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
 if args.Simulation:
-    pathSelection = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
-    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_{args.Simulation}_evolution.fa"
+    pathSelection = f"{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
+    Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}_evolution.fa"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
 
@@ -56,7 +56,7 @@ else:
     #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
-pathSubMat = f"{path}/results/substitution_matrix/{args.species}/"
+pathSubMat = f"{path}/cluster/results/substitution_matrix/{args.species}/"
 
 
 ####################################################################################################
