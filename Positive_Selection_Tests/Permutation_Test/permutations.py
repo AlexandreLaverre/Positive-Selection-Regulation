@@ -52,7 +52,7 @@ else:
     pathSelection = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
-    Output = open(pathSelection + "/Tests/PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations.txt", "w")
+    Output = open(pathSelection + "/Tests/PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations_last.txt", "w")
     #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
