@@ -22,7 +22,7 @@ rule PermutationTest:
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {peakType} \
+        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
         --NbRand {config[nbRand]} --{cluster} --NbThread {threads} &> {log.out}
         """
 
