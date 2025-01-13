@@ -25,14 +25,17 @@ args = parser.parse_args()
 
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
+    pathResults = f"{path}/results/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+    pathResults = f"{path}/cluster/results/"
+
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
 if args.Simulation:
-    pathSelection = f"{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
+    pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}_evolution.fa"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
@@ -49,14 +52,14 @@ if args.Simulation:
     # Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
     # Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
-    pathSelection = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
+    pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
     Output = open(pathSelection + "/Tests/PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations_last.txt", "w")
     #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
-ModelEstimation = f"{pathSelection}Model/kmer_predicted_weight.txt"
-pathSubMat = f"{path}/cluster/results/substitution_matrix/{args.species}/"
+ModelEstimation = f"{pathSelection}/Model/kmer_predicted_weight.txt"
+pathSubMat = f"{pathResults}/substitution_matrix/{args.species}/"
 
 
 ####################################################################################################
