@@ -16,7 +16,7 @@ parser.add_argument("species", help="Species name: human dog ...")
 parser.add_argument("TF", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
 parser.add_argument("Method", help="How to simulate: beta, deltas, 500_rounds")
 parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
-parser.add_argument("-M", "--MaxMut", default=15, type=int, help="Number of maximum mutation (default=10)")
+parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=10)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for positive selection (default=0.01)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
@@ -106,14 +106,22 @@ def get_simulated_sequences(seq_id, method=args.Method):
         # Phenotype array
         pheno_array = np.array(list(pheno.values()))
         rand_sub_rates = MLEvol.proba_substitution([], mut_rates, pheno_array)
-        stab_sub_rates = MLEvol.proba_substitution([500], mut_rates, pheno_array)
-        #stab_sub_rates = add_background_neutral(stab_sub_rates, mut_rates, prop_neutral=0.01)
 
-        p_pos = random.randint(20, 50)
+        p_stab = random.randint(25, 100)
+        stab_sub_rates = MLEvol.proba_substitution([p_stab], mut_rates, pheno_array)
+        stab_sub_rates = add_background_neutral(stab_sub_rates, mut_rates, prop_neutral=0.1)
+
+        p_pos = random.randint(50, 100)
         p = random.sample([p_pos, 1], k=2)
         pos_sub_rates = MLEvol.proba_substitution(p, mut_rates, pheno_array)
-        #pos_sub_rates = add_background_neutral(pos_sub_rates, mut_rates, prop_neutral=0.01)
+        pos_sub_rates = add_background_neutral(pos_sub_rates, mut_rates, prop_neutral=0.1)
 
+        nb_possible_mut = len(pos_sub_rates[pos_sub_rates > 0])
+        if nb_possible_mut < 2:
+            print(f"Sequence {seq_id} has not enough possible mutations")
+            exit(1)
+
+        nsub = np.random.randint(2, min(args.MaxMut+1, nb_possible_mut))
         rand_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, rand_sub_rates, nsub)
         stab_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, stab_sub_rates, nsub)
         pos_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, pos_sub_rates, nsub)
@@ -121,8 +129,8 @@ def get_simulated_sequences(seq_id, method=args.Method):
         print("Method not recognized")
         exit(1)
 
-    stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description="")
-    pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description="")
+    stab_seq = SeqRecord(Seq(stab_id), id=seq_id, description=f"alpha={p_stab}")
+    pos_seq = SeqRecord(Seq(pos_id), id=seq_id, description=f"alpha={p_pos}")
     null_seq = SeqRecord(Seq(rand_id), id=seq_id, description="")
 
     return seq_id, stab_seq, pos_seq, null_seq
@@ -170,7 +178,7 @@ if __name__ == '__main__':
     #    SeqIO.write(dictionaries["positive"].values(), output, 'fasta')
 
     for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_by_new_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
+        with open(f"{PathSequence}/simulated_sequences_by_last_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################

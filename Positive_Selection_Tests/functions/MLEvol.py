@@ -40,7 +40,7 @@ def get_svm_quantiles(all_svm, obs_svm, all_svm_ids, sub_mat_proba, n_quant=50):
     # Get the probability of each quantile
     quant_count = neg_quant.value_counts().to_list() + pos_quant.value_counts().to_list()
     # Sort the SVM values and keep the nuc_changes in the same order
-    sorted_svn, sorted_changes = zip(*sorted(zip(all_svm, all_svm_ids)))
+    sorted_svm, sorted_changes = zip(*sorted(zip(all_svm, all_svm_ids)))
     min_quant = 0
     for i in range(len(quant_count)):
         # extract the SVM changes for each quantile
@@ -96,9 +96,9 @@ def coeff_selection(bin_val, params):
     beta = params[1] if len(params) == 2 else alpha
     w_mutant = stats.beta.pdf(bin_val, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
-
-    if w_mutant < 1.e-20 or w_ancestral < 1.e-20:
+    if w_mutant < 1.e-10:  # or w_ancestral < 1.e-10
         return -np.infty
+    w_ancestral = max(w_ancestral, 1.e-10)
     s = np.log(w_mutant / w_ancestral)
     return s
 
