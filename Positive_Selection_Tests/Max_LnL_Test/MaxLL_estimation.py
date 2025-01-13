@@ -54,6 +54,10 @@ if plots:
 ########################################################################################################################
 def estimate_evolution(id, plots=False):
     chromosome = id.split(':')[0]
+    if chromosome not in SubMats:
+        print(f"Chromosome {chromosome} not found in the substitution matrix")
+        return None
+
     sub_mat_proba = SubMats[chromosome]
 
     # Retrieve the corresponding deltas for each ID
