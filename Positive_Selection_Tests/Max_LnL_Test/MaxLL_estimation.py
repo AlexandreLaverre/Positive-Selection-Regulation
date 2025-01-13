@@ -31,17 +31,19 @@ plots = False
 
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
+    pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+    pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+    pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+    pathMatrix = f"{path}/cluster/results/substitution_matrix/{args.species}/"
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol as ML
 import SVM
 
-pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
-
 # Get substitution matrix for each chromosome
-SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/cluster/results/substitution_matrix/{args.species}/")
+SubMats, SubMats_norm = SVM.get_sub_matrix(pathMatrix)
 
 if plots:
     import matplotlib.pyplot as plt
