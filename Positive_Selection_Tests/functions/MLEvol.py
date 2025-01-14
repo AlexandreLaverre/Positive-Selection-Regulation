@@ -6,6 +6,7 @@ import matplotlib as mat
 import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import chi2
+import numba as nb
 np.random.seed(1234)
 
 
@@ -89,13 +90,55 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
     return bin_proba, obs_bins, scaled_bins
 
 
+def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba):
+    # Sort deltas by value
+    # Sort the SVM values and keep the nuc_changes in the same order
+    sorted_svm, sorted_changes = zip(*sorted(zip(all_svm, all_svm_ids)))
+
+    mut_rates = []
+    for nuc_change in sorted_changes:
+        pos, source, target = nuc_change.split(":")
+        mut_rates.append(sub_mat_proba[source][target])
+    assert not np.isnan(mut_rates).any()
+    assert len(mut_rates) == len(sorted_svm)
+
+    deltas_neg = [x for x in sorted_svm if x < 0]
+    deltas_pos = [x for x in sorted_svm if x >= 0]
+    # Transform deltas to phenotype: min=0, max=1, midpoint of the distribution = 0.5 (for delta = 0)
+    all_phenotype = [0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i in range(len(deltas_neg))]
+    all_phenotype += [0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i in range(len(deltas_pos))]
+    assert len(all_phenotype) == len(sorted_svm)
+    assert min(all_phenotype) > 0.
+    assert max(all_phenotype) < 1.
+    assert np.all(np.diff(all_phenotype) > 0)
+
+    obs_index = np.searchsorted(sorted_svm, obs_svm, side='left') - 1
+    for i in range(len(obs_index)):
+        if obs_index[i] < 0:
+            obs_index[i] = 0
+        assert sorted_svm[obs_index[i]] == obs_svm[i]
+    assert len(obs_index) == len(obs_svm)
+    assert min(obs_index) >= 0
+    assert max(obs_index) < len(sorted_svm)
+    obs_phenotype = np.array([all_phenotype[i] for i in obs_index])
+
+    return mut_rates, obs_phenotype, all_phenotype
+
+# Beta distribution probability density function
+@nb.jit(nopython=True)
+def beta_distribution(x: float, a: float, b: float) -> float:
+    inv_beta = np.math.gamma(a + b) / (np.math.gamma(a) * np.math.gamma(b))
+    return np.power(x, a - 1) * np.power(1 - x, b - 1) * inv_beta
+
+
 # Selection coefficient from delta's quantile and model's parameters
+@nb.jit(nopython=True)
 def coeff_selection(bin_val, params):
     assert 0 < bin_val < 1  # bin value needs to be between 0 and 1
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
-    w_mutant = stats.beta.pdf(bin_val, a=alpha, b=beta)
-    w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
+    w_mutant = beta_distribution(bin_val, a=alpha, b=beta)
+    w_ancestral = beta_distribution(0.5, a=alpha, b=beta)
     if w_mutant < 1.e-10 or w_ancestral < 1.e-50:
         return -np.infty
     s = np.log(w_mutant / w_ancestral)
@@ -103,6 +146,7 @@ def coeff_selection(bin_val, params):
 
 
 # Scaled fixation probability from selection coefficient
+@nb.jit(nopython=True)
 def proba_fixation(s):
     if s == -np.infty:
         return 0.0
@@ -117,6 +161,7 @@ def proba_fixation(s):
 
 
 # Get probability of substitution for each bin: P(Mut) * P(Fix)
+@nb.jit(nopython=True)
 def proba_substitution(params, mutations_proba, scaled_bins):
     output_array = np.zeros(len(scaled_bins))
     for b in range(len(scaled_bins)):
@@ -136,7 +181,7 @@ def proba_substitution(params, mutations_proba, scaled_bins):
     else:
         return output_array / sum_output
 
-
+@nb.jit(nopython=True)
 def loglikelihood(mutations_proba, obs_bins, scaled_bins, params):
     if len(params) == 1 and params[0] < 1e-10:
         return -np.infty
@@ -175,6 +220,8 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
         mutations_proba, obs_bins, scaled_bins = get_svm_quantiles(all_svm, obs_svm, all_svm_id, sub_mat_proba, n_quant=min_bin)
     elif bins == "hist":
         mutations_proba, obs_bins, scaled_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
+    elif bins == "exact":
+        mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba)
     else:
         raise ValueError("Bins method should be 'quantile' or 'hist'")
 
