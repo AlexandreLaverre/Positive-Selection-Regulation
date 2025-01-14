@@ -18,6 +18,7 @@ parser.add_argument("Method", help="How to simulate: beta, deltas, 500_rounds")
 parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
 parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=10)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
+parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for positive selection (default=0.01)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
@@ -28,8 +29,9 @@ else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
 
-PathSequence = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/sequences/"
-PathModel = f"{path}/cluster/results/positive_selection/NarrowPeaks/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
+PathSequence = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/sequences/"
+PathModel = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
+pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 import MLEvol
@@ -141,7 +143,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
 SVM_dict = SVM.get_svm_dict(PathModel)
 
 # Get substitution matrix for each chromosome
-SubMats, SubMats_norm = SVM.get_sub_matrix(f"{path}/cluster/results/substitution_matrix/{args.species}/")
+SubMats, SubMats_norm = SVM.get_sub_matrix(pathMatrix)
 
 # Get initial sequences
 initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_focal_sequences.fa"), "fasta"))
