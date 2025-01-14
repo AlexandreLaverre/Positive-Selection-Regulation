@@ -96,9 +96,8 @@ def coeff_selection(bin_val, params):
     beta = params[1] if len(params) == 2 else alpha
     w_mutant = stats.beta.pdf(bin_val, a=alpha, b=beta)
     w_ancestral = stats.beta.pdf(0.5, a=alpha, b=beta)
-    if w_mutant < 1.e-10:  # or w_ancestral < 1.e-10
+    if w_mutant < 1.e-10 or w_ancestral < 1.e-50:
         return -np.infty
-    w_ancestral = max(w_ancestral, 1.e-10)
     s = np.log(w_mutant / w_ancestral)
     return s
 
