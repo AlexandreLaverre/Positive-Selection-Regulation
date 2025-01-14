@@ -133,7 +133,7 @@ def beta_distribution(x: float, a: float, b: float) -> float:
 
 # Selection coefficient from delta's quantile and model's parameters
 @nb.jit(nopython=True)
-def coeff_selection(bin_val, params):
+def coeff_selection(bin_val: float, params: list) -> float:
     assert 0 < bin_val < 1  # bin value needs to be between 0 and 1
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
@@ -147,7 +147,7 @@ def coeff_selection(bin_val, params):
 
 # Scaled fixation probability from selection coefficient
 @nb.jit(nopython=True)
-def proba_fixation(s):
+def proba_fixation(s: float) -> float:
     if s == -np.infty:
         return 0.0
     elif abs(s) < 1.e-4:
@@ -162,7 +162,7 @@ def proba_fixation(s):
 
 # Get probability of substitution for each bin: P(Mut) * P(Fix)
 @nb.jit(nopython=True)
-def proba_substitution(params, mutations_proba, scaled_bins):
+def proba_substitution(params: list, mutations_proba: np.ndarray, scaled_bins: np.ndarray) -> np.ndarray:
     output_array = np.zeros(len(scaled_bins))
     for b in range(len(scaled_bins)):
         # Probability of mutation
@@ -182,7 +182,7 @@ def proba_substitution(params, mutations_proba, scaled_bins):
         return output_array / sum_output
 
 @nb.jit(nopython=True)
-def loglikelihood(mutations_proba, obs_bins, scaled_bins, params):
+def loglikelihood(mutations_proba: np.ndarray, obs_bins: np.ndarray, scaled_bins: np.ndarray, params: list) -> float:
     if len(params) == 1 and params[0] < 1e-10:
         return -np.infty
     if len(params) == 2 and (params[0] < 1e-10 or params[1] < 1e-10):
