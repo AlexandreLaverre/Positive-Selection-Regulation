@@ -35,8 +35,8 @@ if args.cluster:
     pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-    pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
-    pathMatrix = f"{path}/cluster/results/substitution_matrix/{args.species}/"
+    pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+    pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import MLEvol as ML

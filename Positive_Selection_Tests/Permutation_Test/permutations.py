@@ -28,7 +28,7 @@ if args.cluster:
     pathResults = f"{path}/results/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-    pathResults = f"{path}/cluster/results/"
+    pathResults = f"{path}/results/"
 
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
@@ -37,7 +37,7 @@ import SVM
 if args.Simulation:
     pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}_evolution.fa"
-    Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
+    Ancestral_fasta = f"{pathSelection}/sequences/filtered_ancestral_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
 
     # pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
@@ -101,6 +101,7 @@ def test_positive_selection(seq_name):
             random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed, nb_sub)
             delta_rand = [SVM.calculate_delta(ancestral_seq, rand_seq, SVM_dict) for rand_seq in random_seqs]
 
+            median = np.median(delta_rand)
             # Calculate p-value
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
             p_val_high = nb_higher_rand / len(delta_rand)

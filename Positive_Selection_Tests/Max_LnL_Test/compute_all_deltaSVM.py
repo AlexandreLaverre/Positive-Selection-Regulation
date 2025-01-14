@@ -30,7 +30,7 @@ if args.cluster:
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
 
-pathResults = f"{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
+pathResults = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 
