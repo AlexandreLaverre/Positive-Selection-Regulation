@@ -184,7 +184,7 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     ll_neutral = loglikelihood(mutations_proba, obs_bins, scaled_bins, [])
 
     # Stabilizing selection: alpha = beta
-    bounds = [(1.0, np.inf)]
+    bounds = [(0.0, np.inf)]
     model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, scaled_bins, theta), np.array([1.0]),
                            bounds=bounds, method="Nelder-Mead")
     ll_purif = -model_purif.fun
@@ -201,10 +201,11 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     # Likelihood ratio test:
     lrt_null_purif = -2 * (ll_neutral - ll_purif)
     lrt_purif_pos = -2 * (ll_purif - ll_pos)
+    lrt_null_pos = -2 * (ll_neutral - ll_pos)
 
     p_value_null_purif = chi2.sf(lrt_null_purif, 1)
     p_value_purif_pos = chi2.sf(lrt_purif_pos, 1)
-    p_value_null_pos = chi2.sf(lrt_purif_pos, 2)
+    p_value_null_pos = chi2.sf(lrt_null_pos, 2)
 
     conclusion = "Neutral model"
     if p_value_null_purif < alpha_threshold:
