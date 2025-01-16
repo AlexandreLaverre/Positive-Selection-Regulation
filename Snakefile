@@ -15,7 +15,7 @@
 #! /usr/bin/env python
 from snakemake.io import expand, touch
 
-configfile: 'config/config.yaml'
+configfile: 'config/TestPos.yaml'
 include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'

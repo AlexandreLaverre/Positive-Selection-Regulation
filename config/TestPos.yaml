@@ -1,0 +1,106 @@
+name: TestEvol
+
+# Test Parameters
+nbPart: 10
+nbRand: 10000
+nbBin: 50
+BinType: 'exact'
+threshold: 0.01
+AlignType: 'MAF'
+AncMethod: 'parsimony'
+peakType: 'NarrowPeaks'
+split:
+    cluster: 'split'
+    local: 'gsplit'
+
+# Data Parameters
+species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
+TFs:
+    Schmidt12: ['CTCF']
+    Myers: ['CTCF']
+    Schmidt10: ['CEBPA']
+    Rensch: ['CEBPA']
+    Kern: ['CTCF']
+    Ni12: ['CTCF']
+    Wilson:
+        - 'CEBPA'
+        - 'HNF4A'
+        - 'FOXA1'
+        - 'HNF6'
+    Stefflova:
+        - 'CEBPA'
+        - 'HNF4A'
+        - 'FOXA1'
+    CTCF_binding: ['CTCF']
+human:
+    UCSC_Assembly: 'hg38.fa.gz'
+    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
+    sample:
+        - 'Wilson'
+        - 'Schmidt12'
+        - 'CTCF_binding'
+mouse:
+    UCSC_Assembly: 'mm10.fa.gz'
+    Ensembl_Assembly: 'Mus_musculus.GRCm38.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
+    sample:
+        - 'Wilson'
+        - 'Schmidt12'
+        - 'CTCF_binding'
+caroli:
+    UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
+    Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
+    sample: ['Stefflova']
+spretus:
+    UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa.gz'
+    Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
+    sample: ['Stefflova']
+rat:
+    UCSC_Assembly: 'rn6.fa.gz'
+    Ensembl_Assembly: 'Rattus_norvegicus.Rnor_6.0.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
+    sample:
+        - 'Wilson'
+        - 'Schmidt12'
+macaca:
+    UCSC_Assembly: 'rheMac8.fa.gz'
+    Ensembl_Assembly: 'sup2kb_GCA_000772875.3_Mmul_8.0.1_genomic.fna.gz'
+    suffix: ''
+    sample:
+        - 'Wilson'
+        - 'Schmidt12'
+dog:
+    UCSC_Assembly: 'canFam3.fa.gz'
+    Ensembl_Assembly: 'Canis_lupus_familiaris.CanFam3.1.dna_sm.toplevel.fa.gz'
+    suffix: ''
+    sample: ['Wilson', 'Schmidt12']
+rabbit:
+    UCSC_Assembly: 'oryCun2.fa.gz'
+    Ensembl_Assembly: 'GCA_000003625.1_OryCun2.0_genomic.fna.gz'
+    suffix: ''
+    sample: ['Rensch']
+chicken:
+    UCSC_Assembly: 'galGal6.fa.gz'
+    Ensembl_Assembly: 'Gallus_gallus.GRCg6a.dna_sm.toplevel.fa.gz'
+    suffix: ''
+    sample: ['Schmidt10']
+cat:
+    UCSC_Assembly: 'felCat8.fa.gz'
+    Ensembl_Assembly: 'sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.fna.gz'
+    suffix: ''
+    sample: ['Myers', 'Rensch']
+drosophila:
+    UCSC_Assembly: 'dm6.fa.gz'
+    Ensembl_Assembly: 'dmel-all-r6.36_genomic.fna.gz'
+    suffix: ''
+    sample: ['Ni12']
+
+
+
+
+
+
+
