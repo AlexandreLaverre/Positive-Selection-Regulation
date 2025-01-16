@@ -1,12 +1,12 @@
 #!/bin/bash
 
 export species=$1				  # i.e: human dog ...
-export sample=$2				  # i.e: CEBPA HNF4A ...
+export sample=$2				  # i.e: Wilson Schmidt12 ...
 export cluster=$3				  # i.e: local or cluster
 export nbThreads=$4				# i.e: int (number of part for parallelization)
 export dryRun=${5:-""}		# i.e: -n or nothing (run snakemake in dry-run mode)"
 
-export Prefix=${species}_${sample}
+export Prefix="all" # ${species}_${sample}
 
 if [ "${dryRun}" = "-n" ]; then
 	echo "Run Snakemake in dry-run mode"
@@ -26,7 +26,7 @@ conda activate TestPos
 
 ##################################################################
 # mtime or input or params
-snakemake ${dryRun} --rerun-triggers mtime -j 64 --config sp=${species} sample=${sample}  \
+snakemake ${dryRun} --rerun-triggers mtime -j 64 --config species=${species} sample=${sample}  \
           cluster=${cluster} nbPart=${nbThreads} --rerun-incomplete \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
           -c {params.threads} --mem={params.mem} -t {params.time}"
