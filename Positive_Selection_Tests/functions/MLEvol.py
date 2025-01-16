@@ -112,7 +112,7 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba):
     assert max(all_phenotype) < 1.
     assert np.all(np.diff(all_phenotype) > 0)
 
-    obs_index = np.searchsorted(sorted_svm, obs_svm, side='left') - 1
+    obs_index = np.searchsorted(sorted_svm, obs_svm, side='left')
     for i in range(len(obs_index)):
         if obs_index[i] < 0:
             obs_index[i] = 0
@@ -120,9 +120,8 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba):
     assert len(obs_index) == len(obs_svm)
     assert min(obs_index) >= 0
     assert max(obs_index) < len(sorted_svm)
-    obs_phenotype = np.array([all_phenotype[i] for i in obs_index])
 
-    return mut_rates, obs_phenotype, all_phenotype
+    return np.array(mut_rates), obs_index, np.array(all_phenotype)
 
 # Beta distribution probability density function
 @nb.jit(nopython=True)
@@ -133,7 +132,7 @@ def beta_distribution(x: float, a: float, b: float) -> float:
 
 # Selection coefficient from delta's quantile and model's parameters
 @nb.jit(nopython=True)
-def coeff_selection(bin_val: float, params: list) -> float:
+def coeff_selection(bin_val: float, params: np.ndarray) -> float:
     assert 0 < bin_val < 1  # bin value needs to be between 0 and 1
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
@@ -162,7 +161,7 @@ def proba_fixation(s: float) -> float:
 
 # Get probability of substitution for each bin: P(Mut) * P(Fix)
 @nb.jit(nopython=True)
-def proba_substitution(params: list, mutations_proba: np.ndarray, scaled_bins: np.ndarray) -> np.ndarray:
+def proba_substitution(params: np.ndarray, mutations_proba: np.ndarray, scaled_bins: np.ndarray) -> np.ndarray:
     output_array = np.zeros(len(scaled_bins))
     for b in range(len(scaled_bins)):
         # Probability of mutation
@@ -182,14 +181,14 @@ def proba_substitution(params: list, mutations_proba: np.ndarray, scaled_bins: n
         return output_array / sum_output
 
 @nb.jit(nopython=True)
-def loglikelihood(mutations_proba: np.ndarray, obs_bins: np.ndarray, scaled_bins: np.ndarray, params: list) -> float:
+def loglikelihood(mutations_proba: np.ndarray, obs_bins: np.ndarray, scaled_bins: np.ndarray, params: np.ndarray) -> float:
     if len(params) == 1 and params[0] < 1e-10:
         return -np.infty
     if len(params) == 2 and (params[0] < 1e-10 or params[1] < 1e-10):
         return -np.infty
 
     subs_proba = proba_substitution(params, mutations_proba, scaled_bins)
-    models_lk = [subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_bins]
+    models_lk = np.array([subs_proba[i] if i >= 0 else subs_proba[0] for i in obs_bins])
 
     if min(models_lk) <= 0.0:  # Avoid log(0)
         return -np.infty
@@ -228,7 +227,7 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     total_bins = len(mutations_proba)
 
     # Null model: no param.
-    ll_neutral = loglikelihood(mutations_proba, obs_bins, scaled_bins, [])
+    ll_neutral = loglikelihood(mutations_proba, obs_bins, scaled_bins, np.array([]))
 
     # Stabilizing selection: alpha = beta
     bounds = [(0.0, np.inf)]
