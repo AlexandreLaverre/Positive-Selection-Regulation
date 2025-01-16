@@ -2,7 +2,7 @@ name: TestEvol
 nbPart: 10
 nbRand: 10000
 nbBin: 50
-BinType: 'quantile'
+BinType: 'exact'
 threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
