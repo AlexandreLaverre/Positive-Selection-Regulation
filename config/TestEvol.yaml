@@ -1,4 +1,12 @@
 name: TestEvol
+
+# Snakemake configuration
+cluster: "sbatch -p cpu -N 1 -c {params.threads} --mem={params.mem} -t {params.time}"
+rerun_triggers: "mtime"
+jobs: 64
+rerun_incomplete: true
+
+# Test Parameters
 nbPart: 10
 nbRand: 10000
 nbBin: 50
@@ -7,6 +15,11 @@ threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
 peakType: 'NarrowPeaks'
+split:
+    cluster: 'split'
+    local: 'gsplit'
+
+# Data Parameters
 species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
 TFs:
     Schmidt12: ['CTCF']
@@ -90,9 +103,7 @@ drosophila:
     Ensembl_Assembly: 'dmel-all-r6.36_genomic.fna.gz'
     suffix: ''
     sample: ['Ni12']
-split:
-    cluster: 'split'
-    local: 'gsplit'
+
 
 
 
