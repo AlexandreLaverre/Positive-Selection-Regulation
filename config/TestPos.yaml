@@ -1,5 +1,9 @@
 name: TestEvol
 
+# General Parameters
+rerun_triggers: "mtime"
+rerun_incomplete: true
+
 # Test Parameters
 nbPart: 10
 nbRand: 10000
