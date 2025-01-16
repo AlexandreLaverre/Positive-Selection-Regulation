@@ -5,6 +5,7 @@ cluster: "sbatch -p cpu -N 1 -c {params.threads} --mem={params.mem} -t {params.t
 rerun_triggers: "mtime"
 jobs: 64
 rerun_incomplete: true
+debug_test: "YAML Loaded"
 
 # Test Parameters
 nbPart: 10

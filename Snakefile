@@ -22,19 +22,16 @@ include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
 
-sp = config["sp"]
 sample = config["sample"]
-peakType = config["peakType"]
-cluster = config["cluster"]
-threshold = str(config["threshold"])
+print(config["debug_test"])
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
-pathPolymorphism = f"../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
+pathResults = "../results/positive_selection/" + config["peakType"] + "/" + config["sp"] + "/" + sample
+pathPeaks = "../results/peaks_calling/" + config["peakType"] + "/" + config["sp"] + "/" + sample
+pathPolymorphism = f"../results/polymorphism_analyses/" + config["peakType"] + "/" + config["sp"] + "/" + sample
 
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
-if cluster == "cluster":
+if config["cluster"] == "cluster":
     localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
 else:
     localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
