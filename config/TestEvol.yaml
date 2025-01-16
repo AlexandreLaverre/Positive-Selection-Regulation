@@ -7,6 +7,7 @@ threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
 peakType: 'NarrowPeaks'
+species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
 TFs:
     Schmidt12: ['CTCF']
     Myers: ['CTCF']
