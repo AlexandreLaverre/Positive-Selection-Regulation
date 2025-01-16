@@ -13,6 +13,7 @@ threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
 peakType: 'NarrowPeaks'
+cluster: 'cluster'
 split:
     cluster: 'split'
     local: 'gsplit'
