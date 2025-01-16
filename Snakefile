@@ -15,7 +15,7 @@
 #! /usr/bin/env python
 from snakemake.io import expand, touch
 
-configfile: 'config/TestEvol.yaml'
+configfile: 'config/config.yaml'
 include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
@@ -23,7 +23,6 @@ include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
 
 sample = config["sample"]
-print(config["debug_test"])
 
 pathResults = "../results/positive_selection/" + config["peakType"] + "/" + config["sp"] + "/" + sample
 pathPeaks = "../results/peaks_calling/" + config["peakType"] + "/" + config["sp"] + "/" + sample
