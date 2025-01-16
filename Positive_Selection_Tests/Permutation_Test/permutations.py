@@ -28,7 +28,7 @@ if args.cluster:
     pathResults = f"{path}/results/"
 else:
     path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-    pathResults = f"{path}/results/"
+    pathResults = f"{path}/cluster/results/"
 
 
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
@@ -37,7 +37,7 @@ import SVM
 if args.Simulation:
     pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Focal_fasta = f"{pathSelection}/sequences/simulated_sequences_by_{args.Simulation}_evolution.fa"
-    Ancestral_fasta = f"{pathSelection}/sequences/filtered_ancestral_sequences.fa"
+    Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
 
     # pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
