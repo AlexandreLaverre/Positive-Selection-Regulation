@@ -22,8 +22,19 @@ include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
 
-# Rules parameters
-if config["cluster"] == "cluster":
+sp = config["sp"]
+sample = config["sample"]
+peakType = config["peakType"]
+cluster = config["cluster"]
+threshold = str(config["threshold"])
+
+pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPolymorphism = f"../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
+
+print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
+
+if cluster == "cluster":
     localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
 else:
     localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
@@ -35,34 +46,28 @@ if config["AlignType"] == "pairwise":
 else:
     ruleorder: GetSequencesMultiple > InferAncestralPairwise
 
-# Define paths to the input files
-def generate_file_paths(file_pattern):
-    return [
-        file_pattern.format(sp=sp, sample=sample, TF=TF)
-        for sp in config["species"]
-        for sample in config[sp]["sample"]
-        for TF in config["TFs"][sample]
-    ]
-
-pathResults = "../results/positive_selection/config/"+ config["peakType"] + "/"
-
 ########################################################################################################################
 rule all:
-    input:
-        PosSelTest = generate_file_paths(pathResults + "{sp}/{sample}/{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt"),
-        MaxLLTest = generate_file_paths(pathResults + "{sp}/{sample}/{TF}/MLE_summary_" + str(config["BinType"]) + ".csv"),
-        archive = generate_file_paths(pathResults + "{sp}/{sample}/{TF}/alignments.archive.tar.gz"),
-        #model_validation = generate_file_paths(pathResults + "{sp}/{sample}/{TF}/Model/{TF}.cvpred.txt")
+    input :
+        MaxLLTest = expand(pathResults + "/{TF}/Tests/MLE_summary_" + str(config["BinType"]) + "_" + str(config["nbBin"]) + "bins_threshold_" + str(config["threshold"]) + "_last.csv", TF=config["TFs"][sample]),
+        PosSelTest = expand(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_last.txt",TF=config["TFs"][sample]),
+        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=config["TFs"][sample]),
+
+        model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample]),
+        #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
 
 ########################################################################################################################
+# TMP run on all species
+#def generate_file_paths(file_pattern):
+#    return [
+#        file_pattern.format(sp=sp, sample=sample, TF=TF)
+#        for sp in config["species"]
+#        for sample in config[sp]["sample"]
+#        for TF in config["TFs"][sample]
+#    ]
+
 #rule all:
     input:
-        MaxLLTest=expand(pathResults + "/{TF}/Tests/MLE_summary_" + str(config["BinType"]) + "_" + str(
-            config["nbBin"]) + "bins_threshold_" + str(config["threshold"]) + "_last.csv",TF=config["TFs"][sample]),
-        PosSelTest=expand(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(
-            config["nbRand"]) + "permutations_last.txt",TF=config["TFs"][sample]),
-        archive=expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=config["TFs"][sample]),
-        model_validation=expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt",TF=config["TFs"][sample])
-
-#SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
-
+        PosSelTest = generate_file_paths(pathResults + "{sp}{sample}{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt"),
+        MaxLLTest = generate_file_paths(pathResults + "{sp}{sample}{TF}/MLE_summary_" + BinType + "_" + str(nbBin) + "bins_threshold_" + str(threshold) + ".csv"),
+        archive = generate_file_paths(pathResults + "{sp}{sample}{TF}/alignments.archive.tar.gz")
