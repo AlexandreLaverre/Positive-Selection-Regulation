@@ -254,9 +254,16 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     p_value_null_pos = chi2.sf(lrt_null_pos, 2)
 
     conclusion = "Neutral model"
+    # Purifying selection
     if p_value_null_purif < alpha_threshold:
         conclusion = conclusion_purif(model_purif.x[0])
+
+    # Directional selection
     if p_value_null_pos < alpha_threshold and p_value_purif_pos < alpha_threshold:
+        conclusion = conclusion_pos(model_pos.x[0], model_pos.x[1])
+
+    # Low directional selection
+    if p_value_null_pos < alpha_threshold < p_value_null_purif:
         conclusion = conclusion_pos(model_pos.x[0], model_pos.x[1])
 
     if verbose:
