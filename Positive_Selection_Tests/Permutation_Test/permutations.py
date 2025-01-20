@@ -87,7 +87,7 @@ def test_positive_selection(seq_name):
     ancestral_seq = str(AncestralSeqs[seq_name].seq)
 
     # Get corresponding substitution matrix
-    chromosome = seq_name.split(':')[0]  # remember to change "_" by ":" if not Jialin results.
+    chromosome = seq_name.split(':')[0] if args.sample != "CTCF_binding" else seq_name.split('_')[0]
     if chromosome in SubMats.keys():
         sub_mat_proba = SubMats[chromosome] if args.Evol != 'uniform' else SubMat_uniform
         sub_mat_proba_normed = SubMats_norm[chromosome] if args.Evol != 'uniform' else SubMat_uniform
