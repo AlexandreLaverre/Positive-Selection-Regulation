@@ -53,7 +53,7 @@ if plots:
 
 ########################################################################################################################
 def estimate_evolution(id, plots=False):
-    chromosome = id.split(':')[0] if args.sample != "CTCF_binding" else id.split('_')[0]
+    chromosome = id.split(':')[0] if args.sample != "CTCF_binding/CTCF" else id.split('_')[0]
     if chromosome not in SubMats:
         print(f"Chromosome {chromosome} not found in the substitution matrix")
         return None
