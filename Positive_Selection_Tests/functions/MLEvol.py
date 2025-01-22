@@ -90,7 +90,7 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
     return bin_proba, obs_bins, scaled_bins
 
 
-def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba):
+def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked"):
     # Sort deltas by value
     # Sort the SVM values and keep the nuc_changes in the same order
     sorted_svm, sorted_changes = zip(*sorted(zip(all_svm, all_svm_ids)))
@@ -104,9 +104,17 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba):
 
     deltas_neg = [x for x in sorted_svm if x < 0]
     deltas_pos = [x for x in sorted_svm if x >= 0]
+
     # Transform deltas to phenotype: min=0, max=1, midpoint of the distribution = 0.5 (for delta = 0)
-    all_phenotype = [0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i in range(len(deltas_neg))]
-    all_phenotype += [0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i in range(len(deltas_pos))]
+    if norm == "ranked":
+        all_phenotype = [0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i in range(len(deltas_neg))]
+        all_phenotype += [0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i in range(len(deltas_pos))]
+    else:
+        min_neg, max_neg = abs(min(deltas_neg)), abs(max(deltas_neg))
+        all_phenotype = [(abs(x) - min_neg) / (max_neg - min_neg) * 0.5 for x in deltas_neg]
+        min_pos, max_pos = min(deltas_pos), max(deltas_pos)
+        all_phenotype += [0.5 + (x - min_pos) / (max_pos - min_pos) * 0.5 for x in deltas_pos]
+
     assert len(all_phenotype) == len(sorted_svm)
     assert min(all_phenotype) > 0.
     assert max(all_phenotype) < 1.
@@ -220,7 +228,7 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     elif bins == "hist":
         mutations_proba, obs_bins, scaled_bins = get_svm_hist(all_svm, obs_svm, n_bin=min_bin)
     elif bins == "exact":
-        mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba)
+        mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba, norm="absolute")
     else:
         raise ValueError("Bins method should be 'quantile' or 'hist'")
 
