@@ -8,7 +8,7 @@ rerun_incomplete: true
 nbPart: 10
 nbRand: 10000
 nbBin: 50
-BinType: 'exact_absolute'
+BinType: 'exact_ranked'
 threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
@@ -37,6 +37,8 @@ TFs:
         - 'HNF4A'
         - 'FOXA1'
     CTCF_binding: ['CTCF']
+    loss:
+        - 'CEBPA'
 human:
     UCSC_Assembly: 'hg38.fa.gz'
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
@@ -53,6 +55,7 @@ mouse:
         - 'Wilson'
         - 'Schmidt12'
         - 'CTCF_binding'
+        - 'loss'
 caroli:
     UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
     Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
