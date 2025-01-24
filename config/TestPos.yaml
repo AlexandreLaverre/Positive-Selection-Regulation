@@ -1,7 +1,7 @@
 name: TestEvol
 
 # General Parameters
-#rerun_triggers: "mtime"
+rerun_triggers: "mtime"
 rerun_incomplete: true
 
 # Test Parameters
