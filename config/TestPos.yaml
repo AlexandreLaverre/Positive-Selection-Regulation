@@ -62,26 +62,22 @@ caroli:
     UCSC_Assembly: 'GCA_900094665.2_CAROLI_EIJ_v1.1.fa.gz'
     Ensembl_Assembly: 'Mus_caroli.CAROLI_EIJ_v1.1.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
-    sample: ['Stefflova']
+    sample: ['Stefflova', 'loss']
 spretus:
     UCSC_Assembly: 'GCA_001624865.1_SPRET_EiJ_v1.fa.gz'
     Ensembl_Assembly: 'Mus_spretus.SPRET_EiJ_v1.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
-    sample: ['Stefflova']
+    sample: ['Stefflova', 'loss']
 rat:
     UCSC_Assembly: 'rn6.fa.gz'
     Ensembl_Assembly: 'Rattus_norvegicus.Rnor_6.0.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
-    sample:
-        - 'Wilson'
-        - 'Schmidt12'
+    sample: ['Wilson', 'Schmidt12']
 macaca:
     UCSC_Assembly: 'rheMac8.fa.gz'
     Ensembl_Assembly: 'sup2kb_GCA_000772875.3_Mmul_8.0.1_genomic.fna.gz'
     suffix: ''
-    sample:
-        - 'Wilson'
-        - 'Schmidt12'
+    sample: ['Wilson', 'Schmidt12']
 dog:
     UCSC_Assembly: 'canFam3.fa.gz'
     Ensembl_Assembly: 'Canis_lupus_familiaris.CanFam3.1.dna_sm.toplevel.fa.gz'
