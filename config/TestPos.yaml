@@ -39,6 +39,8 @@ TFs:
     CTCF_binding: ['CTCF']
     loss:
         - 'CEBPA'
+        - 'HNF4A'
+        - 'FOXA1
 human:
     UCSC_Assembly: 'hg38.fa.gz'
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
