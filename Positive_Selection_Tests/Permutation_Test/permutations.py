@@ -101,13 +101,14 @@ def test_positive_selection(seq_name):
             random_seqs = get_random_seqs(ancestral_seq, sub_mat_proba, sub_mat_proba_normed, nb_sub)
             delta_rand = [SVM.calculate_delta(ancestral_seq, rand_seq, SVM_dict) for rand_seq in random_seqs]
 
-            median = np.median(delta_rand)
             # Calculate p-value
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
+            nb_lower_rand = sum(rand < delta_obs for rand in delta_rand)
             p_val_high = nb_higher_rand / len(delta_rand)
+            p_val_two_tailed = (nb_higher_rand + nb_lower_rand) / len(delta_rand)
 
             output = f"{seq_name}\t{focalSVM}\t{delta_obs}\t{np.median(delta_rand)}\t{np.mean(delta_rand)}" \
-                     f"\t{nb_sub}\t{p_val_high}\n"
+                     f"\t{nb_sub}\t{p_val_high}\t{p_val_two_tailed}\n"
 
             return output
 
@@ -139,7 +140,7 @@ if len(FocalSeqs) == 0:
 
 ####################################################################################################
 # Running and writing results
-Output.write("ID\tSVM\tdeltaSVM\tmed.expected.deltaSVM\tmean.expected.deltaSVM\tNbSub\tpval.high\n")
+Output.write("ID\tSVM\tdeltaSVM\tmed.expected.deltaSVM\tmean.expected.deltaSVM\tNbSub\tpval.high\tpval.two.tailed\n")
 
 # protect the entry point
 if __name__ == '__main__':
