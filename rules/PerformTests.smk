@@ -15,7 +15,7 @@ rule PermutationTest:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
-    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_last.txt")
+    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed.txt")
     threads: config["nbPart"]
     priority: 2
     log: out=pathResults + "/log/{TF}/PermutationTest.out"
