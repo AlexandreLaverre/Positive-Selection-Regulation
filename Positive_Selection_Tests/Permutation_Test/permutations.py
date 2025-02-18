@@ -105,7 +105,7 @@ def test_positive_selection(seq_name):
             nb_higher_rand = sum(rand > delta_obs for rand in delta_rand)
             nb_lower_rand = sum(rand < delta_obs for rand in delta_rand)
             p_val_high = nb_higher_rand / len(delta_rand)
-            p_val_two_tailed = (nb_higher_rand + nb_lower_rand) / len(delta_rand)
+            p_val_two_tailed = (2*min(nb_higher_rand, nb_lower_rand)) / len(delta_rand)
 
             output = f"{seq_name}\t{focalSVM}\t{delta_obs}\t{np.median(delta_rand)}\t{np.mean(delta_rand)}" \
                      f"\t{nb_sub}\t{p_val_high}\t{p_val_two_tailed}\n"
