@@ -9,6 +9,7 @@ import random
 from multiprocessing import Pool
 from alive_progress import alive_bar
 import sys
+import matplotlib.pyplot as plt
 np.random.seed(1234)
 
 parser = argparse.ArgumentParser()
@@ -16,17 +17,21 @@ parser.add_argument("species", help="Species name: human dog ...")
 parser.add_argument("TF", help="Study name and Transcription Factor: Wilson/CEBPA Schmidt/CTCF ...")
 parser.add_argument("Method", help="How to simulate: beta, deltas, 500_rounds")
 parser.add_argument("-N", "--Nsimul", default=1000, type=int, help="Number of sequences to simulate (default=1000)")
-parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=10)")
+parser.add_argument("-M", "--MaxMut", default=20, type=int, help="Number of maximum mutation (default=20)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for positive selection (default=0.01)")
+parser.add_argument("--PropNeutral", default=0.0, type=float, help="Proportion of Neutral Sub (default=0.0)")
+parser.add_argument("--ScalePurif", default=0.0, type=float, help="Scale to reduce Sub Proba of Negative SVM in Random")
+parser.add_argument("--MinStab", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
+parser.add_argument("--MinPos", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
 if args.cluster:
     path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
 else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
+    path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
 
 
 PathSequence = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/sequences/"
@@ -35,6 +40,8 @@ pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 import MLEvol
+
+suffix = f"{args.Method}_{args.PropNeutral}Null_{args.MinStab}Stab_{args.MinPos}Pos_{args.ScalePurif}Purif"
 
 
 ####################################################################################################
@@ -45,6 +52,15 @@ def add_background_neutral(vec_proba, mut_rates, prop_neutral=0.1):
     vec_proba += prop_neutral * mut_rates / np.sum(mut_rates)
     assert np.isclose(np.sum(vec_proba), 1.0)
     return vec_proba
+
+
+def add_purif(vec_pheno, sub_rates, scale=0.1):
+    assert np.isclose(np.sum(sub_rates), 1.0)
+    pheno_neg = vec_pheno < 0.5
+    sub_rates[pheno_neg] *= np.exp(scale * (vec_pheno[pheno_neg]-0.5))
+    sub_rates = sub_rates / sub_rates.sum()
+    assert np.isclose(np.sum(sub_rates), 1.0)
+    return sub_rates
 
 
 def get_simulated_sequences(seq_id, method=args.Method):
@@ -107,16 +123,17 @@ def get_simulated_sequences(seq_id, method=args.Method):
 
         # Phenotype array
         pheno_array = np.array(list(pheno.values()))
-        rand_sub_rates = MLEvol.proba_substitution([], mut_rates, pheno_array)
+        rand_sub_rates = MLEvol.proba_substitution(np.array([]), mut_rates, pheno_array)
+        rand_sub_rates = add_purif(pheno_array, rand_sub_rates, scale=args.ScalePurif)
 
-        p_stab = random.randint(25, 100)
-        stab_sub_rates = MLEvol.proba_substitution([p_stab], mut_rates, pheno_array)
-        stab_sub_rates = add_background_neutral(stab_sub_rates, mut_rates, prop_neutral=0.1)
+        p_stab = args.MinStab #random.randint(args.MinStab, 10)
+        stab_sub_rates = MLEvol.proba_substitution(np.array([p_stab]), mut_rates, pheno_array)
+        stab_sub_rates = add_background_neutral(stab_sub_rates, mut_rates, prop_neutral=args.PropNeutral)
 
-        p_pos = random.randint(50, 100)
-        p = random.sample([p_pos, 1], k=2)
+        p_pos = args.MinPos #random.randint(args.MinPos, 25)
+        p = np.array(random.sample([p_pos, 1], k=2))
         pos_sub_rates = MLEvol.proba_substitution(p, mut_rates, pheno_array)
-        pos_sub_rates = add_background_neutral(pos_sub_rates, mut_rates, prop_neutral=0.1)
+        pos_sub_rates = add_background_neutral(pos_sub_rates, mut_rates, prop_neutral=args.PropNeutral)
 
         nb_possible_mut = len(pos_sub_rates[pos_sub_rates > 0])
         if nb_possible_mut < 2:
@@ -180,7 +197,7 @@ if __name__ == '__main__':
     #    SeqIO.write(dictionaries["positive"].values(), output, 'fasta')
 
     for dict_name, dic in dictionaries.items():
-        with open(f"{PathSequence}/simulated_sequences_by_last_{args.Method}_{dict_name}_evolution.fa", 'w') as output:
+        with open(f"{PathSequence}/simulated_sequences_by_{suffix}_{dict_name}_evolution.fa", 'w') as output:
             SeqIO.write(dic.values(), output, 'fasta')
 
 ####################################################################################################
