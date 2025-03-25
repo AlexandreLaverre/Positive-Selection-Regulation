@@ -22,7 +22,7 @@ BED = read.table(BED_file)
 #}
 
 if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm10.masked")}
-if (species %in% c("human", "human_older" ){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}
+if (species %in% c("human", "human_older")){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}
 if (species == "dog"){genome <- getBSgenome("BSgenome.Cfamiliaris.UCSC.canFam3.masked")}
 if (species == "rat"){genome <- getBSgenome("BSgenome.Rnorvegicus.UCSC.rn6.masked")}
 if (species == "macaca"){genome <- getBSgenome("BSgenome.Mmulatta.UCSC.sup2kb.rheMac8.masked")}
