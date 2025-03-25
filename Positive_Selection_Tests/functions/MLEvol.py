@@ -112,13 +112,17 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked"):
         assert np.all(np.diff(all_phenotype) > 0)
     else:
         min_neg, max_neg = abs(min(deltas_neg)), 0.
-        all_phenotype = [0. + (abs(x) - min_neg) / (max_neg - min_neg) * 0.5 for x in deltas_neg]
+        all_phenotype = [0. + 0.5 * (abs(x) - min_neg) / (max_neg - min_neg) for x in deltas_neg]
         min_pos, max_pos = 0., max(deltas_pos)
-        all_phenotype += [0.5 + (x - min_pos) / (max_pos - min_pos) * 0.5 for x in deltas_pos]
+        all_phenotype += [0.5 + 0.5 * (x - min_pos) / (max_pos - min_pos)for x in deltas_pos]
+
+        # Avoid 0 and 1 as Beta is defined on ]0, 1[
+        all_phenotype[0] += 1e-10
+        all_phenotype[-1] -= 1e-10
 
     assert len(all_phenotype) == len(sorted_svm)
-    assert min(all_phenotype) >= 0.
-    assert max(all_phenotype) <= 1.
+    assert min(all_phenotype) > 0.
+    assert max(all_phenotype) < 1.
 
     obs_index = np.searchsorted(sorted_svm, obs_svm, side='left')
     for i in range(len(obs_index)):
@@ -141,7 +145,7 @@ def beta_distribution(x: float, a: float, b: float) -> float:
 # Selection coefficient from delta's quantile and model's parameters
 @nb.jit(nopython=True)
 def coeff_selection(bin_val: float, params: np.ndarray) -> float:
-    assert 0 <= bin_val <= 1  # bin value needs to be between 0 and 1
+    assert 0 < bin_val < 1  # bin value needs to be between 0 and 1
     alpha = params[0] if len(params) > 0 else 1.0
     beta = params[1] if len(params) == 2 else alpha
     w_mutant = beta_distribution(bin_val, a=alpha, b=beta)
@@ -232,7 +236,7 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     elif bins == "exact_absolute":
         mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba, norm="absolute")
     else:
-        raise ValueError("Bins method should be 'quantile' or 'hist'")
+        raise ValueError("Bins method should be in: 'quantile', 'hist', 'exact_ranked', 'exact_absolute'")
 
     total_bins = len(mutations_proba)
 
@@ -242,7 +246,7 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
     # Stabilizing selection: alpha = beta
     bounds = [(0.0, np.inf)]
     model_purif = minimize(lambda theta: -loglikelihood(mutations_proba, obs_bins, scaled_bins, theta), np.array([1.0]),
-                           bounds=bounds, method="Nelder-Mead")
+                           bounds=bounds, method="Nelder-Mead") # L-BFGS-B "Nelder-Mead"
     ll_purif = -model_purif.fun
 
     # Positive selection
