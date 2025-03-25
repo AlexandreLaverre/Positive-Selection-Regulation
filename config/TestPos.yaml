@@ -54,8 +54,6 @@ human_older:
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'
     sample:
-        - 'Wilson'
-        - 'Schmidt12'
         - 'CTCF_binding'
 mouse:
     UCSC_Assembly: 'mm10.fa.gz'
