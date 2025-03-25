@@ -8,7 +8,7 @@ rerun_incomplete: true
 nbPart: 10
 nbRand: 10000
 nbBin: 50
-BinType: 'exact_absolute'
+BinType: 'exact_ranked'
 threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
@@ -19,7 +19,7 @@ split:
     local: 'gsplit'
 
 # Data Parameters
-species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
+species: ['human_older', 'human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
 TFs:
     Schmidt12: ['CTCF']
     Myers: ['CTCF']
@@ -42,6 +42,14 @@ TFs:
         - 'HNF4A'
         - 'FOXA1'
 human:
+    UCSC_Assembly: 'hg38.fa.gz'
+    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
+    suffix: '_UCSC_names'
+    sample:
+        - 'Wilson'
+        - 'Schmidt12'
+        - 'CTCF_binding'
+human_older:
     UCSC_Assembly: 'hg38.fa.gz'
     Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
     suffix: '_UCSC_names'

@@ -32,6 +32,15 @@ if [ ${sp} = "human" ]; then
 	export genomesize=2701262066 
 fi
 
+if [ ${sp} = "human_older" ]; then
+	spID="Homo_sapiens.GRCh38"
+	sp_name="Homo_sapiens"
+	close_species="Homo_sapiens,Pan_troglodytes,Gorilla_gorilla"
+	anc_name="fullTreeAnc106"
+	chroms=({1..22} "X" "Y")
+	export genomesize=2701262066
+fi
+
 if [ ${sp} = "mouse" ]; then
 	spID="Mus_musculus.GRCm38"
 	sp_name="Mus_musculus"
