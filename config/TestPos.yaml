@@ -12,6 +12,7 @@ BinType: 'exact_ranked'
 threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
+AncNode: 'ancestral'
 peakType: 'NarrowPeaks'
 cluster: 'cluster'
 split:

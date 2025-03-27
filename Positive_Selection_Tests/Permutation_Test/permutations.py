@@ -16,6 +16,7 @@ parser.add_argument("species", help="Species name: human dog")
 parser.add_argument("sample", help="Study name: Wilson Schmidt...")
 parser.add_argument("TF", help="Transcription Factor: CEBPA CTCF ...")
 parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
+parser.add_argument("-N", "--node", default="ancestral", help="From which node to compute deltas (default=ancestral)")
 parser.add_argument("--NbRand", default=10000, type=int, help="Number of random substitutions permutations per sequence (default=10k")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 parser.add_argument("-S", "--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
@@ -53,9 +54,9 @@ if args.Simulation:
     # Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
     pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
-    Ancestral_fasta = pathSelection + "sequences/filtered_ancestral_sequences.fa"
+    Ancestral_fasta = f"{pathSelection}/sequences/filtered_{args.node}_sequences.fa"
     Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
-    Output = open(pathSelection + "/Tests/PosSelTest_deltaSVM_" + str(args.NbRand) + "permutations_two_tailed.txt", "w")
+    Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{str(args.NbRand)}permutations_two_tailed_{args.node}.txt", "w")
     #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}/Model/kmer_predicted_weight.txt"

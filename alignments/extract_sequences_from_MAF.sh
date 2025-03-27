@@ -4,6 +4,7 @@ sp=$1    		  # e.g: human
 pathResults=$2
 BED_file=$3
 cluster=$4    # e.g: local
+AncNode="${4:-ancestral}"
 
 #########################################################################
 # Define paths
@@ -34,6 +35,11 @@ mkdir -p "${pathResults}/ancestral_sequences/"
 
 source ${path}/scripts/config/params.sh "$sp" "$cluster"
 sister_name="$(echo "$close_species" | cut -d "," -f 2)"
+
+
+if [[ $AncNode != "ancestral" ]]; then
+  anc_name="${AncNode}"
+fi
 
 #########################################################################
 # Retrieve alignments of regions from whole genome alignment

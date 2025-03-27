@@ -5,6 +5,7 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 cluster = config["cluster"]
+AncNode = config["AncNode"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
@@ -62,29 +63,28 @@ rule InferAncestralPairwise:
 rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
     input: BED_file_part = pathResults + "/log/{TF}/part{part}"
-    output:
-        Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done"),
-    log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}.out"
+    output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done"),
+    log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
     params: time="2:00:00",mem="1G",threads=1
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
-        ./alignments/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} &> {log.out}
+        ./alignments/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} {AncNode} &> {log.out}
         """
 
 rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input:
-        AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF),
+        AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_" + AncNode + "_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF),
     output:
-        list_ancestral = pathResults + "/{TF}/Alignments/list_ancestral.txt",
-        concat_ancestral=pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
-        concat_focal=pathResults + "/{TF}/sequences/all_focal_sequences.fa",
-        concat_focal_filtered=pathResults + "/{TF}/sequences/filtered_focal_sequences.fa",
-        concat_focal_upper=pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa",
-        concat_sister=pathResults + "/{TF}/sequences/all_sister_sequences.fa",
-        concat_sister_filtered=pathResults + "/{TF}/sequences/filtered_sister_sequences.fa",
-        concat_sister_upper=pathResults + "/{TF}/sequences/filtered_sister_sequences_upper.fa",
+        list_ancestral         = pathResults + "/{TF}/Alignments/list_{AncNode}.txt",
+        concat_ancestral       = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
+        concat_focal           = pathResults + "/{TF}/sequences/all_focal_{AncNode}_sequences.fa",
+        concat_focal_filtered  = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences.fa",
+        concat_focal_upper     = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa",
+        concat_sister          = pathResults + "/{TF}/sequences/all_sister_{AncNode}_sequences.fa",
+        concat_sister_filtered = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences.fa",
+        concat_sister_upper    = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences_upper.fa"
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """
@@ -112,8 +112,8 @@ rule ConcatSeq:
 
 rule ArchiveAlignments:
     message: "Create an archive file containing all alignments"
-    input: focal_sequences=pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
-    output: archive=pathResults + "/{TF}/alignments.archive.tar.gz"
+    input: focal_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences_upper.fa"
+    output: archive = pathResults + "/{TF}/alignments_{AncNode}.archive.tar.gz"
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """

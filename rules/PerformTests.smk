@@ -5,6 +5,7 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 cluster = config["cluster"]
+AncNode = config["AncNode"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
@@ -13,35 +14,35 @@ rule PermutationTest:
     message: "Test for positive selection between ancestral and focal sequences"
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
-        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
+        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
-    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed.txt")
+    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
     threads: config["nbPart"]
     priority: 2
-    log: out=pathResults + "/log/{TF}/PermutationTest.out"
+    log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
-        --NbRand {config[nbRand]} --{cluster} --NbThread {threads} &> {log.out}
+        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} &> {log.out}
         """
 
 rule ComputeAllDeltaSVM:
     """Compute all possible and observed SVM"""
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
-        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_ancestral_sequences.fa",
+        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
     output:
-        AllSVM = pathResults + "/{TF}/deltas/ancestral_all_possible_deltaSVM.txt",
-        ObsSVM = pathResults + "/{TF}/deltas/ancestral_to_observed_deltaSVM.txt"
-    log: out = pathResults + "/log/{TF}/ComputeAllDeltaSVM.out"
+        AllSVM = pathResults + "/{TF}/deltas/{AncNode}_all_possible_deltaSVM.txt",
+        ObsSVM = pathResults + "/{TF}/deltas/{AncNode}_to_observed_deltaSVM.txt"
+    log: out = pathResults + "/log/{TF}/ComputeAllDeltaSVM_{AncNode}.out"
     threads: config["nbPart"]
     params: time="2:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --{cluster} -T {threads} &> {log.out}
+        {sample}/{wildcards.TF} {peakType} --node {AncNode} --{cluster} -T {threads} &> {log.out}
         """
 
 def evaluate_time(ancestral_seq):
@@ -55,10 +56,10 @@ def evaluate_time(ancestral_seq):
 rule MaxLLTest:
     message: "Test for positive selection using Likelihood Ratio Test between 3 Maximized models"
     input:
-        AllSVM = pathResults + "/{TF}/deltas/ancestral_all_possible_deltaSVM.txt",
-        ObsSVM = pathResults + "/{TF}/deltas/ancestral_to_observed_deltaSVM.txt"
-    output: touch(pathResults + "/{TF}/Tests/MLE_summary_{BinType}.csv")
-    log: out = pathResults + "/log/{TF}/MaxLLTest_{BinType}.out"
+        AllSVM = pathResults + "/{TF}/deltas/{AncNode}_all_possible_deltaSVM.txt",
+        ObsSVM = pathResults + "/{TF}/deltas/{AncNode}_to_observed_deltaSVM.txt"
+    output: touch(pathResults + "/{TF}/Tests/MLE_summary_{BinType}_{AncNode}.csv")
+    log: out = pathResults + "/log/{TF}/MaxLLTest_{BinType}_{AncNode}.out"
     threads: config["nbPart"]
     params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
             threshold=config["threshold"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
@@ -66,7 +67,7 @@ rule MaxLLTest:
         """
         python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
-        -T {threads} --{cluster} &> {log.out}
+        --node {AncNode} -T {threads} --{cluster} &> {log.out}
         """
 
 #rule simulate_sequence:

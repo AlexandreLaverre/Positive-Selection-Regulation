@@ -18,6 +18,7 @@ parser.add_argument("species", help="Species common name (e.g: human dog)")
 parser.add_argument("sample", help="Study and Transcription Factor: Wilson/CEBPA Schmidt/CTCF...")
 parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
 parser.add_argument("--NbBin", default=50, type=int, required=False, help="Number of bins for deltasSVM (default=50)")
+parser.add_argument("-N", "--node", default="ancestral", help="From which node to compute deltas (default=ancestral)")
 parser.add_argument("-S", "--Simulation", default=False, help="Name of the simulation (default=False)")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 parser.add_argument("--binType", default="quantile", type=str, help="Method to cut SVM distribution (hist or quantile)")
@@ -115,9 +116,9 @@ if args.Simulation:
     Focal_deltas_file = f"simul_{args.Simulation}_observed_deltaSVM.txt"
     Output_file = f"Tests/MLE_summary_simulated_{args.Simulation}_{args.binType}_{args.NbBin}bins_threshold_{args.threshold}.csv"
 else:
-    Ancestral_deltas_file = "ancestral_all_possible_deltaSVM.txt"
-    Focal_deltas_file = "ancestral_to_observed_deltaSVM.txt"
-    Output_file = f"Tests/MLE_summary_{args.binType}.csv"
+    Ancestral_deltas_file = f"{args.node}_all_possible_deltaSVM.txt"
+    Focal_deltas_file = f"{args.node}_to_observed_deltaSVM.txt"
+    Output_file = f"Tests/MLE_summary_{args.binType}_{args.node}.csv"
 
 All_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Ancestral_deltas_file}', sep='\t', header=0)
 Obs_SVM_All_seq = pd.read_csv(f'{pathResults}/deltas/{Focal_deltas_file}', sep='\t', header=None, names=range(maxSub+4))

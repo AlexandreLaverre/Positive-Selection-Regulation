@@ -27,6 +27,10 @@ sample = config["sample"]
 pathResults = "../results/positive_selection/" + config["peakType"] + "/" + config["sp"] + "/" + sample
 pathPeaks = "../results/peaks_calling/" + config["peakType"] + "/" + config["sp"] + "/" + sample
 pathPolymorphism = f"../results/polymorphism_analyses/" + config["peakType"] + "/" + config["sp"] + "/" + sample
+TFS = config["TFs"][sample]
+BinType = str(config["BinType"])
+nbRand = str(config["nbRand"])
+AncNode = str(config["AncNode"])
 
 print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
 
@@ -45,9 +49,9 @@ else:
 ########################################################################################################################
 rule all:
     input :
-        MaxLLTest = expand(pathResults + "/{TF}/Tests/MLE_summary_" + str(config["BinType"]) + ".csv", TF=config["TFs"][sample]),
-        PosSelTest = expand(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed.txt",TF=config["TFs"][sample]),
-        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=config["TFs"][sample]),
+        MaxLLTest = expand(pathResults + "/{TF}/Tests/MLE_summary_" + BinType + "_" + AncNode + ".csv", TF=TFS),
+        PosSelTest = expand(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + nbRand + "permutations_two_tailed_" + AncNode + ".txt",TF=TFS),
+        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=TFS),
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample]),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
 
