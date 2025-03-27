@@ -106,7 +106,7 @@ else:
 
     # Get focal sequences
     targets = ['focal']
-    FocalSeqs = {'focal': SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_sequences.fa"), "fasta"))}
+    FocalSeqs = {'focal': SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_{args.node}_sequences.fa"), "fasta"))}
     SeqIDs = FocalSeqs['focal'].keys()
 
 ####################################################################################################

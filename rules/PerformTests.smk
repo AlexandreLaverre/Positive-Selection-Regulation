@@ -15,7 +15,7 @@ rule PermutationTest:
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
-        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
+        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
     threads: config["nbPart"]
     priority: 2
@@ -32,7 +32,7 @@ rule ComputeAllDeltaSVM:
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
-        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_sequences_upper.fa"
+        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     output:
         AllSVM = pathResults + "/{TF}/deltas/{AncNode}_all_possible_deltaSVM.txt",
         ObsSVM = pathResults + "/{TF}/deltas/{AncNode}_to_observed_deltaSVM.txt"

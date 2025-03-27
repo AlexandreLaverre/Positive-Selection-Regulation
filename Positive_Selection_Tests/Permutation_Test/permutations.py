@@ -55,7 +55,7 @@ if args.Simulation:
 else:
     pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_{args.node}_sequences.fa"
-    Focal_fasta = pathSelection + "sequences/filtered_focal_sequences.fa"
+    Focal_fasta = f"{pathSelection}/equences/filtered_focal_{args.node}_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{str(args.NbRand)}permutations_two_tailed_{args.node}.txt", "w")
     #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
