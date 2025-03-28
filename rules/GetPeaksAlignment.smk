@@ -82,9 +82,9 @@ rule ConcatSeq:
         concat_focal           = pathResults + "/{TF}/sequences/all_focal_{AncNode}_sequences.fa",
         concat_focal_filtered  = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences.fa",
         concat_focal_upper     = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa",
-        concat_sister          = pathResults + "/{TF}/sequences/all_sister_{AncNode}_sequences.fa",
-        concat_sister_filtered = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences.fa",
-        concat_sister_upper    = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences_upper.fa"
+        #concat_sister          = pathResults + "/{TF}/sequences/all_sister_{AncNode}_sequences.fa",
+        #concat_sister_filtered = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences.fa",
+        #concat_sister_upper    = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences_upper.fa"
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """
@@ -102,12 +102,12 @@ rule ConcatSeq:
         seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
         # Get all corresponding sister species's sequences in one file
-        find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
-        seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
+        #find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
+        #seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
 
         # Make sequences in uppercase to remove potential soft repeat mask 
         awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
-        awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
+        #awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
         """
 
 rule ArchiveAlignments:
