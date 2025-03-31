@@ -109,14 +109,14 @@ rule ConcatSeq:
         find $pathFocal -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_focal}
         seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
+        # Make sequences in uppercase to remove potential soft repeat mask 
+        awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
+        """
+
         # Get all corresponding sister species's sequences in one file
         #find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
         #seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
-
-        # Make sequences in uppercase to remove potential soft repeat mask 
-        awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
         #awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
-        """
 
 rule ArchiveAlignments:
     message: "Create an archive file containing all alignments"
