@@ -19,6 +19,7 @@ split:
     cluster: 'split'
     local: 'gsplit'
 TF_source: "config"
+ModelThreads: 16
 
 # Data Parameters
 species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
