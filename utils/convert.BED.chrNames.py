@@ -34,6 +34,7 @@ for data in ["peaks", "consensus_summits"]:
             i = i.strip("\n")
             i = i.split("\t")
             old = str(i[0])
+            print(old)
 
             if data == "consensus_summits" or suffix == '_UCSC_names':
                 peak_ID = str(i[3])
