@@ -22,8 +22,8 @@ include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
-localrules:  get_localrules(config)
-ruleorder: get_ruleorder(config)
+localrules:  *get_localrules(config)
+ruleorder: *get_ruleorder(config)
 
 # Extract common variables from config
 sample = config["sample"]
