@@ -35,6 +35,14 @@ rule GetPeaks:
         rm {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs
         """
 
+rule SubSetPeaks:
+    input: pathPeaks + "/FlyTFPeaksPrimaryTargets.tsv"
+    output: pathPeaks + "/{TF}.peaks.bed"
+    shell:
+        """
+        awk '$4 == "{wildcards.TF}"' {input} > {output}
+        """
+
 rule BED_split:
     message: "Split the list of coordinates for parallelization"
     input: BED_file = pathPeaks + "/{TF}.peaks" + config[sp]["suffix"] + ".bed"
