@@ -6,6 +6,7 @@ import os
 sp = sys.argv[1]
 sample = sys.argv[2]
 TF = sys.argv[3]
+suffix = sys.argv[5]
 
 path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "cluster" \
     else "/Users/alaverre/Documents/Detecting_positive_selection/"
@@ -16,6 +17,17 @@ pathMatrix = f"{path}/results/substitution_matrix/{sp}/"
 chromosomes = [os.path.splitext(file)[0] for file in os.listdir(pathMatrix)]
 
 ####################################################################################################
+
+# If suffix == '_UCSC_names', copy original file to new file.
+if suffix == '_UCSC_names':
+    for data in ["peaks", "consensus_summits"]:
+        BED = f"{pathPeaks}/{TF}.{data}.bed"
+        if not os.path.exists(BED):
+            continue
+        os.system(f"cp {BED} {pathPeaks}/{TF}.{data}_UCSC_names.bed")
+    sys.exit()
+
+
 Correspondence_dict = {}
 with open(Correspondence, 'r') as f1:
     for i in f1.readlines():

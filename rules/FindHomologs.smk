@@ -41,9 +41,10 @@ rule ConvertCoordinates:
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
+    params: suffix = config[sp]["suffix"]
     shell:
         """
-        python utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {cluster}
+        python utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {cluster} {params.suffix}
         """
 
 rule runHALPER:
