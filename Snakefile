@@ -43,9 +43,9 @@ TFs = get_TFs(config, pathPeaks)
 
 # Define specificity for rules
 if config["cluster"] == "cluster":
-    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
+    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
 else:
-    localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split, InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome
+    localrules: all, GetPeaks, SubSetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split, InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
@@ -59,7 +59,7 @@ if config["TF_source"] == "config":
 else:
     ruleorder: SubSetPeaks > GetPeaks
 
-print("Running with :", ', '.join(TFs), "transcription factors" )
+print("Running on:", ', '.join(TFs))
 ########################################################################################################################
 rule all:
     input :
