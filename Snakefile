@@ -14,21 +14,15 @@
 ########################################################################################################################
 #! /usr/bin/env python
 from snakemake.io import expand, touch
-from config.config_setup import get_TFs, get_localrules, get_ruleorder
+from config.config_setup import get_TFs
 import os
+
 configfile: 'config/TestPos.yaml'
 include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
-test = get_localrules(config)
-print("Local rules:", test)
-
-rule_order = get_ruleorder(config)
-print("Rule order:", rule_order)
-#localrules:  *get_localrules(config)
-ruleorder: rule_order
 
 # Extract common variables from config
 sample = config["sample"]
@@ -46,6 +40,24 @@ pathPolymorphism = os.path.join(base_results, "polymorphism_analyses", peakType,
 
 # Retrieve TFs
 TFs = get_TFs(config, pathPeaks)
+
+# Define specificity for rules
+if config["cluster"] == "cluster":
+    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
+else:
+    localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split, InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome
+
+# Define from which type of alignments ancestral sequences should be obtained
+if config["AlignType"] == "pairwise":
+    ruleorder: InferAncestralPairwise > GetSequencesMultiple
+else:
+    ruleorder: GetSequencesMultiple > InferAncestralPairwise
+
+# Define how to obtain the peaks BED file
+if config["TF_source"] == "config":
+    ruleorder: GetPeaks > SubSetPeaks
+else:
+    ruleorder: SubSetPeaks > GetPeaks
 
 print("Running with :", ', '.join(TFs), "transcription factors" )
 ########################################################################################################################
