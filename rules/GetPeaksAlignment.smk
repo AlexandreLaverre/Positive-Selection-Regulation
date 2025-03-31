@@ -120,7 +120,7 @@ rule ConcatSeq:
 
 rule ArchiveAlignments:
     message: "Create an archive file containing all alignments"
-    input: focal_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences_upper.fa"
+    input: focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     output: archive = pathResults + "/{TF}/alignments_{AncNode}.archive.tar.gz"
     params: time="1:00:00",mem="1G",threads=1
     shell:
