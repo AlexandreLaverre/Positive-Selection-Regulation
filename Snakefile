@@ -22,6 +22,8 @@ include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
+test = get_localrules(config)
+print(test)
 localrules:  *get_localrules(config)
 ruleorder: *get_ruleorder(config)
 
