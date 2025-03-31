@@ -46,9 +46,8 @@ for data in ["peaks", "consensus_summits"]:
             if suffix == '_UCSC_names':
                 new_chr = old
 
-            print(new_chr, peak_ID)
             # Filter chromosomes based on substitution matrix.
-            if old in chromosomes or new_chr in chromosomes:
+            if old in chromosomes or new_chr in chromosomes or suffix == '_UCSC_names':
                 new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{peak_ID}"
                 print("ok!", new_ID)
                 outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), new_ID]) + '\n')
