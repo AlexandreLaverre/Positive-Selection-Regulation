@@ -50,6 +50,7 @@ for data in ["peaks", "consensus_summits"]:
             # Filter chromosomes based on substitution matrix.
             if old in chromosomes or new_chr in chromosomes:
                 new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{peak_ID}"
+                print("ok!", new_ID)
                 outfile.write("\t".join([new_chr, str(i[1]), str(i[2]), new_ID]) + '\n')
 
     outfile.close()
