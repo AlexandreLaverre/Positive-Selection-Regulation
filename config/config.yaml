@@ -1,4 +1,5 @@
 # Snakemake configuration
 cluster: "sbatch -p cpu -N 1 -c {params.threads} --mem={params.mem} -t {params.time}"
 jobs: 64
-
+rerun_triggers: "mtime"
+rerun_incomplete: false
