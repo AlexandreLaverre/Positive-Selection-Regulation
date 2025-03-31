@@ -23,9 +23,12 @@ include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
 test = get_localrules(config)
-print(test)
-localrules:  *get_localrules(config)
-ruleorder: *get_ruleorder(config)
+print("Local rules:", test)
+
+test = get_ruleorder(config)
+print("Rule order:", test)
+#localrules:  *get_localrules(config)
+#ruleorder: *get_ruleorder(config)
 
 # Extract common variables from config
 sample = config["sample"]
