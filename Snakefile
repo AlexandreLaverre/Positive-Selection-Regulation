@@ -14,44 +14,41 @@
 ########################################################################################################################
 #! /usr/bin/env python
 from snakemake.io import expand, touch
-
+from config.config_setup import get_TFs, get_localrules, get_ruleorder
+import os
 configfile: 'config/TestPos.yaml'
 include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
 include: 'rules/PerformTests.smk'
 include: 'rules/Polymorphism.smk'
+localrules:  get_localrules(config)
+ruleorder: get_ruleorder(config)
 
+# Extract common variables from config
 sample = config["sample"]
-
-pathResults = "../results/positive_selection/" + config["peakType"] + "/" + config["sp"] + "/" + sample
-pathPeaks = "../results/peaks_calling/" + config["peakType"] + "/" + config["sp"] + "/" + sample
-pathPolymorphism = f"../results/polymorphism_analyses/" + config["peakType"] + "/" + config["sp"] + "/" + sample
-TFS = config["TFs"][sample]
+sp = config["sp"]
+peakType = config["peakType"]
 BinType = str(config["BinType"])
 nbRand = str(config["nbRand"])
 AncNode = str(config["AncNode"])
 
-print("Running with :", ', '.join(config["TFs"][sample]), "transcription factors" )
+# Define base paths
+base_results = os.path.join("..", "results")
+pathResults = os.path.join(base_results, "positive_selection", peakType, sp, sample)
+pathPeaks = os.path.join(base_results, "peaks_calling", peakType, sp, sample)
+pathPolymorphism = os.path.join(base_results, "polymorphism_analyses", peakType, sp, sample)
 
-if config["cluster"] == "cluster":
-    localrules: all, GetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
-else:
-    localrules: all, GetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
-        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome
+# Retrieve TFs
+TFs = get_TFs(config, pathPeaks)
 
-# Define from which type of alignments ancestral sequences should be obtained
-if config["AlignType"] == "pairwise":
-    ruleorder: InferAncestralPairwise > GetSequencesMultiple
-else:
-    ruleorder: GetSequencesMultiple > InferAncestralPairwise
-
+print("Running with :", ', '.join(TFs), "transcription factors" )
 ########################################################################################################################
 rule all:
     input :
-        MaxLLTest = expand(pathResults + "/{TF}/Tests/MLE_summary_" + BinType + "_" + AncNode + ".csv", TF=TFS),
-        PosSelTest = expand(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + nbRand + "permutations_two_tailed_" + AncNode + ".txt",TF=TFS),
-        archive= expand(pathResults + "/{TF}/alignments.archive.tar.gz",TF=TFS),
+        MaxLLTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"MLE_summary_{BinType}_{AncNode}.csv"), TF=TFs),
+        PosSelTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"PosSelTest_deltaSVM_{nbRand}permutations_two_tailed_{AncNode}.txt") ,TF=TFs),
+        archive= expand(os.path.join(pathResults, "{TF}", "alignments.archive.tar.gz"),TF=TFs)
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample]),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
 
