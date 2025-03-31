@@ -4,7 +4,7 @@ import os
 def get_TFs(config, pathPeaks):
     """Retrieve TFs from the config file or BED file"""
     if config.get("TF_source") == "config":
-        return config["TFs"]
+        return config["TFs"][config["sample"]]
     else:
         bed_file = os.path.join(pathPeaks, "FlyTFPeaksPrimaryTargets.tsv")
         with open(bed_file) as f:
