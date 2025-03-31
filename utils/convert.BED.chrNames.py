@@ -24,7 +24,7 @@ if suffix == '_UCSC_names':
         BED = f"{pathPeaks}/{TF}.{data}.bed"
         if not os.path.exists(BED):
             continue
-        os.system(f"cp {BED} {pathPeaks}/{TF}.{data}_UCSC_names.bed")
+        os.system(f"cut -f1-4 {BED} {pathPeaks}/{TF}.{data}_UCSC_names.bed")
     sys.exit()
 
 
