@@ -65,7 +65,7 @@ rule all:
     input :
         MaxLLTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"MLE_summary_{BinType}_{AncNode}.csv"), TF=TFs),
         PosSelTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"PosSelTest_deltaSVM_{nbRand}permutations_two_tailed_{AncNode}.txt") ,TF=TFs),
-        archive= expand(os.path.join(pathResults, "{TF}", "alignments.archive.tar.gz"),TF=TFs)
+        archive = expand(os.path.join(pathResults, "{TF}", f"alignments_{AncNode}.archive.tar.gz"),TF=TFs),
         #model_validation = expand(pathResults + "/{TF}/Model/{TF}.cvpred.txt", TF=config["TFs"][sample]),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
 
