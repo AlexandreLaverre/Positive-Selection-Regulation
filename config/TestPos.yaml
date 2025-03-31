@@ -18,9 +18,10 @@ cluster: 'cluster'
 split:
     cluster: 'split'
     local: 'gsplit'
+TF_source: "config"
 
 # Data Parameters
-species: ['human_older', 'human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
+species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
 TFs:
     Schmidt12: ['CTCF']
     Myers: ['CTCF']
@@ -49,12 +50,6 @@ human:
     sample:
         - 'Wilson'
         - 'Schmidt12'
-        - 'CTCF_binding'
-human_older:
-    UCSC_Assembly: 'hg38.fa.gz'
-    Ensembl_Assembly: 'Homo_sapiens.GRCh38.dna_sm.toplevel.fa.gz'
-    suffix: '_UCSC_names'
-    sample:
         - 'CTCF_binding'
 mouse:
     UCSC_Assembly: 'mm10.fa.gz'
