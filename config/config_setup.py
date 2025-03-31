@@ -28,14 +28,15 @@ def get_localrules(config):
 def get_ruleorder(config):
     """Define rule order based on AlignType and TF_source"""
     ruleorder = []
+
     if config["AlignType"] == "pairwise":
-        ruleorder.append("InferAncestralPairwise > GetSequencesMultiple")
+        ruleorder.extend(["InferAncestralPairwise", "GetSequencesMultiple"])
     else:
-        ruleorder.append("GetSequencesMultiple > InferAncestralPairwise")
+        ruleorder.extend(["GetSequencesMultiple", "InferAncestralPairwise"])
 
     if config.get("TF_source") == "config":
-        ruleorder.append("GetPeaks > SubSetPeaks")
+        ruleorder.extend(["GetPeaks", "SubSetPeaks"])
     else:
-        ruleorder.append("SubSetPeaks > GetPeaks")
+        ruleorder.extend(["SubSetPeaks", "GetPeaks"])
 
     return ruleorder

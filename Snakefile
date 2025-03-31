@@ -25,10 +25,10 @@ include: 'rules/Polymorphism.smk'
 test = get_localrules(config)
 print("Local rules:", test)
 
-test = get_ruleorder(config)
-print("Rule order:", test)
+rule_order = get_ruleorder(config)
+print("Rule order:", rule_order)
 #localrules:  *get_localrules(config)
-#ruleorder: *get_ruleorder(config)
+ruleorder: rule_order
 
 # Extract common variables from config
 sample = config["sample"]
