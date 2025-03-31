@@ -43,9 +43,6 @@ for data in ["peaks", "consensus_summits"]:
             if old in Correspondence_dict.keys():
                 new_chr = str(Correspondence_dict[old])
 
-            if suffix == '_UCSC_names':
-                new_chr = old
-
             # Filter chromosomes based on substitution matrix.
             if old in chromosomes or new_chr in chromosomes or suffix == '_UCSC_names':
                 new_ID = f"{new_chr}:{str(i[1])}:{str(i[2])}_{peak_ID}"
