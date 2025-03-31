@@ -12,9 +12,9 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ConsensusSummits:
     message: "Get consensus summits"
-    input: peaks = expand(pathPeaks + "/{TF}.peaks.bed", TF=config["TFs"][sample])
-    output: summits = expand(pathPeaks + "/{TF}.consensus_summits.bed", TF=config["TFs"][sample])
-    log: out = pathResults + "/log/ConsensusSummits.out"
+    input: peaks = pathPeaks + "/{TF}.peaks.bed"
+    output: summits = pathPeaks + "/{TF}.consensus_summits.bed"
+    log: out = pathResults + "/log/ConsensusSummits_{TF}.out"
     shell:
         """
         ./ChIPseq_analyses/get.consensus.summits.sh {sp} {sample} {cluster} &> {log.out}
@@ -36,7 +36,7 @@ rule ConvertCoordinates:
     message: "Convert coordinates to UCSC"
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits.bed",
+        #summits = pathPeaks + "/{TF}.consensus_summits.bed",
         correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
@@ -50,7 +50,7 @@ rule runHALPER:
     message: "Get consensus summits"
     input:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
+        #summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
     output: peaks = directory("../results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     shell:
