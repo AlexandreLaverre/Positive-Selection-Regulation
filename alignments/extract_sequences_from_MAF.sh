@@ -37,10 +37,12 @@ source ${path}/scripts/config/params.sh "$sp" "$cluster"
 sister_name="$(echo "$close_species" | cut -d "," -f 2)"
 
 
-if [[ $AncNode != "ancestral" ]]; then
+if [[ $AncNode != 'ancestral' ]]; then
   anc_name="${AncNode}"
 fi
 
+echo "Focal species: $sp_name"
+echo "Ancestral species: $anc_name"
 #########################################################################
 # Retrieve alignments of regions from whole genome alignment
 mafsInRegion "$BED_file" -outDir "${pathAlign}"/ "$pathGenomeAlign"
