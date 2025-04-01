@@ -19,7 +19,7 @@ rule GenerateNegativeSeq:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
-    priority: 2
+    priority: 10
     params: time="1:00:00",mem="10G",threads=1 #5h
     shell:
         """
@@ -35,7 +35,7 @@ rule ModelTraining:
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     output: touch(pathResults + "/{TF}/Model/{TF}.model.txt")
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
-    priority: 2
+    priority: 10
     threads: config["ModelThreads"]
     params: time="2:00:00", mem="5G", threads=config["ModelThreads"] #24h
     shell:
