@@ -73,7 +73,7 @@ rule GetSequencesMultiple:
     input: BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done"),
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
-    params: time="2:00:00",mem="1G",threads=1
+    params: time="1:00:00",mem="1G",threads=1 # 2h
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
@@ -102,7 +102,7 @@ rule ConcatSeq:
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/sequences/
         
         # Get all non empty ancestral sequences in one file
-        find "$pathAncestral" -type f -name "*_nogap.fa" -size +0 > {output.list_ancestral}
+        find $pathAncestral -name "*nogap.fa" -size +0 | xargs basename -s _nogap.fa > {output.list_ancestral}
         find $pathAncestral -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file
@@ -114,7 +114,6 @@ rule ConcatSeq:
         """
 
         # Get all corresponding sister species's sequences in one file
-        #find $pathAncestral -name "*nogap.fa" -size +0 | xargs basename -s _nogap.fa > {output.list_ancestral}
         #find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
         #seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
         #awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
