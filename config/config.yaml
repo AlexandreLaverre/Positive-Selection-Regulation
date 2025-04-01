@@ -1,5 +1,5 @@
 # Snakemake configuration
 cluster: "sbatch -p cpu -N 1 -c {params.threads} --mem={params.mem} -t {params.time} -o /dev/null -e /dev/null"
-jobs: 120
+jobs: 64
 rerun-triggers: "mtime"
 ignore-incomplete: true
