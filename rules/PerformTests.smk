@@ -25,7 +25,7 @@ rule ComputeAllDeltaSVM:
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node {AncNode} --{cluster} -T {threads} &> {log.out}
+        {sample}/{wildcards.TF} {peakType} --node {AncNode} --{cluster} -T {threads} > {log.out} 2>&1 
         """
 
 def evaluate_time(ancestral_seq):
@@ -52,7 +52,7 @@ rule PermutationTest:
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
-        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} &> {log.out}
+        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} > {log.out} 2>&1 
         """
 
 rule MaxLLTest:
@@ -69,7 +69,7 @@ rule MaxLLTest:
         """
         python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
-        --node {AncNode} -T {threads} --{cluster} &> {log.out}
+        --node {AncNode} -T {threads} --{cluster} > {log.out} 2>&1 
         """
 
 #rule simulate_sequence:

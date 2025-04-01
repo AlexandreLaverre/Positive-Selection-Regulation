@@ -65,7 +65,7 @@ rule InferAncestralPairwise:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
         python ./alignments/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
-        {input.BED_file_part} {config[AncMethod]} {cluster} &> {log.out}
+        {input.BED_file_part} {config[AncMethod]} {cluster} > {log.out} 2>&1 
         """
 
 rule GetSequencesMultiple:
@@ -77,7 +77,7 @@ rule GetSequencesMultiple:
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
-        ./alignments/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} {AncNode} &> {log.out}
+        ./alignments/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} {AncNode} > {log.out} 2>&1 
         """
 
 rule ConcatSeq:

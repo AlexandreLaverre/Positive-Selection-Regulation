@@ -24,7 +24,7 @@ rule GenerateNegativeSeq:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
         mkdir -p $pathModel
-        Rscript {pathScripts}/generate_negative_sequence.R {sp} {input.BED} $pathModel {cluster} &> {log.out}
+        Rscript {pathScripts}/generate_negative_sequence.R {sp} {input.BED} $pathModel {cluster} > {log.out} 2>&1 
         """
 
 rule ModelTraining:
@@ -39,7 +39,7 @@ rule ModelTraining:
     params: time="2:00:00", mem="5G", threads=config["ModelThreads"] #24h
     shell:
         """
-        gkmtrain -r 12 -l 10 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
         """
 
 rule ModelValidation:
@@ -53,7 +53,7 @@ rule ModelValidation:
     params: time="48:00:00", mem="5G", threads=config["ModelThreads"]
     shell:
         """
-        gkmtrain -r 12 -l 10 -x 5 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
+        gkmtrain -r 12 -l 10 -x 5 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
         """
 
 rule ModelPrediction:
@@ -67,5 +67,5 @@ rule ModelPrediction:
     params: time="1:00:00", mem="2G", threads=1
     shell:
         """
-        gkmpredict -T 1 {input.kmer_fasta} {input.Model} {output.PredictedWeight} &> {log.out}
+        gkmpredict -T 1 {input.kmer_fasta} {input.Model} {output.PredictedWeight} > {log.out} 2>&1 
         """

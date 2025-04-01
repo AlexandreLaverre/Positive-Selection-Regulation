@@ -69,11 +69,12 @@ rule MaxLLTest:
         -T {threads} --{cluster} &> {log.out}
         """
 
-#rule simulate_sequence:
-#    """Simulate sequence evolution according to a given number of substitutions and a new optimum value"""
-#    input: original_seq = "test.txt"
-#    output: simulated_seq = "test.txt"
-#    shell:
-#        """
-#        python /simulate_sequence_evolution.py {input.original_seq} {output.simulated_seq} {cluster}
-#        """
+rule simulate_sequence:
+    """Simulate sequence evolution"""
+    input: original_seq = "test.txt"
+    output: simulated_seq = "test.txt"
+    params: method="beta", MaxMut=20, Nsimul=1000
+    shell:
+        """
+        python /simulate_sequence_evolution.py {sp} {sample}/{wildcards.TF}
+        """

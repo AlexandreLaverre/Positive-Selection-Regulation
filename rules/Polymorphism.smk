@@ -20,7 +20,7 @@ rule DownloadVCF:
         """
         mkdir -p {params.pathVCF}
         wget -A *shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz -np -nd -r -e -P {params.pathVCF} \
-        robots=off http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20181203_biallelic_SNV/  &> {log.out}
+        robots=off http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20181203_biallelic_SNV/  > {log.out} 2>&1 
         """
 
 rule VCF_BED_overlap:
@@ -48,7 +48,7 @@ rule RetrieveSNPDeltaSVM_Selection:
     params: time="1:00:00",mem="8G",threads=1
     shell:
         """ 
-        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} {input.genome} {input.MaxLL_estimations} {output} &> {log.out}
+        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} {input.genome} {input.MaxLL_estimations} {output} > {log.out} 2>&1 
         """
 
 rule MergeAllChromosome:
