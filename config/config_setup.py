@@ -8,5 +8,5 @@ def get_TFs(config, pathPeaks):
         bed_file = os.path.join(pathPeaks, "FlyTFPeaksPrimaryTargets.tsv")
         with open(bed_file) as f:
             next(f)  # Skip header
-            return sorted({line.split("\t")[3].strip() for line in f})  # Extract unique TFs
+            return sorted({line.split("\t")[4].strip() for line in f})  # Extract unique TFs
 
