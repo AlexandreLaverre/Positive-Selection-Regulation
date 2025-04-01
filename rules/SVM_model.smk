@@ -19,7 +19,7 @@ rule GenerateNegativeSeq:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
-    params: time="5:00:00",mem="10G",threads=1
+    params: time="1:00:00",mem="10G",threads=1 #5h
     shell:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
@@ -28,7 +28,7 @@ rule GenerateNegativeSeq:
         """
 
 rule ModelTraining:
-    message: "Training of the gkm-SVM, kmer=10, 16 threads"
+    message: "Training of the gkm-SVM, kmer=10"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
@@ -36,14 +36,14 @@ rule ModelTraining:
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 2
     threads: config["ModelThreads"]
-    params: time="24:00:00", mem="5G", threads=config["ModelThreads"]
+    params: time="2:00:00", mem="5G", threads=config["ModelThreads"] #24h
     shell:
         """
         gkmtrain -r 12 -l 10 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} &> {log.out}
         """
 
 rule ModelValidation:
-    message: "Cross-validation of the model, 4 threads"
+    message: "Cross-validation of the model"
     input:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
