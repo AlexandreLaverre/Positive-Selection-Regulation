@@ -20,7 +20,7 @@ rule PermutationTest:
     threads: config["nbPart"]
     priority: 2
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
-    params: time="15:00:00", mem="5G", threads=config["nbPart"]
+    params: time="1:00:00", mem="5G", threads=config["nbPart"] #15h
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
@@ -38,7 +38,7 @@ rule ComputeAllDeltaSVM:
         ObsSVM = pathResults + "/{TF}/deltas/{AncNode}_to_observed_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeAllDeltaSVM_{AncNode}.out"
     threads: config["nbPart"]
-    params: time="2:00:00", mem="5G", threads=config["nbPart"]
+    params: time="1:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
