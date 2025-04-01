@@ -39,7 +39,7 @@ rule ModelTraining:
     params: time="2:00:00", mem="5G", threads=config["ModelThreads"] #24h
     shell:
         """
-        gkmtrain -r 12 -l 10 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
+        gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
         """
 
 rule ModelValidation:
@@ -53,7 +53,7 @@ rule ModelValidation:
     params: time="48:00:00", mem="5G", threads=config["ModelThreads"]
     shell:
         """
-        gkmtrain -r 12 -l 10 -x 5 -T {params.threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
+        gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
         """
 
 rule ModelPrediction:
