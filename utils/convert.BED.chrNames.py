@@ -6,7 +6,7 @@ import os
 sp = sys.argv[1]
 sample = sys.argv[2]
 TF = sys.argv[3]
-suffix = "_"
+suffix = sys.argv[5]
 
 path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "cluster" \
     else "/Users/alaverre/Documents/Detecting_positive_selection/"
