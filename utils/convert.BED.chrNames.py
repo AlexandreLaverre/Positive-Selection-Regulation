@@ -11,7 +11,7 @@ suffix = sys.argv[5]
 path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "cluster" \
     else "/Users/alaverre/Documents/Detecting_positive_selection/"
 
-Correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_UCSC2Ensembl.txt"
+Correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
 pathPeaks = f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/"
 pathMatrix = f"{path}/results/substitution_matrix/{sp}/"
 chromosomes = [os.path.splitext(file)[0] for file in os.listdir(pathMatrix)]
