@@ -10,23 +10,6 @@ AncNode = config["AncNode"]
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
-rule PermutationTest:
-    message: "Test for positive selection between ancestral and focal sequences"
-    input:
-        PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
-        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
-        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
-    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
-    threads: config["nbPart"]
-    priority: 2
-    log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
-    params: time="1:00:00", mem="5G", threads=config["nbPart"] #15h
-    shell:
-        """
-        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
-        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} &> {log.out}
-        """
-
 rule ComputeAllDeltaSVM:
     """Compute all possible and observed SVM"""
     input:
@@ -52,6 +35,25 @@ def evaluate_time(ancestral_seq):
         time = num_lines/ (1500*config["nbPart"])+2
         cluster_time = f"{round(time)}:00:00"
     return cluster_time
+#lambda wildcards, input: evaluate_time(input.AllSVM)
+
+rule PermutationTest:
+    message: "Test for positive selection between ancestral and focal sequences"
+    input:
+        AllSVM = pathResults + "/{TF}/deltas/{AncNode}_all_possible_deltaSVM.txt",
+        PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
+        ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
+        focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
+    output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
+    threads: 6 #config["nbPart"]
+    priority: 2
+    log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
+    params: time="2:00:00", mem="5G", threads=6 #15h #config["nbPart"]
+    shell:
+        """
+        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
+        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} &> {log.out}
+        """
 
 rule MaxLLTest:
     message: "Test for positive selection using Likelihood Ratio Test between 3 Maximized models"
@@ -61,8 +63,8 @@ rule MaxLLTest:
     output: touch(pathResults + "/{TF}/Tests/MLE_summary_{BinType}_{AncNode}.csv")
     log: out = pathResults + "/log/{TF}/MaxLLTest_{BinType}_{AncNode}.out"
     threads: config["nbPart"]
-    params: mem="16G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
-            threshold=config["threshold"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
+    params: mem="10G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
+            threshold=config["threshold"], time="1:00:00"
     shell:
         """
         python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
