@@ -6,7 +6,7 @@ import os
 sp = sys.argv[1]
 sample = sys.argv[2]
 TF = sys.argv[3]
-suffix = sys.argv[5]
+suffix = "tmp"
 
 path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "cluster" \
     else "/Users/alaverre/Documents/Detecting_positive_selection/"
@@ -38,7 +38,9 @@ for data in ["peaks", "consensus_summits"]:
             if old == "chrom":
                 continue
 
-            if data == "consensus_summits" or suffix == '_UCSC_names':
+            if data == "consensus_summits":
+                peak_ID = str(i[3])
+            elif suffix == 'tmp':
                 peak_ID = str(i[3])
             else:
                 peak_ID = str(i[3].split(":")[3])
