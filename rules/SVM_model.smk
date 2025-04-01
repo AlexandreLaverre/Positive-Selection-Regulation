@@ -37,7 +37,7 @@ rule ModelTraining:
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 10
     threads: config["ModelThreads"]
-    params: time="2:00:00", mem="5G", threads=config["ModelThreads"] #24h
+    params: time="3:00:00", mem="5G", threads=config["ModelThreads"] #24h
     shell:
         """
         gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 
