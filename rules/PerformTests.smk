@@ -45,10 +45,10 @@ rule PermutationTest:
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
-    threads: max(6, config["nbPart"])
+    threads: 6
     priority: 2
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
-    params: time="2:00:00", mem="5G", threads=max(6, config["nbPart"]) #15h #config["nbPart"]
+    params: time="2:00:00", mem="5G", threads=6 #15h #config["nbPart"]
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
