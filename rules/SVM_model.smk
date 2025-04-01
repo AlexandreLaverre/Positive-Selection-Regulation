@@ -19,6 +19,7 @@ rule GenerateNegativeSeq:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
+    priority: 2
     params: time="1:00:00",mem="10G",threads=1 #5h
     shell:
         """
