@@ -40,7 +40,7 @@ rule SubSetPeaks:
     output: pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
-        awk '$4 == "{wildcards.TF}"' {input} > {output}
+        awk '$5 == "{wildcards.TF}"' {input} > {output}
         """
 
 rule BED_split:
