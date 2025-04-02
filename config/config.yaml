@@ -3,3 +3,4 @@ cluster: "sbatch -p cpu -N 1 -c {params.threads} --mem={params.mem} -t {params.t
 jobs: 64
 rerun-triggers: "mtime"
 ignore-incomplete: true
+keep-going: true
