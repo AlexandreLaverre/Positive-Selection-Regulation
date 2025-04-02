@@ -46,7 +46,6 @@ rule PermutationTest:
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
     threads: max(10, config["nbPart"])
-    priority: 5
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
     params: time="2:00:00", mem="5G", threads=max(10, config["nbPart"]) #15h
     shell:
