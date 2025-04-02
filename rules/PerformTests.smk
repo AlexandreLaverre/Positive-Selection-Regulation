@@ -52,7 +52,7 @@ rule PermutationTest:
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
-        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} > {log.out} 2>&1 
+        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} > {log.out} 2>&1 || exit 1
         """
 
 rule MaxLLTest:
