@@ -25,7 +25,7 @@ rule ComputeAllDeltaSVM:
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node {AncNode} --{cluster} -T {threads} > {log.out} 2>&1 
+        {sample}/{wildcards.TF} {peakType} --node {AncNode} --{cluster} -T {threads} > {log.out} 2>&1 || exit 1
         """
 
 def evaluate_time(ancestral_seq):
