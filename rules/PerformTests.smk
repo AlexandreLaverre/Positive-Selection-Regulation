@@ -46,7 +46,7 @@ rule PermutationTest:
         focal_sequences = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
     threads: max(10, config["nbPart"])
-    priority: 10
+    priority: 5
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
     params: time="2:00:00", mem="5G", threads=max(10, config["nbPart"]) #15h
     shell:
@@ -65,6 +65,7 @@ rule MaxLLTest:
     threads: config["nbPart"]
     params: mem="10G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
             threshold=config["threshold"], time="1:00:00"
+    priority: 10
     shell:
         """
         python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
