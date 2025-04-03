@@ -47,7 +47,7 @@ rule PermutationTest:
     output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
     threads: max(10, config["nbPart"])
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
-    params: time="2:00:00", mem="5G", threads=max(10, config["nbPart"]) #15h
+    params: time="4:00:00", mem="5G", threads=max(10, config["nbPart"]) #15h
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
