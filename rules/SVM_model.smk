@@ -51,7 +51,7 @@ rule ModelValidation:
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
     threads: config["ModelThreads"]
-    params: time="48:00:00", mem="5G", threads=config["ModelThreads"]
+    params: time="20:00:00", mem="5G", threads=config["ModelThreads"]
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 || exit 1
