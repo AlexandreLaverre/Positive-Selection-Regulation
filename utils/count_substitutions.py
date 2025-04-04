@@ -9,15 +9,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument("sp", help="Species name: human dog")
 parser.add_argument("sample", help="Study name: Wilson Schmidt...")
 parser.add_argument("TF", help="Transcription Factor: CEBPA CTCF ...")
-parser.add_argument("peakType", help="NarrowPeaks or BroadPeaks")
+parser.add_argument("--peakType", default="NarrowPeaks", help="NarrowPeaks or BroadPeaks")
+parser.add_argument("--AncNode", default="ancestral", help="From which ancestral node to compute")
 args = parser.parse_args()
 
 path = f"/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/positive_selection/" \
        f"{args.peakType}/{args.sp}/{args.sample}/{args.TF}/"
 
 Ref_Path = f"{path}/sequences/filtered_ancestral_sequences.fa"
-Target_Path = f"{path}/sequences/filtered_focal_sequences_upper.fa"
-Output = open(f"{path}/sequences/focal_substitutions_stats.txt", "w")
+Target_Path = f"{path}/sequences/filtered_focal_{args.AncNode}_sequences_upper.fa"
+Output = open(f"{path}/sequences/focal_{args.AncNode}_substitutions_stats.txt", "w")
 
 nuc = ['A', 'T', 'C', 'G']
 
@@ -35,7 +36,7 @@ def get_sub_number(seq_ref, seq_alt):
     subs["Weak2Weak"] = subs["AT"] + subs["TA"]
     subs["Weak2Strong"] = subs["AC"] + subs["AG"] + subs["TC"] + subs["TG"]
     subs["Strong2Strong"] = subs["GC"] + subs["CG"]
-    subs["Strong2Weak"] = subs["CA"] + subs["CT"] + subs["GA"] + subs["GT"]
+    subs["Strong2Weak"] = subs["CA"] + subs["GA"] + subs["CT"] + subs["GT"]
 
     return subs
 
