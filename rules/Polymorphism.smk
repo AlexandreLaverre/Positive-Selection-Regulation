@@ -38,17 +38,17 @@ rule VCF_BED_overlap:
     input:
         vcf = '../data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
         BED_peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
-    output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
+    output: overlap_vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz"
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """ 
-        mkdir -p {pathPolymorphism}/{wildcards.TF}/VCF
+        mkdir -p {pathPolymorphism}/{wildcards.TF}
         bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
         """
 
 rule SimpleOverlapFile:
     message: "Get unique simple file of overlapping SNP"
-    input: lambda wildcards: expand(pathPolymorphism + "/{{TF}}/VCF/filtered_{chrom}.vcf.gz", chrom=chroms)
+    input: lambda wildcards: expand(pathPolymorphism + "/{{TF}}/filtered_{chrom}.vcf.gz", chrom=chroms)
     output: pathPolymorphism + "/{TF}/overlap_peaks.txt"
     shell:
         """
