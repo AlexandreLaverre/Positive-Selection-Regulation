@@ -48,7 +48,7 @@ rule VCF_BED_overlap:
 
 rule SimpleOverlapFile:
     message: "Get unique simple file of overlapping SNP"
-    input: lambda wildcards: expand(pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz", chrom=chroms)
+    input: lambda wildcards: expand(pathPolymorphism + "/{wildcards.TF}/VCF/filtered_{chrom}.vcf.gz", chrom=chroms)
     output: pathPolymorphism + "/{TF}/overlap_peaks.txt"
     shell:
         """
