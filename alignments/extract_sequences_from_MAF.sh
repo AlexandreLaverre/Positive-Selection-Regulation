@@ -19,7 +19,7 @@ fi
 
 conda activate MAF
 
-pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_ancestor.maf.gz"
+pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
 pathAlign="${pathResults}/MAFs/"
 
 if [ ! -f "${pathGenomeAlign}" ]; then
