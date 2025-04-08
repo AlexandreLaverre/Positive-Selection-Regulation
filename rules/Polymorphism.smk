@@ -12,7 +12,7 @@ if sp == "human":
     vcf_prefix = "human_1000genomes/ALL."
     vcf_suffix = ".shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz"
 elif sp == "drosophila":
-    chroms = ["chrX", "chr2L", "chr2R", "chr3L", "chr3R"]
+    chroms = ["chrX", "chr2L", "chr2R", "chr3L", "chr3R", "chr4"]
     vcf_prefix = "drosophila_DGRP/"
     vcf_suffix = ".dgrp2.vcf.gz"
 
@@ -47,14 +47,12 @@ rule VCF_BED_overlap:
         """
 
 rule SimpleOverlapFile:
-    message: "Compute selection coefficient for each SNP"
+    message: "Get unique simple file of overlapping SNP"
     input: lambda wildcards: expand(pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz", chrom=chroms)
-    output: pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
+    output: pathPolymorphism + "/{TF}/overlap_peaks.txt"
     shell:
         """
-        zcat {input} | sort -u > {output}
-        zcat ${pathResult}/filtered_${chrom}.vcf.gz | rev | cut -f 1,2 | rev | grep -v '^#' | sort -u > ${pathResult}/overlap_${chrom}.txt
-         
+        zcat {input} | grep -v '^#' | awk '{{print $NF, $2, $3}}' | sort -u > {output}
         """
 
 rule RetrieveSNPDeltaSVM_Selection:

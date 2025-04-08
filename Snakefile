@@ -43,7 +43,7 @@ TFs = get_TFs(config, pathPeaks)
 
 # Define specificity for rules
 if config["cluster"] == "cluster":
-    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, MergeAllChromosome
+    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, VCF_BED_overlap, SimpleOverlapFile, MergeAllChromosome
 else:
     localrules: all, GetPeaks, SubSetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split, InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome
 
