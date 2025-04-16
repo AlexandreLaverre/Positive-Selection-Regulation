@@ -20,7 +20,7 @@ rule GenerateNegativeSeq:
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     priority: 10
-    params: time="1:00:00",mem="10G",threads=1 #5h
+    params: time="2:00:00",mem="10G",threads=1 #5h
     shell:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
@@ -37,7 +37,7 @@ rule ModelTraining:
     log: out = pathResults + "/log/{TF}/ModelTraining.out"
     priority: 10
     threads: config["ModelThreads"]
-    params: time="4:00:00", mem="5G", threads=config["ModelThreads"] #24h
+    params: time="24:00:00", mem="5G", threads=config["ModelThreads"]
     shell:
         """
         gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 || exit 1

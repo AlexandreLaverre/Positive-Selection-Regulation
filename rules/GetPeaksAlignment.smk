@@ -75,7 +75,7 @@ rule GetSequencesMultiple:
         BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done"),
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
-    params: time="1:00:00",mem="1G",threads=1 # 2h
+    params: time="2:00:00",mem="1G",threads=1
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/

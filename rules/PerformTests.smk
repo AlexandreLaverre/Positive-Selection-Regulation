@@ -29,13 +29,12 @@ rule ComputeAllDeltaSVM:
         """
 
 def evaluate_time(ancestral_seq):
-    # Calculate time needed to perform MaxLL, considering 1500 peaks per hour and per thread.
+    # Calculate time needed to perform Permutations, considering 1500 peaks per hour and per thread.
     with open(ancestral_seq, 'r') as file:
         num_lines = sum(1 for _ in file)
         time = num_lines/ (1500*config["nbPart"])+2
         cluster_time = f"{round(time)}:00:00"
     return cluster_time
-#lambda wildcards, input: evaluate_time(input.AllSVM)
 
 rule PermutationTest:
     message: "Test for positive selection between ancestral and focal sequences"
@@ -47,7 +46,7 @@ rule PermutationTest:
     output: touch(pathResults + "/{TF}/Tests/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations_two_tailed_{AncNode}.txt")
     threads: max(10, config["nbPart"])
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
-    params: time="4:00:00", mem="5G", threads=max(10, config["nbPart"]) #15h
+    params: time=lambda wildcards, input: evaluate_time(input.AllSVM), mem="5G", threads=max(10, config["nbPart"])
     shell:
         """
         python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
