@@ -38,7 +38,7 @@ sister_name="$(echo "$close_species" | cut -d "," -f 2)"
 
 
 if [[ $AncNode != 'ancestral' ]]; then
-  anc_name="${AncNode}"
+  anc_name="fullTree${AncNode}"
 fi
 
 echo "Focal species: $sp_name"
