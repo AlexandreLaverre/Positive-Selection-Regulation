@@ -73,7 +73,7 @@ rule GetSequencesMultiple:
     input:
         GenomeAlignment = f"../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}"
-    output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done"),
+    output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done")
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
     params: time="2:00:00",mem="1G",threads=1
     shell:
@@ -85,13 +85,13 @@ rule GetSequencesMultiple:
 rule ConcatSeq:
     message: "Concatenate and sort all coordinates"
     input:
-        AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_" + AncNode + "_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF),
+        AncestralDone=lambda wildcards: expand(pathResults + "/log/{TF}/GetAncestral_part{part}_" + AncNode + "_done", part=range(100,100 +config["nbPart"]),TF=wildcards.TF)
     output:
         list_ancestral         = pathResults + "/{TF}/Alignments/list_{AncNode}.txt",
         concat_ancestral       = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
         concat_focal           = pathResults + "/{TF}/sequences/all_focal_{AncNode}_sequences.fa",
         concat_focal_filtered  = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences.fa",
-        concat_focal_upper     = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa",
+        concat_focal_upper     = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """
@@ -121,10 +121,10 @@ rule ConcatSeq:
 #concat_sister          = pathResults + "/{TF}/sequences/all_sister_{AncNode}_sequences.fa",
 #concat_sister_filtered = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences.fa",
 #concat_sister_upper    = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences_upper.fa"
-        # Get all corresponding sister species's sequences in one file
-        #find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
-        #seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
-        #awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
+# Get all corresponding sister species's sequences in one file
+#find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
+# #seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
+#awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
 
 rule ArchiveAlignments:
     message: "Create an archive file containing all alignments"
