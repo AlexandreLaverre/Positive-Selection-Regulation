@@ -38,6 +38,7 @@ pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
 output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t" + '\t'.join(pop) + "\tLength\tFlag\t" +
              "DeltaSVM\tSelCoefStab\tProbabStab\tSelCoefPos\tProbabPos\n")
 
+previous_ID = "NA"
 for SNP in VCF.iterrows():
     ID = SNP[1]['PeakID']
     chr = SNP[1]['#CHROM']
@@ -48,33 +49,36 @@ for SNP in VCF.iterrows():
 
     assert genome[chr].seq[SNP_pos].upper() == ref, "Reference does not correspond to the genome sequence."
 
-    # Check that focal sequence exists for this ID
-    if ID not in FocalSeq.keys():
-        continue
+    if ID != previous_ID:
+        # Check that focal sequence exists for this ID
+        if ID not in FocalSeq.keys():
+            continue
 
-    # Check that sequence do not contain gaps
-    start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
-    original_length = end - start
-    aligned_length = len(FocalSeq[ID].seq)
-    if aligned_length != original_length:
-        continue
+        # Check that sequence do not contain gaps
+        start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
+        original_length = end - start
+        sequence = FocalSeq[ID].seq
+        aligned_length = len(sequence)
+        if aligned_length != original_length:
+            continue
 
-    assert genome[chr].seq[start].upper() == FocalSeq[ID].seq[0], "Start does not correspond to the genome sequence."
+        assert genome[chr].seq[start].upper() == FocalSeq[ID].seq[0], "Start does not correspond to the genome sequence."
 
-    # Check that MaxLL estimations exist for this sequence
-    if ID not in MaxLL['ID'].values:
-        continue
-    else:
-        Stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
-        Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
+        # Check that MaxLL estimations exist for this sequence
+        if ID not in MaxLL['ID'].values:
+            continue
+        else:
+            Stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
+            Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
+
+        # Get deltaSVM calculated from Ancestral sequence
+        allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
+        allSVM_ID = ML.get_svm_ids(sequence)
+        sorted_SVM, sorted_changes = zip(*sorted(zip(allSVM, allSVM_ID)))
 
     # Relative position in sequence
     pos = SNP_pos - start
-    assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[
-        pos], "Position does not correspond to the genome sequence."
-
-    # Get deltaSVM calculated from Ancestral sequence
-    allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
+    assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "Position does not correspond to the genome sequence."
 
     # Ref = Ancestral
     if pd.isna(allSVM[f"pos{pos}:{ref}"]):
@@ -87,15 +91,21 @@ for SNP in VCF.iterrows():
     else:
         continue
 
+    # Get bins of the SVM distribution
+    SNP_index = ML.get_obs_index(SNP_deltaSVM, sorted_SVM)
+
     # Compute selection coefficient
-    SVM_bounds = [np.nanmin(allSVM), np.nanmax(allSVM)]
-    Coef_Stab = ML.coeff_selection_s(SNP_deltaSVM, [Stab_param], SVM_bounds)
-    Coef_Pos = ML.coeff_selection_s(SNP_deltaSVM, [Pos_params['AlphaPos'], Pos_params['BetaPos']], SVM_bounds)
-    Probab_Stab = ML.proba_fixation_s(Coef_Stab)
-    Probab_Pos = ML.proba_fixation_s(Coef_Pos)
+    Coef_Stab = ML.coeff_selection(SNP_index, np.array([Stab_param]))
+    Coef_Pos = ML.coeff_selection(SNP_index, np.array([Pos_params['AlphaPos'], Pos_params['BetaPos']]))
+
+    # Compute probabilities of fixation
+    Probab_Stab = ML.proba_fixation(Coef_Stab)
+    Probab_Pos = ML.proba_fixation(Coef_Pos)
 
     # Write output
     output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{nb_alt}\t{nb_tot}\t{tab.join(freq)}\t{original_length}\t{flag}\t"
                  f"{SNP_deltaSVM}\t{Coef_Stab}\t{Probab_Stab}\t{Coef_Pos}\t{Probab_Pos}\n")
+
+    previous_ID = ID
 
 output.close()
