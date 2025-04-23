@@ -74,13 +74,7 @@ def estimate_evolution(id, plots=False):
     original_seq = all_svm_row[all_svm_row.isna()].index.tolist()[0:seq_len]
 
     # Get all svm ids (pos:nuc:sub)
-    all_svm_id = []
-    for pos_id in original_seq:
-        pos = pos_id.split(":")[0]
-        nuc = pos_id.split(":")[1]
-        for sub in ["A", "T", "C", "G"]:
-            if nuc != sub:
-                all_svm_id.append(pos + ":" + nuc + ":" + sub)
+    all_svm_id = ML.get_svm_ids(original_seq)
 
     if len(set(obs_svm)) < 2:
         print(f"{id} has not enough substitutions with distinct effect to perform the test")
