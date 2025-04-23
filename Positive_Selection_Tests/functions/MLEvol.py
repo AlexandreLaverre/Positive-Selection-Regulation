@@ -19,6 +19,17 @@ def sum_nuc_probs(nuc_changes, sub_mat_proba):
     return sum_rate
 
 
+# Get SVM ids (pos:nuc:sub)
+def get_svm_ids(sequence):
+    svm_ids = []
+    for pos_id in sequence:
+        pos = pos_id.split(":")[0]
+        nuc = pos_id.split(":")[1]
+        for sub in ["A", "T", "C", "G"]:
+            if nuc != sub:
+                svm_ids.append(pos + ":" + nuc + ":" + sub)
+    return svm_ids
+
 # Get the quantiles of the SVM distribution of each side
 def get_svm_quantiles(all_svm, obs_svm, all_svm_ids, sub_mat_proba, n_quant=50):
     neg_svm = [x for x in all_svm if x <= 0]
@@ -90,6 +101,18 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
     return bin_proba, obs_bins, scaled_bins
 
 
+def get_obs_index(obs_svm, sorted_svm):
+    obs_index = np.searchsorted(sorted_svm, obs_svm, side='left')
+    for i in range(len(obs_index)):
+        if obs_index[i] < 0:
+            obs_index[i] = 0
+        assert sorted_svm[obs_index[i]] == obs_svm[i]
+    assert len(obs_index) == len(obs_svm)
+    assert min(obs_index) >= 0
+    assert max(obs_index) < len(sorted_svm)
+    return obs_index
+
+
 def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked"):
     # Sort deltas by value
     # Sort the SVM values and keep the nuc_changes in the same order
@@ -124,14 +147,7 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked"):
     assert min(all_phenotype) > 0.
     assert max(all_phenotype) < 1.
 
-    obs_index = np.searchsorted(sorted_svm, obs_svm, side='left')
-    for i in range(len(obs_index)):
-        if obs_index[i] < 0:
-            obs_index[i] = 0
-        assert sorted_svm[obs_index[i]] == obs_svm[i]
-    assert len(obs_index) == len(obs_svm)
-    assert min(obs_index) >= 0
-    assert max(obs_index) < len(sorted_svm)
+    obs_index = get_obs_index(obs_svm, sorted_svm)
 
     return np.array(mut_rates), obs_index, np.array(all_phenotype)
 
