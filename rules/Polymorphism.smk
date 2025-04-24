@@ -67,14 +67,14 @@ rule ComputeDeltaSVM_Reference:
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node focal --{cluster} -T {threads} > {log.out} 2>&1 || exit 1
+        {sample}/{wildcards.TF} {peakType} --node focal_ancestral --{cluster} -T {threads} > {log.out} 2>&1 || exit 1
         """
 
 
 rule RetrieveSNPDeltaSVM_Selection:
     message: "Filter SNPs and retrieve corresponding deltaSVM and MLE estimations"
     input:
-        vcf = rules.VCF_BED_overlap.output,
+        vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz",
         AllSVM = pathResults + "/{TF}/deltas/focal_all_possible_deltaSVM.txt",
         focal_seq = pathResults + "/{TF}/sequences/filtered_focal_ancestral_sequences_upper.fa",
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
@@ -84,7 +84,8 @@ rule RetrieveSNPDeltaSVM_Selection:
     params: time="1:00:00",mem="8G",threads=1
     shell:
         """ 
-        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} {input.genome} {input.MaxLL_estimations} {output} > {log.out} 2>&1 
+        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} \
+        {input.genome} {input.MaxLL_estimations} {output} > {log.out} 2>&1 
         """
 
 rule MergeAllChromosome:
