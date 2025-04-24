@@ -59,6 +59,7 @@ if config["TF_source"] == "config":
 else:
     ruleorder: SubSetPeaks > GetPeaks
 
+ruleorder: ComputeDeltaSVM_Reference > ComputeAllDeltaSVM
 print("Running on:", ', '.join(TFs))
 ########################################################################################################################
 rule all:
