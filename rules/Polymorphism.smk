@@ -67,7 +67,7 @@ rule ComputeDeltaSVM_Reference:
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node focal_ancestral --{cluster} -T {threads} > {log.out} 2>&1
+        {sample}/{wildcards.TF} {peakType} --node focal_ancestral --{cluster} -T {threads} > {log.out}
         """
 
 
