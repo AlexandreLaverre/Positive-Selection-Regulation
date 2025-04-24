@@ -12,6 +12,7 @@ pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ComputeAllDeltaSVM:
     """Compute all possible and observed SVM"""
+    wildcard_constraints: AncNode="(?!focal$)[a-zA-Z0-9_]+" # Exclude focal node
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         ancestral_sequences = pathResults + "/{TF}/sequences/filtered_{AncNode}_sequences.fa",
