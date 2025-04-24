@@ -98,7 +98,7 @@ else:
 
     # Get reference sequences
     ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_{args.node}_sequences.fa"), "fasta"))
-    SeqIDs = ReferenceSeqs['focal'].keys()
+    SeqIDs = ReferenceSeqs.keys()
     targets = []
 
     # Get focal sequences
