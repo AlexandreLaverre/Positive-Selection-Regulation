@@ -99,10 +99,11 @@ else:
     # Get reference sequences
     ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_{args.node}_sequences.fa"), "fasta"))
     SeqIDs = ReferenceSeqs['focal'].keys()
+    targets = []
 
     # Get focal sequences
     if args.node != "focal":
-        targets = ['focal']
+        targets.append('focal')
         output_files['focal'] = open(f"{pathResults}/deltas/{args.node}_to_observed_deltaSVM.txt", "w")
         FocalSeqs = {'focal': SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_{args.node}_sequences.fa"), "fasta"))}
         SeqIDs = FocalSeqs['focal'].keys()
@@ -120,7 +121,7 @@ if __name__ == '__main__':
                 bar()
                 if results is not None:
                     output_files['all'].write(results[0])
-                    if len(results[1]) > 0:
+                    if len(targets) > 0 and len(results[1]) > 0:
                         for evol in targets:
                             output_files[evol].write(results[1][evol])
 
