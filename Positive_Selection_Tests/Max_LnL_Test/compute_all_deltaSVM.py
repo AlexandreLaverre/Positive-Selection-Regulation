@@ -59,7 +59,7 @@ def run_deltas(seq_name):
                 output_obs[dict_name] = f"{seq_name}\t{svm_score}\t{delta_svm}\t{len(substitutions)}\t{obs_delta}\n"
 
         # Compute observed deltas for the focal sequence if the reference node is not focal
-        elif args.node != "focal":
+        elif args.node != "focal_ancestral":
             focal_seq = str(FocalSeqs["focal"][seq_name].seq)
             substitutions = SVM.get_sub_ids(reference_seq, focal_seq)
 
@@ -102,7 +102,7 @@ else:
     targets = []
 
     # Get focal sequences
-    if args.node != "focal":
+    if args.node != "focal_ancestral":
         targets.append('focal')
         output_files['focal'] = open(f"{pathResults}/deltas/{args.node}_to_observed_deltaSVM.txt", "w")
         FocalSeqs = {'focal': SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_{args.node}_sequences.fa"), "fasta"))}
