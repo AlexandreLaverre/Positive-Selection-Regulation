@@ -106,7 +106,7 @@ else:
             start = str(int(parts[1]) - 1)  # Subtract 1 from the start coordinate
             end = parts[2]
             sample = args.sample.split('/')[1]  # Extract sample name from the argument
-            new_id = f"{chrom}:{start}:{end}_{sample}"
+            new_id = f"{chrom}:{start}:{end}:{sample}"
 
             ReferenceSeqs[new_id] = ReferenceSeqs.pop(id)
 
