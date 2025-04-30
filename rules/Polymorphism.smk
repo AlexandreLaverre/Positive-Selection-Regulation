@@ -60,7 +60,7 @@ rule ComputeDeltaSVM_Reference:
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         reference_sequences = pathResults + "/{TF}/sequences/filtered_focal_ancestral_sequences_upper.fa"
-    output: AllSVM = pathResults + "/{TF}/deltas/focal_all_possible_deltaSVM.txt"
+    output: AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeDeltaSVM_Reference.out"
     threads: 1
     params: time="1:00:00", mem="5G", threads=1
@@ -75,7 +75,7 @@ rule RetrieveSNPDeltaSVM_Selection:
     message: "Filter SNPs and retrieve corresponding deltaSVM and MLE estimations"
     input:
         vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz",
-        AllSVM = pathResults + "/{TF}/deltas/focal_all_possible_deltaSVM.txt",
+        AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt",
         focal_seq = pathResults + "/{TF}/sequences/filtered_focal_ancestral_sequences_upper.fa",
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MaxLL_estimations = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
