@@ -99,10 +99,13 @@ else:
     if args.node == "focal_ancestral":
         ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/Model/posSet.fa"), "fasta"))
 
+
         # Update IDs
-        for id in ReferenceSeqs.keys():
+        IDs = list(ReferenceSeqs.keys())
+        for id in IDs:
             parts = id.split('_')  # old format: chrX_start_end_pos
             chrom = parts[0][3:]  # remove 3 first letters (i.e: chr)
+            print(parts)
             start = str(int(parts[1]) - 1)  # Subtract 1 from the start coordinate
             end = parts[2]
             sample = args.sample.split('/')[1]  # Extract sample name from the argument
