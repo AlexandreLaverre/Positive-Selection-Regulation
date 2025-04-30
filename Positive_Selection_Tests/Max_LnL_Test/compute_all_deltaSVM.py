@@ -95,14 +95,28 @@ if args.Simulation:
 
 else:
     output_files['all'] = open(f"{pathResults}/deltas/{args.node}_all_possible_deltaSVM.txt", "w")
-
-    # Get reference sequences
-    ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_{args.node}_sequences.fa"), "fasta"))
-    SeqIDs = ReferenceSeqs.keys()
     targets = []
+    if args.node == "focal_ancestral":
+        ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/Model/posSet.fa"), "fasta"))
 
-    # Get focal sequences
-    if args.node != "focal_ancestral":
+        # Update IDs
+        for id in ReferenceSeqs.keys():
+            parts = id.split('_')  # old format: chrX_start_end_pos
+            chrom = parts[0][3:]  # remove 3 first letters (i.e: chr)
+            start = str(int(parts[1]) - 1)  # Subtract 1 from the start coordinate
+            end = parts[2]
+            sample = args.sample.split('/')[1]  # Extract sample name from the argument
+            new_id = f"{chrom}:{start}:{end}_{sample}"
+
+            ReferenceSeqs[new_id] = ReferenceSeqs.pop(id)
+
+        SeqIDs = ReferenceSeqs.keys()
+
+    else:
+        # Get reference sequences
+        ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_{args.node}_sequences.fa"), "fasta"))
+
+        # Get focal sequences
         targets.append('focal')
         output_files['focal'] = open(f"{pathResults}/deltas/{args.node}_to_observed_deltaSVM.txt", "w")
         FocalSeqs = {'focal': SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/sequences/filtered_focal_{args.node}_sequences.fa"), "fasta"))}
