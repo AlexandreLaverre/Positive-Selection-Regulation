@@ -63,7 +63,7 @@ rule ComputeDeltaSVM_Reference:
     output: AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeDeltaSVM_Reference.out"
     threads: 1
-    params: time="1:00:00", mem="5G", threads=1
+    params: time="2:00:00", mem="5G", threads=1
     shell:
         """
         python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
