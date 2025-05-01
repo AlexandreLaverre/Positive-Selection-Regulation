@@ -100,15 +100,22 @@ else:
         ReferenceSeqs = SeqIO.to_dict(SeqIO.parse(open(f"{pathResults}/Model/posSet.fa"), "fasta"))
 
         # Update IDs
-        for id in list(ReferenceSeqs.keys()):
-            parts = id.split('_')  # old format: chrX_start_end_pos
+        for ID in list(ReferenceSeqs.keys()):
+            if "N" in ReferenceSeqs[ID]:
+                print(f"Warning: Sequence {ID} contains 'N'. Skipping this sequence.")
+                ReferenceSeqs.pop(ID)
+                continue
+
+            parts = ID.split('_')  # old format: chrX_start_end_pos
             chrom = parts[0][3:]  # remove 3 first letters (i.e: chr)
             start = str(int(parts[1]) - 1)  # Subtract 1 from the start coordinate
             end = parts[2]
             sample = args.sample.split('/')[1]  # Extract sample name from the argument
             new_id = f"{chrom}:{start}:{end}:{sample}"
 
-            ReferenceSeqs[new_id] = ReferenceSeqs.pop(id)
+            # Update the ID in the dictionary
+
+            ReferenceSeqs[new_id] = ReferenceSeqs.pop(ID)
 
         SeqIDs = ReferenceSeqs.keys()
 
