@@ -101,29 +101,32 @@ def get_svm_hist(all_svm, obs_svm, n_bin=50):
     return bin_proba, obs_bins, scaled_bins
 
 
-def get_obs_index(obs_svm, sorted_svm):
-    obs_index = np.searchsorted(sorted_svm, obs_svm, side='left')
+def get_obs_index(obs_svm, sorted_svm, flag=""):
+    obs_svm = np.atleast_1d(obs_svm)
+    obs_index = np.atleast_1d(np.searchsorted(sorted_svm, obs_svm, side='left'))
     for i in range(len(obs_index)):
         if obs_index[i] < 0:
             obs_index[i] = 0
-        assert sorted_svm[obs_index[i]] == obs_svm[i]
+        if flag != "alt_ancestral":
+            assert sorted_svm[obs_index[i]] == obs_svm[i]
     assert len(obs_index) == len(obs_svm)
     assert min(obs_index) >= 0
     assert max(obs_index) < len(sorted_svm)
     return obs_index
 
 
-def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked"):
+def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", get_mut_rate=True):
     # Sort deltas by value
     # Sort the SVM values and keep the nuc_changes in the same order
     sorted_svm, sorted_changes = zip(*sorted(zip(all_svm, all_svm_ids)))
 
     mut_rates = []
-    for nuc_change in sorted_changes:
-        pos, source, target = nuc_change.split(":")
-        mut_rates.append(sub_mat_proba[source][target])
-    assert not np.isnan(mut_rates).any()
-    assert len(mut_rates) == len(sorted_svm)
+    if get_mut_rate:
+        for nuc_change in sorted_changes:
+            pos, source, target = nuc_change.split(":")
+            mut_rates.append(sub_mat_proba[source][target])
+        assert not np.isnan(mut_rates).any()
+        assert len(mut_rates) == len(sorted_svm)
 
     deltas_neg = [x for x in sorted_svm if x < 0]
     deltas_pos = [x for x in sorted_svm if x >= 0]
