@@ -8,77 +8,103 @@ import pandas as pd
 import gzip
 import Positive_Selection_Tests.functions.MLEvol as ML
 
-# path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
-# vcf_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/VCF/filtered_chr21.vcf.gz'
-# deltaSVM_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/deltas/ancestral_all_possible_deltaSVM.txt'
-# focal_seq_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/sequences/filtered_focal_sequences.fa'
-# genome_file = "/Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/human/hg38.fa.gz"
-# maxLL_file = path + 'positive_selection/NarrowPeaks/human/Wilson/CEBPA/MLE_summary_50bins.csv'
-# output_file = path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/SNP_to_deltaSVM_chr21.txt'
+path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
 
-# Read input files
-VCF = pd.read_csv(sys.argv[1], sep='\t', header=None, compression='gzip', skiprows=20)
-DeltaSVM = pd.read_csv(sys.argv[2], sep='\t', header=0)
-FocalSeq = SeqIO.to_dict(SeqIO.parse(open(sys.argv[3]), "fasta"))
-genome = SeqIO.to_dict(SeqIO.parse(gzip.open(sys.argv[4], "rt"), "fasta"))
-MaxLL = pd.read_csv(sys.argv[5], header=0)
-output = open(sys.argv[6], 'w')
+vcf_file = sys.argv[1] if len(sys.argv) > 1 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/filtered_chr2R.vcf.gz'
+deltaSVM_file = sys.argv[2] if len(sys.argv) > 2 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/deltas/focal_ancestral_all_possible_deltaSVM.txt'
+focal_seq_file = sys.argv[3] if len(sys.argv) > 3 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/sequences/filtered_focal_ancestral_sequences.fa'
+genome_file = sys.argv[4] if len(sys.argv) > 4 else path + "../data/genome_sequences/drosophila/dm6.fa.gz"
+maxLL_file = sys.argv[5] if len(sys.argv) > 5 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/Tests/MLE_summary_exact_ranked_ancestral.csv'
+output_file = sys.argv[6] if len(sys.argv) > 6 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/SNP_to_deltaSVM_chr2R.txt'
+
+print("Reading input files...")
+DeltaSVM = pd.read_csv(deltaSVM_file, sep='\t', header=0)
+FocalSeq = SeqIO.to_dict(SeqIO.parse(open(focal_seq_file), "fasta"))
+genome = SeqIO.to_dict(SeqIO.parse(gzip.open(genome_file, "rt"), "fasta"))
+MaxLL = pd.read_csv(maxLL_file, header=0)
+output = open(output_file, 'w')
+sp = "human" if "human" in vcf_file else "DGRP2"
 
 # Correctly retrieve VCF header
-with gzip.open(sys.argv[1], 'rt') as file:
-    for line in file:
+with gzip.open(vcf_file, 'rt') as file:
+    for i, line in enumerate(file):
         if line.startswith('#CHROM'):
-            header = line.strip('\t').split('\t')
+            header = line.strip().split('\t')
+            row_to_skip = i
             break
-VCF.columns = header + ["chr", "start", "end", "PeakID"]
+
+header.extend(["chr", "start", "end", "PeakID"])
+VCF = pd.read_csv(vcf_file, sep='\t', header=None, names=header, compression='gzip', skiprows=row_to_skip+1)
 
 # Write header
 tab = '\t'
-pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF']
+pop = ['EAS_AF', 'EUR_AF', 'AFR_AF', 'AMR_AF', 'SAS_AF'] if sp == "human" else ["DGRP2"]
 output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t" + '\t'.join(pop) + "\tLength\tFlag\t" +
              "DeltaSVM\tSelCoefStab\tProbabStab\tSelCoefPos\tProbabPos\n")
 
-previous_ID = "NA"
-for SNP in VCF.iterrows():
-    ID = SNP[1]['PeakID']
-    chr = SNP[1]['#CHROM']
-    SNP_pos = int(SNP[1]['POS'] - 1)
-    ref, alt = SNP[1]['REF'], SNP[1]['ALT']
-    freq = [pop.split('=')[1] for pop in SNP[1]['INFO'].split(';')[4:8]]
-    nb_alt, nb_tot = SNP[1]['INFO'].split(';')[0].split('=')[1], SNP[1]['INFO'].split(';')[1].split('=')[1]
 
+print("Analysing VCF file...")
+tot, valid, noMax, indel = 0, 0, 0, 0
+for idx, SNP in VCF.iterrows():
+    tot += 1
+    # Skip indels
+    if sp != "human" and "SNP" not in SNP['ID']:
+        indel += 1
+        continue
+
+    ID = SNP['PeakID']
+    # Check that focal sequence exists for this ID
+    if ID not in FocalSeq.keys():
+        continue
+
+    chr = SNP['#CHROM']
+    SNP_pos = int(SNP['POS'] - 1)
+    ref, alt = SNP['REF'], SNP['ALT']
     assert genome[chr].seq[SNP_pos].upper() == ref, "Reference does not correspond to the genome sequence."
 
-    if ID != previous_ID:
-        # Check that focal sequence exists for this ID
-        if ID not in FocalSeq.keys():
-            continue
+    # Get allele frequencies
+    nb_alt, nb_tot = SNP['INFO'].split(';')[0].split('=')[1], SNP['INFO'].split(';')[1].split('=')[1]
+    if sp == "human":
+        freq = [pop.split('=')[1] for pop in SNP['INFO'].split(';')[4:9]]  # frequencies for each population
+    else:
+        nb_tot = str(int(nb_tot)+int(nb_alt))  # in drosophila nb_tot correspond to nb of reference alleles
+        freq = [str(int(nb_alt) / int(nb_tot))]
 
-        # Check that sequence do not contain gaps
-        start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
-        original_length = end - start
-        sequence = FocalSeq[ID].seq
-        aligned_length = len(sequence)
-        if aligned_length != original_length:
-            continue
+    # Check that sequence do not contain gaps
+    start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
+    length = end - start
+    #sequence = FocalSeq[ID].seq
+    #aligned_length = len(sequence)
+    #if aligned_length != length:
+    #    gap += 1
+        #print(f"Focal sequence {ID} has gaps. Length: {aligned_length} != {original_length}.")
+    #    continue
 
-        assert genome[chr].seq[start].upper() == FocalSeq[ID].seq[0], "Start does not correspond to the genome sequence."
+    #assert genome[chr].seq[start].upper() == FocalSeq[ID].seq[0], "Start does not correspond to the genome sequence."
 
-        # Check that MaxLL estimations exist for this sequence
-        if ID not in MaxLL['ID'].values:
-            continue
-        else:
-            Stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
-            Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
+    # Check that MaxLL estimations exist for this sequence
+    if ID not in MaxLL['ID'].values:
+        noMax += 1
+        continue
+    else:
+        Stab_param = MaxLL.loc[MaxLL['ID'] == ID, "AlphaPurif"].iloc[0]
+        Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
 
-        # Get deltaSVM calculated from Ancestral sequence
-        allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
-        allSVM_ID = ML.get_svm_ids(sequence)
-        sorted_SVM, sorted_changes = zip(*sorted(zip(allSVM, allSVM_ID)))
+    # Get deltaSVM calculated from Ancestral sequence
+    allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
+    allSVM_noNA = allSVM.dropna().values.tolist()
+
+    seq_ids = allSVM[allSVM.isna()].index.tolist()[0:length]
+    allSVM_ID = ML.get_svm_ids(seq_ids)
+
+    sorted_SVM, x = zip(*sorted(zip(allSVM_noNA, allSVM_ID)))
+
+    # Get scaled bins reusing MaxLL function
+    y, z, scaled_bins = ML.get_svm_exact(allSVM_noNA, allSVM_noNA[1], allSVM_ID, "NA", norm="ranked", get_mut_rate=False)
 
     # Relative position in sequence
     pos = SNP_pos - start
-    assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "Position does not correspond to the genome sequence."
+    #assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "SNP position does not correspond to the genome sequence."
 
     # Ref = Ancestral
     if pd.isna(allSVM[f"pos{pos}:{ref}"]):
@@ -89,23 +115,27 @@ for SNP in VCF.iterrows():
         SNP_deltaSVM = -allSVM[f"pos{pos}:{ref}"]
         flag = "alt_ancestral"
     else:
+        print(f"Weird! SNP not found in ALlSVM. Ref:{ref}; Alt: {alt}; sequence: {FocalSeq[ID].seq[pos]}")
         continue
 
-    # Get bins of the SVM distribution
-    SNP_index = ML.get_obs_index(SNP_deltaSVM, sorted_SVM)
+    # Get SNP index
+    SNP_index = ML.get_obs_index(SNP_deltaSVM, sorted_SVM, flag)[0]
 
     # Compute selection coefficient
-    Coef_Stab = ML.coeff_selection(SNP_index, np.array([Stab_param]))
-    Coef_Pos = ML.coeff_selection(SNP_index, np.array([Pos_params['AlphaPos'], Pos_params['BetaPos']]))
+    Coef_Stab = ML.coeff_selection(scaled_bins[SNP_index], np.array([Stab_param]))
+    Coef_Pos = ML.coeff_selection(scaled_bins[SNP_index], np.array([Pos_params['AlphaPos'], Pos_params['BetaPos']]))
 
     # Compute probabilities of fixation
     Probab_Stab = ML.proba_fixation(Coef_Stab)
     Probab_Pos = ML.proba_fixation(Coef_Pos)
 
     # Write output
-    output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{nb_alt}\t{nb_tot}\t{tab.join(freq)}\t{original_length}\t{flag}\t"
+    valid += 1
+    output.write(f"{ID}\t{pos}\t{ref}\t{alt}\t{nb_alt}\t{nb_tot}\t{tab.join(freq)}\t{length}\t{flag}\t"
                  f"{SNP_deltaSVM}\t{Coef_Stab}\t{Probab_Stab}\t{Coef_Pos}\t{Probab_Pos}\n")
 
-    previous_ID = ID
 
 output.close()
+
+print(f"Total SNPs: {tot}; Indel: {indel}; No Max estimation: {noMax}; Valid SNPs: {valid}.\n")
+
