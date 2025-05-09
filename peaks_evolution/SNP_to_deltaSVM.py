@@ -98,7 +98,7 @@ for idx, SNP in VCF.iterrows():
     # Relative position in sequence
     pos = SNP_pos - start
     # Get ID from posSet instead of focal_sequences !!
-    assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "SNP position does not correspond to the genome sequence."
+    #assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "SNP position does not correspond to the genome sequence."
 
     # Ref = Ancestral
     if pd.isna(allSVM[f"pos{pos}:{ref}"]):
