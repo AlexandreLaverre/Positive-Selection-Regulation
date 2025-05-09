@@ -10,12 +10,12 @@ import Positive_Selection_Tests.functions.MLEvol as ML
 
 path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
 
-vcf_file = sys.argv[1] if len(sys.argv) > 1 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/filtered_chr2R.vcf.gz'
-deltaSVM_file = sys.argv[2] if len(sys.argv) > 2 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/deltas/focal_ancestral_all_possible_deltaSVM.txt'
-focal_seq_file = sys.argv[3] if len(sys.argv) > 3 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/sequences/filtered_focal_ancestral_sequences.fa'
+vcf_file = sys.argv[1] if len(sys.argv) > 1 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/filtered_chr3L.vcf.gz'
+deltaSVM_file = sys.argv[2] if len(sys.argv) > 2 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/deltas/focal_ancestral_all_possible_deltaSVM.txt'
+focal_seq_file = sys.argv[3] if len(sys.argv) > 3 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/sequences/filtered_focal_ancestral_sequences.fa'
 genome_file = sys.argv[4] if len(sys.argv) > 4 else path + "../data/genome_sequences/drosophila/dm6.fa.gz"
-maxLL_file = sys.argv[5] if len(sys.argv) > 5 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/Tests/MLE_summary_exact_ranked_ancestral.csv'
-output_file = sys.argv[6] if len(sys.argv) > 6 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/HLH3B_HLH3B-GFP_embryonic_1/SNP_to_deltaSVM_chr2R.txt'
+maxLL_file = sys.argv[5] if len(sys.argv) > 5 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/Tests/MLE_summary_exact_ranked_ancestral.csv'
+output_file = sys.argv[6] if len(sys.argv) > 6 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/SNP_to_deltaSVM_chr3L.txt'
 
 print("Reading input files...")
 DeltaSVM = pd.read_csv(deltaSVM_file, sep='\t', header=0)
@@ -53,6 +53,7 @@ for idx, SNP in VCF.iterrows():
         continue
 
     ID = SNP['PeakID']
+    print(ID)
     # Check that focal sequence exists for this ID
     if ID not in FocalSeq.keys():
         continue
@@ -73,14 +74,6 @@ for idx, SNP in VCF.iterrows():
     # Check that sequence do not contain gaps
     start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
     length = end - start
-    #sequence = FocalSeq[ID].seq
-    #aligned_length = len(sequence)
-    #if aligned_length != length:
-    #    gap += 1
-        #print(f"Focal sequence {ID} has gaps. Length: {aligned_length} != {original_length}.")
-    #    continue
-
-    #assert genome[chr].seq[start].upper() == FocalSeq[ID].seq[0], "Start does not correspond to the genome sequence."
 
     # Check that MaxLL estimations exist for this sequence
     if ID not in MaxLL['ID'].values:
@@ -104,7 +97,8 @@ for idx, SNP in VCF.iterrows():
 
     # Relative position in sequence
     pos = SNP_pos - start
-    #assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "SNP position does not correspond to the genome sequence."
+    # Get ID from posSet instead of focal_sequences !!
+    assert genome[chr].seq[SNP_pos].upper() == FocalSeq[ID].seq[pos], "SNP position does not correspond to the genome sequence."
 
     # Ref = Ancestral
     if pd.isna(allSVM[f"pos{pos}:{ref}"]):
