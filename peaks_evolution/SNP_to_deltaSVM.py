@@ -71,9 +71,11 @@ for idx, SNP in VCF.iterrows():
         nb_tot = str(int(nb_tot)+int(nb_alt))  # in drosophila nb_tot correspond to nb of reference alleles
         freq = [str(int(nb_alt) / int(nb_tot))]
 
-    # Check that sequence do not contain gaps
+    # Filter out sequences that are too short or too long
     start, end = int(ID.split('_')[0].split(':')[1]), int(ID.split('_')[0].split(':')[2])
     length = end - start
+    if length < 20 or length > 1000:
+        continue
 
     # Check that MaxLL estimations exist for this sequence
     if ID not in MaxLL['ID'].values:

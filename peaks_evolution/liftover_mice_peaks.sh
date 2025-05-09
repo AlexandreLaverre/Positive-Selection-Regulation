@@ -8,15 +8,14 @@ pathChain="${path}/data/chain_files/"
 pathResults="${path}/results/peaks_overlap/NarrowPeaks/mouse/"
 
 # LiftOver
-refs=("musculus" "spretus" "caroli")
-targets=("musculus" "spretus" "caroli")
+species=("musculus" "spretus" "caroli")
 TFs=("CEBPA" "FOXA1" "HNF4A")
 
-for ref in "${refs[@]}"; do
+for ref in "${species[@]}"; do
     common=$([[ $ref == "musculus" ]] && echo "mouse" || echo "$ref")
     sample=$([[ $ref == "musculus" ]] && echo "Wilson" || echo "Stefflova")
     
-    for target in "${targets[@]}"; do
+    for target in "${species[@]}"; do
         [[ $ref == "$target" ]] && continue
         
         for TF in "${TFs[@]}"; do
@@ -37,13 +36,25 @@ for ref in "${refs[@]}"; do
     done
 done
 
-# Overlap to mouse
-targets=("musculus" "spretus")
-for target in "${targets[@]}"; do
-    for TF in "${TFs[@]}"; do 
-        overlap.py "${pathPeaks}/${ref}/${sample}/${TF}.peaks_UCSC_names.bed" \
-        "${pathResults}/${TF}/lifted_peaks/M${target}_${TF}_to_M${ref}_0.9.bed" \
-        "${pathResults}/${TF}/M${target}_lifted_overlap_M${ref}.txt" --count_overlap -v --reference_ID
+
+# Overlap 
+species=("musculus" "spretus" "caroli")
+TFs=("CEBPA" "FOXA1" "HNF4A")
+for ref in "${species[@]}"; do
+    common_ref=$([[ $ref == "musculus" ]] && echo "mouse" || echo "$ref")
+    sample=$([[ $ref == "musculus" ]] && echo "Wilson" || echo "Stefflova")
+    
+    for target in "${species[@]}"; do
+        [[ $ref == "$target" ]] && continue
+        
+        for TF in "${TFs[@]}"; do
+        overlap.py "${pathResults}/${TF}/lifted_peaks/M${target}_${TF}_to_M${ref}_0.9.bed" \
+        "${pathPeaks}/${common_ref}/${sample}/${TF}.peaks_UCSC_names.bed" \
+        "${pathResults}/${TF}/M${target}_lifted_overlap_M${ref}.txt" -v --reference_ID --interest_ID
+
+        done
     done
 done
+
+
 
