@@ -44,7 +44,7 @@ output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t" + '\t'.join(pop) + "\tLength\tF
 
 
 print("Analysing VCF file...")
-tot, valid, noMax, indel = 0, 0, 0, 0
+tot, valid, noMax, noDelta, indel = 0, 0, 0, 0, 0
 for idx, SNP in VCF.iterrows():
     tot += 1
     # Skip indels
@@ -86,6 +86,10 @@ for idx, SNP in VCF.iterrows():
         Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
 
     # Get deltaSVM calculated from Ancestral sequence
+    if ID not in DeltaSVM['ID'].values:
+        noDelta += 1
+        continue
+
     allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
     allSVM_noNA = allSVM.dropna().values.tolist()
 
@@ -133,5 +137,5 @@ for idx, SNP in VCF.iterrows():
 
 output.close()
 
-print(f"Total SNPs: {tot}; Indel: {indel}; No Max estimation: {noMax}; Valid SNPs: {valid}.\n")
+print(f"Total SNPs: {tot}; Valid SNPs: {valid}; Indel: {indel}; No Max estimation: {noMax}; noDelta: {noDelta}.\n")
 
