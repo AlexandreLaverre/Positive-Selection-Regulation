@@ -107,6 +107,7 @@ else:
                 continue
 
             parts = ID.split('_')  # old format: chrX_start_end_pos
+            print(ID)
             if parts[1] is not int:
                 ReferenceSeqs.pop(ID)
                 continue
@@ -122,7 +123,6 @@ else:
             ReferenceSeqs[new_id] = ReferenceSeqs.pop(ID)
 
         SeqIDs = ReferenceSeqs.keys()
-        print(SeqIDs)
 
     else:
         # Get reference sequences
