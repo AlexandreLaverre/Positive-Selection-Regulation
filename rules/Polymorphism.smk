@@ -76,7 +76,7 @@ rule RetrieveSNPDeltaSVM_Selection:
     input:
         vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz",
         AllSVM = pathResults + "/{TF}/deltas/posSet_all_possible_deltaSVM.txt",
-        focal_seq = pathResults + "/{TF}/sequences/posSet.fa",
+        focal_seq = pathResults + "/{TF}/Model/posSet.fa",
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MaxLL_estimations = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
