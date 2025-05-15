@@ -122,6 +122,7 @@ else:
             ReferenceSeqs[new_id] = ReferenceSeqs.pop(ID)
 
         SeqIDs = ReferenceSeqs.keys()
+        print(SeqIDs)
 
     else:
         # Get reference sequences
