@@ -107,7 +107,11 @@ else:
                 continue
 
             parts = ID.split('_')  # old format: chrX_start_end_pos
-            chrom = parts[0][3:]  # remove 3 first letters (i.e: chr)
+            if parts[1] is not int:
+                ReferenceSeqs.pop(ID)
+                continue
+
+            chrom = parts[0][3:] if args.species == "drosophila" else parts[0]  # remove 3 first letters (i.e: chr)
             start = str(int(parts[1]) - 1)  # Subtract 1 from the start coordinate
             end = parts[2]
             sample = args.sample.split('/')[1]  # Extract sample name from the argument
