@@ -75,8 +75,8 @@ rule RetrieveSNPDeltaSVM_Selection:
     message: "Filter SNPs and retrieve corresponding deltaSVM and MLE estimations"
     input:
         vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz",
-        AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt",
-        focal_seq = pathResults + "/{TF}/sequences/filtered_focal_ancestral_sequences_upper.fa",
+        AllSVM = pathResults + "/{TF}/deltas/posSet_all_possible_deltaSVM.txt",
+        focal_seq = pathResults + "/{TF}/sequences/posSet.fa",
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MaxLL_estimations = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
