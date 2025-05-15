@@ -107,8 +107,7 @@ else:
                 continue
 
             parts = ID.split('_')  # old format: chrX_start_end_pos
-            print(ID)
-            if parts[1] is not int:
+            if len(parts) > 5:  # non classic format
                 ReferenceSeqs.pop(ID)
                 continue
 
