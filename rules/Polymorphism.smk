@@ -62,7 +62,7 @@ rule ComputeDeltaSVM_Reference:
         reference_sequences = pathResults + "/{TF}/Model/posSet.fa"
     output: AllSVM = pathResults + "/{TF}/deltas/posSet_all_possible_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeDeltaSVM_Reference.out"
-    threads: 1
+    threads: 2
     params: time="1:00:00", mem="5G", threads=2
     shell:
         """
