@@ -78,14 +78,14 @@ rule RetrieveSNPDeltaSVM_Selection:
         AllSVM = pathResults + "/{TF}/deltas/posSet_all_possible_deltaSVM.txt",
         focal_seq = pathResults + "/{TF}/Model/posSet.fa",
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
-        MaxLL_estimations = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
+        MLE = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
     log: out = pathPolymorphism + "/log/{TF}_SNP_to_delta_{chrom}.out"
     params: time="1:00:00",mem="8G",threads=1
     shell:
         """ 
         python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} \
-        {input.genome} {input.MaxLL_estimations} {output} > {log.out} 2>&1 
+        {input.genome} {input.MLE} {output} > {log.out} 2>&1 
         """
 
 rule MergeAllChromosome:
@@ -95,3 +95,11 @@ rule MergeAllChromosome:
     shell:
         """cat {input} | sort -u > {output} """
 
+rule PlotSFS:
+    message: "Site Frequency Spectrum"
+    input:
+        MLE = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv",
+        SelCoeff = pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
+    output: pathPolymorphism + "/{TF}/SFS.pdf"
+    shell:
+        """python peaks_evolution/plot_sfs.py --input_MLE {input.MLE} --input_SNP {input.SelCoeff} --output_pdf {output} """
