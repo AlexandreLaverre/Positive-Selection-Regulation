@@ -60,7 +60,7 @@ rule ComputeDeltaSVM_Reference:
     input:
         PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt",
         reference_sequences = pathResults + "/{TF}/Model/posSet.fa"
-    output: AllSVM = pathResults + "/{TF}/deltas/posSet_all_possible_deltaSVM.txt"
+    output: AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeDeltaSVM_Reference.out"
     threads: 2
     params: time="1:00:00", mem="5G", threads=2
