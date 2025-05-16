@@ -10,20 +10,20 @@ import Positive_Selection_Tests.functions.MLEvol as ML
 
 path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
 
-vcf_file = sys.argv[1] if len(sys.argv) > 1 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/filtered_chr3L.vcf.gz'
+vcf_file = sys.argv[1] if len(sys.argv) > 1 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/filtered_chrX.vcf.gz'
 deltaSVM_file = sys.argv[2] if len(sys.argv) > 2 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/deltas/focal_ancestral_all_possible_deltaSVM.txt'
 focal_seq_file = sys.argv[3] if len(sys.argv) > 3 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/sequences/filtered_focal_ancestral_sequences.fa'
 genome_file = sys.argv[4] if len(sys.argv) > 4 else path + "../data/genome_sequences/drosophila/dm6.fa.gz"
 maxLL_file = sys.argv[5] if len(sys.argv) > 5 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/Tests/MLE_summary_exact_ranked_ancestral.csv'
-output_file = sys.argv[6] if len(sys.argv) > 6 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/SNP_to_deltaSVM_chr3L.txt'
+output_file = sys.argv[6] if len(sys.argv) > 6 else path + 'polymorphism_analyses/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/SNP_to_deltaSVM_chrX.txt'
 
 print("Reading input files...")
 DeltaSVM = pd.read_csv(deltaSVM_file, sep='\t', header=0)
-FocalSeq = SeqIO.to_dict(SeqIO.parse(open(focal_seq_file), "fasta"))
+#FocalSeq = SeqIO.to_dict(SeqIO.parse(open(focal_seq_file), "fasta"))
 genome = SeqIO.to_dict(SeqIO.parse(gzip.open(genome_file, "rt"), "fasta"))
 MaxLL = pd.read_csv(maxLL_file, header=0)
 output = open(output_file, 'w')
-sp = "human" if "human" in vcf_file else "DGRP2"
+sp = vcf_file.split("/")[-4]
 
 # Correctly retrieve VCF header
 with gzip.open(vcf_file, 'rt') as file:
@@ -53,10 +53,12 @@ for idx, SNP in VCF.iterrows():
         continue
 
     ID = SNP['PeakID']
-    print(ID)
+    print(tot, ID)
+    ID_delta = ID if sp == "drosophila" else f"{ID.split('_')[0]}:{vcf_file.split('/')[-2]}"
+
     # Check that focal sequence exists for this ID
-    if ID not in FocalSeq.keys():
-        continue
+    #if ID not in FocalSeq.keys():
+    #   continue
 
     chr = SNP['#CHROM']
     SNP_pos = int(SNP['POS'] - 1)
@@ -86,11 +88,11 @@ for idx, SNP in VCF.iterrows():
         Pos_params = MaxLL.loc[MaxLL['ID'] == ID, ["AlphaPos", "BetaPos"]].iloc[0]
 
     # Get deltaSVM calculated from Ancestral sequence
-    if ID not in DeltaSVM['ID'].values:
+    if ID_delta not in DeltaSVM['ID'].values:
         noDelta += 1
         continue
 
-    allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID, "pos0:A":].iloc[0]
+    allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID_delta, "pos0:A":].iloc[0]
     allSVM_noNA = allSVM.dropna().values.tolist()
 
     seq_ids = allSVM[allSVM.isna()].index.tolist()[0:length]
@@ -115,7 +117,7 @@ for idx, SNP in VCF.iterrows():
         SNP_deltaSVM = -allSVM[f"pos{pos}:{ref}"]
         flag = "alt_ancestral"
     else:
-        print(f"Weird! SNP not found in ALlSVM. Ref:{ref}; Alt: {alt}; sequence: {FocalSeq[ID].seq[pos]}")
+        #print(f"Weird! SNP not found in ALlSVM. Ref:{ref}; Alt: {alt}; sequence: {FocalSeq[ID].seq[pos]}")
         continue
 
     # Get SNP index
@@ -138,4 +140,3 @@ for idx, SNP in VCF.iterrows():
 output.close()
 
 print(f"Total SNPs: {tot}; Valid SNPs: {valid}; Indel: {indel}; No Max estimation: {noMax}; noDelta: {noDelta}.\n")
-
