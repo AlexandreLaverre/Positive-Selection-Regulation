@@ -38,18 +38,18 @@ rule VCF_BED_overlap:
     input:
         vcf = '../data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
         BED_peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
-    output: overlap_vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz"
+    output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="1:00:00",mem="1G",threads=1
     shell:
         """ 
-        mkdir -p {pathPolymorphism}/{wildcards.TF}
+        mkdir -p {pathPolymorphism}/{wildcards.TF}/VCF
         bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
         """
 
 rule SimpleOverlapFile:
     message: "Get unique simple file of overlapping SNP"
-    input: lambda wildcards: expand(pathPolymorphism + "/{{TF}}/filtered_{chrom}.vcf.gz", chrom=chroms)
-    output: pathPolymorphism + "/{TF}/overlap_peaks.txt"
+    input: lambda wildcards: expand(pathPolymorphism + "/{{TF}}/VCF/filtered_{chrom}.vcf.gz", chrom=chroms)
+    output: pathPolymorphism + "/{TF}/VCF/overlap_peaks.txt"
     shell:
         """
         zcat {input} | grep -v '^#' | awk '{{print $NF, $2, $3}}' | sort -u > {output}
@@ -74,7 +74,7 @@ rule ComputeDeltaSVM_Reference:
 rule RetrieveSNPDeltaSVM_Selection:
     message: "Filter SNPs and retrieve corresponding deltaSVM and MLE estimations"
     input:
-        vcf = pathPolymorphism + "/{TF}/filtered_{chrom}.vcf.gz",
+        vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz",
         AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt",
         focal_seq = pathResults + "/{TF}/Model/posSet.fa",
         genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
