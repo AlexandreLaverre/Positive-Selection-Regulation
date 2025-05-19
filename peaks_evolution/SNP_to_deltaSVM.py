@@ -48,14 +48,13 @@ tot, valid, noMax, noDelta, indel = 0, 0, 0, 0, 0
 
 for idx, SNP in VCF.iterrows():
     tot += 1
-    print(sp, SNP['ID'])
     # Skip indels
     if sp != "human" and "SNP" not in SNP['ID']:
         indel += 1
         continue
 
     ID = SNP['PeakID']
-    print(tot, ID)
+    print(tot, ID, sp)
     ID_delta = ID if sp == "drosophila" else f"{ID.split('_')[0]}:{vcf_file.split('/')[-2]}"
 
     # Check that focal sequence exists for this ID
