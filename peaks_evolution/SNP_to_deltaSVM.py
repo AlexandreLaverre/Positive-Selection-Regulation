@@ -79,9 +79,8 @@ for idx, SNP in VCF.iterrows():
     if length < 20 or length > 1000:
         continue
 
-    print(tot, ID, ID_delta)
     # Check that MaxLL estimations exist for this sequence
-    if ID_delta not in MaxLL['ID'].values:
+    if ID not in MaxLL['ID'].values:
         noMax += 1
         continue
     else:
@@ -93,6 +92,7 @@ for idx, SNP in VCF.iterrows():
         noDelta += 1
         continue
 
+    print(tot, ID, ID_delta)
     allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID_delta, "pos0:A":].iloc[0]
     allSVM_noNA = allSVM.dropna().values.tolist()
 
