@@ -54,7 +54,6 @@ for idx, SNP in VCF.iterrows():
         continue
 
     ID = SNP['PeakID']
-    print(tot, ID, sp)
     ID_delta = ID if sp == "drosophila" else f"{ID.split('_')[0]}:{vcf_file.split('/')[-2]}"
 
     # Check that focal sequence exists for this ID
@@ -80,8 +79,9 @@ for idx, SNP in VCF.iterrows():
     if length < 20 or length > 1000:
         continue
 
+    print(tot, ID, ID_delta)
     # Check that MaxLL estimations exist for this sequence
-    if ID not in MaxLL['ID'].values:
+    if ID_delta not in MaxLL['ID'].values:
         noMax += 1
         continue
     else:
