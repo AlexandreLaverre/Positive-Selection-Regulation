@@ -92,7 +92,6 @@ for idx, SNP in VCF.iterrows():
         noDelta += 1
         continue
 
-    print(tot, ID, ID_delta)
     allSVM = DeltaSVM.loc[DeltaSVM['ID'] == ID_delta, "pos0:A":].iloc[0]
     allSVM_noNA = allSVM.dropna().values.tolist()
 
