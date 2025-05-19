@@ -54,7 +54,7 @@ for idx, SNP in VCF.iterrows():
         continue
 
     ID = SNP['PeakID']
-    ID_delta = ID if sp == "drosophila" else f"{ID.split('_')[0]}:{vcf_file.split('/')[-2]}"
+    ID_delta = ID if sp == "drosophila" else f"{ID.split('_')[0]}:{output_file.split('/')[-2]}"
 
     # Check that focal sequence exists for this ID
     #if ID not in FocalSeq.keys():
