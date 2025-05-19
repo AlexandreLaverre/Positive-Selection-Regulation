@@ -45,8 +45,10 @@ output.write("ID\tPos\tRef\tAlt\tNbAlt\tNbTot\t" + '\t'.join(pop) + "\tLength\tF
 
 print("Analysing VCF file...")
 tot, valid, noMax, noDelta, indel = 0, 0, 0, 0, 0
+
 for idx, SNP in VCF.iterrows():
     tot += 1
+    print(sp, SNP['ID'])
     # Skip indels
     if sp != "human" and "SNP" not in SNP['ID']:
         indel += 1
