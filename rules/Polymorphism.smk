@@ -101,5 +101,6 @@ rule PlotSFS:
         MLE = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv",
         SelCoeff = pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
     output: pathPolymorphism + "/{TF}/SFS.pdf"
+    params: time="1:00:00",mem="3G",threads=1
     shell:
         """python peaks_evolution/plot_sfs.py --input_MLE {input.MLE} --input_SNP {input.SelCoeff} --output_pdf {output} """
