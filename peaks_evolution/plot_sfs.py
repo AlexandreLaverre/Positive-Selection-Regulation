@@ -104,7 +104,6 @@ def main(output_pdf, input_mle, input_snp, subsample=24, nbr_replicates=100):
     qcut = 5
     df = pd.merge(df_snps, df_mle, on="ID", how="left")
     assert len(df) == len(df_snps)
-    assert len(set(df["NbTot"])) == 1
     df["SelCoefMixed"] = df.apply(selcoef_compound, axis=1)
     df = df[df["AlphaPurif"] > 1.0]
     df["cat"] = pd.qcut(df["SelCoefMixed"], qcut, duplicates="drop")
@@ -156,10 +155,10 @@ def main(output_pdf, input_mle, input_snp, subsample=24, nbr_replicates=100):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--input_MLE', required=False, type=str, dest="tsv", help="Input MLE file",
-                        default="human_HNF6_MLE_summary.csv")
+                        default="MLE_summary_exact_ranked_ancestral.csv")
     parser.add_argument('--input_SNP', required=False, type=str, dest="snp", help="Input SNP file",
-                        default="human_HNF6_SNP_SelectionCoefficient.txt")
+                        default="SNP_SelectionCoefficient.txt")
     parser.add_argument('--output_pdf', required=False, type=str, dest="output_pdf", help="Output pdf file",
-                        default="human_HNF6_SFS.pdf")
+                        default="SFS.pdf")
     args = parser.parse_args()
     main(args.output_pdf, args.tsv, args.snp)
