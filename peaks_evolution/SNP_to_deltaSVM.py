@@ -23,7 +23,7 @@ DeltaSVM = pd.read_csv(deltaSVM_file, sep='\t', header=0)
 genome = SeqIO.to_dict(SeqIO.parse(gzip.open(genome_file, "rt"), "fasta"))
 MaxLL = pd.read_csv(maxLL_file, header=0)
 output = open(output_file, 'w')
-sp = vcf_file.split("/")[-4]
+sp = genome_file.split("/")[-2]
 
 # Correctly retrieve VCF header
 with gzip.open(vcf_file, 'rt') as file:
