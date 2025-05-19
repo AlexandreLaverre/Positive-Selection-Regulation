@@ -93,7 +93,12 @@ rule MergeAllChromosome:
     input: lambda wildcards: expand(pathPolymorphism + "/{{TF}}/SNP_to_deltaSVM/{chrom}.txt", chrom=chroms)
     output: pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt"
     shell:
-        """cat {input} | sort -u > {output} """
+        """
+        cat {input} | sort -u > {output}.tmp
+        # ensure correct header
+        (grep '^ID' {output}.tmp | head -n 1; grep -v '^ID' {output}.tmp | sort -u) > {output}
+        rm {output}.tmp
+        """
 
 rule PlotSFS:
     message: "Site Frequency Spectrum"
