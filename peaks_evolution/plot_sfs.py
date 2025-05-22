@@ -84,7 +84,7 @@ def transform_s(x):
     return x if x != 0.0 else np.nan
 
 
-def main(output_pdf, input_mle, input_snp, subsample=24, nbr_replicates=100):
+def main(output_pdf, input_mle, input_snp, subsample, nbr_replicates=100):
     output_dir = os.path.dirname(output_pdf)
     if not os.path.exists(output_dir) and output_dir != "":
         os.makedirs(os.path.dirname(output_pdf), exist_ok=True)
@@ -130,6 +130,8 @@ def main(output_pdf, input_mle, input_snp, subsample=24, nbr_replicates=100):
 
     snp_sfs = {cat: daf_to_sfs(daf, max_daf) for cat, daf in snps_daf.items()}
     snp_sfs_mean = {cat: np.mean(sfs, axis=0) for cat, sfs in snp_sfs.items()}
+    df_sfs_mean = pd.DataFrame.from_dict(snp_sfs_mean, orient='index')
+    df_sfs_mean.to_csv(output_pdf.replace('.pdf', '.csv'), sep='\t', index=True)
 
     theta_dict = defaultdict(list)
     daf_axis = np.array(range(1, max_daf))
@@ -160,5 +162,6 @@ if __name__ == '__main__':
                         default="SNP_SelectionCoefficient.txt")
     parser.add_argument('--output_pdf', required=False, type=str, dest="output_pdf", help="Output pdf file",
                         default="SFS.pdf")
+    parser.add_argument('--subsample', required=False, type=int, help="Max number of derived allele count", default=24)
     args = parser.parse_args()
-    main(args.output_pdf, args.tsv, args.snp)
+    main(args.output_pdf, args.tsv, args.snp, args.subsample)
