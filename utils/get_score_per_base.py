@@ -17,6 +17,8 @@ pathScore = f"{path}/results/{args.score}/NarrowPeaks/{args.species}/{args.sampl
 
 if args.species == "mouse":
     suffix = f".{args.score}60way.glire.wigFix.gz.bed"
+elif args.species == "drosophila":
+    suffix = f"{args.score}27way.wigFix.bed.gz"
 else:
     suffix = ".bed" if args.score == "phastCons" else ".phyloP17way.wigFix.gz.bed"
 
