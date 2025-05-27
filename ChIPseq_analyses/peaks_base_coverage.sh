@@ -5,9 +5,9 @@ export sample=$2			      # i.e: Wilson Schmidt Rensch ...
 export TF=$3			          # i.e: CEBPA CTCF HNF4A ...
 export threads=$4
 
-if [[ $species == "human" ]]; then GenomeSize=2913022398; fi
-if [[ $species == "drosophila" ]]; then GenomeSize=142573017; fi
-if [[ $species == "mouse" ]]; then GenomeSize=2652783500; fi
+if [[ $sp == "human" ]]; then GenomeSize=2913022398; fi
+if [[ $sp == "drosophila" ]]; then GenomeSize=142573017; fi
+if [[ $sp == "mouse" ]]; then GenomeSize=2652783500; fi
 
 path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/results/peaks_calling/NarrowPeaks
 pathPeaks=${path}/${sp}/${sample}/bowtie2/mergedLibrary/
