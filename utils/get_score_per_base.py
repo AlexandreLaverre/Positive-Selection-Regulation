@@ -4,6 +4,7 @@
 import argparse
 import os
 from collections import defaultdict
+import gzip
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-sp", "--species", default="human", help="Species name: human or mouse")
@@ -13,19 +14,22 @@ args = parser.parse_args()
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
 peaks = f"{path}/results/peaks_calling/NarrowPeaks/{args.species}/{args.sample}.peaks_UCSC_names.bed"
-pathScore = f"{path}/results/{args.score}/NarrowPeaks/{args.species}/{args.sample}/"
+pathScore = f"{path}/results/{args.score}/NarrowPeaks/{args.species}/{args.sample}/overlapping"
 
 if args.species == "mouse":
     suffix = f".{args.score}60way.glire.wigFix.gz.bed"
 elif args.species == "drosophila":
-    suffix = f"{args.score}27way.wigFix.bed.gz"
+    suffix = f".{args.score}27way.wigFix.bed.gz"
+    pathScore = f"{path}/data/{args.score}/{args.species}/"  # not splited by overlap
 else:
     suffix = ".bed" if args.score == "phastCons" else ".phyloP17way.wigFix.gz.bed"
+
 
 # Sort BED file
 def sorted_dictionary(file):
     dic = defaultdict(list)
-    with open(file, 'r') as f:
+    open_func = gzip.open if file.endswith('.gz') else open
+    with open_func(file, 'rt') as f:
         for line in f.readlines():
             line = line.strip("\n").split("\t")
             chrom = line[0]
@@ -51,9 +55,9 @@ dic_output = defaultdict(list)
 count_ID_high = 0
 count_score_high = 0
 for chrom in peaks_dic.keys():
-    score = f"{pathScore}/overlapping/{chrom}{suffix}"
+    score = f"{pathScore}/{chrom}{suffix}"
     if not os.path.exists(score):
-        # print(f"{chrom} doesn't exist in {args.score}!")
+        print(f"{chrom} doesn't exist in {score}!")
         continue
     else:
         print(chrom)
@@ -89,5 +93,3 @@ output = f"{path}/results/{args.score}/NarrowPeaks/{args.species}/{args.sample}/
 with open(output, 'w') as f:
     for ID in dic_output.keys():
         f.write(ID + "\t" + '\t'.join(dic_output[ID]) + "\n")
-
-
