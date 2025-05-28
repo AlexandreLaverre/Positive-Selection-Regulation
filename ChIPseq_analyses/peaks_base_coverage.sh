@@ -34,24 +34,23 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     # Obtain normalized reads count
     echo "bamCompare -b1 ${pathBam} \
     -b2 ${pathPeaks}/${input} \
-    -o ${pathResults}/${TF}/${indiv}_bgNorm_RPKM_center.bw \
+    -o ${pathResults}/${TF}/${indiv}_bgNorm_readCount_center.bw \
     --binSize 1 \
-    --scaleFactorsMethod None \
-    --normalizeUsing RPKM \
+    --scaleFactorsMethod readCount \
     --centerReads \
     --effectiveGenomeSize ${GenomeSize} \
     -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare.log"
-    #    --centerReads --sampleLength 1000  \
+    #    --normalizeUsing RPKM --centerReads --sampleLength 1000 --scaleFactorsMethod readCount/None \
 
     # Matrix for each sample
     echo "computeMatrix reference-point --referencePoint TSS \
     -a 1000 -b 0 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
-    -S ${pathResults}/${TF}/${indiv}_bgNorm_RPKM_center.bw \
-    -o ${pathResults}/${TF}/${indiv}_matrix_RPKM_center.gz \
+    -S ${pathResults}/${TF}/${indiv}_bgNorm_readCount_center.bw \
+    -o ${pathResults}/${TF}/${indiv}_matrix_readCount_center.gz \
     -p ${threads} \
-    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_RPKM.bed"
+    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_readCount_center.bed"
 
   } > "${logFile}"
 
