@@ -32,32 +32,33 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     echo "conda activate deeptools"
 
     # Obtain normalized reads count
-    echo "bamCompare -b1 ${pathBam} \
-    -b2 ${pathPeaks}/${input} \
-    -o ${pathResults}/${TF}/${indiv}_bgNorm_CPM.bw \
-    --binSize 1 \
-    --scaleFactorsMethod None \
-    --normalizeUsing CPM
-    --effectiveGenomeSize ${GenomeSize} \
-    -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare_CPM.log"
+    #echo "bamCompare -b1 ${pathBam} \
+    #-b2 ${pathPeaks}/${input} \
+    #-o ${pathResults}/${TF}/${indiv}_bgNorm_CPM.bw \
+    #--binSize 1 \
+    #--scaleFactorsMethod None \
+    #--normalizeUsing CPM
+    #--effectiveGenomeSize ${GenomeSize} \
+    #-p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCompare_CPM.log"
     #    --normalizeUsing RPKM --centerReads --sampleLength 1000 --scaleFactorsMethod readCount/None \
 
-    #echo "bamCoverage -b ${pathBam} \
-    #-o ${pathResults}/${TF}/${indiv}_RPKM.bw \
-    #--binSize 1 \
-    #--normalizeUsing RPKM \
-    #--effectiveGenomeSize ${GenomeSize} \
-    #-p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCoverage.log"
+    echo "bamCoverage -b ${pathBam} \
+    -o ${pathResults}/${TF}/${indiv}_readCount.bw \
+    --binSize 1 \
+    --normalizeUsing None \
+    --scaleFactorsMethod readCount \
+    --effectiveGenomeSize ${GenomeSize} \
+    -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCoverage.log"
 
     # Matrix for each sample
     echo "computeMatrix reference-point --referencePoint center \
     -a 200 -b 200 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
-    -S ${pathResults}/${TF}/${indiv}_bgNorm_CPM.bw \
-    -o ${pathResults}/${TF}/${indiv}_matrix_CPM_200bp.gz \
+    -S ${pathResults}/${TF}/${indiv}_readCount.bw \
+    -o ${pathResults}/${TF}/${indiv}_matrix_readCount_200bp_noInput.gz \
     -p ${threads} \
-    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_CPM_200bp.bed"
+    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_readCount_200bp_noInput.bed"
 
   } > "${logFile}"
 
