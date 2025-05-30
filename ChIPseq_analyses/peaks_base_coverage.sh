@@ -45,8 +45,6 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     echo "bamCoverage -b ${pathBam} \
     -o ${pathResults}/${TF}/${indiv}_readCount.bw \
     --binSize 1 \
-    --normalizeUsing None \
-    --scaleFactorsMethod readCount \
     --effectiveGenomeSize ${GenomeSize} \
     -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCoverage.log"
 
