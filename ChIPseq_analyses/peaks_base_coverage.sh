@@ -49,8 +49,8 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCoverage.log"
 
     # Matrix for each sample
-    echo "computeMatrix reference-point --referencePoint center \
-    -a 200 -b 200 \
+    echo "computeMatrix reference-point --referencePoint TSS \
+    -a 1000 -b 0 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
     -S ${pathResults}/${TF}/${indiv}_readCount.bw \
