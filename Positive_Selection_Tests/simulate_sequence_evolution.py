@@ -148,7 +148,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
         rand_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, rand_sub_rates, nsub)
         if args.addExtreme > 0:
             print(random.choice([mut_ids[0], mut_ids[-1]]))
-            rand_id = SVM.mutate_from_ids(rand_id, random.choice([mut_ids[0], mut_ids[-1]]))
+            rand_id = SVM.mutate_from_ids(rand_id, list(random.choice([mut_ids[0], mut_ids[-1]])))
     else:
         print("Method not recognized")
         exit(1)
