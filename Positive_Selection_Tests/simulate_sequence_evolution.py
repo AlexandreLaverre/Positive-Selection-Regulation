@@ -149,7 +149,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
         if args.addExtreme > 0:
             mut = random.choice([mut_ids[0], mut_ids[-1]])
             print(seq_id, mut)
-            rand_id = SVM.mutate_from_ids(rand_id, mut)
+            rand_id = SVM.mutate_from_ids(rand_id, [mut])
     else:
         print("Method not recognized")
         exit(1)
