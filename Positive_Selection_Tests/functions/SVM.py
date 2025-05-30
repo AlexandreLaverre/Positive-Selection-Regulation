@@ -226,7 +226,9 @@ def mutate_from_ids(seq, ids):
     seq = list(seq.copy())
     for sub in ids:
         id_pos = sub.split(":")[0]
+        print(sub, id_pos)
         pos = int(id_pos.strip("pos"))
+        print(pos)
         old_nuc = seq[pos]
         new_nuc = sub.split(":")[1]
         seq[pos] = new_nuc
