@@ -43,9 +43,10 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     #    --normalizeUsing RPKM --centerReads --sampleLength 1000 --scaleFactorsMethod readCount/None \
 
     echo "bamCoverage -b ${pathBam} \
-    -o ${pathResults}/${TF}/${indiv}_readCount.bw \
+    -o ${pathResults}/${TF}/${indiv}_RPKM.bw \
     --binSize 1 \
     --effectiveGenomeSize ${GenomeSize} \
+    --normalizeUsing RPKM \
     -p ${threads} 2> ${pathPeaks}/deepTools/coverage/logs/${TF}_${indiv}_bamCoverage.log"
 
     # Matrix for each sample
@@ -53,10 +54,10 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -a 1000 -b 0 \
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
-    -S ${pathResults}/${TF}/${indiv}_readCount.bw \
-    -o ${pathResults}/${TF}/${indiv}_matrix_readCount_200bp_noInput_start1kb.gz \
+    -S ${pathResults}/${TF}/${indiv}_RPKM.bw \
+    -o ${pathResults}/${TF}/${indiv}_matrix_RPKM.gz \
     -p ${threads} \
-    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_readCount_200bp_noInput_start1kb.bed"
+    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_RPKM.bed"
 
   } > "${logFile}"
 
