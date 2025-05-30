@@ -54,9 +54,9 @@ for pathBam in "$pathPeaks"/*"$TF"*bam; do
     -bs 1 \
     -R ${pathPeaks}/macs2/narrowPeak/consensus/${TF}/${TF}.consensus_peaks.bed \
     -S ${pathResults}/${TF}/${indiv}_readCount.bw \
-    -o ${pathResults}/${TF}/${indiv}_matrix_readCount_200bp_noInput.gz \
+    -o ${pathResults}/${TF}/${indiv}_matrix_readCount_200bp_noInput_start1kb.gz \
     -p ${threads} \
-    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_readCount_200bp_noInput.bed"
+    --outFileSortedRegions ${pathResults}/${TF}/${indiv}_peaks_readCount_200bp_noInput_start1kb.bed"
 
   } > "${logFile}"
 
