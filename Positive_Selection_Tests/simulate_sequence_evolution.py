@@ -25,6 +25,7 @@ parser.add_argument("--PropNeutral", default=0.0, type=float, help="Proportion o
 parser.add_argument("--ScalePurif", default=0.0, type=float, help="Scale to reduce Sub Proba of Negative SVM in Random")
 parser.add_argument("--MinStab", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
 parser.add_argument("--MinPos", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
+parser.add_argument("--addExtreme", default=0, type=int, help="Nb of extreme value to incorporate (default=0)")
 parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
@@ -41,7 +42,7 @@ sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 import MLEvol
 
-suffix = f"{args.Method}_{args.PropNeutral}Null_{args.MinStab}Stab_{args.MinPos}Pos_{args.ScalePurif}Purif"
+suffix = f"{args.Method}_{args.PropNeutral}Null_{args.MinStab}Stab_{args.MinPos}Pos_{args.ScalePurif}Purif_addExtreme{args.addExtreme}"
 
 
 ####################################################################################################
@@ -141,9 +142,12 @@ def get_simulated_sequences(seq_id, method=args.Method):
             exit(1)
 
         nsub = np.random.randint(2, min(args.MaxMut+1, nb_possible_mut))
-        rand_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, rand_sub_rates, nsub)
+        # Mutate sequences
         stab_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, stab_sub_rates, nsub)
         pos_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, pos_sub_rates, nsub)
+        rand_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, rand_sub_rates, nsub)
+        if args.addExtreme > 0:
+            rand_id = SVM.mutate_from_ids(rand_id, random.choice([mut_ids[0], mut_ids[-1]]))
     else:
         print("Method not recognized")
         exit(1)
