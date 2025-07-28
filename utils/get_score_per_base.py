@@ -21,6 +21,9 @@ if args.species == "mouse":
 elif args.species == "drosophila":
     suffix = f".{args.score}27way.wigFix.bed.gz"
     pathScore = f"{path}/data/{args.score}/{args.species}/"  # not splited by overlap
+elif args.species == "zebrafish":
+    suffix = f".danRer11.{args.score}12way.bedGraph.gz"
+    pathScore = f"{path}/data/{args.score}/{args.species}/"  # not splited by overlap
 else:
     suffix = ".bed" if args.score == "phastCons" else ".phyloP17way.wigFix.gz.bed"
 
@@ -68,12 +71,12 @@ for chrom in peaks_dic.keys():
         start, end, ID = pos[0], pos[1], str(pos[2])
         # Initialization of first possible overlapping interest position
         i = first_i
-        while i < len(score_dic[chrom]) and score_dic[chrom][i][1] < start:
+        while i < len(score_dic[chrom]) and score_dic[chrom][i][1] <= start:
             i += 1
         first_i = i
 
         # Adding all overlapping interest position to reference position
-        while i < len(score_dic[chrom]) and score_dic[chrom][i][0] <= end:
+        while i < len(score_dic[chrom]) and score_dic[chrom][i][0] < end:
             dic_output[ID].append(score_dic[chrom][i][2])
             i += 1
 
@@ -81,12 +84,13 @@ for chrom in peaks_dic.keys():
         ID_len = pos[1]-pos[0]
         score_len = len(dic_output[ID])
         if ID_len > score_len:
+            #print(f"Warning: {ID}, Peaks length: {ID_len}, Score length: {score_len}")
             count_ID_high += 1
         if ID_len < score_len:
             count_score_high += 1
 
 
-print(f"Total peaks:{len(dic_output.keys())}; ID higher:{count_score_high}; Score higher:{count_ID_high}")
+print(f"Total peaks:{len(dic_output.keys())}; ID higher:{count_ID_high}; Score higher:{count_score_high} ")
 
 print("Writing output")
 output = f"{path}/results/{args.score}/NarrowPeaks/{args.species}/{args.sample}/score_per_base.txt"
