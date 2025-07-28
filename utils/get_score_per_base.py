@@ -57,6 +57,7 @@ peaks_dic = sorted_dictionary(peaks)
 dic_output = defaultdict(list)
 count_ID_high = 0
 count_score_high = 0
+count_no_score = 0
 for chrom in peaks_dic.keys():
     score = f"{pathScore}/{chrom}{suffix}"
     if not os.path.exists(score):
@@ -83,8 +84,9 @@ for chrom in peaks_dic.keys():
         # Check if lengths are equal
         ID_len = pos[1]-pos[0]
         score_len = len(dic_output[ID])
-        if ID_len != score_len:
-            print(f"Warning: {ID}, Peaks length: {ID_len}, Score length: {score_len}")
+
+        if score_len == 0:
+            count_no_score += 1
         if ID_len > score_len:
             #print(f"Warning: {ID}, Peaks length: {ID_len}, Score length: {score_len}")
             count_ID_high += 1
@@ -92,7 +94,7 @@ for chrom in peaks_dic.keys():
             count_score_high += 1
 
 
-print(f"Total peaks:{len(dic_output.keys())}; ID higher:{count_ID_high}; Score higher:{count_score_high} ")
+print(f"Total peaks:{len(dic_output.keys())}; no Score:{count_no_score}; ID higher:{count_ID_high}; Score higher:{count_score_high} ")
 
 print("Writing output")
 output = f"{path}/results/{args.score}/NarrowPeaks/{args.species}/{args.sample}/score_per_base.txt"
