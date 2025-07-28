@@ -83,6 +83,8 @@ for chrom in peaks_dic.keys():
         # Check if lengths are equal
         ID_len = pos[1]-pos[0]
         score_len = len(dic_output[ID])
+        if ID_len != score_len:
+            print(f"Warning: {ID}, Peaks length: {ID_len}, Score length: {score_len}")
         if ID_len > score_len:
             #print(f"Warning: {ID}, Peaks length: {ID_len}, Score length: {score_len}")
             count_ID_high += 1
