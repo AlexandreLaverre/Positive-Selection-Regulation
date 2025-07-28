@@ -22,7 +22,7 @@ elif args.species == "drosophila":
     suffix = f".{args.score}27way.wigFix.bed.gz"
     pathScore = f"{path}/data/{args.score}/{args.species}/"  # not splited by overlap
 elif args.species == "zebrafish":
-    suffix = f".danRer11.{args.score}12way.bedGraph.gz"
+    suffix = f".danRer11.{args.score}8way.bedGraph.gz"
     pathScore = f"{path}/data/{args.score}/{args.species}/"  # not splited by overlap
 else:
     suffix = ".bed" if args.score == "phastCons" else ".phyloP17way.wigFix.gz.bed"
