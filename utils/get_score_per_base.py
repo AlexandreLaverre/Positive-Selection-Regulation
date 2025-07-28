@@ -36,7 +36,7 @@ def sorted_dictionary(file):
         for line in f.readlines():
             line = line.strip("\n").split("\t")
             chrom = line[0]
-            if file == peaks:
+            if file == peaks or args.species == "zebrafish":
                 pos = (int(line[1]), int(line[2]), str(line[3]))
             else:
                 pos = (int(line[1]), int(line[2]), str(line[4]))
