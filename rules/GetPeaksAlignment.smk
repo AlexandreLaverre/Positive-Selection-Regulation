@@ -103,7 +103,7 @@ rule ConcatSeq:
         # Get all non empty ancestral sequences in one file
         anc_files=$(find "$pathAncestral" -name "*nogap.fa" -size +0)
         if [[ -z "$anc_files" ]]; then
-            echo "ERROR: Weird! All ancestral sequence files are empty" >&2
+            echo "ERROR: Weird! All ancestral sequence files are empty! Are the convention for coordinates the same between your BED and the Alignment?" >&2
             exit 1
         fi
         echo "$anc_files" | xargs basename -s _nogap.fa > {output.list_ancestral}
