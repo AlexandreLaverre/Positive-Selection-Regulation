@@ -16,6 +16,7 @@ with open(pathCorrespondence, 'r') as f1:
         i = i.split("\t")
         Correspondence_dict[i[0]] = i[1]
 
+error = 0
 with open(pathBED, 'r') as f1:
     for i in f1.readlines():
         i = i.strip("\n").split("\t")
@@ -27,8 +28,11 @@ with open(pathBED, 'r') as f1:
 
         if old in Correspondence_dict.keys():
             new_chr = str(Correspondence_dict[old])
+            output.write("\t".join([new_chr, str(i[1]), str(i[2]), str(i[3])]) + '\n')
+        else:
+            error += 1
+            print("Weird, chromosome not found in correspondence file: ", old)
 
-        output.write("\t".join([new_chr, str(i[1]), str(i[2]), str(i[3])]) + '\n')
-
+print(f"Number of unmatched elements: {error}")
 output.close()
 ####################################################################################################
