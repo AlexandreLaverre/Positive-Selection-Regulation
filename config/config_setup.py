@@ -13,8 +13,8 @@ def get_TFs(config, pathPeaks):
     else:
         # If TFs is passed directly via command line
         if isinstance(config.get("TFs"), (str, list)):
-            config["TFs"][config["sample"]] = (
-                config["TFs"].split(",") if isinstance(config["TFs"], str) else config["TFs"])
-        print(config["TFs"])
+            override_value = config["TFs"].split(",") if isinstance(config["TFs"], str) else config["TFs"]
+            config["TFs"] = {config["sample"]: override_value}
+
         return config["TFs"][config["sample"]]
 
