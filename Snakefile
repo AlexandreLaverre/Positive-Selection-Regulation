@@ -66,8 +66,8 @@ rule all:
     input :
         #MaxLLTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"MLE_summary_{BinType}_{AncNode}.csv"), TF=TFs),
         #PosSelTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"PosSelTest_deltaSVM_{nbRand}permutations_two_tailed_{AncNode}.txt") ,TF=TFs),
-        #archive = expand(os.path.join(pathResults, "{TF}", f"alignments_{AncNode}.archive.tar.gz"),TF=TFs),
-        SNP = expand(os.path.join(pathPolymorphism, "{TF}", f"SFS.pdf"), TF=TFs)
+        archive = expand(os.path.join(pathResults, "{TF}", f"alignments_{AncNode}.archive.tar.gz"),TF=TFs),
+        #SNP = expand(os.path.join(pathPolymorphism, "{TF}", f"SFS.pdf"), TF=TFs)
         #SNP = expand(os.path.join(pathPolymorphism, "{TF}", "overlap_peaks.txt"), TF=TFs),
         #model_validation= expand(os.path.join(pathResults,"{TF}", "Model", f"{{TF}}.cvpred.txt"),TF=TFs),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
@@ -81,9 +81,3 @@ rule all:
 #        for sample in config[sp]["sample"]
 #        for TF in config["TFs"][sample]
 #    ]
-
-#rule all:
-#    input:
-#        PosSelTest = generate_file_paths(pathResults + "{sp}{sample}{TF}/PosSelTest_deltaSVM_" + str(config["nbRand"]) + "permutations.txt"),
-#        MaxLLTest = generate_file_paths(pathResults + "{sp}{sample}{TF}/MLE_summary_" + BinType + "_" + str(nbBin) + "bins_threshold_" + str(threshold) + ".csv"),
-#        archive = generate_file_paths(pathResults + "{sp}{sample}{TF}/alignments.archive.tar.gz")
