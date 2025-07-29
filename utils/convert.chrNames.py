@@ -7,7 +7,7 @@ cwd = os.getcwd()
 
 pathCorrespondence = f"{cwd}/{sys.argv[1]}"
 pathBED = f"{cwd}/{sys.argv[2]}"
-output = open(f"{cwd}/{sys.argv[3]}")
+output = open(f"{cwd}/{sys.argv[3]}", 'w')
 
 Correspondence_dict = {}
 with open(pathCorrespondence, 'r') as f1:
