@@ -97,27 +97,27 @@ rule ConcatSeq:
         """
         pathAncestral="{pathResults}/{wildcards.TF}/Alignments/ancestral_sequences"
         pathFocal="{pathResults}/{wildcards.TF}/Alignments/focal_sequences"
-        pathSister="{pathResults}/{wildcards.TF}/Alignments/sister_sequences"
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/sequences/
         
         # Get all non empty ancestral sequences in one file
         anc_files=$(find "$pathAncestral" -name "*nogap.fa" -size +0)
         if [[ -z "$anc_files" ]]; then
-            echo "ERROR: Weird! All ancestral sequence files are empty! Are the convention for coordinates the same between your BED and the Alignment?" >&2
+            echo "ERROR: Weird! All ancestral sequence files are empty! Is the convention for coordinates the same between your BED and the Alignment?" >&2
             exit 1
         fi
-        echo "$anc_files" | xargs basename -s _nogap.fa > {output.list_ancestral}
-        cat $anc_files > {output.concat_ancestral}
+        echo "$anc_files" | xargs -r -n1 basename -s _nogap.fa > {output.list_ancestral}
+        echo "$anc_files" | xargs -r cat > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file
         foc_files=$(find "$pathAncestral" -name "*nogap.fa" -size +0)
-        cat $foc_files > {output.concat_focal}
+        echo $foc_files | xargs -r cat > {output.concat_focal}
         seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
         # Make sequences in uppercase to remove potential soft repeat mask 
         awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
         """
 
+#pathSister="{pathResults}/{wildcards.TF}/Alignments/sister_sequences"
 #concat_sister          = pathResults + "/{TF}/sequences/all_sister_{AncNode}_sequences.fa",
 #concat_sister_filtered = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences.fa",
 #concat_sister_upper    = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences_upper.fa"
