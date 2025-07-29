@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 import sys
+import os
 
-pathCorrespondence = sys.argv[1]
-pathBED = sys.argv[2]
-output = open(sys.argv[3])
+cwd = os.getcwd()
+
+pathCorrespondence = cwd + sys.argv[1]
+pathBED = cwd + sys.argv[2]
+output = open(cwd + sys.argv[3])
 
 Correspondence_dict = {}
 with open(pathCorrespondence, 'r') as f1:
