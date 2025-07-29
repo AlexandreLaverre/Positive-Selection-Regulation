@@ -15,6 +15,6 @@ def get_TFs(config, pathPeaks):
         if isinstance(config.get("TFs"), (str, list)):
             config["TFs"][config["sample"]] = (
                 config["TFs"].split(",") if isinstance(config["TFs"], str) else config["TFs"])
-
+        print(config["TFs"])
         return config["TFs"][config["sample"]]
 
