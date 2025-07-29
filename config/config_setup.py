@@ -11,9 +11,9 @@ def get_TFs(config, pathPeaks):
             return sorted({line.split("\t")[4].strip() for line in f})  # Extract unique TFs
 
     else:
-        # If TFs is passed directly via command line
-        if isinstance(config.get("TFs"), (str, list)):
-            override_value = config["TFs"].split(",") if isinstance(config["TFs"], str) else config["TFs"]
+        # If a new TF is passed directly via command line
+        if "new_TFs" in config:
+            override_value = config["new_TFs"].split(",") if isinstance(config["new_TFs"], str) else config["new_TFs"]
             config["TFs"] = {config["sample"]: override_value}
 
         return config["TFs"][config["sample"]]
