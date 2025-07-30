@@ -109,7 +109,7 @@ rule ConcatSeq:
         echo "$anc_files" | xargs -r cat > {output.concat_ancestral}
 
         # Get all corresponding focal sequences in one file
-        foc_files=$(find "$pathAncestral" -name "*nogap.fa" -size +0)
+        foc_files=$(find "$pathFocal" -name "*nogap.fa" -size +0)
         echo $foc_files | xargs -r cat > {output.concat_focal}
         seqtk subseq {output.concat_focal} {output.list_ancestral} > {output.concat_focal_filtered}
 
