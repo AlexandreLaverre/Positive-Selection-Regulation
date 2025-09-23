@@ -1,12 +1,12 @@
 #!/bin/bash
 
-export sp=$1				        # i.e: dog human mouse ...
+export sp=$1				          # i.e: dog human mouse ...
 export sample=$2			        # i.e: Wilson Schmidt Rensch ...
-export peaksType=$3                 # i.e: Narrow or Broad
+export peaksType=$3           # i.e: Narrow or Broad
 export threads=$4			        # i.e: number of threads to use
-export cluster=$5			        # i.e: local or cluster
-export resume=${6:-"false"}	        # i.e: resume or false
-export skip=${7:-"false"}		    # i.e: skip or false
+export container=$5			      # i.e: conda or singularity (SLURM works only with singularity)
+export resume=${6:-"false"}	  # i.e: resume or false
+export skip=${7:-"false"}		  # i.e: skip or false
 
 ########################################################################################################################
 # Ensure Conda environment exists
@@ -16,11 +16,6 @@ if ! conda env list | grep -q '^nextflow'; then
 fi
 
 ########################################################################################################################
-if [ ${cluster} = "local" ]; then
-	export container="conda"
-else
-	export container="singularity"
-fi
 
 export path=${path:-"$(pwd)/../../"}
 export pathConda="$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
@@ -31,7 +26,7 @@ export pathScripts=${path}/scripts/1_chipseq/logs
 mkdir -p ${pathResults}
 
 # Define parameters according to species
-source ${path}/scripts/config/params.sh ${sp} ${cluster}
+source ${path}/scripts/config/params.sh ${sp}
 
 ########################################################################################################################
 # Define input files
@@ -84,7 +79,7 @@ echo "conda activate nextflow" >> "${logFile}"
 
 echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
       ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
-      -with-conda true ${index} --max_memory '50.GB' --max_cpus ${threads} ${skip} ${resume}" >> "${logFile}"
+      -with-conda true ${index} --max_memory '50.GB' --max_cpus ${threads} ${skip_flags} ${resume_flag}" >> "${logFile}"
 
 ########################################################################################################################
 
