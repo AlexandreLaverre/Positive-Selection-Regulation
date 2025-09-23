@@ -1,0 +1,4 @@
+#!/bin/bash
+source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
+conda activate nextflow
+nextflow run nf-core/chipseq --input /Users/alaverre/Documents/Detecting_positive_selection/data/ChIP-seq/macaca/Wilson_samples_input.csv --outdir /Users/alaverre/Documents/Detecting_positive_selection/results/peaks_calling/macaca//Wilson --fasta /Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/macaca/sup2kb_GCA_000772875.3_Mmul_8.0.1_genomic.fna.gz --gff /Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/macaca/sup2kb_GCA_000772875.3_Mmul_8.0.1_genomic.gff.gz  --aligner bowtie2 --macs_gsize 2498932238 -profile conda -with-conda true --save_reference --max_memory '20.GB' --max_cpus 8 

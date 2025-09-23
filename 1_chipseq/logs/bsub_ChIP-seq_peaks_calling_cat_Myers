@@ -1,0 +1,4 @@
+#!/bin/bash
+source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
+conda activate nextflow
+nextflow run nf-core/chipseq --input /Users/alaverre/Documents/Detecting_positive_selection/data/ChIP-seq/cat/Myers_samples_input.csv --outdir /Users/alaverre/Documents/Detecting_positive_selection/results/peaks_calling/cat//Myers --fasta /Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/cat/sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.fna.gz --gff /Users/alaverre/Documents/Detecting_positive_selection/data/genome_sequences/cat/sup2kb_GCA_000181335.3_Felis_catus_8.0_genomic.gff.gz  --aligner bowtie2 --macs_gsize 2300000000 -profile conda -with-conda true --bwa_index /Users/alaverre/Documents/Detecting_positive_selection/results/peaks_calling/cat//indexes/ --bowtie2_index /Users/alaverre/Documents/Detecting_positive_selection/results/peaks_calling/cat//indexes/ --max_memory '30.GB' --max_cpus 8  
