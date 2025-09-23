@@ -15,9 +15,6 @@ AncMethod: 'parsimony'
 AncNode: 'ancestral'
 peakType: 'NarrowPeaks'
 cluster: 'cluster'
-split:
-    cluster: 'split'
-    local: 'gsplit'
 TF_source: "config"
 ModelThreads: 16
 

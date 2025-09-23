@@ -65,7 +65,7 @@ rule MaxLLTest:
         """
         python scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
-        -T {threads} --{cluster} &> {log.out}
+        -T {threads} &> {log.out}
         """
 
 rule simulate_sequence:
