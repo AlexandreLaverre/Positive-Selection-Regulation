@@ -3,13 +3,9 @@
 sp=$1
 cluster=$2
 
-if [ ${cluster} = "local" ]; then
-	export pathData=/Users/alaverre/Documents/Detecting_positive_selection/data
-	export pathConda=/Users/alaverre/miniconda3/etc/profile.d/conda.sh
-else
-	export pathData=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data
-	export pathConda=/work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
-fi
+export path=${path:-"$(pwd)/../../"}
+export pathData="${path}/data"
+export pathConda="$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 
 ########################################################
 EnsemblRelease=102
