@@ -4,7 +4,7 @@ suppressMessages(library(BSgenome))
 suppressMessages(library(BiocManager))
 args = commandArgs(trailingOnly=TRUE)
 
-species = args[1] #"human"
+species = args[1]
 BED_file = args[2]
 pathResults = args[3]
 #cluster = args[4]

@@ -4,14 +4,9 @@ export sp=$1
 export cluster=$2
 
 ####################################################################################
-
-if [ ${cluster} = "local" ]; then
-	export path=/Users/alaverre/Documents/Detecting_positive_selection
-	source /opt/homebrew/Caskroom/mambaforge/base/etc/profile.d/conda.sh
-else
-	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
-	source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
-fi
+# Define paths
+export path=${path:-"$(pwd)/../../"}
+source "$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 
 export pathResults=${path}/results/substitution_matrix/${sp}/
 export pathAlignment=${path}/data/genome_alignments/${sp}/

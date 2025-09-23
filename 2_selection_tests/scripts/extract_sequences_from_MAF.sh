@@ -8,15 +8,8 @@ AncNode="${5:-ancestral}"
 
 #########################################################################
 # Define paths
-
-if [ "${cluster}" = "local" ]; then
-	export path=/Users/alaverre/Documents/Detecting_positive_selection
-	source /Users/alaverre/miniconda3/etc/profile.d/conda.sh
-else
-	export path=/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/
-	source /work/FAC/FBM/DEE/mrobinso/evolseq/Tools/mambaforge/etc/profile.d/conda.sh
-fi
-
+export path=${path:-"$(pwd)/../../"}
+source "$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 conda activate MAF
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"

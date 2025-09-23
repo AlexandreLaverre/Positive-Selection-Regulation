@@ -1,12 +1,12 @@
 #!/bin/bash
 
 export sp=$1				        # i.e: dog human mouse ...
-export sample=$2			      # i.e: Wilson Schmidt Rensch ...
-export peaksType=$3         # i.e: Narrow or Broad
-export threads=$4			      # i.e: number of threads to use
-export cluster=$5			      # i.e: local or cluster
-export resume=${6:-"false"}	# i.e: resume or false
-export skip=${7:-"false"}		# i.e: skip or false
+export sample=$2			        # i.e: Wilson Schmidt Rensch ...
+export peaksType=$3                 # i.e: Narrow or Broad
+export threads=$4			        # i.e: number of threads to use
+export cluster=$5			        # i.e: local or cluster
+export resume=${6:-"false"}	        # i.e: resume or false
+export skip=${7:-"false"}		    # i.e: skip or false
 
 ########################################################################################################################
 # Ensure Conda environment exists

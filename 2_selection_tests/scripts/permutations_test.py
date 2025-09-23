@@ -6,6 +6,7 @@ import numpy as np
 from alive_progress import alive_bar
 import multiprocessing.pool
 import sys
+from pathlib import Path
 
 np.random.seed(12)
 
@@ -24,14 +25,8 @@ parser.add_argument("--cluster", action='store_true', help="Needed if run on clu
 parser.add_argument("-T", "--NbThread", required=False, default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 
-if args.cluster:
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
-    pathResults = f"{path}/results/"
-else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-    pathResults = f"{path}/cluster/results/"
-
-
+path = Path(__file__).resolve().parent.parent
+pathResults = f"{path}/results/"
 sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
 import SVM
 

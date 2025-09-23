@@ -8,6 +8,7 @@ import multiprocessing.pool
 import warnings
 import argparse
 import sys
+from pathlib import Path
 
 np.random.seed(1234)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -30,16 +31,10 @@ maxSub = 150
 maxLength = 1000
 plots = False
 
-if args.cluster:
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
-    pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
-    pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
-else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-    pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
-    pathMatrix = f"{path}/cluster/results/substitution_matrix/{args.species}/"
-
-sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+path = Path(__file__).resolve().parent.parent
+pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
+sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
 import MLEvol as ML
 import SVM
 

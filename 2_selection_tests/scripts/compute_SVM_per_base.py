@@ -6,6 +6,7 @@ from Bio import SeqIO
 from alive_progress import alive_bar
 import multiprocessing.pool
 import sys
+from pathlib import Path
 
 ########################################################################################################################
 # Variables and paths
@@ -17,9 +18,9 @@ parser.add_argument("-T", "--NbThread", default=1, type=int, help="Number of thr
 args = parser.parse_args()
 maxLen = 1000
 
-path = "/Users/alaverre/Documents/Detecting_positive_selection/"
-pathResults = f"{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
-sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+path = Path(__file__).resolve().parent.parent
+pathResults = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
+sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
 import SVM
 
 

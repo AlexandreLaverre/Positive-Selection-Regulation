@@ -30,7 +30,6 @@ parser.add_argument("--MinStab", default=25, type=int, help="Proportion of Neutr
 parser.add_argument("--MinPos", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
 parser.add_argument("--addExtreme", default=0, type=int, help="Nb of extreme mutation to add in Random Drift (default=0)")
 parser.add_argument("--runOnly", default="all", type=str, help="Write only one type of simulation: stabilising, positive, neutral or all (default=all")
-parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
 

@@ -7,6 +7,7 @@ from alive_progress import alive_bar
 import multiprocessing.pool
 import sys
 import os
+from pathlib import Path
 
 ####################################################################################################
 # Variables and paths
@@ -19,19 +20,14 @@ parser.add_argument("-N", "--node", default="ancestral",
 parser.add_argument("-S", "--Simulation", default=False,
                     help="Get obs delta for all the simulated regimes (default=False; either 500_rounds or deltas")
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
-parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
 maxSub = 150
 maxLen = 1000
 
-if args.cluster:
-    path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/"
-else:
-    path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/"
-
+path = Path(__file__).resolve().parent.parent
 pathResults = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
-sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
 import SVM
 
 

@@ -1,0 +1,33 @@
+name: nextflow
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - c-ares=1.18.1=h0d85af4_0
+  - ca-certificates=2023.5.7=h8857fd0_0
+  - coreutils=9.1=h5eb16cf_0
+  - curl=7.87.0=h6df9250_0
+  - icu=72.1=h7336db1_0
+  - krb5=1.20.1=h049b76e_0
+  - libcurl=7.87.0=h6df9250_0
+  - libcxx=14.0.6=hccf4f1f_0
+  - libedit=3.1.20191231=h0678c8f_2
+  - libev=4.33=haf1e3a3_1
+  - libiconv=1.17=hac89ed1_0
+  - libnghttp2=1.51.0=he2ab024_0
+  - libpq=15.2=h3640bf0_0
+  - libssh2=1.10.0=h47af595_3
+  - libxml2=2.10.4=h554bb67_0
+  - libzlib=1.2.13=hfd90126_4
+  - ncurses=6.3=h96cf925_1
+  - nextflow=22.10.4=h4a94de4_0
+  - openjdk=17.0.3=hbc0c0cd_5
+  - openssl=3.1.0=h8a1eda9_3
+  - postgresql=15.2=hbea33b9_0
+  - readline=8.2=h9e318b2_1
+  - samtools=1.4.1=0
+  - tzcode=2023c=hb7f2c08_0
+  - tzdata=2023c=h71feb2d_0
+  - xz=5.2.6=h775f41a_0
+  - zlib=1.2.13=hfd90126_4
