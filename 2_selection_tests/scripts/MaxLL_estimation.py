@@ -24,7 +24,6 @@ parser.add_argument("-S", "--Simulation", default=False, help="Name of the simul
 parser.add_argument("-T", "--NbThread", default=8, type=int, help="Number of threads for parallelization (default=8)")
 parser.add_argument("--binType", default="quantile", type=str, help="Method to cut SVM distribution (hist or quantile)")
 parser.add_argument("--threshold", default="0.01", type=float, help="Significance threshold for the test (default=0.01)")
-parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 args = parser.parse_args()
 
 maxSub = 150

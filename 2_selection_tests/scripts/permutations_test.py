@@ -21,7 +21,6 @@ parser.add_argument("-N", "--node", default="ancestral", help="From which node t
 parser.add_argument("--NbRand", default=10000, type=int, help="Number of random substitutions permutations per sequence (default=10k")
 parser.add_argument("--Evol", required=False, default="matrix", help="Substitution model (default = matrix)")
 parser.add_argument("-S", "--Simulation", required=False, help="Type of simulation (i.e: 500_rounds_stabilising or deltas_neutral)")
-parser.add_argument("--cluster", action='store_true', help="Needed if run on cluster")
 parser.add_argument("-T", "--NbThread", required=False, default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 

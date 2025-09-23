@@ -3,8 +3,7 @@
 sp=$1    		  # e.g: human
 pathResults=$2
 BED_file=$3
-cluster=$4    # e.g: local
-AncNode="${5:-ancestral}"
+AncNode="${4:-ancestral}"
 
 #########################################################################
 # Define paths
@@ -26,7 +25,7 @@ mkdir -p "${pathResults}/sister_sequences/"
 mkdir -p "${pathResults}/ancestral_sequences/"
 # Define focal and ancestral names
 
-source ${path}/scripts/config/params.sh "$sp" "$cluster"
+source ${path}/scripts/config/params.sh "$sp"
 sister_name="$(echo "$close_species" | cut -d "," -f 2)"
 
 

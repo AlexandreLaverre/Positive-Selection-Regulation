@@ -1,7 +1,6 @@
 #!/bin/bash
 
 sp=$1
-cluster=$2
 
 export path=${path:-"$(pwd)/../../"}
 export pathData="${path}/data"

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export sp=$1
-export cluster=$2
 
 ####################################################################################
 # Define paths
@@ -17,7 +16,7 @@ export Alignment=${pathAlignment}/triplet_ancestor.maf.gz
 
 ####################################################################################
 # Define names, chromosomes and files
-source ${path}/scripts/config/params.sh ${sp} ${cluster}
+source "${path}"/scripts/config/params.sh "${sp}"
 conda activate MAF
 
 #########################################################################
