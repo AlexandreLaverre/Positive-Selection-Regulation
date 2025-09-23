@@ -4,7 +4,6 @@ from snakemake.io import touch
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
-cluster = config["cluster"]
 AncNode = config["AncNode"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
@@ -25,8 +24,8 @@ rule ComputeAllDeltaSVM:
     params: time="1:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node {AncNode} --{cluster} -T {threads} > {log.out} 2>&1 || exit 1
+        python  scripts/compute_all_deltaSVM.py {sp} \
+        {sample}/{wildcards.TF} {peakType} --node {AncNode} -T {threads} > {log.out} 2>&1 || exit 1
         """
 
 def evaluate_time(ancestral_seq):
@@ -50,8 +49,8 @@ rule PermutationTest:
     params: time=lambda wildcards, input: evaluate_time(input.AllSVM), mem="5G", threads=max(10, config["nbPart"])
     shell:
         """
-        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
-        --NbRand {config[nbRand]} --node {AncNode} --{cluster} --NbThread {threads} > {log.out} 2>&1 || exit 1
+        python scripts/permutations_test.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
+        --NbRand {config[nbRand]} --node {AncNode} --NbThread {threads} > {log.out} 2>&1 || exit 1
         """
 
 rule MaxLLTest:
@@ -67,9 +66,9 @@ rule MaxLLTest:
     priority: 10
     shell:
         """
-        python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
+        python scripts/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
-        --node {AncNode} -T {threads} --{cluster} > {log.out} 2>&1 
+        --node {AncNode} -T {threads} > {log.out} 2>&1 
         """
 
 #rule simulate_sequence:

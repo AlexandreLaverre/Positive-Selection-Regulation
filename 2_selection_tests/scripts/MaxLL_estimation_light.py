@@ -30,8 +30,8 @@ maxSub = 150
 maxLength = 1000
 
 path = Path(__file__).resolve().parent.parent
-pathResults = f'{path}/cluster/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
-pathMatrix = f"{path}/cluster/results/substitution_matrix/{args.species}/"
+pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
+pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
 
 sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
 import MLEvol as ML

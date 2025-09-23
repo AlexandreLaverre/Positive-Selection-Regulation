@@ -5,7 +5,6 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
-cluster = config["cluster"]
 
 if sp == "human":
     chroms = [f"chr{i}" for i in range(1, 22)] + ["chrX"]
@@ -66,8 +65,8 @@ rule ComputeDeltaSVM_Reference:
     params: time="1:00:00", mem="5G", threads=2
     shell:
         """
-        python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node focal_ancestral --{cluster} -T {threads} > {log.out} 2>&1
+        python  scripts/compute_all_deltaSVM.py {sp} \
+        {sample}/{wildcards.TF} {peakType} --node focal_ancestral -T {threads} > {log.out} 2>&1
         """
 
 
@@ -84,7 +83,7 @@ rule RetrieveSNPDeltaSVM_Selection:
     params: time="1:00:00",mem="5G",threads=1
     shell:
         """ 
-        python peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} \
+        python scripts/peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} \
         {input.genome} {input.MLE} {output} > {log.out} 2>&1 
         """
 
@@ -109,6 +108,6 @@ rule PlotSFS:
     params: time="1:00:00",mem="3G",threads=1, subsample=12
     shell:
         """
-        python peaks_evolution/plot_sfs.py --input_MLE {input.MLE} --input_SNP {input.SelCoeff} \
+        python scripts/peaks_evolution/plot_sfs.py --input_MLE {input.MLE} --input_SNP {input.SelCoeff} \
         --subsample {params.subsample} --output_pdf {output} 
         """
