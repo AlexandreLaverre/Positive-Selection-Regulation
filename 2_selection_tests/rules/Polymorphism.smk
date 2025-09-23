@@ -65,7 +65,7 @@ rule ComputeDeltaSVM_Reference:
     params: time="1:00:00", mem="5G", threads=2
     shell:
         """
-        python  scripts/compute_all_deltaSVM.py {sp} \
+        python scripts/RegEvol/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} --node focal_ancestral -T {threads} > {log.out} 2>&1
         """
 

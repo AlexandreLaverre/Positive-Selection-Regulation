@@ -24,7 +24,7 @@ rule ComputeAllDeltaSVM:
     params: time="1:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python  scripts/compute_all_deltaSVM.py {sp} \
+        python scripts/RegEvol/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} --node {AncNode} -T {threads} > {log.out} 2>&1 || exit 1
         """
 
@@ -66,16 +66,7 @@ rule MaxLLTest:
     priority: 10
     shell:
         """
-        python scripts/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
+        python scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
         --node {AncNode} -T {threads} > {log.out} 2>&1 
         """
-
-#rule simulate_sequence:
-#    """Simulate sequence evolution according to a given number of substitutions and a new optimum value"""
-#    input: original_seq = "test.txt"
-#    output: simulated_seq = "test.txt"
-#    shell:
-#        """
-#        python /simulate_sequence_evolution.py {input.original_seq} {output.simulated_seq} {cluster}
-#        """

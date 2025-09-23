@@ -4,7 +4,6 @@ from snakemake.io import expand, touch, directory
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
-cluster = config["cluster"]
 AncNode = config["AncNode"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
@@ -79,7 +78,7 @@ rule GetSequencesMultiple:
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
-        ./alignments/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {cluster} {AncNode} > {log.out} 2>&1 
+        ./scripts/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {AncNode} > {log.out} 2>&1 
         """
 
 rule ConcatSeq:

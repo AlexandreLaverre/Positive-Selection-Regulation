@@ -4,7 +4,6 @@ from snakemake.io import touch
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
-cluster = config["cluster"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
@@ -22,8 +21,8 @@ rule PermutationTest:
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python Positive_Selection_Tests/Permutation_Test/permutations.py {sp} {sample} {wildcards.TF} {peakType} \
-        --NbRand {config[nbRand]} --{cluster} --NbThread {threads} &> {log.out}
+        python scripts/permutations_test.py {sp} {sample} {wildcards.TF} {peakType} \
+        --NbRand {config[nbRand]} --NbThread {threads} &> {log.out}
         """
 
 rule ComputeAllDeltaSVM:
@@ -40,8 +39,8 @@ rule ComputeAllDeltaSVM:
     params: time="2:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python  Positive_Selection_Tests/Max_LnL_Test/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --{cluster} -T {threads} &> {log.out}
+        python scripts/RegEvol/compute_all_deltaSVM.py {sp} \
+        {sample}/{wildcards.TF} {peakType} -T {threads} &> {log.out}
         """
 
 def evaluate_time(ancestral_seq):
@@ -64,7 +63,7 @@ rule MaxLLTest:
             threshold=config["threshold"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
     shell:
         """
-        python Positive_Selection_Tests/Max_LnL_Test/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
+        python scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
         -T {threads} --{cluster} &> {log.out}
         """

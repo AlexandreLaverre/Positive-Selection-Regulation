@@ -4,7 +4,6 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 nbThreads = config["nbPart"]
-cluster = config["cluster"]
 
 pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
@@ -25,7 +24,7 @@ rule GenerateNegativeSeq:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
         mkdir -p $pathModel
-        Rscript {pathScripts}/generate_negative_sequence.R {sp} {input.BED} $pathModel {cluster} > {log.out} 2>&1 
+        Rscript {pathScripts}/generate_negative_sequence.R {sp} {input.BED} $pathModel > {log.out} 2>&1 
         """
 
 rule ModelTraining:

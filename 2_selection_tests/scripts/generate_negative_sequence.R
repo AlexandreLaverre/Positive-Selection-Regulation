@@ -7,7 +7,6 @@ args = commandArgs(trailingOnly=TRUE)
 species = args[1]
 BED_file = args[2]
 pathResults = args[3]
-#cluster = args[4]
 
 BED = read.table(BED_file)
 
