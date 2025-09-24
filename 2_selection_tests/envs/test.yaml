@@ -1,0 +1,10 @@
+name: test
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - bioconductor-bsgenome=1.66.3
+  - r-base==4.2.2
+  - r-gkmsvm
+  - bioconductor-bsgenome.hsapiens.ucsc.hg38
+  - r-biocmanager
