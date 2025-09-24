@@ -20,25 +20,37 @@ BED = read.table(BED_file)
 #  BED_file = paste0(BED_file, "_UCSC_names")
 #}
 
-if (species == "mouse"){genome <- getBSgenome("BSgenome.Mmusculus.UCSC.mm10.masked")}
-if (species == "human"){genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg38.masked")}
-if (species == "dog"){genome <- getBSgenome("BSgenome.Cfamiliaris.UCSC.canFam3.masked")}
-if (species == "rat"){genome <- getBSgenome("BSgenome.Rnorvegicus.UCSC.rn6.masked")}
-if (species == "macaca"){genome <- getBSgenome("BSgenome.Mmulatta.UCSC.sup2kb.rheMac8.masked")}
-if (species == "cat"){genome <- getBSgenome("BSgenome.Fcatus.UCSC.sup2kb.felCat8.masked")}
-if (species == "cattle"){genome <- getBSgenome("BSgenome.Btaurus.GenBank.Btau5.0.1.masked")}
-if (species == "rabbit"){genome <- getBSgenome("BSgenome.Ocuniculus.UCSC.oryCun2.masked")}
-if (species == "chicken"){genome <- getBSgenome("BSgenome.Ggallus.UCSC.galGal6.masked")}
-#if (species == "pig"){genome <- getBSgenome("BSgenome.Sscrofa.UCSC.susScr3.masked")}
-if (species == "spretus"){genome <- getBSgenome("BSgenome.Mspretus.GenBank.SPRET.masked")}
-if (species == "caroli"){genome <- getBSgenome("BSgenome.Mcaroli.GenBank.CAROLI.EIJ.masked")}
-if (species == "zebrafish"){genome <- getBSgenome("BSgenome.Drerio.UCSC.danRer11.masked")}
-if (species == "drosophila"){genome <- getBSgenome("BSgenome.Dmelanogaster.UCSC.dm6.masked")}
+# Define mapping of species to BSgenome package names
+bsgenomes <- list(
+    mouse = "BSgenome.Mmusculus.UCSC.mm10.masked",
+    human = "BSgenome.Hsapiens.UCSC.hg38.masked",
+    dog = "BSgenome.Cfamiliaris.UCSC.canFam3.masked",
+    rat = "BSgenome.Rnorvegicus.UCSC.rn6.masked",
+    macaca = "BSgenome.Mmulatta.UCSC.sup2kb.rheMac8.masked",
+    cat = "BSgenome.Fcatus.UCSC.sup2kb.felCat8.masked",
+    cattle = "BSgenome.Btaurus.GenBank.Btau5.0.1.masked",
+    rabbit = "BSgenome.Ocuniculus.UCSC.oryCun2.masked",
+    chicken = "BSgenome.Ggallus.UCSC.galGal6.masked",
+    spretus = "BSgenome.Mspretus.GenBank.SPRET.masked",
+    caroli = "BSgenome.Mcaroli.GenBank.CAROLI.EIJ.masked",
+    zebrafish = "BSgenome.Drerio.UCSC.danRer11.masked",
+    drosophila = "BSgenome.Dmelanogaster.UCSC.dm6.masked",
+)
 
-#seqnames(genome)
-# For new genomes, check if available first, else create it via BSgenome forge
-#available.genomes()
-#BiocManager::install("BSgenome.Dmelanogaster.UCSC.dm6.masked")
+pkg <- bsgenomes[[species]]
+
+# Check if BSgenome already installed
+if (!requireNamespace(pkg, quietly = TRUE)) {
+    local_pkg <- file.path("../local_packages/", pkg)
+    # Check if available in standard genomes
+    if (pkg %in% available.genomes()) {BiocManager::install(pkg, update = FALSE, ask = FALSE)}
+
+    # If local file exists, install from local path
+    else if (file.exists(local_pkg)) {BiocManager::install(local_pkg, update = FALSE, ask = FALSE, type = "source")}
+
+    else {stop("Species not recognized and BSgenome package not available locally or publicly.")}
+}
+genome <- getBSgenome(pkg)
 
 ###############################################################################
 # Generate negative sequences
@@ -55,13 +67,3 @@ genNullSeqs(BED_file, genome = genome, nMaxTrials=10, xfold=10,
 
 ###############################################################################
 
-
-library(Biostrings)
-pos <- readDNAStringSet(paste0(pathResults,'/posSet.fa'))
-neg <- readDNAStringSet(paste0(pathResults,'/shuffled.fa'))
-
-kmers_pos <- oligonucleotideFrequency(pos, width=6)
-kmers_neg <- oligonucleotideFrequency(neg, width=6)
-
-cor = cor.test(colMeans(kmers_pos), colMeans(kmers_neg))
-cor
