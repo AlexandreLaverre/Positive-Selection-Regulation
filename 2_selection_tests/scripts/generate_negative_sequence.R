@@ -1,4 +1,7 @@
 #!/usr/bin/env Rscript
+if (!requireNamespace("gkmSVM", quietly = TRUE)) {BiocManager::install("gkmSVM", update = FALSE, ask = FALSE)}
+if (!requireNamespace("BSgenome", quietly = TRUE)) {BiocManager::install("BSgenome", update = FALSE, ask = FALSE)}
+
 suppressMessages(library(gkmSVM))
 suppressMessages(library(BSgenome))
 suppressMessages(library(BiocManager))

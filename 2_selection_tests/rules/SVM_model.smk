@@ -9,17 +9,26 @@ pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 pathScripts = "../scripts/Positive_Selection_Tests/"
 
+rule install_r_pkgs:
+    output: touch(pathResults + "/log/r_pkgs_installed")
+    conda: "../envs/training_gkm.yaml"
+    shell:
+        """
+        Rscript scripts/install_R_pkgs.R
+        touch {output}
+        """
 
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
     input:
-        BED = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
+        BED = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
+        pkg_install = pathResults + "/log/r_pkgs_installed"
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     priority: 10
-    params: time="2:00:00",mem="10G",threads=1 #5h
+    params: time="5:00:00",mem="10G",threads=1
     conda: "../envs/training_gkm.yaml"
     shell:
         """
