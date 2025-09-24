@@ -16,7 +16,7 @@ export pathConda="$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 ##################################################################
 
 if [ ${cluster} = "cluster" ]; then
-	export pathScripts="${path}/scripts/2_selection_tests/scripts/"
+	export pathScripts="${path}/scripts/2_selection_tests/scripts/RegEvol/"
 
 	# Calculate time needed: considering 1500 peaks per hour and per thread
 	export time=$(( ($(wc -l < ${path}/results/positive_selection/NarrowPeaks/${species}/${sample}/deltas/ancestral_to_observed_deltaSVM.txt) / (1500*${nbThread}))+1 ))
@@ -38,7 +38,7 @@ if [ ${cluster} = "cluster" ]; then
 	sbatch ${pathScripts}/logs/bsub_script_MaxLL_${Prefix}
 
 else
-	export pathScripts="${path}/scripts/2_selection_tests/scripts/"
+	export pathScripts="${path}/scripts/2_selection_tests/scripts/RegEvol/"
 	python ${pathScripts}/MaxLL_estimation.py ${species} ${sample} -T ${nbThread} --NbBin ${nbBin} -S ${simul}
 fi
 
