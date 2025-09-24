@@ -20,6 +20,7 @@ rule GenerateNegativeSeq:
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     priority: 10
     params: time="2:00:00",mem="10G",threads=1 #5h
+    conda: "../envs/training_gkm.yaml"
     shell:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
@@ -37,6 +38,7 @@ rule ModelTraining:
     priority: 10
     threads: config["ModelThreads"]
     params: time="24:00:00", mem="5G", threads=config["ModelThreads"]
+    conda: "../envs/training_gkm.yaml"
     shell:
         """
         gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 || exit 1
@@ -51,6 +53,7 @@ rule ModelValidation:
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
     threads: config["ModelThreads"]
     params: time="20:00:00", mem="5G", threads=config["ModelThreads"]
+    conda: "../envs/training_gkm.yaml"
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 || exit 1
@@ -65,6 +68,7 @@ rule ModelPrediction:
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
     params: time="1:00:00", mem="2G", threads=1
+    conda: "../envs/training_gkm.yaml"
     shell:
         """
         gkmpredict -T 1 {input.kmer_fasta} {input.Model} {output.PredictedWeight} > {log.out} 2>&1 

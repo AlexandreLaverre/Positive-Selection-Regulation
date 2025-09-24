@@ -1,0 +1,11 @@
+name: training_gkm
+channels:
+  - conda-forge
+  - bioconda
+  - r
+dependencies:
+  - ls-gkm
+  - r-base
+  - r-biocmanager
+  - r-gkmsvm
+  - bioconductor-bsgenome
