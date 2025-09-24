@@ -4,3 +4,5 @@ jobs: 24
 rerun-triggers: "mtime"
 ignore-incomplete: true
 keep-going: true
+create_default_envs: false
+always_use_mamba: true
