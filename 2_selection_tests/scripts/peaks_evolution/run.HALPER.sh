@@ -2,12 +2,13 @@
 
 export sp=$1				        # i.e: dog human mouse ...
 export TF=$2			          # i.e: CEBPA CTCF HNF4A ...
-export cluster=$3 		      # i.e: local or cluster
+exoprt cluster=$3			      # i.e: local or cluster
 
 ########################################################################################################################
 # Define path and variables
-path=/beegfs/data/alaverre/PosSel/
-source ${path}/scripts/config/params.sh "${sp}" "${cluster}"
+export path=${path:-"$(pwd)/../../"}
+source ${path}/scripts/config/params.sh "${sp}"
+
 pathData=${path}/results/peaks_calling/${sp}/
 pathResults=${path}/results/homologous_peaks/${sp}/${TF}
 pathLogs=${path}/scripts/ChIPseq_analyses/logs

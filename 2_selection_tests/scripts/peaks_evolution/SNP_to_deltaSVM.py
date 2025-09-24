@@ -6,9 +6,11 @@ import numpy as np
 from Bio import SeqIO
 import pandas as pd
 import gzip
-import Positive_Selection_Tests.functions.MLEvol as ML
+from pathlib import Path
 
-path = '/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/'
+path = Path(__file__).resolve().parent.parent
+sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
+import MLEvol as ML
 
 vcf_file = sys.argv[1] if len(sys.argv) > 1 else path + 'polymorphism_analyses/NarrowPeaks/human/Wilson/CEBPA/VCF/filtered_chrX.vcf.gz'
 deltaSVM_file = sys.argv[2] if len(sys.argv) > 2 else path + 'positive_selection/NarrowPeaks/drosophila/modERN/CG13204_CG13204-GFP_pupa_1/deltas/focal_ancestral_all_possible_deltaSVM.txt'
