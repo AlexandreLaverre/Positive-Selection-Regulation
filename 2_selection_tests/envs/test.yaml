@@ -3,8 +3,8 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - bioconductor-bsgenome=1.66.3
-  - r-base==4.2.2
+  - bioconductor-bsgenome
+  - r-base
   - r-gkmsvm
   - bioconductor-bsgenome.hsapiens.ucsc.hg38
   - r-biocmanager
