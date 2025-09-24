@@ -11,6 +11,7 @@ export Prefix=${species}_${sample}
 
 export path=${path:-"$(pwd)/../../"}
 export pathLog="${path}/scripts/detect_positive_selection/logs"
+[[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64
 
 export pathConda="$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 source ${pathConda}
@@ -22,6 +23,7 @@ if [ "${dryRun}" = "-n" ]; then
 fi
 
 snakemake ${dryRun} --rerun-triggers mtime -j 64 --config sp=${species} sample=${sample} nbPart=${nbThreads} --rerun-incomplete \
+          --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
           -c {params.threads} --mem={params.mem} -t {params.time}"
 
