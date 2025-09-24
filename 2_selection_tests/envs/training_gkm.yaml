@@ -1,11 +1,14 @@
 name: training_gkm
 channels:
-  - conda-forge
   - bioconda
-  - r
+  - conda-forge
+  - defaults
 dependencies:
-  - ls-gkm
-  - r-base
+  - r-base==4.2.2
+  - ls-gkm==0.0.1
   - r-biocmanager
   - r-gkmsvm
-  - bioconductor-bsgenome
+  - r-devtools
+  - bioconductor-bsgenome=1.66.3
+
+
