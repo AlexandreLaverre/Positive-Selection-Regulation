@@ -46,7 +46,7 @@ rule ConvertCoordinates:
         """
 
 rule runHALPER:
-    message: "Get consensus summits"
+    message: "Get homologous peaks using HALPER"
     input:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
