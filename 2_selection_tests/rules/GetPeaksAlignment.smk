@@ -48,7 +48,7 @@ rule BED_split:
     shell:
         """
         mkdir -p {pathResults}/log/
-        {config[split][cluster]} -d -n l/{config[nbPart]} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
+        split -d -n l/{config[nbPart]} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
         """
 
 rule InferAncestralPairwise:
@@ -63,8 +63,8 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
-        python ./alignments/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
-        {input.BED_file_part} {config[AncMethod]} {cluster} > {log.out} 2>&1 
+        python ./scripts/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
+        {input.BED_file_part} {config[AncMethod]} > {log.out} 2>&1 
         """
 
 rule GetSequencesMultiple:
