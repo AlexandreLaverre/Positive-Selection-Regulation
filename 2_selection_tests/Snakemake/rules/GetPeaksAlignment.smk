@@ -7,7 +7,7 @@ peakType = config["peakType"]
 AncNode = config["AncNode"]
 
 pathResults = f"../../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
 rule GetPeaks:
