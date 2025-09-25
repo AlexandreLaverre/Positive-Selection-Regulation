@@ -10,14 +10,16 @@ export resume=${7:-"false"}	          # i.e: resume or false
 export skip=${8:-"false"}		      # i.e: skip or false
 
 ########################################################################################################################
-# Ensure Conda environment exists
-if ! conda env list | grep -q '^RegEvol_nextflow\s'; then
-    echo "Creating nextflow Conda environment..."
-    conda env create -f env_nextflow.yaml
+# Check if Nextflow is installed in PATH
+if ! command -v nextflow &> /dev/null; then
+    echo "[INFO] Nextflow not found in PATH. RegEvol_workflows environment will be activated..."
+    ExistingNextFlow=false
+else
+    echo "[INFO] Using system-installed Nextflow: $(command -v nextflow)"
+    ExistingNextFlow=true
 fi
 
 ########################################################################################################################
-
 export path=${path:-"$(pwd)/../../"}
 export pathConda="$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 export pathResults=${path}/results/peaks_calling/${peaksType}Peaks/${sp}/
@@ -76,7 +78,9 @@ if [ ${cluster} = "cluster" ]; then
 fi
 
 echo "source ${pathConda}" >> "${logFile}"
-echo "conda activate nextflow" >> "${logFile}"
+if [ "$ExistingNextFlow" = false ]; then
+    echo "conda activate RegEvol_workflows" >> "${logFile}"
+fi
 
 echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
       ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \

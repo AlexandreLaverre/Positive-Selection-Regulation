@@ -1,9 +1,8 @@
-name: RegEvol_nextflow
+name: RegEvol_workflows
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
   - nextflow
-  - singularity
-
+  - snakemake

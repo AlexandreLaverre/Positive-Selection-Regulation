@@ -8,19 +8,19 @@ export dryRun=${4:-""}		      # i.e: -n or nothing (run snakemake in dry-run mod
 export Prefix=${species}_${sample}
 
 ##################################################################
-# Ensure Conda environment exists
-if ! conda env list | grep -q '^RegEvol_snakemake\s'; then
-    echo "Creating Snakemake Conda environment..."
-    conda env create -f envs/RegEvol_snakemake.yaml
+# Check if Snakemake is installed in PATH
+if ! command -v snakemake &> /dev/null; then
+    echo "[INFO] Snakemake not found in PATH. RegEvol_workflows environment will be activated..."
+    source $(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh
+    conda activate RegEvol_workflows
+else
+    echo "[INFO] Using system-installed Snakemake: $(command -v snakemake)"
 fi
 
+##################################################################
 export path=${path:-"$(pwd)/../../"}
 export pathLog="${path}/scripts/2_selection_tests/logs"
 [[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64
-
-export pathConda="$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
-source ${pathConda}
-conda activate snakemake
 
 ##################################################################
 if [ "${dryRun}" = "-n" ]; then
