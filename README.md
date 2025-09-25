@@ -42,3 +42,53 @@ If you don’t, you can create the environment with:
 ```bash
 mamba env create -f config/workflows.yaml
 ```
+
+---
+
+## Usage
+
+### 1. Run the ChIP-seq pipeline (Nextflow)
+
+The workflow uses the [nf-core/chipseq](https://nf-co.re/chipseq) (2.1.0) Nextflow pipeline to process ChIP-seq data.
+
+```bash
+./1_chipseq/run.nextflow.sh --sp <species> --sample <sample> [options]
+```
+
+Required arguments:
+- --sp → species name (must match those in config/params.sh)
+- --sample → sample name (used for result subfolders)
+
+Optional arguments (can be passed in any order using --option value):
+- --threads → number of threads to allocate (default: 1)
+- --peaksType → "Narrow" for transcription factors, "Broad" for histone marks (default: "Narrow")
+- --system → Execution mode: local or SLURM (default: "local")
+- --container → Container type: "conda" or "singularity" (default: "conda")
+- --resume → "resume" to resume a previous run, "false" to start fresh (default: "false")
+- --skip → "true" to skip SPP and MultiQC steps, "false" to run all steps (default: "false")
+- --help → display usage and exit
+
+Example:
+```bash
+./1_chipseq/run.nextflow.sh --sp human --sample Wilson --threads 16 --system SLURM --container singularity
+```
+
+### 2. Run the RegEvol pipeline (Snakemake)
+
+```bash
+./2_selection_tests/run.snakemake.sh --sp <species> --sample <sample> [options]
+```
+
+Required arguments:
+- --sp → species name (must match those in config/params.sh)
+- --sample → sample name (used for result subfolders)
+
+Optional arguments (can be passed in any order using --option value):
+- --threads → number of threads to allocate (default: 1)
+- --dryRun → Run Snakemake in dry-run mode: true/false (default: false)
+- --help → display usage and exit
+
+Example:
+```bash
+./2_selection_tests/run.snakemake.sh --sp human --sample Wilson --threads 10 --dryRun true
+```
