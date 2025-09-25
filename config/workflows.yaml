@@ -6,3 +6,4 @@ channels:
 dependencies:
   - nextflow=22.10.6
   - snakemake=7.24.0
+  - singularity=3
