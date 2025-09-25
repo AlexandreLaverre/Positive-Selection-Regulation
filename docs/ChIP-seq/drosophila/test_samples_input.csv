@@ -1,0 +1,4 @@
+sample,fastq_1,fastq_2,antibody,control
+CTCF_sample,../../data/ChIP-seq/drosophila/test/SRR066831.fastq.gz,,CTCF,input_DNA
+CTCF_sample,../../data/ChIP-seq/drosophila/test/SRR066832.fastq.gz,,CTCF,input_DNA
+input_DNA,../../data/ChIP-seq/drosophila/test/SRR066834.fastq.gz,,,
