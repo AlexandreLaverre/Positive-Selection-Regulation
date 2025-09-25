@@ -40,9 +40,7 @@ The pipeline includes the following key steps:
 │
 ├── config/                       # Global configuration files
 │
-├── data/                         # Input data (genomes, alignments, etc.)
-│
-├── results/                      # Output from both pipelines
+├── docs/                         # ChiP-seq samples description and download files
 │
 └── README.md                     # Project documentation
 ```
@@ -74,8 +72,28 @@ mamba env create -f config/workflows.yaml
 
 ### 1. Run the ChIP-seq pipeline (Nextflow)
 
-The workflow uses the [nf-core/chipseq](https://nf-co.re/chipseq) (2.1.0) Nextflow pipeline to process ChIP-seq data.
+The workflow uses the [nf-core/chipseq](https://nf-co.re/chipseq) (2.1.0) Nextflow pipeline to process ChIP-seq data. 
 
+#### Required inputs
+The pipeline requires the following three input files:
+
+1. **Reference genome sequence** (FASTA format)  
+   → Located in `../data/genome_sequences/<species>/`.
+
+2. **Sample sheet** (CSV format)  
+   → Describes the FASTQ files, sample groups, and metadata.  
+   → See the [nf-core/chipseq sample sheet specification](https://nf-co.re/chipseq/usage#samplesheet-input).
+   → Located in `../data/ChIP-seq/<species>/<sample>_samples_input.csv`.
+
+3. **Annotations** (GTF or GFF file)  
+   → Located in `../data/genome_sequences/<species>/`.
+
+#### Data download
+If FASTQ files are not already present in `../data/ChIP-seq/<species>/<sample>/`,  
+the pipeline will automatically download them using the list of URLs provided in: `docs/ChIP-seq/<sp>/DL_<sample>.txt`
+
+
+#### Run
 ```bash
 ./1_chipseq/run.nextflow.sh --sp <species> --sample <sample> [options]
 ```
