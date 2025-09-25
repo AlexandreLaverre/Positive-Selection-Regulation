@@ -1,4 +1,4 @@
-name: RegEvol_workflows
+name: test #RegEvol_workflows
 channels:
   - conda-forge
   - bioconda
