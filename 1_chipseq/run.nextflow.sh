@@ -1,13 +1,56 @@
 #!/bin/bash
 
-export sp=$1				          # i.e: dog human mouse ...
-export sample=$2			          # i.e: Wilson Schmidt Rensch ...
-export peaksType=$3                   # i.e: Narrow or Broad
-export threads=$4			          # i.e: number of threads to use
-export cluster=$5			          # i.e: local or cluster
-export container=$6			          # i.e: conda or singularity (SLURM works only with singularity)
-export resume=${7:-"false"}	          # i.e: resume or false
-export skip=${8:-"false"}		      # i.e: skip or false
+########################################################################################################################
+# Default values
+threads="1"
+system="local"
+container="conda"
+peaksType="Narrow"
+skip="false"
+resume="false"
+
+# HELP
+function show_help() {
+    echo "Usage: ./run.nextflow.sh --sp <species_name> --sample <sample_name> [options]"
+    echo
+    echo "Options:"
+    echo "  --sp        Species (e.g., human, mouse) [required]"
+    echo "  --sample    Sample name (e.g., Wilson) [required]"
+    echo "  --threads   Number of threads [default: 1]"
+    echo "  --system    Execution mode: local or SLURM [default: local]"
+    echo "  --container Container type: conda or singularity [default: conda]"
+    echo "  --peaksType Narrow or Broad [default: Narrow]"
+    echo "  --resume    Resume previous run: true/false [default: false]"
+    echo "  --skip      Skip some steps: true/false [default: false]"
+    echo "  --help      Show this help message"
+    echo
+    echo "Example:"
+    echo "  ./run.nextflow.sh --sp human --sample Wilson --threads 4 --peaksType Narrow"
+}
+
+# Parse named arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --sp) sp="$2"; shift ;;
+        --sample) sample="$2"; shift ;;
+        --threads) threads="$2"; shift ;;
+        --system) system="$2"; shift ;;
+        --container) container="$2"; shift ;;
+        --peaksType) peaksType="$2"; shift ;;
+        --resume) resume="$2"; shift ;;
+        --skip) skip="$2"; shift ;;
+        --help) show_help; exit 0 ;;
+        *) echo "Unknown parameter: $1"; show_help; exit 1 ;;
+    esac
+    shift
+done
+
+# Check required arguments
+if [[ -z "$sp" || -z "$sample" ]]; then
+    echo "Error: --sp and --sample are required."
+    show_help
+    exit 1
+fi
 
 ########################################################################################################################
 # Check if Nextflow is installed in PATH
@@ -64,7 +107,7 @@ fi
 logFile=${pathScripts}/bsub_ChIP-seq_peaks_calling_${sp}_${sample}
 echo "#!/bin/bash" > "${logFile}"
 
-if [ ${cluster} = "cluster" ]; then
+if [ ${system} = "SLURM" ]; then
   {
   echo "#SBATCH --job-name=ChIP_calling_${sp}_${sample}"
 	echo "#SBATCH --output=${pathScripts}/std_output_peaks_calling_${sp}_${sample}.txt"
@@ -82,13 +125,13 @@ if [ "$ExistingNextFlow" = false ]; then
     echo "conda activate RegEvol_workflows" >> "${logFile}"
 fi
 
-echo "nextflow run nf-core/chipseq --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
+echo "nextflow run nf-core/chipseq -r 2.1.0 --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
       ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
       -with-conda true ${index} --max_memory '50.GB' --max_cpus ${threads} ${skip_flags} ${resume_flag}" >> "${logFile}"
 
 ########################################################################################################################
 
-if [ ${cluster} = "cluster" ]; then
+if [ ${system} = "SLURM" ]; then
 	sbatch  "${logFile}"
 else
 	bash  "${logFile}"
