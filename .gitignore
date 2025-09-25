@@ -23,7 +23,7 @@
 *.log
 *.sql
 *.sqlite
-*.nextflow
+**.nextflow.log*
 
 # OS generated files #
 ######################
@@ -41,6 +41,7 @@ Thumbs.db
 1_chipseq/work/
 .idea/
 .snakemake/
+.nextflow/
 **/__pycache__/
 *.pyc
 **/bsub*
