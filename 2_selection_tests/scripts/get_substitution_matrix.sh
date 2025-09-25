@@ -5,7 +5,6 @@ export sp=$1
 ####################################################################################
 # Define paths
 export path=${path:-"$(pwd)/../../"}
-source "$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
 
 export pathResults=${path}/results/substitution_matrix/${sp}/
 export pathAlignment=${path}/data/genome_alignments/${sp}/
@@ -17,7 +16,6 @@ export Alignment=${pathAlignment}/triplet_ancestor.maf.gz
 ####################################################################################
 # Define names, chromosomes and files
 source "${path}"/scripts/config/params.sh "${sp}"
-conda activate MAF
 
 #########################################################################
 mkdir -p ${pathAlignment}/per_chrom/PHYLIPs/
