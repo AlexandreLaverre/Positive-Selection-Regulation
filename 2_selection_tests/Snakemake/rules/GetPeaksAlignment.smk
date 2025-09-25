@@ -9,7 +9,7 @@ AncNode = config["AncNode"]
 pathResults = f"../../../results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"../../../../results/peaks_calling/{peakType}/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
-../../../ results / peaks_calling / NarrowPeaks / drosophila / test / CTCF.peaks.bed
+
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input:
