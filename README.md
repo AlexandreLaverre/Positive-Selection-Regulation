@@ -81,8 +81,7 @@ The pipeline requires the following three input files:
    → Located in `../data/genome_sequences/<species>/`.
 
 2. **Sample sheet** (CSV format)  
-   → Describes the FASTQ files, sample groups, and metadata.  
-   → See the [nf-core/chipseq sample sheet specification](https://nf-co.re/chipseq/usage#samplesheet-input). 
+   → Describes the FASTQ files, sample groups, and metadata (see the [nf-core/chipseq sample sheet](https://nf-co.re/chipseq/usage#samplesheet-input) specification).  
    → Located in `../data/ChIP-seq/<species>/<sample>_samples_input.csv`.
 
 3. **Annotations** (GTF or GFF file)  
