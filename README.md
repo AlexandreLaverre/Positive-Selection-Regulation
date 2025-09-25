@@ -27,4 +27,6 @@ The pipeline includes the following key steps:
 Before running the pipelines, ensure the following tools are installed on your system:
 
 - **[Conda / Mamba](https://docs.conda.io/en/latest/)** – for managing environments and dependencies.
+- **[Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)** – required to run RegEvol pipeline.
+- **[NextFlow](https://www.nextflow.io/docs/latest/install.html)** – required to run the ChIP-seq calling pipeline.
 - **[Singularity](https://sylabs.io/docs/)** – required to use Docker/Singularity containers in Snakemake rules.
