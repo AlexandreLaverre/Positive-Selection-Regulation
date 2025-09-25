@@ -1,0 +1,12 @@
+name: build_bsgenome
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - r-base
+  - trf
+  - ucsc-fatotwobit
+  - repeatmodeler
+  - bioconductor-bsgenome
+  - biopython

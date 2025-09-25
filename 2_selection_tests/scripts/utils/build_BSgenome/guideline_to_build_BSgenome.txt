@@ -1,3 +1,7 @@
+### Create conda environment with all the dependencies
+mamba env create -f 2_selection_tests/envs/build_bsgenome.yaml
+mamba activate build_bsgenome
+
 ### Get the correct genome version on the alignment:
 https://zoonomiaproject.org/the-mammal-tree-list-view/
 
@@ -9,7 +13,7 @@ i.e: https://hgdownload.soe.ucsc.edu/hubs/GCA/001/624/865/GCA_001624865.1/
 
 - .fa.gz : genome sequence
 - .out : RepeatMasker output				/!\ if random number of space, reformat it using /reformat_out_file.py
-- .2bit : binary genome 				/!\ if not found, run fasta22bit:
+- .2bit : binary genome 				/!\ if not found, run faToTwoBit: conda install bioconda::ucsc-fatotwobit
 - .gaps or .agp : assembly gaps 			/!\ if agp, need to add this line to the masked-seed: AGAPSfiles_type: "agp"
 - .trf.bed.gz : Tandem Repeat Finder output		
 
