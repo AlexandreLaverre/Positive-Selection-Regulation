@@ -1,0 +1,11 @@
+sample,fastq_1,fastq_2,antibody,control
+CEBPA_mmuBL60ON562,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235730.fastq.gz,,CEBPA,input_DNA_mmuBL60ON562
+CEBPA_mmuOON489,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235722.fastq.gz,,CEBPA,input_DNA_mmuOON489
+FOXA1_mmuOON404,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235786.fastq.gz,,FOXA1,input_DNA_mmuOON489
+FOXA1_mmuOON405,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235781.fastq.gz,,FOXA1,input_DNA_mmuOON489
+HNF4A_mmu0h490,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235763.fastq.gz,,HNF4A,input_DNA_mmuOON489
+HNF4A_mmuOON489,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235753.fastq.gz,,HNF4A,input_DNA_mmuOON489
+HNF6_mmu0h490,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235752.fastq.gz,,HNF6,input_DNA_mmuOON489
+HNF6_mmu12,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235782.fastq.gz,,HNF6,input_DNA_mmuOON489
+input_DNA_mmuBL60ON562,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235784.fastq.gz,,,
+input_DNA_mmuOON489,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/mouse/ERR235741.fastq.gz,,,

@@ -1,0 +1,7 @@
+sample,fastq_1,fastq_2,antibody,control
+CEBPA_gga,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/chicken/ERR005115.fastq.gz,,CEBPA,input_DNA_gga
+CEBPA_gga,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/chicken/ERR005116.fastq.gz,,CEBPA,input_DNA_gga
+CEBPA_gga,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/chicken/ERR005117.fastq.gz,,CEBPA,input_DNA_gga
+CEBPA_gga2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/chicken/ERR005120.fastq.gz,,CEBPA,input_DNA_gga2
+input_DNA_gga,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/chicken/ERR005114.fastq.gz,,,
+input_DNA_gga2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/chicken/ERR005122.fastq.gz,,,

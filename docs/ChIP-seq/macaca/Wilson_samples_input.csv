@@ -1,0 +1,15 @@
+sample,fastq_1,fastq_2,antibody,control
+CEBPA_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235769.fastq.gz,,CEBPA,input_DNA_mmlBlues_REP1
+CEBPA_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235780.fastq.gz,,CEBPA,input_DNA_mmlBlues_REP1
+CEBPA_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235779.fastq.gz,,CEBPA,input_DNA_mmlBlues_REP1
+CEBPA_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235734.fastq.gz,,CEBPA,input_DNA_mmlBlues_REP1
+CEBPA_mmlBlues_REP2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235776.fastq.gz,,CEBPA,input_DNA_mmlBlues_REP2
+HNF6_mmlBlues,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235757.fastq.gz,,HNF6,input_DNA_mmlBlues_REP2
+HNF6_mmlBob,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235773.fastq.gz,,HNF6,input_DNA_mmlBob
+HNF4A_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235720.fastq.gz,,HNF4A,input_DNA_mmlBlues_REP2
+HNF4A_mmlBlues_REP2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235789.fastq.gz,,HNF4A,input_DNA_mmlBlues_REP2
+FOXA1_mmlBlues,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235762.fastq.gz,,FOXA1,input_DNA_mmlBlues_REP2
+input_DNA_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235721.fastq.gz,,,
+input_DNA_mmlBlues_REP1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235750.fastq.gz,,,
+input_DNA_mmlBlues_REP2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235783.fastq.gz,,,
+input_DNA_mmlBob,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR235785.fastq.gz,,,

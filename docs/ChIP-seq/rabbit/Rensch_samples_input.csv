@@ -1,0 +1,7 @@
+sample,fastq_1,fastq_2,antibody,control
+CEBPA_Rabbit4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/rabbit/ERR1041291.fastq.gz,,CEBPA,input_DNA_Rabbit4
+CEBPA_Rabbit5,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/rabbit/ERR1041248.fastq.gz,,CEBPA,input_DNA_Rabbit5
+CEBPA_Rabbit6,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/rabbit/ERR1041249.fastq.gz,,CEBPA,input_DNA_Rabbit6
+input_DNA_Rabbit4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/rabbit/ERR572212.fastq.gz,,,
+input_DNA_Rabbit5,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/rabbit/ERR572238.fastq.gz,,,
+input_DNA_Rabbit6,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/rabbit/ERR572288.fastq.gz,,,

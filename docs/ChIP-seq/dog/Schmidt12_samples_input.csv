@@ -1,0 +1,6 @@
+sample,fastq_1,fastq_2,antibody,control
+CTCF_cfa3,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR022286.fastq.gz,,CTCF,input_DNA_cfa3
+CTCF_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR022304.fastq.gz,,CTCF,input_DNA_cfa4
+input_DNA_cfa3,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR022285.fastq.gz,,,
+input_DNA_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR022271.fastq.gz,,,
+input_DNA_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR022270.fastq.gz,,,

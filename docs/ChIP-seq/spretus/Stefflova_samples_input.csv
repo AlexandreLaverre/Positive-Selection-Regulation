@@ -1,0 +1,13 @@
+sample,fastq_1,fastq_2,antibody,control
+Spretus_CEBPA_0GZ22,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392426.fastq.gz,,CEBPA,Spretus_input_0GZ22
+Spretus_CEBPA_0GZ24,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392429.fastq.gz,,CEBPA,Spretus_input_0GZ24
+Spretus_CEBPA_0GZ25,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392427.fastq.gz,,CEBPA,Spretus_input_0GZ24
+Spretus_CEBPA_Msp-2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392443.fastq.gz,,CEBPA,Spretus_input_0GZ22
+Spretus_FOXA1_0GZ22,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392411.fastq.gz,,FOXA1,Spretus_input_0GZ22
+Spretus_FOXA1_0GZ24,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392428.fastq.gz,,FOXA1,Spretus_input_0GZ24
+Spretus_HNF4a_0GZ22,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392449.fastq.gz,,HNF4a,Spretus_input_0GZ22
+Spretus_HNF4a_0GZ24,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392445.fastq.gz,,HNF4a,Spretus_input_0GZ24
+Spretus_HNF4a_0GZ25,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392432.fastq.gz,,HNF4a,Spretus_input_0GZ24
+Spretus_HNF4a_Msp-2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392468.fastq.gz,,HNF4a,Spretus_input_0GZ22
+Spretus_input_0GZ22,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392466.fastq.gz,,,
+Spretus_input_0GZ24,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/spretus/ERR392448.fastq.gz,,,

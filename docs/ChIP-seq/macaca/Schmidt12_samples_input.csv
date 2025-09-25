@@ -1,0 +1,10 @@
+sample,fastq_1,fastq_2,antibody,control
+CTCF_mml138,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022289.fastq.gz,,CTCF,input_DNA_mml138
+CTCF_mml138,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022290.fastq.gz,,CTCF,input_DNA_mml138
+CTCF_mmlJoseph,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022274.fastq.gz,,CTCF,input_DNA_mmlJoseph
+CTCF_mmlBlues,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022275.fastq.gz,,CTCF,input_DNA_mmlJoseph
+input_DNA_mmlJoseph,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022292.fastq.gz,,,
+input_DNA_mmlJoseph,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022293.fastq.gz,,,
+input_DNA_mmlJoseph,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022294.fastq.gz,,,
+input_DNA_mml138,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022287.fastq.gz,,,
+input_DNA_mml138,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/macaca/ERR022288.fastq.gz,,,

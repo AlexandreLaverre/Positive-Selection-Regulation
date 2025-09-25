@@ -1,0 +1,9 @@
+sample,fastq_1,fastq_2,antibody,control
+CTCF_rep1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658148.fastq.gz,,CTCF,input_DNA_rep1
+CTCF_rep1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658149.fastq.gz,,CTCF,input_DNA_rep1
+CTCF_rep2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658156.fastq.gz,,CTCF,input_DNA_rep2
+CTCF_rep2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658157.fastq.gz,,CTCF,input_DNA_rep2
+input_DNA_rep1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658182.fastq.gz,,,
+input_DNA_rep1,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658183.fastq.gz,,,
+input_DNA_rep2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658184.fastq.gz,,,
+input_DNA_rep2,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/cat/SRR15658185.fastq.gz,,,

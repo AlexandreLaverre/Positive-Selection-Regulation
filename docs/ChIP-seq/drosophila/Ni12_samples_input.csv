@@ -1,0 +1,7 @@
+sample,fastq_1,fastq_2,antibody,control
+CTCF_sample,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/drosophila/SRR066831.fastq.gz,,CTCF,input_DNA
+CTCF_sample,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/drosophila/SRR066832.fastq.gz,,CTCF,input_DNA
+CTCF_sample,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/drosophila/SRR066833.fastq.gz,,CTCF,input_DNA
+input_DNA,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/drosophila/SRR066834.fastq.gz,,,
+input_DNA,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/drosophila/SRR066835.fastq.gz,,,
+input_DNA,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/drosophila/SRR066836.fastq.gz,,,

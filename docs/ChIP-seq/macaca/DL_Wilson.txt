@@ -1,0 +1,14 @@
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235720/ERR235720.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235721/ERR235721.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235734/ERR235734.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235750/ERR235750.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235757/ERR235757.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235762/ERR235762.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235769/ERR235769.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235773/ERR235773.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235776/ERR235776.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235779/ERR235779.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235780/ERR235780.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235783/ERR235783.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235785/ERR235785.fastq.gz
+ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR235/ERR235789/ERR235789.fastq.gz

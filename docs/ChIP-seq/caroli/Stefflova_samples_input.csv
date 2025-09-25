@@ -1,0 +1,9 @@
+sample,fastq_1,fastq_2,antibody,control
+Caroli_CEBPA_0UH18,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392454.fastq.gz,,CEBPA,Caroli_input_0UH18
+Caroli_CEBPA_0UH58,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392422.fastq.gz,,CEBPA,Caroli_input_0UH25
+Caroli_FOXA1_0UH18,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392461.fastq.gz,,FOXA1,Caroli_input_0UH18
+Caroli_FOXA1_0UH25,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392458.fastq.gz,,FOXA1,Caroli_input_0UH25
+Caroli_HNF4A_0UH18,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392440.fastq.gz,,HNF4A,Caroli_input_0UH18
+Caroli_HNF4A_0UH25,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392463.fastq.gz,,HNF4A,Caroli_input_0UH25
+Caroli_input_0UH18,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392464.fastq.gz,,,
+Caroli_input_0UH25,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/caroli/ERR392431.fastq.gz,,,
