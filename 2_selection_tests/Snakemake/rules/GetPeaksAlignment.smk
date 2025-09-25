@@ -14,7 +14,7 @@ PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input: SubstiMatrixes=f"../../../results/substitution_matrix/{sp}/"
-    output: Peaks = "../../../results/peaks_calling/{TF}.peaks.bed"
+    output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
         mkdir -p {pathResults}/log
