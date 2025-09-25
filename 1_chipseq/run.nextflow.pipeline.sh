@@ -1,17 +1,17 @@
 #!/bin/bash
 
 export sp=$1				          # i.e: dog human mouse ...
-export sample=$2			        # i.e: Wilson Schmidt Rensch ...
-export peaksType=$3           # i.e: Narrow or Broad
-export threads=$4			        # i.e: number of threads to use
-export cluster=$5			        # i.e: local or cluster
-export container=$6			      # i.e: conda or singularity (SLURM works only with singularity)
-export resume=${7:-"false"}	  # i.e: resume or false
-export skip=${8:-"false"}		  # i.e: skip or false
+export sample=$2			          # i.e: Wilson Schmidt Rensch ...
+export peaksType=$3                   # i.e: Narrow or Broad
+export threads=$4			          # i.e: number of threads to use
+export cluster=$5			          # i.e: local or cluster
+export container=$6			          # i.e: conda or singularity (SLURM works only with singularity)
+export resume=${7:-"false"}	          # i.e: resume or false
+export skip=${8:-"false"}		      # i.e: skip or false
 
 ########################################################################################################################
 # Ensure Conda environment exists
-if ! conda env list | grep -q '^nextflow'; then
+if ! conda env list | grep -q '^RegEvol_nextflow\s'; then
     echo "Creating nextflow Conda environment..."
     conda env create -f env_nextflow.yaml
 fi
