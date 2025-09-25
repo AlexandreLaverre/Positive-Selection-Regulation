@@ -1,4 +1,5 @@
 # Implement rules to retrieve aligned ancestral sequences of ChiP-seq peaks
+import os
 from snakemake.io import expand, touch, directory
 
 sp = config["sp"]
@@ -7,13 +8,13 @@ peakType = config["peakType"]
 AncNode = config["AncNode"]
 
 pathResults = f"../../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../../results/peaks_calling/{peakType}/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input: SubstiMatrixes=f"../../../results/substitution_matrix/{sp}/"
-    output: Peaks = pathPeaks + "/{TF}.peaks.bed"
+    output: Peaks = "../../../results/peaks_calling/{TF}.peaks.bed"
     shell:
         """
         mkdir -p {pathResults}/log
