@@ -6,8 +6,8 @@ sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ComputeAllDeltaSVM:
     """Compute all possible and observed SVM"""
@@ -24,7 +24,7 @@ rule ComputeAllDeltaSVM:
     params: time="1:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python scripts/RegEvol/compute_all_deltaSVM.py {sp} \
+        python ../scripts/RegEvol/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} --node {AncNode} -T {threads} > {log.out} 2>&1 || exit 1
         """
 
@@ -49,7 +49,7 @@ rule PermutationTest:
     params: time=lambda wildcards, input: evaluate_time(input.AllSVM), mem="5G", threads=max(10, config["nbPart"])
     shell:
         """
-        python scripts/permutations_test.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
+        python ../scripts/permutations_test.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
         --NbRand {config[nbRand]} --node {AncNode} --NbThread {threads} > {log.out} 2>&1 || exit 1
         """
 
@@ -66,7 +66,7 @@ rule MaxLLTest:
     priority: 10
     shell:
         """
-        python scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
+        python ../scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
         --node {AncNode} -T {threads} > {log.out} 2>&1 
         """

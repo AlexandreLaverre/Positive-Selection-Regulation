@@ -16,14 +16,14 @@ elif sp == "drosophila":
     vcf_suffix = ".dgrp2.vcf.gz"
 
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
-pathPolymorphism = f"../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
+pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPolymorphism = f"../../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
 
 rule DownloadVCF:
     message: "Download polymorphism data from VCF files of 1000 Genomes Project"
     output: expand("../data/polymorphism/human_1000genomes/ALL.{chrom}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz", chrom=chroms)
-    params: pathVCF = "../data/polymorphism/human_1000genomes"
+    params: pathVCF = "../../data/polymorphism/human_1000genomes"
     log: out = pathPolymorphism + "/log/DownloadVCF.out"
     shell:
         """
@@ -35,7 +35,7 @@ rule DownloadVCF:
 rule VCF_BED_overlap:
     message: "Overlap VCF with ChIP-seq peaks to filter SNP"
     input:
-        vcf = '../data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
+        vcf = '../../data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
         BED_peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
     output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="1:00:00",mem="1G",threads=1
@@ -65,7 +65,7 @@ rule ComputeDeltaSVM_Reference:
     params: time="1:00:00", mem="5G", threads=2
     shell:
         """
-        python scripts/RegEvol/compute_all_deltaSVM.py {sp} \
+        python ../scripts/RegEvol/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} --node focal_ancestral -T {threads} > {log.out} 2>&1
         """
 
@@ -76,14 +76,14 @@ rule RetrieveSNPDeltaSVM_Selection:
         vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz",
         AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt",
         focal_seq = pathResults + "/{TF}/Model/posSet.fa",
-        genome = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
+        genome = f"../../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MLE = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
     log: out = pathPolymorphism + "/log/{TF}_SNP_to_delta_{chrom}.out"
     params: time="1:00:00",mem="5G",threads=1
     shell:
         """ 
-        python scripts/peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} \
+        python ../scripts/peaks_evolution/SNP_to_deltaSVM.py {input.vcf} {input.AllSVM} {input.focal_seq} \
         {input.genome} {input.MLE} {output} > {log.out} 2>&1 
         """
 
@@ -108,6 +108,6 @@ rule PlotSFS:
     params: time="1:00:00",mem="3G",threads=1, subsample=12
     shell:
         """
-        python scripts/peaks_evolution/plot_sfs.py --input_MLE {input.MLE} --input_SNP {input.SelCoeff} \
+        python ../scripts/peaks_evolution/plot_sfs.py --input_MLE {input.MLE} --input_SNP {input.SelCoeff} \
         --subsample {params.subsample} --output_pdf {output} 
         """

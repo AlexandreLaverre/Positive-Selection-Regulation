@@ -5,13 +5,12 @@ sample = config["sample"]
 peakType = config["peakType"]
 nbThreads = config["nbPart"]
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
-pathScripts = "../scripts/Positive_Selection_Tests/"
+pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule install_r_pkgs:
     output: touch(pathResults + "/log/r_pkgs_installed")
-    conda: "../envs/training_gkm.yaml"
+    conda: "../../envs/training_gkm.yaml"
     shell:
         """
         Rscript scripts/install_R_pkgs.R
@@ -29,12 +28,12 @@ rule GenerateNegativeSeq:
     log: out = pathResults + "/log/{TF}/GenerateNegativeSeq.out"
     priority: 10
     params: time="5:00:00",mem="10G",threads=1
-    conda: "../envs/training_gkm.yaml"
+    conda: "../../envs/training_gkm.yaml"
     shell:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
         mkdir -p $pathModel
-        Rscript {pathScripts}/generate_negative_sequence.R {sp} {input.BED} $pathModel > {log.out} 2>&1 
+        Rscript ../scripts/generate_negative_sequence.R {sp} {input.BED} $pathModel > {log.out} 2>&1 
         """
 
 rule ModelTraining:
@@ -47,7 +46,7 @@ rule ModelTraining:
     priority: 10
     threads: config["ModelThreads"]
     params: time="24:00:00", mem="5G", threads=config["ModelThreads"]
-    conda: "../envs/training_gkm.yaml"
+    conda: "../../envs/training_gkm.yaml"
     shell:
         """
         gkmtrain -r 12 -l 10 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 || exit 1
@@ -62,7 +61,7 @@ rule ModelValidation:
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
     threads: config["ModelThreads"]
     params: time="20:00:00", mem="5G", threads=config["ModelThreads"]
-    conda: "../envs/training_gkm.yaml"
+    conda: "../../envs/training_gkm.yaml"
     shell:
         """
         gkmtrain -r 12 -l 10 -x 5 -T {threads} {input.Positive_seq} {input.Negative_seq} {pathResults}/{wildcards.TF}/Model/{wildcards.TF} > {log.out} 2>&1 || exit 1
@@ -72,12 +71,12 @@ rule ModelPrediction:
     message: "Generate SVM weights for all possible 10-mers, 4 threads"
     input:
         Model = pathResults + "/{TF}/Model/{TF}.model.txt",
-        kmer_fasta = "../results/positive_selection/kmer.fa"
+        kmer_fasta = "../../results/positive_selection/kmer.fa"
     output: PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
     params: time="1:00:00", mem="2G", threads=1
-    conda: "../envs/training_gkm.yaml"
+    conda: "../../envs/training_gkm.yaml"
     shell:
         """
         gkmpredict -T 1 {input.kmer_fasta} {input.Model} {output.PredictedWeight} > {log.out} 2>&1 

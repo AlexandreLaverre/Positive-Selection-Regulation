@@ -5,8 +5,8 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule PermutationTest:
     message: "Test for positive selection between ancestral and focal sequences"
@@ -21,7 +21,7 @@ rule PermutationTest:
     params: time="15:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python scripts/permutations_test.py {sp} {sample} {wildcards.TF} {peakType} \
+        python ../scripts/permutations_test.py {sp} {sample} {wildcards.TF} {peakType} \
         --NbRand {config[nbRand]} --NbThread {threads} &> {log.out}
         """
 
@@ -39,7 +39,7 @@ rule ComputeAllDeltaSVM:
     params: time="2:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python scripts/RegEvol/compute_all_deltaSVM.py {sp} \
+        python ../scripts/RegEvol/compute_all_deltaSVM.py {sp} \
         {sample}/{wildcards.TF} {peakType} -T {threads} &> {log.out}
         """
 
@@ -63,7 +63,7 @@ rule MaxLLTest:
             threshold=config["threshold"], time=lambda wildcards, input: evaluate_time(input.AllSVM)
     shell:
         """
-        python scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
+        python ../scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
         --peakType {peakType} --binType {params.BinType} --NbBin {params.nbBin} --threshold {params.threshold} \
         -T {threads} &> {log.out}
         """
@@ -75,5 +75,5 @@ rule simulate_sequence:
     params: method="beta", MaxMut=20, Nsimul=1000
     shell:
         """
-        python /simulate_sequence_evolution.py {sp} {sample}/{wildcards.TF}
+        python ../scripts/simulate_sequence_evolution.py {sp} {sample}/{wildcards.TF}
         """

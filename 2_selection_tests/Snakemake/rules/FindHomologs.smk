@@ -5,8 +5,8 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ConsensusSummits:
     message: "Get consensus summits"
@@ -15,19 +15,19 @@ rule ConsensusSummits:
     log: out = pathResults + "/log/ConsensusSummits_{TF}.out"
     shell:
         """
-        ./scripts/get.consensus.summits.sh {sp} {sample} > {log.out} 2>&1 
+        ../scripts/get.consensus.summits.sh {sp} {sample} > {log.out} 2>&1 
         """
 
 rule ChromosomeCorrespondence:
     message: "Get correspondence for chromosomes names between different assemblies"
     input:
-        Assembly1 = f"../data/genome_sequences/{sp}/" + config[sp]["Ensembl_Assembly"],
-        Assembly2 = f"../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"]
-    output: correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+        Assembly1 = f"../../data/genome_sequences/{sp}/" + config[sp]["Ensembl_Assembly"],
+        Assembly2 = f"../../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"]
+    output: correspondence = f"../../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     log: out=pathResults + "/log/ChromosomeCorrespondence.out"
     shell:
         """
-        ../utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC > {log.out} 2>&1 
+        ../scripts/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC > {log.out} 2>&1 
         """
 
 rule ConvertCoordinates:
@@ -35,14 +35,14 @@ rule ConvertCoordinates:
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
         summits = pathPeaks + "/{TF}.consensus_summits.bed",
-        correspondence = f"../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+        correspondence = f"../../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
     params: suffix = config[sp]["suffix"]
     shell:
         """
-        python utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {params.suffix}
+        python ../scripts/utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {params.suffix}
         """
 
 rule runHALPER:
@@ -50,10 +50,10 @@ rule runHALPER:
     input:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
-    output: peaks = directory("../results/homologous_peaks/" + sp + "/{TF}/liftover/")
+    output: peaks = directory("../../results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
     shell:
         """
-        ./scripts/peaks_evolution/run.HALPER.sh {sp} {wildcards.TF}  > {log.out} 2>&1 
+        ../scripts/peaks_evolution/run.HALPER.sh {sp} {wildcards.TF}  > {log.out} 2>&1 
         """

@@ -6,14 +6,14 @@ sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
 
-pathResults = f"../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input:
-        SubstiMatrixes = f"../results/substitution_matrix/{sp}/"
+        SubstiMatrixes = f"../../results/substitution_matrix/{sp}/"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
@@ -55,21 +55,21 @@ rule BED_split:
 rule ExtractMAF:
     message: "Extract pairwise alignments from HAL file"
     input: config["HAL_file"]
-    output: f"../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz"
-    log: pathResults + "/log/ExtractMAF_{sp}.out"
+    output: f"../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz"
+    log: pathResults + "/log/ExtractMAF_{{sp}}.out"
     params: time="2:00:00",mem="1G",threads=1
     container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
     shell:
         """
-        mkdir -p f"../data/genome_alignments/{wildcards.sp}/"
-        hal2maf {input} {output} --noDupes --refGenome {wildcards.sp} --targetGenomes {AncNode},{SisterSp} > {log} 2>&1 
+        mkdir -p f"../data/genome_alignments/{sp}/"
+        hal2maf {input} {output} --noDupes --refGenome {sp} --targetGenomes {AncNode},{SisterSp} > {log} 2>&1 
         """
 
 
 rule InferAncestralPairwise:
     message: "!!! Deprecated !! Infer ancestral sequences from pairwise alignments"
     input:
-        GenomeAlignment = f"../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
+        GenomeAlignment = f"../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}",
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
@@ -79,14 +79,14 @@ rule InferAncestralPairwise:
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
-        python ./scripts/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
+        python ../scripts/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
         {input.BED_file_part} {config[AncMethod]} > {log.out} 2>&1 
         """
 
 rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
     input:
-        GenomeAlignment = f"../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
+        GenomeAlignment = f"../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done")
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
@@ -95,7 +95,7 @@ rule GetSequencesMultiple:
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
-        ./scripts/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {AncNode} > {log.out} 2>&1 
+        ../scripts/extract_sequences_from_MAF.sh {sp} $pathAlignment {input.BED_file_part} {AncNode} > {log.out} 2>&1 
         """
 
 rule ConcatSeq:
