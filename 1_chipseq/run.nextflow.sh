@@ -152,8 +152,10 @@ fi
 echo "source ${pathConda}" >> "${logFile}"
 if [ "$ExistingNextFlow" = false ]; then
     echo "conda activate RegEvol_workflows" >> "${logFile}"
+    [[ "${container}" != "singularity" ]] && mamba install conda-forge::singularity
 fi
 echo "[[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64" >> "${logFile}"
+
 
 echo "nextflow run nf-core/chipseq -r 2.0.0 --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
       ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
