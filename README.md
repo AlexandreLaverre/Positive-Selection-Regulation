@@ -22,4 +22,9 @@ The pipeline includes the following key steps:
 - **Functional Enrichment**: Gene Ontology enrichment analysis of genes associated with positively selected regulatory regions.
 - **Divergence vs. Polymorphism**: Integration of interspecies divergence and intraspecies polymorphism data to interpret evolutionary dynamics.
 
+## Requirements
 
+Before running the pipelines, ensure the following tools are installed on your system:
+
+- **[Conda / Mamba](https://docs.conda.io/en/latest/)** – for managing environments and dependencies.
+- **[Singularity](https://sylabs.io/docs/)** – required to use Docker/Singularity containers in Snakemake rules.
