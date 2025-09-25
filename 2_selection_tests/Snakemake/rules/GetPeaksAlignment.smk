@@ -6,14 +6,14 @@ sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
 
-pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"../../../results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"../../../results/peaks_calling/{peakType}/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input:
-        SubstiMatrixes = f"../../results/substitution_matrix/{sp}/"
+        SubstiMatrixes = f"../../../results/substitution_matrix/{sp}/"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
@@ -55,13 +55,13 @@ rule BED_split:
 rule InferAncestralPairwise:
     message: "!!! Deprecated !! Infer ancestral sequences from pairwise alignments"
     input:
-        GenomeAlignment = f"../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
+        GenomeAlignment = f"../../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}",
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
     log: out = pathResults + "/log/{TF}/GetAncestral_part{part}.out"
     params: time="2:00:00",mem="1G",threads=1
-    conda: "../envs/maf_alignment.yaml"
+    conda: "../../envs/maf_alignment.yaml"
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
@@ -72,12 +72,12 @@ rule InferAncestralPairwise:
 rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
     input:
-        GenomeAlignment = f"../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
+        GenomeAlignment = f"../../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done")
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
     params: time="2:00:00",mem="1G",threads=1
-    conda: "../envs/maf_alignment.yaml"
+    conda: "../../envs/maf_alignment.yaml"
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
@@ -95,7 +95,7 @@ rule ConcatSeq:
         concat_focal_filtered  = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences.fa",
         concat_focal_upper     = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     params: time="1:00:00",mem="1G",threads=1
-    conda: "../envs/maf_alignment.yaml"
+    conda: "../../envs/maf_alignment.yaml"
     shell:
         """
         pathAncestral="{pathResults}/{wildcards.TF}/Alignments/ancestral_sequences"
