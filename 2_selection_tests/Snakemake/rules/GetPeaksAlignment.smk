@@ -51,22 +51,6 @@ rule BED_split:
         split -d -n l/{config[nbPart]} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
         """
 
-"""
-rule ExtractMAF:
-    message: "Extract pairwise alignments from HAL file"
-    input: config["HAL_file"]
-    output: f"../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz"
-    log: pathResults + "/log/ExtractMAF_{{sp}}.out"
-    params: time="2:00:00",mem="1G",threads=1
-    container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
-    shell:
-        """
-        #mkdir -p f"../data/genome_alignments/{sp}/"
-        #hal2maf {input} {output} --noDupes --refGenome {sp} --targetGenomes {AncNode},{SisterSp} > {log} 2>&1
-        """
-
-"""
-
 
 rule InferAncestralPairwise:
     message: "!!! Deprecated !! Infer ancestral sequences from pairwise alignments"
