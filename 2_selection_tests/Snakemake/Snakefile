@@ -17,7 +17,7 @@ from snakemake.io import expand, touch
 from config.config_setup import get_TFs
 import os
 
-configfile: 'config/TestPos.yaml'
+configfile: '2_selection_tests/Snakemake/config/TestPos.yaml'
 include: 'rules/GetPeaksAlignment.smk'
 include: 'rules/SVM_model.smk'
 include: 'rules/FindHomologs.smk'
