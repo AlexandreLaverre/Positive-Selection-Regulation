@@ -8,8 +8,6 @@ AncNode="${4:-ancestral}"
 #########################################################################
 # Define paths
 export path=${path:-"$(pwd)/../../"}
-source "$(dirname "$(dirname "$CONDA_EXE")")/etc/profile.d/conda.sh"
-conda activate MAF
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
 pathAlign="${pathResults}/MAFs/"
