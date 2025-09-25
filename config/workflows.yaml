@@ -1,11 +1,11 @@
-name: test #RegEvol_workflows
+name: RegEvol_workflows
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
   - nextflow=22.10
-  - snakemake=7.24
+  - snakemake=7.24.0
   - lzo=2.10
   - matplotlib=3.6
   - jq=1.8
