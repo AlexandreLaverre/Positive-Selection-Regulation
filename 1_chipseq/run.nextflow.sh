@@ -158,8 +158,8 @@ echo "[[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64" >> "${logFile}
 
 
 echo "nextflow run nf-core/chipseq -r 2.0.0 --input ${sampleID} --outdir ${pathResults}/${sample} --fasta ${genome} \
-      ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} -profile ${container} \
-      -with-conda true ${index} --conda-frontend mamba --max_memory '30.GB' --max_cpus ${threads} ${skip_flags} ${resume_flag}" >> "${logFile}"
+      ${annotations} ${blacklist} --aligner bowtie2 --macs_gsize ${genomesize} ${peaksType} --conda-frontend mamba  \
+      -profile ${container} -with-conda true ${index} --max_memory '30.GB' --max_cpus ${threads} ${skip_flags} ${resume_flag}" >> "${logFile}"
 
 ########################################################################################################################
 
