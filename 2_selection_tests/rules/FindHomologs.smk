@@ -52,6 +52,7 @@ rule runHALPER:
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
     output: peaks = directory("../results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
+    container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
     shell:
         """
         ./scripts/peaks_evolution/run.HALPER.sh {sp} {wildcards.TF}  > {log.out} 2>&1 
