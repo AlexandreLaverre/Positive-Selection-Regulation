@@ -51,6 +51,21 @@ rule BED_split:
         split -d -n l/{config[nbPart]} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
         """
 
+
+rule ExtractMAF:
+    message: "Extract pairwise alignments from HAL file"
+    input: config["HAL_file"]
+    output: f"../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz"
+    log: pathResults + "/log/ExtractMAF_{sp}.out"
+    params: time="2:00:00",mem="1G",threads=1
+    container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
+    shell:
+        """
+        mkdir -p f"../data/genome_alignments/{wildcards.sp}/"
+        hal2maf {input} {output} --noDupes --refGenome {wildcards.sp} --targetGenomes {AncNode},{SisterSp} > {log} 2>&1 
+        """
+
+
 rule InferAncestralPairwise:
     message: "!!! Deprecated !! Infer ancestral sequences from pairwise alignments"
     input:
@@ -60,6 +75,7 @@ rule InferAncestralPairwise:
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
     log: out = pathResults + "/log/{TF}/GetAncestral_part{part}.out"
     params: time="2:00:00",mem="1G",threads=1
+    conda: "../envs/maf_alignment.yaml"
     shell:
         """
         mkdir -p {pathResults}/{wildcards.TF}/Alignments/
@@ -75,6 +91,7 @@ rule GetSequencesMultiple:
     output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done")
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"
     params: time="2:00:00",mem="1G",threads=1
+    conda: "../envs/maf_alignment.yaml"
     shell:
         """
         pathAlignment={pathResults}/{wildcards.TF}/Alignments/
@@ -92,6 +109,7 @@ rule ConcatSeq:
         concat_focal_filtered  = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences.fa",
         concat_focal_upper     = pathResults + "/{TF}/sequences/filtered_focal_{AncNode}_sequences_upper.fa"
     params: time="1:00:00",mem="1G",threads=1
+    conda: "../envs/maf_alignment.yaml"
     shell:
         """
         pathAncestral="{pathResults}/{wildcards.TF}/Alignments/ancestral_sequences"
