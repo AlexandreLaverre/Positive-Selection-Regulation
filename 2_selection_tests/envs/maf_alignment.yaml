@@ -10,3 +10,6 @@ dependencies:
   - ucsc-mafsplit
   - seqtk
   - bedtools
+  - phast
+  - biopython
+  - perl
