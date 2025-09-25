@@ -27,6 +27,7 @@ TFs:
     Rensch: ['CEBPA']
     Kern: ['CTCF']
     Ni12: ['CTCF']
+    test: ['CTCF']
     Wilson:
         - 'CEBPA'
         - 'HNF4A'
