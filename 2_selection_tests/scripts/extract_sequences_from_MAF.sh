@@ -7,7 +7,7 @@ AncNode="${4:-ancestral}"
 
 #########################################################################
 # Define paths
-export path=${path:-"$(pwd)/../../.."}
+export path=${path:-"$(pwd)/../../../"}
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
 pathAlign="${pathResults}/MAFs/"
