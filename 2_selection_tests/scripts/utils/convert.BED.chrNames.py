@@ -6,10 +6,8 @@ import os
 sp = sys.argv[1]
 sample = sys.argv[2]
 TF = sys.argv[3]
-suffix = "tmp"
-
-path = "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel" if sys.argv[4] == "cluster" \
-    else "/Users/alaverre/Documents/Detecting_positive_selection/"
+suffix = sys.argv[4]
+path = sys.argv[5]
 
 Correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
 pathPeaks = f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/"

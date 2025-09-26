@@ -29,7 +29,7 @@ rule ChromosomeCorrespondence:
     log: out=pathResults + "/log/ChromosomeCorrespondence.out"
     shell:
         """
-        ../scripts/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC > {log.out} 2>&1 
+        ../scripts/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {baseDir} > {log.out} 2>&1 
         """
 
 rule ConvertCoordinates:
