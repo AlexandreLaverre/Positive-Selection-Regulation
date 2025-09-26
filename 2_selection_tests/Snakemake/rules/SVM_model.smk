@@ -10,15 +10,6 @@ baseDir = os.path.abspath(config["baseDir"])
 pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
 
-rule install_r_pkgs:
-    output: touch(pathResults + "/log/r_pkgs_installed")
-    conda: "../../envs/training_gkm.yaml"
-    shell:
-        """
-        Rscript ../scripts/utils/install_R_pkgs.R
-        touch {output}
-        """
-
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
     input:
