@@ -18,6 +18,7 @@ if [ ! -f "${pathGenomeAlign}" ]; then
 fi
 
 mkdir -p "${pathAlign}"
+echo "Results will be stored in ${pathResults}"
 mkdir -p "${pathResults}/focal_sequences/"
 mkdir -p "${pathResults}/sister_sequences/"
 mkdir -p "${pathResults}/ancestral_sequences/"

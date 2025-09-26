@@ -1,5 +1,4 @@
 # Implement rules to retrieve aligned ancestral sequences of ChiP-seq peaks
-import os
 from snakemake.io import expand, touch, directory
 
 sp = config["sp"]
