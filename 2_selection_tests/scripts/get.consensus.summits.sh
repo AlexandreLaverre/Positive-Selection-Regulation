@@ -15,7 +15,6 @@ if [ -d "${pathPeaks}/consensus" ]; then
     TF=$(basename "$file")
     echo "$TF"
 
-
     # Merge all summits and overlap with consensus peaks
     cat "${pathPeaks}/${TF}_*summits.bed" > "${pathPeaks}/${TF}_merge_summits.bed"
     python ${path}/scripts/2_selection_tests/scripts/utils/overlap.py "${pathPeaks}/consensus/${TF}/${TF}.consensus_peaks.bed" \
@@ -35,7 +34,7 @@ if [ -d "${pathPeaks}/consensus" ]; then
 else
   for file in "${pathPeaks}"/*_sample_summits.bed; do
     TF=$(basename "$file" _sample_summits.bed)
-    cp "$file" "${pathOutput}/${TF}_consensus_summits.bed"
+    cp "$file" "${pathOutput}/${TF}.consensus_summits.bed"
   done
 fi
 
