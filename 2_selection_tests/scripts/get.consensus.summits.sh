@@ -10,18 +10,21 @@ export pathOutput=${path}/results/peaks_calling/NarrowPeaks/${sp}/${sample}
 
 ########################################################################################################################
 if [ -f "${pathPeaks}/${TF}.sample_summits.bed" ]; then
+  echo "${pathPeaks}/${TF}.sample_summits.bed exists."
   cp "${pathPeaks}/${TF}.sample_summits.bed" "${pathOutput}/${TF}.consensus_summits.bed"
 else
+  echo "${pathPeaks}/${TF}.sample_summits.bed does not exist."
   for file in "${pathPeaks}/consensus/"*
   do
     TF=$(basename "$file")
     echo "$TF"
 
+
     # Merge all summits and overlap with consensus peaks
     cat "${pathPeaks}/${TF}_*summits.bed" > "${pathPeaks}/${TF}_merge_summits.bed"
     python ${path}/scripts/2_selection_tests/scripts/utils/overlap.py "${pathPeaks}/consensus/${TF}/${TF}.consensus_peaks.bed" \
      "${pathPeaks}/${TF}_merge_summits.bed" "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" --keep_max --reference_ID
-  
+
     # Format consensus summits BED file
     cut -f 5 "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" > "${pathPeaks}/${TF}_consensus_summits_ID.txt"
     cut -f 4 "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" > "${pathPeaks}/${TF}_consensus_ID.txt"
