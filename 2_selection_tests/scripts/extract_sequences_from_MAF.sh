@@ -11,6 +11,7 @@ export path=${path:-"$(pwd)/../../.."}
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
 pathAlign="${pathResults}/MAFs/"
+echo "pathGenomeAlign: $pathGenomeAlign"
 
 if [ ! -f "${pathGenomeAlign}" ]; then
   echo "Genome alignment file not found!"
