@@ -9,7 +9,8 @@ args = commandArgs(trailingOnly=TRUE)
 
 species = args[1]
 BED_file = args[2]
-pathResults = args[3]
+baseDir = args[3]
+pathResults = args[4]
 
 BED = read.table(BED_file)
 
@@ -44,11 +45,12 @@ pkg <- bsgenomes[[species]]
 
 # Check if BSgenome already installed
 if (!requireNamespace(pkg, quietly = TRUE)) {
-    local_pkg <- file.path("../local_packages/", pkg)
+    local_pkg <- file.path(baseDir, "data/local_packages/", pkg)
     # Check if available in standard genomes
     if (pkg %in% available.genomes()) {BiocManager::install(pkg, update = FALSE, ask = FALSE)}
 
     # If local file exists, install from local path
+    message(local_pkg)
     else if (file.exists(local_pkg)) {BiocManager::install(local_pkg, update = FALSE, ask = FALSE, type = "source")}
 
     else {stop("Species not recognized and BSgenome package not available locally or publicly.")}

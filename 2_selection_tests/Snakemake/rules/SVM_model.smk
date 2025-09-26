@@ -26,7 +26,7 @@ rule GenerateNegativeSeq:
         """
         pathModel="{pathResults}/{wildcards.TF}/Model/"
         mkdir -p $pathModel
-        Rscript ../scripts/generate_negative_sequence.R {sp} {input.BED} $pathModel > {log.out} 2>&1 
+        Rscript ../scripts/generate_negative_sequence.R {sp} {input.BED} {baseDir} $pathModel > {log.out} 2>&1 
         """
 
 rule ModelTraining:
