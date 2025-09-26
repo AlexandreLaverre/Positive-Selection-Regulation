@@ -13,3 +13,4 @@ dependencies:
   - phast
   - biopython
   - perl
+  - Setuptools<81
