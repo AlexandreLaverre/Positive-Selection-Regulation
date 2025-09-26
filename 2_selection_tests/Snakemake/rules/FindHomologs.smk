@@ -44,7 +44,7 @@ rule ConvertCoordinates:
     params: suffix = config[sp]["suffix"]
     shell:
         """
-        python ../scripts/utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {params.suffix} {baseDir}
+        python ../scripts/utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {baseDir} {params.suffix} 
         """
 
 rule runHALPER:

@@ -6,8 +6,8 @@ import os
 sp = sys.argv[1]
 sample = sys.argv[2]
 TF = sys.argv[3]
-suffix = sys.argv[4]
-path = sys.argv[5]
+path = sys.argv[4]
+suffix = sys.argv[5] if len(sys.argv) > 5 else "NA"
 
 Correspondence = f"{path}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
 pathPeaks = f"{path}/results/peaks_calling/NarrowPeaks/{sp}/{sample}/"
@@ -38,7 +38,7 @@ for data in ["peaks", "consensus_summits"]:
 
             if data == "consensus_summits":
                 peak_ID = str(i[3])
-            elif suffix == 'tmp':
+            elif suffix == 'NA':
                 peak_ID = str(i[3])
             else:
                 peak_ID = str(i[3].split(":")[3])
