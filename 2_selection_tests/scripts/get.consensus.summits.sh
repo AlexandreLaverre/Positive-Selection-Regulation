@@ -9,13 +9,9 @@ export pathPeaks=${path}/results/peaks_calling/NarrowPeaks/${sp}/${sample}/bowti
 export pathOutput=${path}/results/peaks_calling/NarrowPeaks/${sp}/${sample}
 
 ########################################################################################################################
-if [ -f "${pathPeaks}/${TF}.sample_summits.bed" ]; then
-  echo "${pathPeaks}/${TF}.sample_summits.bed exists."
-  cp "${pathPeaks}/${TF}.sample_summits.bed" "${pathOutput}/${TF}.consensus_summits.bed"
-else
-  echo "${pathPeaks}/${TF}.sample_summits.bed does not exist."
-  for file in "${pathPeaks}/consensus/"*
-  do
+if [ -d "${pathPeaks}/consensus" ]; then
+  echo "Consensus directory exists"
+  for file in "${pathPeaks}/consensus/"*; do
     TF=$(basename "$file")
     echo "$TF"
 
@@ -35,6 +31,11 @@ else
     rm "${pathPeaks}/${TF}_merge_summits.bed" "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" \
     "${pathPeaks}/${TF}_consensus_summits_ID.txt" "${pathPeaks}/${TF}_consensus_ID.txt"
 
+  done
+else
+  for file in "${pathPeaks}"/*.sample_summits.bed; do
+    TF=$(basename "$file" .sample_summits.bed)
+    cp "$file" "${pathOutput}/${TF}.consensus_summits.bed"
   done
 fi
 
