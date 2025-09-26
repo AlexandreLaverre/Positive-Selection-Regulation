@@ -44,9 +44,9 @@ TFs = get_TFs(config, pathPeaks)
 
 # Define specificity for rules
 if config["cluster"] == "cluster":
-    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, SimpleOverlapFile, MergeAllChromosome
+    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, SimpleOverlapFile, MergeAllChromosome, install_r_pkgs
 else:
-    localrules: all, GetPeaks, SubSetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split, InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome
+    localrules: all, GetPeaks, SubSetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split, InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments, MergeAllChromosome, install_r_pkgs
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
