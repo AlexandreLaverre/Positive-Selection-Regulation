@@ -1,12 +1,8 @@
 from snakemake.io import touch, directory
 
-sp = config["sp"]
-sample = config["sample"]
-peakType = config["peakType"]
-nbThreads = config["nbPart"]
 
-pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule install_r_pkgs:
     output: touch(pathResults + "/log/r_pkgs_installed")
@@ -71,7 +67,7 @@ rule ModelPrediction:
     message: "Generate SVM weights for all possible 10-mers, 4 threads"
     input:
         Model = pathResults + "/{TF}/Model/{TF}.model.txt",
-        kmer_fasta = "../../results/positive_selection/kmer.fa"
+        kmer_fasta = baseDir + "/results/positive_selection/kmer.fa"
     output: PredictedWeight = pathResults + "/{TF}/Model/kmer_predicted_weight.txt"
     log: out = pathResults + "/log/{TF}/ModelPrediction.out"
     priority: 2
