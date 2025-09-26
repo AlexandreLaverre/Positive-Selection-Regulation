@@ -7,9 +7,10 @@ AncNode="${4:-ancestral}"
 
 #########################################################################
 # Define paths
+echo "Focal species: $path"
 export path=${path:-"$(pwd)/../../../"}
 
-pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
+pathGenomeAlign="${path}/../data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
 pathAlign="${pathResults}/MAFs/"
 echo "pathGenomeAlign: $pathGenomeAlign"
 
