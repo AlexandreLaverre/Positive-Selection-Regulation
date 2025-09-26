@@ -1,5 +1,12 @@
 # Implement rules to retrieve aligned ancestral sequences of ChiP-seq peaks
 from snakemake.io import expand, touch, directory
+import os
+
+sp = config["sp"]
+sample = config["sample"]
+peakType = config["peakType"]
+AncNode = config["AncNode"]
+baseDir = os.path.abspath(config["baseDir"])
 
 pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"

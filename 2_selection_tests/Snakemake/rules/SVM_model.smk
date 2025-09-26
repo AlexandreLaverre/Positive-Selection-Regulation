@@ -1,5 +1,11 @@
 from snakemake.io import touch, directory
+import os
 
+sp = config["sp"]
+sample = config["sample"]
+peakType = config["peakType"]
+AncNode = config["AncNode"]
+baseDir = os.path.abspath(config["baseDir"])
 
 pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
