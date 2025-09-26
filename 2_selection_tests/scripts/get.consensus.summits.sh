@@ -9,21 +9,29 @@ export pathPeaks=${path}/results/peaks_calling/NarrowPeaks/${sp}/${sample}/bowti
 export pathOutput=${path}/results/peaks_calling/NarrowPeaks/${sp}/${sample}
 
 ########################################################################################################################
-for TF in `ls ${pathPeaks}/consensus`
+for file in "${pathPeaks}/consensus/"*
 do
+  TF=$(basename "$file")
   echo "$TF"
+  if [ -f "${pathPeaks}/${TF}.sample_summits.bed" ]; then
+    cp "${pathPeaks}/${TF}.sample_summits.bed" "${pathOutput}/${TF}.consensus_summits.bed"
+  else
+
   # Merge all summits and overlap with consensus peaks
-  cat ${pathPeaks}/${TF}_*summits.bed > ${pathPeaks}/${TF}_merge_summits.bed
-  python ${path}/scripts/2_selection_tests/scripts/utils/overlap.py ${pathPeaks}/consensus/${TF}/${TF}.consensus_peaks.bed ${pathPeaks}/${TF}_merge_summits.bed ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt --keep_max --reference_ID
+  cat "${pathPeaks}/${TF}_*summits.bed" > "${pathPeaks}/${TF}_merge_summits.bed"
+  python ${path}/scripts/2_selection_tests/scripts/utils/overlap.py "${pathPeaks}/consensus/${TF}/${TF}.consensus_peaks.bed" \
+   "${pathPeaks}/${TF}_merge_summits.bed" "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" --keep_max --reference_ID
 
   # Format consensus summits BED file
-  cut -f 5 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}_consensus_summits_ID.txt
-  cut -f 4 ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt > ${pathPeaks}/${TF}_consensus_ID.txt
-  sed -i "s/:/\t/g" ${pathPeaks}/${TF}_consensus_summits_ID.txt
-  paste ${pathPeaks}/${TF}_consensus_summits_ID.txt ${pathPeaks}/${TF}_consensus_ID.txt | tail -n +2 > ${pathOutput}/${TF}.consensus_summits.bed
+  cut -f 5 "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" > "${pathPeaks}/${TF}_consensus_summits_ID.txt"
+  cut -f 4 "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" > "${pathPeaks}/${TF}_consensus_ID.txt"
+  sed -i "s/:/\t/g" "${pathPeaks}/${TF}_consensus_summits_ID.txt"
+  paste "${pathPeaks}/${TF}_consensus_summits_ID.txt" "${pathPeaks}/${TF}_consensus_ID.txt" | tail -n +2 > "${pathOutput}/${TF}.consensus_summits.bed"
 
   # clean tmp files
-  rm ${pathPeaks}/${TF}_merge_summits.bed ${pathPeaks}/${TF}_overlap_consensus_max_summits.txt ${pathPeaks}/${TF}_consensus_summits_ID.txt ${pathPeaks}/${TF}_consensus_ID.txt
+  rm "${pathPeaks}/${TF}_merge_summits.bed" "${pathPeaks}/${TF}_overlap_consensus_max_summits.txt" \
+  "${pathPeaks}/${TF}_consensus_summits_ID.txt" "${pathPeaks}/${TF}_consensus_ID.txt"
+  fi
 
 done
 
