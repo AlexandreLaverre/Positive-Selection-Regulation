@@ -4,7 +4,7 @@
 # Default values
 threads="1"
 dryRun=""
-baseDir="$(pwd)/../../../)"
+baseDir="$(pwd)/../../../"
 
 # HELP
 function show_help() {
