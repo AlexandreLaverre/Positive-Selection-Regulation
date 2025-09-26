@@ -29,7 +29,7 @@ rule ChromosomeCorrespondence:
     log: out=pathResults + "/log/ChromosomeCorrespondence.out"
     shell:
         """
-        ../scripts/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC {baseDir} > {log.out} 2>&1 
+        ../scripts/utils/compare_genome_assemblies/chromosome.correspondence.sh {sp} {input.Assembly1} {input.Assembly2} Ensembl2UCSC > {log.out} 2>&1 
         """
 
 rule ConvertCoordinates:
@@ -44,7 +44,7 @@ rule ConvertCoordinates:
     params: suffix = config[sp]["suffix"]
     shell:
         """
-        python ../scripts/utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {params.suffix}
+        python ../scripts/utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {params.suffix} {baseDir}
         """
 
 rule runHALPER:
