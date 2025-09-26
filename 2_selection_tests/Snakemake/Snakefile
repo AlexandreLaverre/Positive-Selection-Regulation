@@ -33,14 +33,12 @@ nbRand = str(config["nbRand"])
 AncNode = str(config["AncNode"])
 
 # Define base paths
-baseDir = config["baseDir"]
-base_results = os.path.join(baseDir, "results")
-pathResults = os.path.join(base_results, "positive_selection", peakType, sp, sample)
-pathPeaks = os.path.join(base_results, "peaks_calling", peakType, sp, sample)
-pathPolymorphism = os.path.join(base_results, "polymorphism_analyses", peakType, sp, sample)
+baseDir = os.path.abspath(config["baseDir"])
+pathResults = os.path.join(baseDir, "results/positive_selection", peakType, sp, sample)
+pathPeaks = os.path.join(baseDir, "results/peaks_calling", peakType, sp, sample)
+pathPolymorphism = os.path.join(baseDir, "results/polymorphism_analyses", peakType, sp, sample)
 
-print("baseDir:", config["baseDir"])
-print("Results will be stored in:", base_results)
+print("Results will be stored in:", baseDir, "/results/")
 # Retrieve TFs
 TFs = get_TFs(config, pathPeaks)
 
