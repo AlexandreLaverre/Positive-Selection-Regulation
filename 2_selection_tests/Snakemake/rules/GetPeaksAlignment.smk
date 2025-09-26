@@ -5,7 +5,7 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
-baseDir = "../../.."
+baseDir = config["baseDir"]
 
 pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
 pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"

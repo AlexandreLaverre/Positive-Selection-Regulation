@@ -33,7 +33,7 @@ nbRand = str(config["nbRand"])
 AncNode = str(config["AncNode"])
 
 # Define base paths
-baseDir = "../../.." #config["baseDir"]
+baseDir = config["baseDir"]
 base_results = os.path.join(baseDir, "results")
 pathResults = os.path.join(base_results, "positive_selection", peakType, sp, sample)
 pathPeaks = os.path.join(base_results, "peaks_calling", peakType, sp, sample)
