@@ -38,7 +38,7 @@ pathResults = os.path.join(baseDir, "results/positive_selection", peakType, sp, 
 pathPeaks = os.path.join(baseDir, "results/peaks_calling", peakType, sp, sample)
 pathPolymorphism = os.path.join(baseDir, "results/polymorphism_analyses", peakType, sp, sample)
 
-print("Results will be stored in:", baseDir, "/results/")
+print(f"Results will be stored in: {baseDir}/results/")
 # Retrieve TFs
 TFs = get_TFs(config, pathPeaks)
 
