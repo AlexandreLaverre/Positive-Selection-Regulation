@@ -1,12 +1,14 @@
 # Implement rules to test for Positive selection and simulate sequences evolution:
 from snakemake.io import touch
+import os
 
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
+baseDir = os.path.abspath(config["baseDir"])
 
-pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule PermutationTest:
     message: "Test for positive selection between ancestral and focal sequences"

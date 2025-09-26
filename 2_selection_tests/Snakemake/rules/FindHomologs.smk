@@ -1,12 +1,14 @@
 # Implement rules to retrieve ChiP-seq consensus peaks summits and to find their homologous using HALPER
 from snakemake.io import directory, expand
+import os
 
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
+baseDir = os.path.abspath(config["baseDir"])
 
-pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
 
 rule ConsensusSummits:
     message: "Get consensus summits"
@@ -21,9 +23,9 @@ rule ConsensusSummits:
 rule ChromosomeCorrespondence:
     message: "Get correspondence for chromosomes names between different assemblies"
     input:
-        Assembly1 = f"../../data/genome_sequences/{sp}/" + config[sp]["Ensembl_Assembly"],
-        Assembly2 = f"../../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"]
-    output: correspondence = f"../../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+        Assembly1 = f"{baseDir}/data/genome_sequences/{sp}/" + config[sp]["Ensembl_Assembly"],
+        Assembly2 = f"{baseDir}/data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"]
+    output: correspondence = f"{baseDir}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     log: out=pathResults + "/log/ChromosomeCorrespondence.out"
     shell:
         """
@@ -35,7 +37,7 @@ rule ConvertCoordinates:
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
         summits = pathPeaks + "/{TF}.consensus_summits.bed",
-        correspondence = f"../../data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
+        correspondence = f"{baseDir}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
@@ -50,7 +52,7 @@ rule runHALPER:
     input:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
         summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
-    output: peaks = directory("../../results/homologous_peaks/" + sp + "/{TF}/liftover/")
+    output: peaks = directory(baseDir +"/results/homologous_peaks/" + sp + "/{TF}/liftover/")
     log: out = pathResults + "/log/runHALPER_{TF}.out"
     container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
     shell:

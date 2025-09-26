@@ -1,10 +1,12 @@
 # Implement rules to download human polymorphism data, retrieve the estimated deltaSVM for SNP and compute their coefficient of selection
 from snakemake.io import expand
+import os
 
 sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
+baseDir = os.path.abspath(config["baseDir"])
 
 if sp == "human":
     chroms = [f"chr{i}" for i in range(1, 22)] + ["chrX"]
@@ -16,14 +18,14 @@ elif sp == "drosophila":
     vcf_suffix = ".dgrp2.vcf.gz"
 
 
-pathResults = f"../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../results/peaks_calling/{peakType}/{sp}/{sample}"
-pathPolymorphism = f"../../results/polymorphism_analyses/{peakType}/{sp}/{sample}"
+pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPolymorphism = f"{baseDir}/results/polymorphism_analyses/{peakType}/{sp}/{sample}"
 
 rule DownloadVCF:
     message: "Download polymorphism data from VCF files of 1000 Genomes Project"
-    output: expand("../data/polymorphism/human_1000genomes/ALL.{chrom}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz", chrom=chroms)
-    params: pathVCF = "../../data/polymorphism/human_1000genomes"
+    output: expand(baseDir + "/data/polymorphism/human_1000genomes/ALL.{chrom}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz", chrom=chroms)
+    params: pathVCF = f"{baseDir}/data/polymorphism/human_1000genomes"
     log: out = pathPolymorphism + "/log/DownloadVCF.out"
     shell:
         """
@@ -35,7 +37,7 @@ rule DownloadVCF:
 rule VCF_BED_overlap:
     message: "Overlap VCF with ChIP-seq peaks to filter SNP"
     input:
-        vcf = '../../data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
+        vcf = baseDir + '/data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
         BED_peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
     output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="1:00:00",mem="1G",threads=1
@@ -76,7 +78,7 @@ rule RetrieveSNPDeltaSVM_Selection:
         vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz",
         AllSVM = pathResults + "/{TF}/deltas/focal_ancestral_all_possible_deltaSVM.txt",
         focal_seq = pathResults + "/{TF}/Model/posSet.fa",
-        genome = f"../../data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
+        genome = f"{baseDir}/data/genome_sequences/{sp}/" + config[sp]["UCSC_Assembly"],
         MLE = pathResults + "/{TF}/Tests/MLE_summary_exact_ranked_ancestral.csv"
     output: pathPolymorphism + "/{TF}/SNP_to_deltaSVM/{chrom}.txt"
     log: out = pathPolymorphism + "/log/{TF}_SNP_to_delta_{chrom}.out"
