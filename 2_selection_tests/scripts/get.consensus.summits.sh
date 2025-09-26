@@ -33,9 +33,9 @@ if [ -d "${pathPeaks}/consensus" ]; then
 
   done
 else
-  for file in "${pathPeaks}"/*.sample_summits.bed; do
-    TF=$(basename "$file" .sample_summits.bed)
-    cp "$file" "${pathOutput}/${TF}.consensus_summits.bed"
+  for file in "${pathPeaks}"/*_sample_summits.bed; do
+    TF=$(basename "$file" _sample_summits.bed)
+    cp "$file" "${pathOutput}/${TF}_consensus_summits.bed"
   done
 fi
 
