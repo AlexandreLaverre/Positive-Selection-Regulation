@@ -14,6 +14,7 @@ do
   TF=$(basename "$file")
   echo "$TF"
   if [ -f "${pathPeaks}/${TF}.sample_summits.bed" ]; then
+    echo "${pathPeaks}/${TF}.sample_summits.bed exists."
     cp "${pathPeaks}/${TF}.sample_summits.bed" "${pathOutput}/${TF}.consensus_summits.bed"
   else
 
