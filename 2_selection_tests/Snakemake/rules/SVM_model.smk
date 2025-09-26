@@ -15,7 +15,7 @@ rule install_r_pkgs:
     conda: "../../envs/training_gkm.yaml"
     shell:
         """
-        Rscript scripts/install_R_pkgs.R
+        Rscript ../scripts/utils/install_R_pkgs.R
         touch {output}
         """
 
