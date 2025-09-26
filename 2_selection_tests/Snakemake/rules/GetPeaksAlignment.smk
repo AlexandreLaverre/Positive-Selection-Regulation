@@ -5,14 +5,15 @@ sp = config["sp"]
 sample = config["sample"]
 peakType = config["peakType"]
 AncNode = config["AncNode"]
+baseDir = config["baseDir"]
 
-pathResults = f"../../../results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"../../../results/peaks_calling/{peakType}/{sp}/{sample}"
+pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
 rule GetPeaks:
     message: "Retrieve ChIP peaks with a meaningful ID"
-    input: SubstiMatrixes=f"../../../results/substitution_matrix/{sp}/"
+    input: SubstiMatrixes=f"{baseDir}/results/substitution_matrix/{sp}/"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
@@ -54,7 +55,7 @@ rule BED_split:
 rule InferAncestralPairwise:
     message: "!!! Deprecated !! Infer ancestral sequences from pairwise alignments"
     input:
-        GenomeAlignment = f"../../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
+        GenomeAlignment = f"{baseDir}/data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}",
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa"
     output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
@@ -71,7 +72,7 @@ rule InferAncestralPairwise:
 rule GetSequencesMultiple:
     message: "Retrieve focal and ancestral sequences from multiple whole-genome alignment"
     input:
-        GenomeAlignment = f"../../../data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
+        GenomeAlignment = f"{baseDir}/data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
         BED_file_part = pathResults + "/log/{TF}/part{part}"
     output: Done = touch(pathResults + "/log/{TF}/GetAncestral_part{part}_{AncNode}_done")
     log: out = pathResults + "/log/{TF}/extract_sequences_from_MAF_part{part}_{AncNode}.out"

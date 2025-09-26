@@ -4,6 +4,7 @@
 # Default values
 threads="1"
 dryRun=""
+baseDir="$(pwd)/../../../)"
 
 # HELP
 function show_help() {
@@ -12,6 +13,7 @@ function show_help() {
     echo "Options:"
     echo "  --sp        Species (e.g., human, mouse) [required]"
     echo "  --sample    Sample name (e.g., Wilson) [required]"
+    echo "  --baseDir   Path to base directory  [default: three levels up from Snakefile]"
     echo "  --threads   Number of threads [default: 1]"
     echo "  --dryRun    Run Snakemake in dry-run mode: true/false (default: false)"
     echo
@@ -52,7 +54,7 @@ else
 fi
 
 ##################################################################
-export path=${path:-"$(pwd)/../../"}
+export path=${baseDir}
 export pathLog="${path}/scripts/2_selection_tests/logs"
 [[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64
 
@@ -62,8 +64,8 @@ if [ "${dryRun}" = "true" ]; then
 	dryRun="-n"
 fi
 
-snakemake ${dryRun} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} --rerun-incomplete \
-          --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
+snakemake ${dryRun} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
+          --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
           -c {params.threads} --mem={params.mem} -t {params.time}"
 

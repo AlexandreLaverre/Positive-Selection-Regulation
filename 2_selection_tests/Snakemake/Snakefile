@@ -33,7 +33,7 @@ nbRand = str(config["nbRand"])
 AncNode = str(config["AncNode"])
 
 # Define base paths
-base_results = os.path.join("../../../", "results")
+base_results = os.path.join(config["baseDir"], "results")
 pathResults = os.path.join(base_results, "positive_selection", peakType, sp, sample)
 pathPeaks = os.path.join(base_results, "peaks_calling", peakType, sp, sample)
 pathPolymorphism = os.path.join(base_results, "polymorphism_analyses", peakType, sp, sample)
