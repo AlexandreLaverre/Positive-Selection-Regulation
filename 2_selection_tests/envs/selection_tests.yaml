@@ -1,0 +1,12 @@
+name: selection_tests
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pandas
+  - numba
+  - alive-progress
+  - scipy
+  - numpy
+  - biopython
