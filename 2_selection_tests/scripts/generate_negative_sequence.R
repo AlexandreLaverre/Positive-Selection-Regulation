@@ -46,13 +46,13 @@ pkg <- bsgenomes[[species]]
 # Check if BSgenome already installed
 if (!requireNamespace(pkg, quietly = TRUE)) {
     local_pkg <- file.path(baseDir, "data/BSgenome/", pkg, "_1.0.tar.gz")
+    message("Installing BSgenome from local package: ", local_pkg)
 
     # Check if available in standard genomes
     if (pkg %in% available.genomes()) {BiocManager::install(pkg, update = FALSE, ask = FALSE)}
 
     # If local file exists, install from local path
     else if (file.exists(local_pkg)) {
-        message("Installing BSgenome from local package: ", local_pkg)
         BiocManager::install(local_pkg, update = FALSE, ask = FALSE, type = "source")}
 
     else {stop("Species not recognized or BSgenome package not available locally or publicly.")}
