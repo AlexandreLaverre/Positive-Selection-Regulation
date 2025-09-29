@@ -4,7 +4,6 @@ if (!requireNamespace("BSgenome", quietly = TRUE)) {BiocManager::install("BSgeno
 
 suppressMessages(library(gkmSVM))
 suppressMessages(library(BSgenome))
-suppressMessages(library(BiocManager))
 args = commandArgs(trailingOnly=TRUE)
 
 species = args[1]
@@ -14,50 +13,46 @@ pathResults = args[4]
 
 BED = read.table(BED_file)
 
-# Check if chrName conversion between Ensembl and UCSC is needed
-# path = ifelse(cluster=="cluster", "/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel", "/Users/alaverre/Documents/Detecting_positive_selection")
-# pathScripts = paste0(path, "/scripts/utils/compare_genome_assemblies")
-
-#if (species != "rat"){      #rat BED already UCSC
-  #message("Convert chromosome names to UCSC convention...")
-  #system(paste0("python ", pathScripts, "/convert.BED.chrNames.py ", species, " ", BED_file, " ", cluster))
-#  BED_file = paste0(BED_file, "_UCSC_names")
-#}
-
 # Define mapping of species to BSgenome package names
 bsgenomes <- list(
-    mouse = "BSgenome.Mmusculus.UCSC.mm10.masked",
-    human = "BSgenome.Hsapiens.UCSC.hg38.masked",
-    dog = "BSgenome.Cfamiliaris.UCSC.canFam3.masked",
-    rat = "BSgenome.Rnorvegicus.UCSC.rn6.masked",
-    macaca = "BSgenome.Mmulatta.UCSC.sup2kb.rheMac8.masked",
-    cat = "BSgenome.Fcatus.UCSC.sup2kb.felCat8.masked",
-    cattle = "BSgenome.Btaurus.GenBank.Btau5.0.1.masked",
-    rabbit = "BSgenome.Ocuniculus.UCSC.oryCun2.masked",
-    chicken = "BSgenome.Ggallus.UCSC.galGal6.masked",
-    spretus = "BSgenome.Mspretus.GenBank.SPRET.masked",
-    caroli = "BSgenome.Mcaroli.GenBank.CAROLI.EIJ.masked",
-    zebrafish = "BSgenome.Drerio.UCSC.danRer11.masked",
-    drosophila = "BSgenome.Dmelanogaster.UCSC.dm6.masked"
+    mouse = "BSgenome.Mmusculus.UCSC.mm10",
+    human = "BSgenome.Hsapiens.UCSC.hg38",
+    dog = "BSgenome.Cfamiliaris.UCSC.canFam3",
+    rat = "BSgenome.Rnorvegicus.UCSC.rn6",
+    macaca = "BSgenome.Mmulatta.UCSC.sup2kb.rheMac8",
+    cat = "BSgenome.Fcatus.UCSC.sup2kb.felCat8",
+    cattle = "BSgenome.Btaurus.GenBank.Btau5.0.1",
+    rabbit = "BSgenome.Ocuniculus.UCSC.oryCun2",
+    chicken = "BSgenome.Ggallus.UCSC.galGal6",
+    spretus = "BSgenome.Mspretus.GenBank.SPRET",
+    caroli = "BSgenome.Mcaroli.GenBank.CAROLI.EIJ",
+    zebrafish = "BSgenome.Drerio.UCSC.danRer11",
+    drosophila = "BSgenome.Dmelanogaster.UCSC.dm6"
 )
 
 pkg <- bsgenomes[[species]]
+pkg_masked <- paste0(pkg, ".masked")
 
 # Check if BSgenome already installed
-if (!requireNamespace(pkg, quietly = TRUE)) {
-    local_pkg <- file.path(baseDir, "data/BSgenome", paste0(pkg, "_1.0.tar.gz"))
-    message("Installing BSgenome from local package: ", local_pkg)
-
-    # Check if available in standard genomes
-    if (pkg %in% available.genomes()) {BiocManager::install(pkg, update = FALSE, ask = FALSE)}
-
-    # If local file exists, install from local path
-    else if (file.exists(local_pkg)) {
-        BiocManager::install(local_pkg, update = FALSE, ask = FALSE, type = "source")}
-
-    else {stop("Species not recognized or BSgenome package not available locally or publicly.")}
+for (p in c(pkg, pkg_masked)) {
+    local_pkg <- file.path(baseDir, "data/BSgenome", paste0(p, "_1.0.tar.gz"))
+    public_genomes <- available.genomes()
+    if (!requireNamespace(p, quietly = TRUE)) {
+        if (p %in% public_genomes) {
+            message("Installing ", p, " from Bioconductor...")
+            BiocManager::install(p, update = FALSE, ask = FALSE)
+        } else if (file.exists(local_pkg)) {
+            message("Installing ", p, " from local file: ", local_pkg)
+            BiocManager::install(local_pkg, update = FALSE, ask = FALSE, type = "source")
+        } else {
+            stop("Package ", p, " not found locally or in Bioconductor.")
+        }
+    } else {
+        message(p, " already installed.")
+    }
 }
-genome <- getBSgenome(pkg)
+
+genome <- getBSgenome(pkg_masked)
 
 ###############################################################################
 # Generate negative sequences
