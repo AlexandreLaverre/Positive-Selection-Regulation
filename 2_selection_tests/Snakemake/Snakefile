@@ -4,12 +4,6 @@
 # input file: list of interested coordinates
 # BSgenome of focal species
 # pairwise or multiple genome alignments
-# substitution matrix per chromosome
-# chromosome correspondence if genome annotation and alignment are not from the same source
-
-# Requirements :
-# Software: PECAN + Snakemake + Exonerate + TreeTime + seqkit + lsgkm + ucsc-toupper + ucsc-MafsInRegions
-# Python modules: Bio, Bio.Seq, numpy, pandas, multiprocessing.pool, alive_progress
 
 ########################################################################################################################
 #! /usr/bin/env python
@@ -66,12 +60,10 @@ print("Running on:", ', '.join(TFs))
 rule all:
     input :
         archive = expand(os.path.join(pathResults,"{TF}",f"alignments_{AncNode}.archive.tar.gz"),TF=TFs),
-        model_validation= expand(os.path.join(pathResults, "{TF}", "Model", f"{{TF}}.model.txt"),TF=TFs)
+        model= expand(os.path.join(pathResults, "{TF}", "Model", f"{{TF}}.model.txt"),TF=TFs)
         #MaxLLTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"MLE_summary_{BinType}_{AncNode}.csv"), TF=TFs),
         #PermutTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"PosSelTest_deltaSVM_{nbRand}permutations_two_tailed_{AncNode}.txt") ,TF=TFs),
 
-        #SNP = expand(os.path.join(pathPolymorphism, "{TF}", f"SFS.pdf"), TF=TFs)
-        #SNP = expand(os.path.join(pathPolymorphism, "{TF}", "overlap_peaks.txt"), TF=TFs),
         #model_validation= expand(os.path.join(pathResults,"{TF}", "Model", f"{{TF}}.cvpred.txt"),TF=TFs),
         #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
 

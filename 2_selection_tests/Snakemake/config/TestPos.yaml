@@ -14,7 +14,7 @@ AlignType: 'MAF'
 AncMethod: 'parsimony'
 AncNode: 'ancestral'
 peakType: 'NarrowPeaks'
-cluster: 'cluster'
+cluster: 'local'
 TF_source: "config"
 ModelThreads: 16
 
