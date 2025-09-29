@@ -8,7 +8,7 @@ rerun_incomplete: false
 nbPart: 10
 nbRand: 10000
 nbBin: 50
-BinType: 'exact_ranked'
+BinType: 'exact'
 threshold: 0.01
 AlignType: 'MAF'
 AncMethod: 'parsimony'
