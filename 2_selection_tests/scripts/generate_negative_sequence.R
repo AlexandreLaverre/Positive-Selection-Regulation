@@ -38,7 +38,7 @@ bsgenomes <- list(
     spretus = "BSgenome.Mspretus.GenBank.SPRET.masked",
     caroli = "BSgenome.Mcaroli.GenBank.CAROLI.EIJ.masked",
     zebrafish = "BSgenome.Drerio.UCSC.danRer11.masked",
-    drosophila = "BSgenome.Dmelanogaster.UCSC.dm6.masked",
+    drosophila = "BSgenome.Dmelanogaster.UCSC.dm6.masked"
 )
 
 pkg <- bsgenomes[[species]]
