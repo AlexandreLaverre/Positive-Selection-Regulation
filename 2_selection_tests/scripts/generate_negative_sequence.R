@@ -43,7 +43,7 @@ for (p in c(pkg, pkg_masked)) {
             BiocManager::install(p, update = FALSE, ask = FALSE)
         } else if (file.exists(local_pkg)) {
             message("Installing ", p, " from local file: ", local_pkg)
-            BiocManager::install(local_pkg, update = FALSE, ask = FALSE, type = "source")
+            install.packages(local_pkg, repos = NULL, type = "source")
         } else {
             stop("Package ", p, " not found locally or in Bioconductor.")
         }
