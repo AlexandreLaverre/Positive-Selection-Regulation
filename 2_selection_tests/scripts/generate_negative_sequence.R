@@ -35,7 +35,7 @@ pkg_masked <- paste0(pkg, ".masked")
 
 # Check if BSgenome already installed
 for (p in c(pkg, pkg_masked)) {
-    local_pkg <- file.path(baseDir, "data/BSgenome", paste0(p, "_1.0.tar.gz"))
+    local_pkg <- file.path(baseDir, "data/BSgenome", paste0(p, ".tar.gz"))
     public_genomes <- available.genomes()
     if (!requireNamespace(p, quietly = TRUE)) {
         if (p %in% public_genomes) {
