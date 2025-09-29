@@ -45,7 +45,7 @@ pkg <- bsgenomes[[species]]
 
 # Check if BSgenome already installed
 if (!requireNamespace(pkg, quietly = TRUE)) {
-    local_pkg <- file.path(baseDir, "data/BSgenome/", pkg, "_1.0.tar.gz")
+    local_pkg <- file.path(baseDir, "data/BSgenome", paste0(pkg, "_1.0.tar.gz"))
     message("Installing BSgenome from local package: ", local_pkg)
 
     # Check if available in standard genomes
