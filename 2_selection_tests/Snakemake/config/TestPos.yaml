@@ -4,7 +4,7 @@ name: TestEvol
 rerun_triggers: "mtime"
 rerun_incomplete: false
 
-# Test Parameters
+# Models and Tests Parameters
 nbPart: 10
 nbRand: 10000
 nbBin: 50
@@ -16,7 +16,7 @@ AncNode: 'ancestral'
 peakType: 'NarrowPeaks'
 system: 'local'
 TF_source: "config"
-ModelThreads: 16
+ModelThreads: 4
 
 # Data Parameters
 species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']
