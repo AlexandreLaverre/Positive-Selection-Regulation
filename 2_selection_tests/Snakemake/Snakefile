@@ -39,9 +39,6 @@ TFs = get_TFs(config, pathPeaks)
 # Define specificity for rules
 if config["system"] == "SLURM":
     localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, SimpleOverlapFile, MergeAllChromosome
-else:
-    for r in rules.values():
-        r.local = True
 
 # Define from which type of alignments ancestral sequences should be obtained
 if config["AlignType"] == "pairwise":
