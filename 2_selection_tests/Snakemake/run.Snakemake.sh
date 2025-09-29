@@ -6,6 +6,7 @@ threads="1"
 system="local"
 dryRun="false"
 unlock="false"
+extend_config=""
 baseDir="$(pwd)/../../../"
 
 # HELP
@@ -13,13 +14,14 @@ function show_help() {
     echo "Usage: ./run.snakemake.sh --sp <species_name> --sample <sample_name> [options]"
     echo
     echo "Options:"
-    echo "  --sp        Species (e.g., human, mouse) [required]"
-    echo "  --sample    Sample name (e.g., Wilson) [required]"
-    echo "  --baseDir   Path to base directory  [default: three levels up from Snakefile]"
-    echo "  --threads   Number of threads [default: 1]"
-    echo "  --system    Execution mode: local or SLURM [default: local]"
-    echo "  --dryRun    Run Snakemake in dry-run mode: true/false [default: false]"
-    echo "  --unlock    Run Snakemake with the --unlock argument: true/false [default: false]"
+    echo "  --sp              Species (e.g., human, mouse) [required]"
+    echo "  --sample          Sample name (e.g., Wilson) [required]"
+    echo "  --baseDir         Path to base directory  [default: three levels up from Snakefile]"
+    echo "  --threads         Number of threads [default: 1]"
+    echo "  --system          Execution mode: local or SLURM [default: local]"
+    echo "  --extend_config   Add any Snakemake extended configuration parameters [default: '']"
+    echo "  --dryRun          Run Snakemake in dry-run mode: true/false [default: false]"
+    echo "  --unlock          Run Snakemake with the --unlock argument: true/false [default: false]"
     echo
     echo "Example:"
     echo "  ./run.snakemake.sh --sp human --sample Wilson --threads 10 --dryRun true"
@@ -32,6 +34,7 @@ while [[ "$#" -gt 0 ]]; do
         --sample) sample="$2"; shift ;;
         --threads) threads="$2"; shift ;;
         --system) system="$2"; shift ;;
+        --extend_config) system=true ;;
         --dryRun) dryRun=true ;;
         --unlock) unlock=true ;;
         --help) show_help; exit 0 ;;
@@ -68,16 +71,18 @@ export pathLog="${path}/scripts/2_selection_tests/logs"
 echo "[INFO] Running Snakemake with the following parameters:"
 echo "       Species:        ${sp}"
 echo "       Sample:         ${sample}"
-echo "       Base Directory: ${baseDir}"
 echo "       Threads:        ${threads}"
 echo "       System:         ${system}"
-echo "       Dry Run:       ${dryRun}"
-echo "       Unlock:        ${unlock}"
+echo "       Dry Run:        ${dryRun}"
+echo "       Unlock:         ${unlock}"
 
-cmd="snakemake --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
-          system=${system} --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
-          --cluster 'sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
-          -c {params.threads} --mem={params.mem} -t {params.time}'"
+cmd="snakemake -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} system=${system}"
+[[ -n "$extend_config" ]] && cmd+=" $extend_config"
+
+cmd+=" --rerun-triggers mtime  --rerun-incomplete \
+       --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
+       --cluster 'sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
+       -c {params.threads} --mem={params.mem} -t {params.time}'"
 
 $unlock && cmd+=" --unlock"
 $dryRun && cmd+=" --dry-run"
