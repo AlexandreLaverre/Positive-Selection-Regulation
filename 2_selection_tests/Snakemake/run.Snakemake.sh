@@ -3,7 +3,9 @@
 ########################################################################################################################
 # Default values
 threads="1"
+system="local"
 dryRun=""
+unlock=""
 baseDir="$(pwd)/../../../"
 
 # HELP
@@ -15,7 +17,9 @@ function show_help() {
     echo "  --sample    Sample name (e.g., Wilson) [required]"
     echo "  --baseDir   Path to base directory  [default: three levels up from Snakefile]"
     echo "  --threads   Number of threads [default: 1]"
-    echo "  --dryRun    Run Snakemake in dry-run mode: true/false (default: false)"
+    echo "  --system    Execution mode: local or SLURM [default: local]"
+    echo "  --dryRun    Run Snakemake in dry-run mode"
+    echo "  --unlock    Run Snakemake with the --unlock argument"
     echo
     echo "Example:"
     echo "  ./run.snakemake.sh --sp human --sample Wilson --threads 10 --dryRun true"
@@ -59,12 +63,10 @@ export pathLog="${path}/scripts/2_selection_tests/logs"
 [[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64
 
 ##################################################################
-if [ "${dryRun}" = "true" ]; then
-	echo "Run Snakemake in dry-run mode"
-	dryRun="-n"
-fi
+[[ " $* " =~ "--unlock" ]] && unlock="--unlock"
+[[ " $* " =~ "--dryRun" ]] && dryRun="--dry-run"
 
-snakemake ${dryRun} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
+snakemake ${dryRun} ${unlock} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
           --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
           -c {params.threads} --mem={params.mem} -t {params.time}"
