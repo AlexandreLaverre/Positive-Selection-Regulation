@@ -4,7 +4,7 @@
 # Default values
 threads="1"
 system="local"
-dryRun="true"
+dryRun="false"
 unlock="false"
 baseDir="$(pwd)/../../../"
 
@@ -18,7 +18,7 @@ function show_help() {
     echo "  --baseDir   Path to base directory  [default: three levels up from Snakefile]"
     echo "  --threads   Number of threads [default: 1]"
     echo "  --system    Execution mode: local or SLURM [default: local]"
-    echo "  --dryRun    Run Snakemake in dry-run mode: true/false [default: true]"
+    echo "  --dryRun    Run Snakemake in dry-run mode: true/false [default: false]"
     echo "  --unlock    Run Snakemake with the --unlock argument: true/false [default: false]"
     echo
     echo "Example:"
@@ -65,9 +65,6 @@ export pathLog="${path}/scripts/2_selection_tests/logs"
 [[ "$(uname)" == "Darwin" ]] && export CONDA_SUBDIR=osx-64
 
 ##################################################################
-[[ " $* " =~ "--unlock" ]] && unlock="--unlock"
-[[ " $* " =~ "--dryRun" ]] && dryRun="--dry-run"
-
 echo "[INFO] Running Snakemake with the following parameters:"
 echo "       Species:        ${sp}"
 echo "       Sample:         ${sample}"
