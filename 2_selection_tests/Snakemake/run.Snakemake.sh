@@ -4,8 +4,8 @@
 # Default values
 threads="1"
 system="local"
-dryRun=""
-unlock=""
+dryRun="true"
+unlock="false"
 baseDir="$(pwd)/../../../"
 
 # HELP
@@ -18,8 +18,8 @@ function show_help() {
     echo "  --baseDir   Path to base directory  [default: three levels up from Snakefile]"
     echo "  --threads   Number of threads [default: 1]"
     echo "  --system    Execution mode: local or SLURM [default: local]"
-    echo "  --dryRun    Run Snakemake in dry-run mode"
-    echo "  --unlock    Run Snakemake with the --unlock argument"
+    echo "  --dryRun    Run Snakemake in dry-run mode: true/false [default: true]"
+    echo "  --unlock    Run Snakemake with the --unlock argument: true/false [default: false]"
     echo
     echo "Example:"
     echo "  ./run.snakemake.sh --sp human --sample Wilson --threads 10 --dryRun true"
@@ -32,8 +32,8 @@ while [[ "$#" -gt 0 ]]; do
         --sample) sample="$2"; shift ;;
         --threads) threads="$2"; shift ;;
         --system) system="$2"; shift ;;
-        --dryRun) dryRun="$2"; shift ;;
-        --unlock) unlock="$2"; shift ;;
+        --dryRun) dryRun=true ;;
+        --unlock) unlock=true ;;
         --help) show_help; exit 0 ;;
         *) echo "Unknown parameter: $1"; show_help; exit 1 ;;
     esac
@@ -77,9 +77,13 @@ echo "       System:         ${system}"
 echo "       Dry Run:       ${dryRun}"
 echo "       Unlock:        ${unlock}"
 
-snakemake ${dryRun} ${unlock} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
+cmd="snakemake --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
           system=${system} --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
-          --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
-          -c {params.threads} --mem={params.mem} -t {params.time}"
+          --cluster 'sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
+          -c {params.threads} --mem={params.mem} -t {params.time}'"
+
+$unlock && cmd+=" --unlock"
+$dryRun && cmd+=" --dry-run"
+eval "$cmd"
 
 ##################################################################
