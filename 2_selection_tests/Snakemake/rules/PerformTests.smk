@@ -22,6 +22,7 @@ rule ComputeAllDeltaSVM:
         AllSVM = pathResults + "/{TF}/deltas/{AncNode}_all_possible_deltaSVM.txt",
         ObsSVM = pathResults + "/{TF}/deltas/{AncNode}_to_observed_deltaSVM.txt"
     log: out = pathResults + "/log/{TF}/ComputeAllDeltaSVM_{AncNode}.out"
+    conda: "../../envs/selection_tests.yaml"
     threads: config["nbPart"]
     params: time="1:00:00", mem="5G", threads=config["nbPart"]
     shell:
@@ -49,6 +50,7 @@ rule PermutationTest:
     threads: max(10, config["nbPart"])
     log: out=pathResults + "/log/{TF}/PermutationTest_{AncNode}.out"
     params: time=lambda wildcards, input: evaluate_time(input.AllSVM), mem="5G", threads=max(10, config["nbPart"])
+    conda: "../../envs/selection_tests.yaml"
     shell:
         """
         python ../scripts/permutations_test.py {sp} {sample} {wildcards.TF} --peakType {peakType} \
@@ -66,6 +68,7 @@ rule MaxLLTest:
     params: mem="10G", threads=config["nbPart"], nbBin=config["nbBin"], BinType=config["BinType"],
             threshold=config["threshold"], time="1:00:00"
     priority: 10
+    conda: "../../envs/selection_tests.yaml"
     shell:
         """
         python ../scripts/RegEvol/MaxLL_estimation.py {sp} {sample}/{wildcards.TF} \
