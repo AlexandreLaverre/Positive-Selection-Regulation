@@ -68,6 +68,15 @@ export pathLog="${path}/scripts/2_selection_tests/logs"
 [[ " $* " =~ "--unlock" ]] && unlock="--unlock"
 [[ " $* " =~ "--dryRun" ]] && dryRun="--dry-run"
 
+echo "[INFO] Running Snakemake with the following parameters:"
+echo "       Species:        ${sp}"
+echo "       Sample:         ${sample}"
+echo "       Base Directory: ${baseDir}"
+echo "       Threads:        ${threads}"
+echo "       System:         ${system}"
+echo "       Dry Run:       ${dryRun}"
+echo "       Unlock:        ${unlock}"
+
 snakemake ${dryRun} ${unlock} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
           system=${system} --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
