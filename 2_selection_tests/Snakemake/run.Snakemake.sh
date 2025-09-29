@@ -31,7 +31,9 @@ while [[ "$#" -gt 0 ]]; do
         --sp) sp="$2"; shift ;;
         --sample) sample="$2"; shift ;;
         --threads) threads="$2"; shift ;;
+        --system) system="$2"; shift ;;
         --dryRun) dryRun="$2"; shift ;;
+        --unlock) unlock="$2"; shift ;;
         --help) show_help; exit 0 ;;
         *) echo "Unknown parameter: $1"; show_help; exit 1 ;;
     esac
@@ -67,7 +69,7 @@ export pathLog="${path}/scripts/2_selection_tests/logs"
 [[ " $* " =~ "--dryRun" ]] && dryRun="--dry-run"
 
 snakemake ${dryRun} ${unlock} --rerun-triggers mtime -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} \
-          --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
+          system=${system} --rerun-incomplete --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
           --cluster "sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
           -c {params.threads} --mem={params.mem} -t {params.time}"
 
