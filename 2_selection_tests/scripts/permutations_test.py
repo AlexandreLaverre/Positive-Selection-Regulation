@@ -24,9 +24,9 @@ parser.add_argument("-S", "--Simulation", required=False, help="Type of simulati
 parser.add_argument("-T", "--NbThread", required=False, default=8, type=int, help="Number of threads for parallelization (default=8)")
 args = parser.parse_args()
 
-path = Path(__file__).resolve().parent.parent
+path = Path(__file__).resolve().parents[4]
 pathResults = f"{path}/results/"
-sys.path.append(f"{path}/scripts/Positive_Selection_Tests/functions/")
+sys.path.append(f"{path}/scripts/2_selection_tests/scripts/functions/")
 import SVM
 
 if args.Simulation:
