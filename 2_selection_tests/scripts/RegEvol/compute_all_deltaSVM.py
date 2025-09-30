@@ -25,11 +25,10 @@ args = parser.parse_args()
 maxSub = 150
 maxLen = 1000
 
-path = Path(__file__).resolve().parent.parent
+path = Path(__file__).resolve().parents[4]
 pathResults = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
-sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
+sys.path.append(str(path / "scripts/2_selection_tests/scripts/functions/"))
 import SVM
-
 
 ####################################################################################################
 # Return all and observed deltaSVM for a given sequence

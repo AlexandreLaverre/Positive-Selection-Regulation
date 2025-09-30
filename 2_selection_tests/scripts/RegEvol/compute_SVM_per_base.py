@@ -18,9 +18,9 @@ parser.add_argument("-T", "--NbThread", default=1, type=int, help="Number of thr
 args = parser.parse_args()
 maxLen = 1000
 
-path = Path(__file__).resolve().parent.parent
+path = Path(__file__).resolve().parent[4]
 pathResults = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}"
-sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
+sys.path.append(f"{path}/scripts/2_selection_tests/scripts/functions/")
 import SVM
 
 

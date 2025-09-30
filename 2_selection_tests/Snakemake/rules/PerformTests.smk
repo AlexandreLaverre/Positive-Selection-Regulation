@@ -27,8 +27,7 @@ rule ComputeAllDeltaSVM:
     params: time="1:00:00", mem="5G", threads=config["nbPart"]
     shell:
         """
-        python ../scripts/RegEvol/compute_all_deltaSVM.py {sp} \
-        {sample}/{wildcards.TF} {peakType} --node {AncNode} -T {threads} > {log.out} 2>&1 || exit 1
+        python ../scripts/RegEvol/compute_all_deltaSVM.py {sp} {sample}/{wildcards.TF} {peakType} --node {AncNode} -T {threads} > {log.out} 2>&1 || exit 1
         """
 
 def evaluate_time(ancestral_seq):

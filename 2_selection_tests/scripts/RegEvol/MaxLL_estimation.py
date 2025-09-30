@@ -30,10 +30,10 @@ maxSub = 150
 maxLength = 1000
 plots = False
 
-path = Path(__file__).resolve().parent.parent
+path = Path(__file__).resolve().parents[4]
 pathResults = f'{path}/results/positive_selection/{args.peakType}/{args.species}/{args.sample}/'
 pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
-sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
+sys.path.append(f"{path}/scripts/2_selection_tests/scripts/functions/")
 import MLEvol as ML
 import SVM
 
