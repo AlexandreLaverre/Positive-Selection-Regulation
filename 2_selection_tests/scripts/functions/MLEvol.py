@@ -142,7 +142,7 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
         min_pos, max_pos = 0., max(deltas_pos)
         all_phenotype += [0.5 + 0.5 * (x - min_pos) / (max_pos - min_pos)for x in deltas_pos]
 
-        print("Before: First", all_phenotype[0], "Min:", min(all_phenotype), "Max:", max(all_phenotype))
+        print("Before: First", all_phenotype[0], "Second:", all_phenotype[1], "Third:", all_phenotype[2])
         # Avoid 0 and 1 as Beta is defined on ]0, 1[
         all_phenotype[0] += 1e-10
         all_phenotype[-1] -= 1e-10
