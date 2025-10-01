@@ -144,10 +144,8 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
 
         print("Before: First", all_phenotype[0], "Second:", all_phenotype[1], "Third:", all_phenotype[2])
         # Avoid 0 and 1 as Beta is defined on ]0, 1[
-        all_phenotype[0] += 1e-10
-        all_phenotype[-1] -= 1e-10
+        all_phenotype = np.clip(all_phenotype, 1e-10, 1 - 1e-10)
 
-    print("After: Min:", min(all_phenotype), "Max:", max(all_phenotype))
     assert len(all_phenotype) == len(sorted_svm)
     assert min(all_phenotype) > 0.
     assert max(all_phenotype) < 1.
