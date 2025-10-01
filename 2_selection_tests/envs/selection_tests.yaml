@@ -8,6 +8,6 @@ dependencies:
   - numba
   - alive-progress
   - scipy
-  - numpy
+  - numpy<2
   - biopython
   - matplotlib
