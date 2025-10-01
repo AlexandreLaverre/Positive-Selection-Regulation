@@ -146,6 +146,7 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
         all_phenotype[0] += 1e-10
         all_phenotype[-1] -= 1e-10
 
+    print("Min:", min(all_phenotype), "Max:", max(all_phenotype))
     assert len(all_phenotype) == len(sorted_svm)
     assert min(all_phenotype) > 0.
     assert max(all_phenotype) < 1.
