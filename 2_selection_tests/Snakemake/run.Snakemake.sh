@@ -34,7 +34,7 @@ while [[ "$#" -gt 0 ]]; do
         --sample) sample="$2"; shift ;;
         --threads) threads="$2"; shift ;;
         --system) system="$2"; shift ;;
-        --extend_config) system="$2" ;;
+        --extend_config) system="$2"; shift ;;
         --dryRun) dryRun=true ;;
         --unlock) unlock=true ;;
         --help) show_help; exit 0 ;;
