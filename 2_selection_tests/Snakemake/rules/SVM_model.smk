@@ -13,8 +13,7 @@ pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
 rule GenerateNegativeSeq:
     message: "Generate random sequences respecting the focal sequences composition for gkm training"
     input:
-        BED = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        pkg_install = pathResults + "/log/r_pkgs_installed"
+        BED = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
     output:
         Positive_seq = pathResults + "/{TF}/Model/posSet.fa",
         Negative_seq = pathResults + "/{TF}/Model/negSet.fa"
