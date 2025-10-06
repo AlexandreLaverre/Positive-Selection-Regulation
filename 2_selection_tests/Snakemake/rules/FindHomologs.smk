@@ -36,11 +36,11 @@ rule ConvertCoordinates:
     message: "Convert coordinates to UCSC"
     input:
         peaks = pathPeaks + "/{TF}.peaks.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits.bed",
+        #summits = pathPeaks + "/{TF}.consensus_summits.bed",
         correspondence = f"{baseDir}/data/genome_sequences/{sp}/chromosome_correspondence_Ensembl2UCSC.txt"
     output:
         peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
+        #summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
     params: suffix = config[sp]["suffix"]
     shell:
         """

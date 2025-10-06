@@ -35,7 +35,7 @@ rule GetPeaks:
         """
 
 rule SubSetPeaks:
-    input: pathPeaks + "/FlyTFPeaksPrimaryTargets.tsv"
+    input: pathPeaks + "/AllOptimalFlyPeaks.tsv" #FlyTFPeaksPrimaryTargets.tsv
     output: pathPeaks + "/{TF}.peaks.bed"
     shell:
         """
