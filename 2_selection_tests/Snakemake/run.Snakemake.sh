@@ -17,14 +17,14 @@ function show_help() {
     echo "  --sp              Species (e.g., human, mouse) [required]"
     echo "  --sample          Sample name (e.g., Wilson) [required]"
     echo "  --baseDir         Path to base directory  [default: three levels up from Snakefile]"
-    echo "  --threads         Number of threads [default: 1]"
+    echo "  --threads         Number of threads us[default: 1]"
     echo "  --system          Execution mode: local or SLURM [default: local]"
     echo "  --extend_config   Add any Snakemake extended configuration parameters [default: '']"
     echo "  --dryRun          Run Snakemake in dry-run mode: true/false [default: false]"
     echo "  --unlock          Run Snakemake with the --unlock argument: true/false [default: false]"
     echo
     echo "Example:"
-    echo "  ./run.snakemake.sh --sp human --sample Wilson --threads 10 --dryRun true"
+    echo "  ./run.snakemake.sh --sp human --sample Wilson --threads 10 --dryRun --system SLURM --extend_config TF_source='bed'"
 }
 
 # Parse named arguments
@@ -77,7 +77,7 @@ echo "       Extended config: ${extend_config}"
 echo "       Dry Run:         ${dryRun}"
 echo "       Unlock:          ${unlock}"
 
-cmd="snakemake -j 64 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} system=${system}"
+cmd="snakemake -j 128 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} system=${system}"
 [[ -n "$extend_config" ]] && cmd+=" $extend_config"
 
 cmd+=" --rerun-triggers mtime  --rerun-incomplete \
