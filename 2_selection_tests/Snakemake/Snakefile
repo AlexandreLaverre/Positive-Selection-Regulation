@@ -38,7 +38,7 @@ TFs = get_TFs(config, pathPeaks)
 
 # Define specificity for rules
 if config["system"] == "SLURM":
-    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ModelPrediction, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, SimpleOverlapFile, MergeAllChromosome
+    localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, SimpleOverlapFile, MergeAllChromosome
 else:
     localrules: all, GetPeaks, SubSetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
         InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments,ComputeAllDeltaSVM,
