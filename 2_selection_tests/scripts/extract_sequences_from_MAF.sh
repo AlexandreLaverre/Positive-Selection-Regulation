@@ -7,7 +7,7 @@ AncNode="${4:-ancestral}"
 
 #########################################################################
 # Define paths
-echo "Focal species: $path"
+echo "Working dir: $path"
 export path=${path:-"$(pwd)/../../../"}
 
 pathGenomeAlign="${path}/data/genome_alignments/${sp}/triplet_${AncNode}.maf.gz"
@@ -36,7 +36,11 @@ echo "Focal species: $sp_name"
 echo "Ancestral species: $anc_name"
 #########################################################################
 # Retrieve alignments of regions from whole genome alignment
-mafsInRegion "$BED_file" -outDir "${pathAlign}"/ "$pathGenomeAlign"
+(
+  cd "${pathAlign}" || exit
+  mafsInRegion "$BED_file" -outDir "./" "$pathGenomeAlign"
+)
+
 
 # Retrieve ancestral and focal sequences
 for ID in `cat "$BED_file" | cut -f 4`
