@@ -26,8 +26,8 @@ parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for p
 parser.add_argument("--PropNeutral", default=0.0, type=float, help="Proportion of Neutral Sub (default=0.0)")
 parser.add_argument("--ScaleNegative", default=0.0, type=float, help="Add Negative Selection correlated with deltaSVM in Random Drift")
 parser.add_argument("--SymetricNegative", default=True, help="Define if Negative Selection is symetric or not (default=True)")
-parser.add_argument("--MinStab", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
-parser.add_argument("--MinPos", default=25, type=int, help="Proportion of Neutral Sub (default=25)")
+parser.add_argument("--MinStab", default=25, type=int, help="Value of Alpha for Stabilising Selection (default=25)")
+parser.add_argument("--MinPos", default=25, type=int, help="Value of Alpha for Directional Selection (default=25)")
 parser.add_argument("--addExtreme", default=0, type=int, help="Nb of extreme mutation to add in Random Drift (default=0)")
 parser.add_argument("--runOnly", default="all", type=str, help="Write only one type of simulation: stabilising, positive, neutral or all (default=all")
 args = parser.parse_args()
@@ -37,7 +37,7 @@ path = Path(__file__).resolve().parent.parent
 PathSequence = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/sequences/"
 PathModel = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
 pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
-sys.path.append(f"{path}/scripts/2_selection_tests/functions/")
+sys.path.append(f"{path}/scripts/2_selection_tests/scripts/functions/")
 import SVM
 import MLEvol
 
