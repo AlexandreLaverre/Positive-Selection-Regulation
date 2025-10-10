@@ -33,7 +33,7 @@ parser.add_argument("--runOnly", default="all", type=str, help="Write only one t
 args = parser.parse_args()
 
 
-path = Path(__file__).resolve().parent.parent
+path = Path(__file__).resolve().parents[3]
 PathSequence = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/sequences/"
 PathModel = f"{path}/results/positive_selection/{args.peakType}/{args.species}/{args.TF}/Model/kmer_predicted_weight.txt"
 pathMatrix = f"{path}/results/substitution_matrix/{args.species}/"
