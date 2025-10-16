@@ -136,29 +136,29 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
         all_phenotype = [0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i in range(len(deltas_neg))]
         all_phenotype += [0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i in range(len(deltas_pos))]
         assert np.all(np.diff(all_phenotype) > 0)
+
     elif norm == "absolute":
         min_neg, max_neg = abs(min(deltas_neg)), 0.
         all_phenotype = [0.5 - 0.5 * abs(x) / min_neg for x in deltas_neg]
         min_pos, max_pos = 0., max(deltas_pos)
         all_phenotype += [0.5 + 0.5 * x / max_pos for x in deltas_pos]
 
-        # all_phenotype = [0. + 0.5 * (abs(x) - min_neg) / (max_neg - min_neg) for x in deltas_neg]
-        #all_phenotype += [0.5 + 0.5 * (x - min_pos) / (max_pos - min_pos)for x in deltas_pos]
     elif norm == "hybrid":
+        gamma = 0.5
         neg = np.array(deltas_neg)
         pos = np.array(deltas_pos)
 
         # Rank within negative and positive groups separately
-        neg_ranks = (np.argsort(np.argsort(neg)) + 1) / (len(neg) + 1) if len(neg) > 0 else np.array([])
-        pos_ranks = (np.argsort(np.argsort(pos)) + 1) / (len(pos) + 1) if len(pos) > 0 else np.array([])
+        neg_ranks = (np.argsort(np.argsort(neg)) + 1) / (len(neg) + 1)
+        pos_ranks = (np.argsort(np.argsort(pos)) + 1) / (len(pos) + 1)
 
         # Magnitude
-        neg_mag = np.abs(neg) / np.max(np.abs(neg)) if len(neg) > 0 else np.array([])
-        pos_mag = pos / np.max(pos) if len(pos) > 0 else np.array([])
+        neg_mag = (np.abs(neg) / np.max(np.abs(neg))) ** gamma
+        pos_mag = (pos / np.max(pos)) ** gamma
 
         # Hybrid logic: both rank and magnitude contribute (multiplicative)
-        neg_hybrid = 0.5 * (neg_ranks * neg_mag)  # maps to [0, 0.5)
-        pos_hybrid = 0.5 + 0.5 * (pos_ranks * pos_mag)  # maps to (0.5, 1]
+        neg_hybrid = 0.5 - 0.5 * ((neg_ranks + neg_mag)/2)  # maps to [0, 0.5)
+        pos_hybrid = 0.5 + 0.5 * ((pos_ranks + pos_mag)/2)  # maps to (0.5, 1]
 
         all_phenotype = np.concatenate([neg_hybrid, pos_hybrid])
 
