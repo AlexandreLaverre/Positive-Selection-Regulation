@@ -144,9 +144,26 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
 
         # all_phenotype = [0. + 0.5 * (abs(x) - min_neg) / (max_neg - min_neg) for x in deltas_neg]
         #all_phenotype += [0.5 + 0.5 * (x - min_pos) / (max_pos - min_pos)for x in deltas_pos]
+    elif norm == "hybrid":
+        neg = np.array(deltas_neg)
+        pos = np.array(deltas_pos)
 
-        # Avoid 0 and 1 as Beta is defined on ]0, 1[
-        all_phenotype = np.clip(all_phenotype, 1e-10, 1 - 1e-10)
+        # Rank within negative and positive groups separately
+        neg_ranks = (np.argsort(np.argsort(neg)) + 1) / (len(neg) + 1) if len(neg) > 0 else np.array([])
+        pos_ranks = (np.argsort(np.argsort(pos)) + 1) / (len(pos) + 1) if len(pos) > 0 else np.array([])
+
+        # Magnitude
+        neg_mag = np.abs(neg) / np.max(np.abs(neg)) if len(neg) > 0 else np.array([])
+        pos_mag = pos / np.max(pos) if len(pos) > 0 else np.array([])
+
+        # Hybrid logic: both rank and magnitude contribute (multiplicative)
+        neg_hybrid = 0.5 * (neg_ranks * neg_mag)  # maps to [0, 0.5)
+        pos_hybrid = 0.5 + 0.5 * (pos_ranks * pos_mag)  # maps to (0.5, 1]
+
+        all_phenotype = np.concatenate([neg_hybrid, pos_hybrid])
+
+    # Avoid 0 and 1 as Beta is defined on ]0, 1[
+    all_phenotype = np.clip(all_phenotype, 1e-10, 1 - 1e-10)
 
     assert len(all_phenotype) == len(sorted_svm)
     assert min(all_phenotype) > 0.
@@ -256,8 +273,10 @@ def run_estimations(all_svm, all_svm_id, obs_svm, sub_mat_proba, alpha_threshold
         mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba, norm="ranked")
     elif bins == "exact_absolute":
         mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba, norm="absolute")
+    elif bins == "exact_hybrid":
+        mutations_proba, obs_bins, scaled_bins = get_svm_exact(all_svm, obs_svm, all_svm_id, sub_mat_proba, norm="hybrid")
     else:
-        raise ValueError("Bins method should be in: 'quantile', 'hist', 'exact_ranked', 'exact_absolute'")
+        raise ValueError("Bins method should be in: 'quantile', 'hist', 'exact_ranked', 'exact_absolute' or 'exact_hybrid'")
 
     total_bins = len(mutations_proba)
 
