@@ -136,11 +136,14 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
         all_phenotype = [0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i in range(len(deltas_neg))]
         all_phenotype += [0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i in range(len(deltas_pos))]
         assert np.all(np.diff(all_phenotype) > 0)
-    else:
+    elif norm == "absolute":
         min_neg, max_neg = abs(min(deltas_neg)), 0.
-        all_phenotype = [0. + 0.5 * (abs(x) - min_neg) / (max_neg - min_neg) for x in deltas_neg]
+        all_phenotype = [0.5 - 0.5 * abs(x) / min_neg for x in deltas_neg]
         min_pos, max_pos = 0., max(deltas_pos)
-        all_phenotype += [0.5 + 0.5 * (x - min_pos) / (max_pos - min_pos)for x in deltas_pos]
+        all_phenotype += [0.5 + 0.5 * x / max_pos for x in deltas_pos]
+
+        # all_phenotype = [0. + 0.5 * (abs(x) - min_neg) / (max_neg - min_neg) for x in deltas_neg]
+        #all_phenotype += [0.5 + 0.5 * (x - min_pos) / (max_pos - min_pos)for x in deltas_pos]
 
         # Avoid 0 and 1 as Beta is defined on ]0, 1[
         all_phenotype = np.clip(all_phenotype, 1e-10, 1 - 1e-10)
