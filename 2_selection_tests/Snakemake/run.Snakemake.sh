@@ -80,7 +80,7 @@ echo "       Unlock:          ${unlock}"
 cmd="snakemake -j 128 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} system=${system}"
 [[ -n "$extend_config" ]] && cmd+=" $extend_config"
 
-cmd+=" --rerun-triggers input --rerun-incomplete --keep-going \
+cmd+=" --rerun-triggers mtime --rerun-incomplete --keep-going \
        --use-conda --conda-frontend mamba --conda-prefix .snakemake/conda \
        --cluster 'sbatch -p cpu -N 1 -o ${pathLog}/slurm.out_${Prefix} -e ${pathLog}/slurm.err_${Prefix} \
        -c {params.threads} --mem={params.mem} -t {params.time}'"
