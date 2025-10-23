@@ -177,16 +177,15 @@ SubMats, SubMats_norm = SVM.get_sub_matrix(pathMatrix)
 initial_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_focal_sequences.fa"), "fasta"))
 ancestral_sequences = SeqIO.to_dict(SeqIO.parse(open(f"{PathSequence}/filtered_ancestral_sequences.fa"), "fasta"))
 
-# Find 1000 sequences with more than 1 substitution (for all deltas)
-seq_ids = []
+# Randomly select N sequences with already computed deltas
+eligible_ids = []
 for ID in initial_sequences.keys():
     nb_sub = SVM.get_sub_number(ancestral_sequences[ID], initial_sequences[ID])
     chr = ID.split(':')[0]
     if chr in SubMats.keys() and 20 <= len(initial_sequences[ID]) <= 1000 and nb_sub > 1:
-        seq_ids.append(ID)
+        eligible_ids.append(ID)
 
-    if len(seq_ids) == args.Nsimul:
-        break
+seq_ids = random.sample(eligible_ids, args.Nsimul)
 
 Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
 
