@@ -185,7 +185,7 @@ for ID in initial_sequences.keys():
     if chr in SubMats.keys() and 20 <= len(initial_sequences[ID]) <= 1000 and nb_sub > 1:
         eligible_ids.append(ID)
 
-seq_ids = random.sample(eligible_ids, args.Nsimul)
+seq_ids = np.random.choice(eligible_ids, args.Nsimul, replace=True)
 
 Stabilised_dict, Positive_dict, Neutral_dict = {}, {}, {}
 
