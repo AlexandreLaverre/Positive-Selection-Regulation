@@ -7,6 +7,7 @@ dependencies:
   - pandas
   - numba
   - alive-progress
+  - bedtools
   - scipy
   - numpy<2
   - biopython

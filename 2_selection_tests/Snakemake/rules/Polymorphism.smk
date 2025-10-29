@@ -39,18 +39,13 @@ rule VCF_BED_overlap:
     input:
         vcf = baseDir + '/data/polymorphism/'+ vcf_prefix + '{chrom}' + vcf_suffix,
         BED_peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
-    output:
-        overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf",
-        overlap_vcf_gz= pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
+    output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="1:00:00",mem="1G",threads=1
-    log: out = pathPolymorphism + "/log/VCF_BED_{TF}_{chrom}_overlap.out"
+    conda: "../../envs/selection_tests.yaml"
     shell:
         """
-        echo "vcf: {input.vcf}" > {log.out}
-        echo "BED: {input.BED_peaks}" >> {log.out}
         mkdir -p {pathPolymorphism}/{wildcards.TF}/VCF
-        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header > {output.overlap_vcf} 2>> {log.out}
-        gzip -c {output.overlap_vcf} > {output.overlap_vcf_gz} 2>> {log.out}
+        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 2>> {log.out}
         """
 
 rule SimpleOverlapFile:
