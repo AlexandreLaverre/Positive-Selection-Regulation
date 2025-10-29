@@ -77,7 +77,7 @@ echo "       Extended config: ${extend_config}"
 echo "       Dry Run:         ${dryRun}"
 echo "       Unlock:          ${unlock}"
 
-cmd="snakemake -j 128 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} system=${system}"
+cmd="snakemake -j 1 --config sp=${sp} sample=${sample} nbPart=${threads} baseDir=${baseDir} system=${system}"
 [[ -n "$extend_config" ]] && cmd+=" $extend_config"
 
 cmd+=" --rerun-triggers mtime --rerun-incomplete --keep-going \
