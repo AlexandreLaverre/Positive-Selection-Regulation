@@ -52,7 +52,7 @@ rule ModelValidation:
     output: touch(pathResults + "/{TF}/Model/{TF}.cvpred.txt")
     log: out = pathResults + "/log/{TF}/ModelValidation.out"
     threads: config["ModelThreads"]
-    params: time="20:00:00", mem="5G", threads=config["ModelThreads"]
+    params: time="24:00:00", mem="5G", threads=config["ModelThreads"]
     conda: "../../envs/training_gkm.yaml"
     shell:
         """
