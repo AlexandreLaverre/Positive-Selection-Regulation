@@ -44,8 +44,8 @@ rule VCF_BED_overlap:
     log: out = pathPolymorphism + "/log/VCF_BED_{TF}_{chrom}_overlap.out"
     shell:
         """ 
-        echo "vcf: {input.vcf}" >&2
-        echo "BED: {input.BED_peaks}" >&2
+        echo "vcf: {input.vcf}" > {log.out}
+        echo "BED: {input.BED_peaks}" >> {log.out}
         mkdir -p {pathPolymorphism}/{wildcards.TF}/VCF
         bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 2> {log.out} 
         """
