@@ -41,10 +41,11 @@ rule VCF_BED_overlap:
         BED_peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed"
     output: overlap_vcf = pathPolymorphism + "/{TF}/VCF/filtered_{chrom}.vcf.gz"
     params: time="1:00:00",mem="1G",threads=1
+    log: out = pathPolymorphism + "/log/VCF_BED_{TF}_{chrom}_overlap.out"
     shell:
         """ 
         mkdir -p {pathPolymorphism}/{wildcards.TF}/VCF
-        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 
+        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header | gzip > {output.overlap_vcf} 2> {log.out} 
         """
 
 rule SimpleOverlapFile:
@@ -53,7 +54,7 @@ rule SimpleOverlapFile:
     output: pathPolymorphism + "/{TF}/VCF/overlap_peaks.txt"
     shell:
         """
-        zcat {input} | grep -v '^#' | awk '{{print $NF, $2, $3}}' | sort -u > {output}
+        zcat {input} | grep -v '^#' | awk '{{print $NF, $2, $3}}' | sort -u > {output} 
         """
 
 rule ComputeDeltaSVM_Reference:
