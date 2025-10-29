@@ -48,9 +48,9 @@ rule VCF_BED_overlap:
         """
         echo "vcf: {input.vcf}" > {log.out}
         echo "BED: {input.BED_peaks}" >> {log.out}
-        mkdir -p {pathPolymorphism} / {wildcards.TF} / VCF >> {log.out} 2 > & 1
-        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header > {output.overlap_vcf} 2 >> {log.out}
-        gzip -c {output.overlap_vcf} > {output.overlap_vcf_gz} 2 >> {log.out}
+        mkdir -p {pathPolymorphism}/{wildcards.TF}/VCF
+        bedtools intersect -a {input.vcf} -b {input.BED_peaks} -wb -header > {output.overlap_vcf} 2>> {log.out}
+        gzip -c {output.overlap_vcf} > {output.overlap_vcf_gz} 2>> {log.out}
         """
 
 rule SimpleOverlapFile:
