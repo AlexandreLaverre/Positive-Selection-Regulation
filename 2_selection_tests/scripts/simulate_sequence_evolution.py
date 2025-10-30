@@ -72,7 +72,8 @@ def get_simulated_sequences(seq_id, method=args.Method):
     chromosome = seq_id.split(':')[0]
     sub_mat_proba = SubMats[chromosome]
     sub_mat_proba_norm = SubMats_norm[chromosome]
-    nsub = np.random.randint(2, args.MaxMut+1)
+    #nsub = np.random.randint(2, args.MaxMut+1)
+    nsub = np.random.choice(np.arange(2, args.MaxMut + 1, 2))
 
     if method == "500_rounds":
         # Simulate 500 sequences
@@ -142,12 +143,13 @@ def get_simulated_sequences(seq_id, method=args.Method):
         pos_sub_rates = MLEvol.proba_substitution(p, mut_rates, pheno_array)
         pos_sub_rates = add_background_neutral(pos_sub_rates, mut_rates, prop_neutral=args.PropNeutral)
 
+        # When selection is too strong, possible mutations can be less than 2
         nb_possible_mut = len(pos_sub_rates[pos_sub_rates > 0])
         if nb_possible_mut < 2:
             print(f"Sequence {seq_id} has not enough possible mutations")
             exit(1)
-
         nsub = np.random.randint(2, min(args.MaxMut+1, nb_possible_mut))
+
         # Mutate sequences
         stab_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, stab_sub_rates, nsub)
         pos_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, pos_sub_rates, nsub)
