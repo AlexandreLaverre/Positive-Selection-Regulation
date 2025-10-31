@@ -73,7 +73,8 @@ def get_simulated_sequences(seq_id, method=args.Method):
     sub_mat_proba = SubMats[chromosome]
     sub_mat_proba_norm = SubMats_norm[chromosome]
     #nsub = np.random.randint(2, args.MaxMut+1)
-    nsub = np.random.choice(np.arange(2, args.MaxMut + 1, 2))
+    #nsub = np.random.choice(np.arange(2, args.MaxMut + 1, 2))
+    nsub = np.random.choice([28, 29, 30])
 
     if method == "500_rounds":
         # Simulate 500 sequences
@@ -148,7 +149,8 @@ def get_simulated_sequences(seq_id, method=args.Method):
         if nb_possible_mut < 2:
             print(f"Sequence {seq_id} has not enough possible mutations")
             exit(1)
-        nsub = np.random.randint(2, min(args.MaxMut+1, nb_possible_mut))
+        if nb_possible_mut < nsub:
+            nsub = nb_possible_mut
 
         # Mutate sequences
         stab_id = SVM.mutate_from_sub_rates(original_seq, mut_ids, stab_sub_rates, nsub)
