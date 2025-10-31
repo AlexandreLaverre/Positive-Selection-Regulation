@@ -72,9 +72,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
     chromosome = seq_id.split(':')[0]
     sub_mat_proba = SubMats[chromosome]
     sub_mat_proba_norm = SubMats_norm[chromosome]
-    #nsub = np.random.randint(2, args.MaxMut+1)
-    #nsub = np.random.choice(np.arange(2, args.MaxMut + 1, 2))
-    nsub = np.random.choice([28, 29, 30])
+    nsub = np.random.randint(2, args.MaxMut+1)
 
     if method == "500_rounds":
         # Simulate 500 sequences
