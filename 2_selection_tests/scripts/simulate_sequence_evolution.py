@@ -147,9 +147,8 @@ def get_simulated_sequences(seq_id, method=args.Method):
         if nb_possible_mut < 2:
             print(f"Sequence {seq_id} has not enough possible mutations")
             exit(1)
-        if nb_possible_mut >= 30:
-            nsub = 30
-        elif nb_possible_mut < nsub:
+
+        if nb_possible_mut < nsub:
             nsub = nb_possible_mut
 
         # Mutate sequences
