@@ -26,7 +26,7 @@ parser.add_argument("--quantile", default=0.01, type=float, help="Quantile for p
 parser.add_argument("--PropNeutral", default=0.0, type=float, help="Proportion of Neutral Sub (default=0.0)")
 parser.add_argument("--ScaleNegative", default=0.0, type=float, help="Add Negative Selection correlated with deltaSVM in Random Drift")
 parser.add_argument("--SymetricNegative", default=True, help="Define if Negative Selection is symetric or not (default=True)")
-parser.add_argument("--MinStab", default=25, type=int, help="Value of Alpha for Stabilising Selection (default=25)")
+parser.add_argument("--MinStab", default=25, type=float, help="Value of Alpha for Stabilising Selection (default=25)")
 parser.add_argument("--MinPos", default=25, type=int, help="Value of Alpha for Directional Selection (default=25)")
 parser.add_argument("--addExtreme", default=0, type=int, help="Nb of extreme mutation to add in Random Drift (default=0)")
 parser.add_argument("--runOnly", default="all", type=str, help="Write only one type of simulation: stabilising, positive, neutral or all (default=all")
