@@ -73,6 +73,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
     sub_mat_proba = SubMats[chromosome]
     sub_mat_proba_norm = SubMats_norm[chromosome]
     nsub = np.random.randint(2, args.MaxMut+1)
+    nsub = 30
 
     if method == "500_rounds":
         # Simulate 500 sequences
@@ -133,7 +134,8 @@ def get_simulated_sequences(seq_id, method=args.Method):
             rand_sub_rates = add_negative_sel(pheno_array, rand_sub_rates,
                                               scale=args.ScaleNegative, symetric=args.SymetricNegative)
 
-        p_stab = args.MinStab #random.randint(args.MinStab, 10)
+        #p_stab = args.MinStab #random.randint(40, 10)
+        p_stab = random.randint(40, 50)
         stab_sub_rates = MLEvol.proba_substitution(np.array([p_stab]), mut_rates, pheno_array)
         stab_sub_rates = add_background_neutral(stab_sub_rates, mut_rates, prop_neutral=args.PropNeutral)
 
@@ -147,10 +149,7 @@ def get_simulated_sequences(seq_id, method=args.Method):
         if nb_possible_mut < 2:
             print(f"Sequence {seq_id} has not enough possible mutations")
             exit(1)
-
-        if nb_possible_mut >= 25:
-            nsub = np.random.randint(25, args.MaxMut + 1)
-        else:
+        if nb_possible_mut < nsub:
             nsub = nb_possible_mut
 
         # Mutate sequences
