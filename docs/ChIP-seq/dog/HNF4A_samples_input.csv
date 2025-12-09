@@ -1,9 +1,0 @@
-sample,fastq_1,fastq_2,antibody,control
-HNF4A_cfa3,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235743.fastq.gz,,HNF4A,input_DNA_cfa3
-HNF4A_cfa3,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235758.fastq.gz,,HNF4A,input_DNA_cfa3
-HNF4A_cfa3,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235774.fastq.gz,,HNF4A,input_DNA_cfa3
-HNF4A_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235772.fastq.gz,,HNF4A,input_DNA_cfa4
-HNF4A_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235790.fastq.gz,,HNF4A,input_DNA_cfa4
-input_DNA_cfa3,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235777.fastq.gz,,,
-input_DNA_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235751.fastq.gz,,,
-input_DNA_cfa4,/work/FAC/FBM/DEE/mrobinso/evolseq/DetectPosSel/data/ChIP-seq/dog/ERR235742.fastq.gz,,,
