@@ -54,7 +54,7 @@ Before running the pipelines, ensure the following tools are installed on your s
 
 This workflow also depends on:
 
-- **[Snakemake](https://snakemake.readthedocs.io/)** ≥ X.Y : to run the RegEvol pipeline.
+- **[Snakemake](https://snakemake.readthedocs.io/)** : to run the RegEvol pipeline.
 - **[Nextflow](https://www.nextflow.io/)** : to run the ChIP-seq calling pipeline.
 
 ### Option 1: Use your existing installation  
