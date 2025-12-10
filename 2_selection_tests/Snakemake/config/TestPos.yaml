@@ -17,6 +17,14 @@ peakType: 'NarrowPeaks'
 system: 'local'
 TF_source: "config"
 ModelThreads: 4
+run_targets:
+    - archive_alignments
+    - model
+    - MaxLLTest
+    - PermutTest
+    - model_validation
+    - get_ovelap_SNP
+    #- SNP_to_delta
 
 # Data Parameters
 species: ['human', 'mouse', 'caroli', 'spretus', 'rat', 'macaca', 'dog', 'rabbit', 'chicken', 'cat', 'drosophila']

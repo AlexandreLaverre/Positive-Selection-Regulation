@@ -10,7 +10,7 @@ path <- "/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/
 pathPoly="/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/polymorphism_analyses/NarrowPeaks/drosophila/modERN/"
 pathFigures <- "/Users/alaverre/Documents/Detecting_positive_selection/final_figures/"
 sp = "drosophila"
-minsub=5
+minsub=2
 
 method="exact_ranked_ancestral" 
 AllMerged = paste0(path, "allMLE_drosophila_", method, "_", minsub, "sub_all_exp.Rds")
@@ -188,12 +188,12 @@ pD <- ggplot(fisher_df2, aes(x = odds_ratio, y = -log10(FDR), color = color_grou
     legend.position = c(0.25, 0.8))
 
 # Display plots
-combine <- (pA | pB) / (pC | pD) / (p1 | p2) +
+combine <- (pA | pB) / (pC | pD) / (nb_peaks | ratio) +
   plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(size = 18, face = "bold"))
 combine
 
 # Save figure
-ggsave(paste0(pathFigures, "Figure5_4sub_drosophila.png"), plot = combine, width = 11, height = 14, dpi = 320)
-ggsave(paste0(pathFigures, "Figure5_4sub_drosophila.pdf"), plot = combine, width = 11, height = 14, dpi = 320)
+ggsave(paste0(pathFigures, "Figure5_", minsub, "sub_drosophila_last.png"), plot = combine, width = 11, height = 14, dpi = 320)
+ggsave(paste0(pathFigures, "Figure5_", minsub, "sub_drosophila_last.pdf"), plot = combine, width = 11, height = 14, dpi = 320)
 

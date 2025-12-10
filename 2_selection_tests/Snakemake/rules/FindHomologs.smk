@@ -1,4 +1,4 @@
-# Implement rules to retrieve ChiP-seq consensus peaks summits and to find their homologous using HALPER
+# Implement rules to retrieve ChiP-seq consensus peaks summits
 from snakemake.io import directory, expand
 import os
 
@@ -8,7 +8,7 @@ peakType = config["peakType"]
 baseDir = os.path.abspath(config["baseDir"])
 
 pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks/{sp}/{sample}"
 
 rule ConsensusSummits:
     message: "Get consensus summits"
@@ -45,17 +45,4 @@ rule ConvertCoordinates:
     shell:
         """
         python ../scripts/utils/convert.BED.chrNames.py {sp} {sample} {wildcards.TF} {baseDir} {params.suffix} 
-        """
-
-rule runHALPER:
-    message: "Get homologous peaks using HALPER"
-    input:
-        peaks = pathPeaks + "/{TF}.peaks_UCSC_names.bed",
-        summits = pathPeaks + "/{TF}.consensus_summits_UCSC_names.bed"
-    output: peaks = directory(baseDir +"/results/homologous_peaks/" + sp + "/{TF}/liftover/")
-    log: out = pathResults + "/log/runHALPER_{TF}.out"
-    container: "quay.io/comparative-genomics-toolkit/cactus:v3.0.0"
-    shell:
-        """
-        ../scripts/peaks_evolution/run.HALPER.sh {sp} {wildcards.TF}  > {log.out} 2>&1 
         """

@@ -133,11 +133,13 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
 
     # Transform deltas to phenotype: min=0, max=1, midpoint of the distribution = 0.5 (for delta = 0)
     if norm == "ranked":
+        # Scale based on rank
         all_phenotype = [0. + 0.5 * (i + 1) / (len(deltas_neg) + 1) for i in range(len(deltas_neg))]
         all_phenotype += [0.5 + 0.5 * (i + 1) / (len(deltas_pos) + 1) for i in range(len(deltas_pos))]
         assert np.all(np.diff(all_phenotype) > 0)
 
     elif norm == "absolute":
+        # Scale based on absolute values
         min_neg, max_neg = abs(min(deltas_neg)), 0.
         all_phenotype = [0.5 - 0.5 * abs(x) / min_neg for x in deltas_neg]
         min_pos, max_pos = 0., max(deltas_pos)
@@ -156,7 +158,7 @@ def get_svm_exact(all_svm, obs_svm, all_svm_ids, sub_mat_proba, norm="ranked", g
         neg_mag = (np.abs(neg) / np.max(np.abs(neg))) ** gamma
         pos_mag = (pos / np.max(pos)) ** gamma
 
-        # Hybrid logic: both rank and magnitude contribute (multiplicative)
+        # Hybrid logic: both rank and magnitude contribute
         neg_hybrid = 0.5 - 0.5 * ((neg_ranks + neg_mag)/2)  # maps to [0, 0.5)
         pos_hybrid = 0.5 + 0.5 * ((pos_ranks + pos_mag)/2)  # maps to (0.5, 1]
 

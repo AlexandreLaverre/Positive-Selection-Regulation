@@ -25,7 +25,7 @@ parser.add_argument("-T", "--NbThread", required=False, default=8, type=int, hel
 args = parser.parse_args()
 
 path = Path(__file__).resolve().parents[3]
-pathResults = f"{path}/results/"
+pathResults = f"{path}/cluster/results/"
 sys.path.append(f"{path}/scripts/2_selection_tests/scripts/functions/")
 import SVM
 
@@ -35,27 +35,14 @@ if args.Simulation:
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_focal_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{args.NbRand}permutations_simulation_{args.Simulation}.txt", "w")
 
-    # pathJialin = "/Users/alaverre/Documents/Detecting_positive_selection/Tools/JialinTool/data/mouse/sequences/"
-    # Ancestral_fasta = f"{pathJialin}{seq}_filtered_ancestor.fa"
-    # Focal_fasta = f"{pathJialin}{seq}_filtered_focal.fa"
-    # Output = open(f"{pathSelection}PosSelTest_deltaSVM_mouse_triplets_{seq}{SimulSel_flag}.txt", "w")
-    # Ancestral_fasta = pathSelection + "sequences/simulated_sequences_" + str(args.Simul) + "_mut.fa"
-
-    # pathSelection = f"{path}positive_selection/{args.species}/simulation_mutational_steps/"
-    # seq = f"{args.TF}_{args.sample}"
-    # Focal_fasta = pathSelection + "sequences/first_focal_sequences.fa"
-    # Output = open(f"{pathSelection}PosSelTest_deltaSVM_{str(args.Simul)}_mutations.txt", "w")
-    # Distrib_simul = open(f"{pathSelection}Distrib_{str(args.Simul)}_mutations.txt", "w")
 else:
     pathSelection = f"{pathResults}/positive_selection/{args.peakType}/{args.species}/{args.sample}/{args.TF}/"
     Ancestral_fasta = f"{pathSelection}/sequences/filtered_{args.node}_sequences.fa"
     Focal_fasta = f"{pathSelection}/sequences/filtered_focal_{args.node}_sequences.fa"
     Output = open(f"{pathSelection}/Tests/PosSelTest_deltaSVM_{str(args.NbRand)}permutations_two_tailed_{args.node}.txt", "w")
-    #NegativeSet = f"{path}/results/positive_selection/{args.peakType}/{args.species}/delta_negative_set/{args.TF}/PosSelTest_deltaSVM_1000permutations.txt"
 
 ModelEstimation = f"{pathSelection}/Model/kmer_predicted_weight.txt"
 pathSubMat = f"{pathResults}/substitution_matrix/{args.species}/"
-
 
 ####################################################################################################
 # Get random sequences according to substitution matrix

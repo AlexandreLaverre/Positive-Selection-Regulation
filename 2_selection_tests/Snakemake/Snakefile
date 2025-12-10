@@ -35,48 +35,42 @@ pathPolymorphism = os.path.join(baseDir, "results/polymorphism_analyses", peakTy
 print(f"[INFO] Results will be stored in: {baseDir}/results/")
 # Retrieve TFs
 TFs = get_TFs(config, pathPeaks)
+print("[INFO] Transcription Factors defined for this experiment:", ', '.join(TFs))
 
+########################################################################################################################
 # Define specificity for rules
 if config["system"] == "SLURM":
     localrules: all, GetPeaks, SubSetPeaks, BED_split, ConcatSeq, ConsensusSummits, ChromosomeCorrespondence, ConvertCoordinates, DownloadVCF, SimpleOverlapFile, MergeAllChromosome
 else:
-    localrules: all, GetPeaks, SubSetPeaks,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
-        InferAncestralPairwise,GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments,ComputeAllDeltaSVM,
+    localrules: all, GetPeaksFromBowtie, SubSetPeaksmoDERN,GenerateNegativeSeq,ModelTraining,ModelValidation,ModelPrediction,BED_split,
+        GetSequencesMultiple,ConcatSeq,PermutationTest,ArchiveAlignments,ComputeAllDeltaSVM,
         MergeAllChromosome, MaxLLTest, ComputeDeltaSVM_Reference, ChromosomeCorrespondence, ConvertCoordinates,
         DownloadVCF, SimpleOverlapFile
 
-# Define from which type of alignments ancestral sequences should be obtained
-if config["AlignType"] == "pairwise":
-    ruleorder: InferAncestralPairwise > GetSequencesMultiple
-else:
-    ruleorder: GetSequencesMultiple > InferAncestralPairwise
-
 # Define how to obtain the peaks BED file
 if config["TF_source"] == "config":
-    ruleorder: GetPeaks > SubSetPeaks
+    ruleorder: GetPeaksFromBowtie > SubSetPeaksmoDERN
 else:
-    ruleorder: SubSetPeaks > GetPeaks
+    ruleorder: SubSetPeaksmoDERN > GetPeaksFromBowtie
 
 ruleorder: ComputeDeltaSVM_Reference > ComputeAllDeltaSVM
-print("[INFO] Transcription Factors defined for this experiment:", ', '.join(TFs))
+
+########################################################################################################################
+# Define all possible outputs
+all_outputs = {
+    "archive_alignments": expand(os.path.join(pathResults, "{TF}", f"alignments_{AncNode}.archive.tar.gz"), TF=TFs),
+    "model": expand(os.path.join(pathResults, "{TF}", "Model", f"{TF}.model.txt"), TF=TFs),
+    "MaxLLTest": expand(os.path.join(pathResults, "{TF}", "Tests", f"MLE_summary_{BinType}_{AncNode}.csv"), TF=TFs),
+    "PermutTest": expand(os.path.join(pathResults, "{TF}", "Tests", f"PosSelTest_deltaSVM_{nbRand}permutations_two_tailed_{AncNode}.txt"), TF=TFs),
+    "model_validation": expand(os.path.join(pathResults,"{TF}", "Model", f"{TF}.cvpred.txt"), TF=TFs),
+    "get_overlap_SNP": expand(os.path.join(pathPolymorphism, "{TF}", "overlap_peaks.txt"), TF=TFs),
+}
+# Select which targets to run based on config
+selected_targets = []
+for key in config.get("run_targets", []):
+    if key in all_outputs:
+        selected_targets += all_outputs[key]
+
 ########################################################################################################################
 rule all:
-    input :
-        #archive = expand(os.path.join(pathResults,"{TF}",f"alignments_{AncNode}.archive.tar.gz"),TF=TFs),
-        #model= expand(os.path.join(pathResults, "{TF}", "Model", f"{{TF}}.model.txt"),TF=TFs),
-        MaxLLTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"MLE_summary_{BinType}_{AncNode}.csv"), TF=TFs),
-        PermutTest = expand(os.path.join(pathResults, "{TF}", "Tests", f"PosSelTest_deltaSVM_{nbRand}permutations_two_tailed_{AncNode}.txt") ,TF=TFs),
-
-        model_validation= expand(os.path.join(pathResults,"{TF}", "Model", f"{{TF}}.cvpred.txt"),TF=TFs),
-        get_overlap_SNP = expand(os.path.join(pathPolymorphism+ "/{TF}/overlap_peaks.txt"),TF=TFs),
-        #SNP_to_delta= expand(pathPolymorphism + "/{TF}/SNP_SelectionCoefficient.txt", TF=config["TFs"][sample])
-
-########################################################################################################################
-# TMP run on all species
-#def generate_file_paths(file_pattern):
-#    return [
-#        file_pattern.format(sp=sp, sample=sample, TF=TF)
-#        for sp in config["species"]
-#        for sample in config[sp]["sample"]
-#        for TF in config["TFs"][sample]
-#    ]
+    input : selected_targets

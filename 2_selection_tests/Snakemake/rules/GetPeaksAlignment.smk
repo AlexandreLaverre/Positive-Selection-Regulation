@@ -9,10 +9,10 @@ AncNode = config["AncNode"]
 baseDir = os.path.abspath(config["baseDir"])
 
 pathResults = f"{baseDir}/results/positive_selection/{peakType}/{sp}/{sample}"
-pathPeaks = f"{baseDir}/results/peaks_calling/{peakType}/{sp}/{sample}"
+pathPeaks = f"{baseDir}/results/peaks/{sp}/{sample}"
 PeaksFolder = f"{pathPeaks}/bowtie2/mergedLibrary/macs2/narrowPeak/"
 
-rule GetPeaks:
+rule GetPeaksFromBowtie:
     message: "Retrieve ChIP peaks with a meaningful ID"
     input: SubstiMatrixes=f"{baseDir}/results/substitution_matrix/{sp}/"
     output: Peaks = pathPeaks + "/{TF}.peaks.bed"
@@ -34,7 +34,7 @@ rule GetPeaks:
         rm {pathPeaks}/{wildcards.TF}_coord {pathPeaks}/{wildcards.TF}_IDs
         """
 
-rule SubSetPeaks:
+rule SubSetPeaksmoDERN:
     input: pathPeaks + "/AllOptimalFlyPeaks.tsv" #FlyTFPeaksPrimaryTargets.tsv
     output: pathPeaks + "/{TF}.peaks.bed"
     shell:
@@ -50,24 +50,6 @@ rule BED_split:
         """
         mkdir -p {pathResults}/log/
         split -d -n l/{config[nbPart]} {input.BED_file} {pathResults}/log/{wildcards.TF}/part1
-        """
-
-
-rule InferAncestralPairwise:
-    message: "!!! Deprecated !! Infer ancestral sequences from pairwise alignments"
-    input:
-        GenomeAlignment = f"{baseDir}/data/genome_alignments/{sp}/triplet_{AncNode}.maf.gz",
-        BED_file_part = pathResults + "/log/{TF}/part{part}",
-        Positive_seq = pathResults + "/{TF}/Model/posSet.fa"
-    output: touch(pathResults + "/log/{TF}/GetAncestral_part{part}_done")
-    log: out = pathResults + "/log/{TF}/GetAncestral_part{part}.out"
-    params: time="2:00:00",mem="1G",threads=1
-    conda: "../../envs/maf_alignment.yaml"
-    shell:
-        """
-        mkdir -p {pathResults}/{wildcards.TF}/Alignments/
-        python ../scripts/InferAncestralPairwise.py {sp} {sample} {wildcards.TF} \
-        {input.BED_file_part} {config[AncMethod]} > {log.out} 2>&1 
         """
 
 rule GetSequencesMultiple:
@@ -120,15 +102,6 @@ rule ConcatSeq:
         # Make sequences in uppercase to remove potential soft repeat mask 
         awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_focal_filtered} > {output.concat_focal_upper}
         """
-
-#pathSister="{pathResults}/{wildcards.TF}/Alignments/sister_sequences"
-#concat_sister          = pathResults + "/{TF}/sequences/all_sister_{AncNode}_sequences.fa",
-#concat_sister_filtered = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences.fa",
-#concat_sister_upper    = pathResults + "/{TF}/sequences/filtered_sister_{AncNode}_sequences_upper.fa"
-# Get all corresponding sister species's sequences in one file
-#find $pathSister -name "*nogap.fa" -size +0 -exec cat {{}} + > {output.concat_sister}
-# #seqtk subseq {output.concat_sister} {output.list_ancestral} > {output.concat_sister_filtered}
-#awk '/^>/ {{print($0)}}; /^[^>]/ {{print(toupper($0))}}' {output.concat_sister_filtered} > {output.concat_sister_upper}
 
 rule ArchiveAlignments:
     message: "Create an archive file containing all alignments"

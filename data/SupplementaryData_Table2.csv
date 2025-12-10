@@ -1,0 +1,741 @@
+Gene,Type,Strain,Stage,Update,Antibody,Domain,Method,Date,Peaks,External_Repository,Notes
+ADD1,DNA replication,ADD1-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,7083,ENCSR957HDY,ENCODE bams
+ADD1,DNA replication,CG8290,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,11006,ENCSR245QIG,ENCODE bams
+ADD1,DNA replication,CG8290,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,1846,ENCSR856SZD,ENCODE bams
+ATbp,TF,ATbp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4292,ENCSR025MAQ,ENCODE bams
+Abd-B,TF,Abd-B-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,5190,ENCSR465HPZ,ENCODE bams
+Abd-B,TF,Abd-B-GFP,wanderingthirdinstarlarva,,ab290,,site-specific recombination,17/06/2017,238,ENCSR692UBK,ENCODE bams
+Ada2b,chromatin factor,Ada2b-GFP,embryonic,,ab290,,site-specific recombination,16/04/2021,4990,ENCSR992BYJ,E0-24
+Adf1,TF,Adf1-GFP,embryonic,,ab290,,site-specific recombination,04/03/2021,5607,ENCSR229TGN,E6-18
+Aef1,TF,Aef1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/02/2021,4971,ENCSR676IZR,E0-24
+Antp,TF,AntP-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4068,ENCSR082RBU,ENCODE bams
+Asciz,TF,CG14962-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4119,ENCSR829XOQ,ENCODE bams
+Atf-2,TF,Atf-2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2980,ENCSR963YPQ,ENCODE bams
+Atf3,TF,A3-3-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2519,ENCSR120TCW,ENCODE bams
+Atf6,TF,Atf6-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,10/03/2021,5846,ENCSR696YTM,E0-24
+Awh,TF,Awh-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,5814,ENCSR728JEY,E0-24
+B-H1,TF,B-H1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,3467,ENCSR779XKY,E8-24
+B-H2,TF,B-H2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3862,ENCSR795MVJ,ENCODE bams
+BEAF-32,chromatin factor,BEAF-32-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,10203,ENCSR533CXT,ENCODE bams
+Bdp1,TF,CG9305-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3339,ENCSR504AYW,ENCODE bams
+Bgb,TF co-regulator,Bgb-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,6393,ENCSR867JOP,0-24
+Blimp-1,TF,Blimp-1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,12832,ENCSR378UYF,ENCODE bams
+Blimp-1,TF,Blimp-1-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,6497,ENCSR492FKR,ENCODE bams
+BtbVII,TF,BtbVII-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/12/2016,3131,ENCSR393QBI,ENCODE bams
+BuGZ,TF,CG17912-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,1390,ENCSR796MDV,ENCODE bams
+C15,TF,C15-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,08/02/2021,2265,ENCSR417AYH,E0-24
+CG10147,TF,CG10147-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,4261,ENCSR599WVE,ENCODE bams
+CG10209,TF,CG10209-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4854,ENCSR021VXG,ENCODE bams
+CG1024,TF,CG1024-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/01/2022,3992,ENCSR640JVH,E0-24
+CG10274,TF,CG10274-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,2214,ENCSR421ILX,ENCODE bams
+CG10321,TF,CG10321-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,3468,ENCSR181QJY,E0-24
+CG10348,TF,CG10348-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,12/11/2020,1934,ENCSR505DOL,2
+CG10366,TF,CG10366-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,5153,ENCSR299JLA,E0-24
+CG10431,TF,CG10431-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,3867,ENCSR844XMJ,ENCODE bams
+CG10462,TF,CG10462-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,2724,ENCSR864LDV,ENCODE bams
+CG10543,TF,CG10543-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,5672,ENCSR450VJF,ENCODE bams
+CG10565,RNA binding,CG10565-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1232,ENCSR226MOG,ENCODE bams
+CG10631,TF,CG10631-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,12047,ENCSR751FSX,ENCODE bams
+CG10654,TF,CG10654-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,3766,ENCSR313RIH,ENCODE bams
+CG10669,TF,CG10669-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,7532,ENCSR968GUV,ENCODE bams
+CG10949,TF,CG10949-GFP,embryonic,,ab290,,site-specific recombination,01/12/2022,4592,,E0-18
+CG10959,TF,CG10959-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/06/2021,3434,ENCSR589TPK,E0-8
+CG10979,TF,CG10979-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,11873,ENCSR155UQM,ENCODE bams
+CG11085,TF,CG11085-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/09/2021,3170,ENCSR949HEJ,0-24
+CG11093,TF,CG11093-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,15/10/2020,3560,ENCSR928CNH,E0-24
+CG11247,TF,CG11247-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/06/2021,4495,ENCSR244QRU,E0-24
+CG11294,TF,CG11294-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,07/07/2021,4330,ENCSR756QLO,WPP+1
+CG11398,TF,CG11398-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2752,ENCSR486MQI,ENCODE bams
+CG11456,TF,CG11456-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/06/2021,6683,ENCSR512TAI,E0-18
+CG11504,TF,CG11504,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,13689,ENCSR227BSJ,ENCODE bams
+CG11560,TF,CG11560,embryonic,,goat-anti-GFP-UC,,site-specific recombination,06/07/2021,3351,ENCSR589OBZ,E0-24
+CG11617,TF,CG11617-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,9757,ENCSR287NIU,ENCODE bams
+CG11695,TF,CG11695-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,5976,ENCSR123OZS,E0-24
+CG11696,TF,CG11696-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/09/2021,3752,ENCSR489NTY,0-24
+CG11723,TF,CG11723-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3331,ENCSR796JXT,ENCODE bams
+CG11902,TF,CG11902-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,4552,ENCSR919WAW,ENCODE bams
+CG11906,TF,CG11906-GFP,embryonic,,ab290,,site-specific recombination,16/02/2023,8949,,E0-24
+CG11966,TF,CG11966-GFP,embryonic,,ab290,,site-specific recombination,04/12/2022,3283,,E6-24
+CG12071,TF,CG12071-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,6098,ENCSR521NPD,ENCODE bams
+CG12104,TF,CG12104-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,2494,ENCSR676ZTM,ENCODE bams
+CG12155,TF,CG12155-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,5249,ENCSR149KUC,ENCODE bams
+CG12219,TF,CG12219-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3904,ENCSR645UUT,ENCODE bams
+CG12236,TF,CG12236-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2471,ENCSR044IDQ,ENCODE bams
+CG12299,TF,CG12299,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,2562,ENCSR028DHQ,ENCODE bams
+CG1233,TF,CG1233-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,4738,ENCSR321YHE,ENCODE bams
+CG12391,TF,CG12391-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,11300,ENCSR483VVZ,ENCODE bams
+CG12605,TF,CG12605-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,7010,ENCSR242INW,1
+CG12659,chromatin factor,CG12659-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,7146,ENCSR027AMS,ENCODE bams
+CG12744,TF,CG12744-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3142,ENCSR950LBC,ENCODE bams
+CG12768,TF,CG12768-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,3069,ENCSR923RDP,ENCODE bams
+CG12769,TF,CG12769,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,14692,ENCSR964YKJ,ENCODE bams
+CG12942,TF,CG12942-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,3692,ENCSR139RDU,ENCODE bams
+CG13123,TF,CG13123-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,4252,ENCSR982RGH,ENCODE bams
+CG13204,TF,CG13204-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,11163,ENCSR476TPB,ENCODE bams
+CG13287,TF,CG13287-GFP,embryonic,,ab290,,site-specific recombination,01/08/2022,7031,ENCSR207TGU,E6-24
+CG13296,TF,CG13296-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,8311,ENCSR789TLW,ENCODE bams
+CG13775,TF,CG13775-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,5172,ENCSR861RPB,ENCODE bams
+CG13894,TF,CG13894,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,9910,ENCSR718USP,ENCODE bams
+CG13897,TF,CG13897-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/02/2021,3236,,"E0-18, needs BDSC#"
+CG14014,TF,CG14014-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/02/2021,5675,ENCSR706YKU,E0-24
+CG14050,TF,CG14050-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,3534,ENCSR302KZT,0-24
+CG14441,TF,CG14441-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/08/2021,5823,ENCSR139HZF,E0-24
+CG14655,TF,CG14655-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,9717,ENCSR237AMN,ENCODE bams
+CG14667,TF,CG14667-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,3552,ENCSR132JFU,E0-24
+CG14710,TF,CG14710,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,13399,ENCSR423NEB,ENCODE bams
+CG14711,TF,CG14711-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,3897,ENCSR187IVR,ENCODE bams
+CG14860,TF,CG14860-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,3816,ENCSR241LUF,E0-24
+CG14965,TF,CG14965-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1209,ENCSR354KRW,ENCODE bams
+CG15011,TF,CG15011-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,5026,ENCSR608VFH,ENCODE bams
+CG15073,TF,CG15073-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,1065,ENCSR340CQF,ENCODE bams
+CG15269,TF,CG15269-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,9404,ENCSR484ZCC,ENCODE bams
+CG1529,TF,CG1529-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3686,ENCSR485XWP,ENCODE bams
+CG15336,TF,CG15336-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,10787,ENCSR973YDX,WPP+2
+CG15436,TF,CG15436-GFP,embryonic,,ab290,,site-specific recombination,20/10/2022,3367,,E0-24
+CG15514,TF,CG15514-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,6758,ENCSR800TLY,ENCODE bams
+CG15601,TF,CG15601,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,6971,ENCSR237PJC,ENCODE bams
+CG15696,TF,CG15696,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,4757,ENCSR186ZKW,ENCODE bams
+CG15710,TF,CG15710-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,11457,ENCSR577TRI,ENCODE bams
+CG15812,TF,CG15812-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,2631,ENCSR292WNJ,ENCODE bams
+CG1602,TF,CG1602-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,3994,ENCSR386BKJ,ENCODE bams
+CG1603,TF,CG1603,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,10086,ENCSR680NFF,ENCODE bams
+CG1620,TF,CG1620-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3000,ENCSR551YOZ,ENCODE bams
+CG1647,TF,CG1647-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2864,ENCSR141ZKI,ENCODE bams
+CG1663,TF,CG1663-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,12580,ENCSR418KGH,ENCODE bams
+CG16779,TF,CG16779-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,2705,ENCSR965LOI,E8-24
+CG16779,TF,CG16779-MiMIC,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,9697,ENCSR846PTH,ENCODE bams
+CG16813,TF,CG16813-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,5365,ENCSR091FCM,E0-8
+CG16815,TF,CG16815-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3317,ENCSR870KTR,ENCODE bams
+CG16863,TF,CG16863-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3592,ENCSR848GYF,ENCODE bams
+CG17186,TF,CG17186-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2915,ENCSR336ZDD,ENCODE bams
+CG17328,TF,CG17328-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/01/2022,6152,ENCSR213XWH,E0-24
+CG17359,TF,CG17359,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,9524,ENCSR890AWM,ENCODE bams
+CG17361,TF,CG17361-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,26/01/2021,8878,ENCSR593IEE,E0-24
+CG17385,TF,CG17385-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,6084,ENCSR296MRL,ENCODE bams
+CG17568,TF,CG17568-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,5650,ENCSR507PVB,ENCODE bams
+CG17612,TF,CG17612-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,2263,ENCSR888TLQ,E0-24
+CG17801,TF,CG17801-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,5369,ENCSR588OSO,ENCODE bams
+CG17802,TF,CG17802,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,2795,ENCSR165KWP,ENCODE bams
+CG17806,TF,CG17806,pupa,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,10568,ENCSR118TAH,ENCODE bams
+CG17829,TF,CG17829,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,10551,ENCSR810MLF,ENCODE bams
+CG1792,TF,CG1792-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2958,ENCSR247CPK,ENCODE bams
+CG18011,TF,CG18011-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,2620,ENCSR515HRX,ENCODE bams
+CG18262,TF,CG18262,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,12795,ENCSR143AWF,ENCODE bams
+CG18476,TF,CG18476-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2932,ENCSR194LIS,ENCODE bams
+CG18599,TF,CG18599-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,10966,ENCSR327ZQL,ENCODE bams
+CG18764,TF,CG18764-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,3685,ENCSR957XDI,ENCODE bams
+CG2116,TF,CG2116-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,5867,ENCSR456UZW,ENCODE bams
+CG2120,TF,CG2120-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,25/07/2015,9274,ENCSR168XBW,ENCODE bams
+CG2129,TF,CG2129-GFP,embryonic,,ab290,,site-specific recombination,30/08/2022,2067,ENCSR041HRT,E0-4
+CG2199,TF,CG2199-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/01/2022,8129,ENCSR200OFA,E8-24
+CG2202,TF,CG2202,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,4915,ENCSR183WTG,ENCODE bams
+CG2678,TF,CG2678,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,11281,ENCSR709YEU,ENCODE bams
+CG2712,TF,CG2712,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,10848,ENCSR443NTZ,ENCODE bams
+CG2875,Protein binding,CG2875-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2940,ENCSR082FZF,ENCODE bams
+CG2889,TF,CG2889-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/03/2021,3145,ENCSR366HMN,E0-24
+CG30020,TF,CG30020,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,8926,ENCSR317XOG,ENCODE bams
+CG3032,TF,CG3032,prepupa,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,9450,ENCSR673MPB,ENCODE bams
+CG30403,TF,CG30403-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,7949,ENCSR151WSI,ENCODE bams
+CG30431,TF,CG30431-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3478,ENCSR336HCG,ENCODE bams
+CG3065,TF,CG3065-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,2453,ENCSR101LNT,ENCODE bams
+CG31224,TF,CG31224-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,19/04/2021,3815,ENCSR767ORY,E0-24
+CG31365,TF,CG31365,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,2664,ENCSR313TWF,ENCODE bams
+CG31388,TF,CG31388-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,1615,ENCSR360TFL,ENCODE bams
+CG31441,TF,CG31441-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,26/01/2021,7408,ENCSR511YXX,E0-16
+CG31627,TF,CG31627-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,7241,ENCSR572ERS,ENCODE bams
+CG3163,TF,CG3163-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4826,ENCSR648YVN,ENCODE bams
+CG32006,TF,CG32006-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,11463,ENCSR059LML,ENCODE bams
+CG32121,TF,CG32121-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,8452,ENCSR879ZOH,WPP+2
+CG32264,Protein binding,CG32264-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1922,ENCSR965GGK,ENCODE bams
+CG32532,TF,CG32532-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/06/2021,7718,ENCSR582XIG,E8-24
+CG32767,TF,CG32767-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/11/2021,4636,ENCSR745YZM,E0-24
+CG32772,TF,CG32772-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/08/2021,5088,ENCSR797NFP,E0-24
+CG3281,TF,CG3281-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,6181,ENCSR263AYM,ENCODE bams
+CG33017,TF,CG33017,adult,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,3403,ENCSR360ERR,ENCODE bams
+CG33213,TF,CG33213-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4884,ENCSR422PMR,ENCODE bams
+CG33557,TF,CG33557-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,4892,ENCSR214LWK,ENCODE bams
+CG3407,TF,CG3407-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3423,ENCSR266CSS,ENCODE bams
+CG34224,TF,CG34224-GFP,embryonic,status as TF is not certain,ab290,,site-specific recombination,29/08/2022,4958,ENCSR901DHA,E0-24
+CG34367,TF,CG34367,pupa,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,5884,ENCSR018VBD,ENCODE bams
+CG34376,TF,CG34376-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,8352,ENCSR833EEQ,ENCODE bams
+CG34422,chromatin factor,CG34422-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,7431,ENCSR069JDM,E0-24
+CG3726,TF,CG3726-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,3204,ENCSR521RVI,E0-24
+CG3838,TF,CG3838-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1682,ENCSR891UUT,ENCODE bams
+CG3847,TF,CG3847-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/07/2021,6174,ENCSR673HOX,E0-24
+CG3919,TF,CG3919-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,8846,ENCSR418YJE,ENCODE bams
+CG3995,TF,CG3995-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,3752,ENCSR059TJM,ENCODE bams
+CG42726,TF,CG42726-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,4044,ENCSR811NLX,0-24
+CG42741,TF,CG42741-GFP,embryonic,,ab290,,site-specific recombination,25/01/2023,9191,,E6-24
+CG4282,TF,CG4282-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2154,ENCSR713FWS,ENCODE bams
+CG4318,TF,CG4318-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,7776,ENCSR059YLP,ENCODE bams
+CG4328,TF,CG4328-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2704,ENCSR459CZO,ENCODE bams
+CG43347,TF,CG9817,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,4766,ENCSR792RAL,ENCODE bams
+CG4360,TF,CG4360-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/02/2022,6198,ENCSR175GEL,E0-24
+CG43689,TF,CG43689-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2022,2088,ENCSR781HCW,E8-24
+CG44002,TF,CG34406-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,7493,ENCSR582OWB,ENCODE bams
+CG4404,TF,CG4404-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,06/07/2021,3892,ENCSR423OOM,E0-4
+CG4424,TF,CG4424-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,5169,ENCSR291ZDB,ENCODE bams
+CG4496,TF,CG4496-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,03/02/2022,12734,ENCSR509KUN,
+CG4617,TF,CG4617-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,4536,ENCSR672VJL,ENCODE bams
+CG4707,TF,CG4707-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3513,ENCSR302AQS,ENCODE bams
+CG4730,TF,CG4730-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,3571,ENCSR012VVW,E0-24
+CG4820,TF,CG4820-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,3902,ENCSR655FTR,ENCODE bams
+CG4854,TF,CG4854-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3796,ENCSR860FUA,ENCODE bams
+CG4936,TF,CG4936-GFP,embryonic,,ab290,,site-specific recombination,28/02/2023,7755,,E0-24
+CG5180,TF,CG5180-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,5309,ENCSR530BVF,ENCODE bams
+CG5245,TF,CG5245-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,3523,ENCSR961TSV,ENCODE bams
+CG5953,TF,CG5953-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,28/03/2022,3305,ENCSR496WIW,0-24
+CG6163,TF,CG6163-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,14/01/2022,12445,ENCSR967QYJ,
+CG6175,TF co-regulator,CG6175-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,10/08/2021,3694,ENCSR987LDU,E0-24
+CG6254,TF,CG6254-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2714,ENCSR233UXG,ENCODE bams
+CG6272,TF,CG6272-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,23/10/2020,3598,ENCSR911IFG,E0-24
+CG6276,TF,CG6276-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,8036,ENCSR255PHG,ENCODE bams
+CG6654,TF,CG6654-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,2130,ENCSR132XDY,ENCODE bams
+CG6683,TF,CG6683-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,19/09/2017,3725,ENCSR519DDL,ENCODE bams
+CG6689,TF,CG6689-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,6455,ENCSR910QGB,E0-24
+CG6765,TF,CG6765-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,2004,ENCSR850IRM,ENCODE bams
+CG6791,TF,CG6791-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,6091,ENCSR414IVJ,0-24
+CG6808,TF,CG6808-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,7791,ENCSR278IBK,ENCODE bams
+CG6813,TF,CG6813-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,3811,ENCSR652KCU,ENCODE bams
+CG7101,TF,CG7101,adult,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,6199,ENCSR033ZHC,ENCODE bams
+CG7271,TF,CG7271,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,1640,ENCSR924PXF,ENCODE bams
+CG7357,TF,CG7357-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,15/10/2020,4491,ENCSR121SDZ,E0-24
+CG7368,TF,CG7368-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,5612,ENCSR584XDP,ENCODE bams
+CG7372,TF,CG7372-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/03/2021,4782,ENCSR068PBQ,E0-24
+CG7556,Protein binding,CG7556-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,9166,ENCSR042FCJ,ENCODE bams
+CG7691,TF,CG7691-GFP,prepupa,,ab290,,site-specific recombination,20/10/2022,3213,,WPP
+CG7745,TF,CG7745,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,3049,ENCSR060CFV,ENCODE bams
+CG7786,TF,CG7786-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3720,ENCSR776AVR,ENCODE bams
+CG7839,Protein binding,CG7839,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,9149,ENCSR907HKG,ENCODE bams
+CG7963,TF,CG7963-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,3351,ENCSR809MZQ,0-24
+CG7987,TF,CG7987-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,6727,ENCSR681RZY,ENCODE bams
+CG8089,TF,CG8089-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3164,ENCSR764LDS,ENCODE bams
+CG8119,TF,CG8119-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,10603,ENCSR221GVM,WPP+1
+CG8159,TF,CG8159-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,12652,ENCSR790NPU,ENCODE bams
+CG8281,TF,CG8281,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,4100,ENCSR944MGS,ENCODE bams
+CG8301,TF,CG8301,pupa,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,10685,ENCSR855JSV,ENCODE bams
+CG8319,TF,CG8319-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,4203,ENCSR530MRJ,ENCODE bams
+CG8388,TF,CG8388-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,6096,ENCSR551HEY,ENCODE bams
+CG8478,TF,CG8478-GFP,embryonic,,ab290,,site-specific recombination,01/08/2022,3151,ENCSR627JXA,E0-24
+CG8478,TF,Oregon-R,unknown,,non-commercial CG8478 modENCODE antibody 1,,,24/08/2016,1556,ENCSR982KSB,ENCODE bams
+CG8478,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial CG8478 modENCODE antibody 1,,,22/12/2017,1842,ENCSR569AVN,ENCODE bams
+CG8478,TF,yellow_cinnabar_brown_speck,prepupa,,non-commercial CG8478 modENCODE antibody 1,,,27/12/2017,253,ENCSR086JMG,ENCODE bams
+CG8765,TF,CG8765-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,2877,ENCSR387WYA,E0-8
+CG8924,TF,CG8924,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,12824,ENCSR274AAR,ENCODE bams
+CG8944,TF,CG8944-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3238,ENCSR619HLP,ENCODE bams
+CG9215,TF,CG9215-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,06/07/2021,4098,ENCSR528YUT,E0-24
+CG9609,TF,CG9609-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3477,ENCSR190CJZ,ENCODE bams
+CG9705,RNA binding,CG9705-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3392,ENCSR875UKH,ENCODE bams
+CG9727,TF,CG9727-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,7079,ENCSR624PKN,ENCODE bams
+CG9876,TF,CG9876-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2272,ENCSR004RJS,ENCODE bams
+CG9932,TF,CG9932-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/06/2021,7328,ENCSR099DRZ,E8-24
+CG9948,TF,CG9948,pupa,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,9361,ENCSR132VFF,ENCODE bams
+CHES-1-like,TF,CHES-1-like-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3583,ENCSR791TWT,ENCODE bams
+CTCF,TF,CTCF-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,4935,ENCSR661BEZ,ENCODE bams
+CTCF,TF,Oregon-R,embryonic,,non-commercial CTCF modENCODE antibody 2,,,22/12/2017,3611,ENCSR918GXT,ENCODE bams
+CTCF,TF,Oregon-R,embryonic,,non-commercial CTCF modENCODE antibody 2,,,22/12/2017,4289,ENCSR711UTK,ENCODE bams
+CTPsyn,TF,CG6854-GFP,embryonic,gene is CG45071,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2327,ENCSR755ZOR,ENCODE bams
+CTPsyn,TF,CG6854-GFP,prepupa,gene is CG45071,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,7496,ENCSR660AYK,ENCODE bams
+Camta,TF,Camta-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3245,ENCSR568EBW,ENCODE bams
+Cf2,TF,Cf2-GFP,embryonic,,ab290,,site-specific recombination,24/01/2023,3253,,E0-24
+Chrac-16,chromatin factor,Chrac-16-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,4609,ENCSR097DMR,ENCODE bams
+CkIIα-i1,TF,CkIIα-i1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/04/2021,944,ENCSR931TMV,E0-18
+Clamp,TF,CG1832-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,6597,ENCSR858HYS,ENCODE bams
+Clk,TF,Clk-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1486,ENCSR904GFO,ENCODE bams
+CoRest,TF,CoRest-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,8848,ENCSR038HZR,ENCODE bams
+Coop,TF,CG1621,prepupa,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,8200,ENCSR055BAQ,ENCODE bams
+CrebA,TF,CrebA-MiMIC-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,6302,ENCSR168NHD,ENCODE bams
+CrebB,TF,CrebB,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,2827,ENCSR532BHA,ENCODE bams
+Crg-1,TF,Crg-1-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,2147,ENCSR596YNC,ENCODE bams
+D,TF,D-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4204,ENCSR894GQA,ENCODE bams
+D,TF,yellow_cinnabar_brown_speck,embryonic,,Aviva-KW3-D-D2,,,15/06/2017,892,ENCSR319MRG,ENCODE bams
+D1,TF,D1,pupa,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,5778,ENCSR800UAU,ENCODE bams
+D19A,TF,D19A,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,11315,ENCSR125CNZ,ENCODE bams
+D19B,TF,D19B-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3165,ENCSR615RMC,ENCODE bams
+Dad,Protein binding,Dad-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3702,ENCSR969UGO,ENCODE bams
+Dbx,TF,Dbx-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/03/2021,6387,ENCSR532EVV,E8-24
+Deaf1,TF,Deaf1,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,15190,ENCSR587CWK,ENCODE bams
+Dek,DNA Repair,Dek,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,6493,ENCSR547IVT,ENCODE bams
+Dfd,TF,10T-Dfd-GFP,embryonic,,non-commercial eGFP modENCODE antibody 1,,stable transfection,15/06/2017,205,ENCSR981DFR,ENCODE bams
+Dfd,TF,10T-Dfd-GFP,wanderingthirdinstarlarva,,non-commercial eGFP modENCODE antibody 1,,stable transfection,15/06/2017,2045,ENCSR098NCP,ENCODE bams
+Dfd,TF,10T-GFP,embryonic,strain is 10T-Dfd-GFP,non-commercial eGFP modENCODE antibody 1,,site-specific recombination,22/08/2016,714,ENCSR020BAG,ENCODE bams
+Dif,TF,Dif-GFP,wanderingthirdinstarlarva,,ab290,,site-specific recombination,23/07/2015,2647,ENCSR748ZJA,ENCODE bams
+Dip2,TF,Dip2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,10/03/2021,973,ENCSR288VXK,E0-18
+Dlip3,TF,Dip3-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3195,ENCSR110QRS,ENCODE bams
+Dll,TF,Dll-GFP,embryonic,,ab290,,site-specific recombination,23/08/2022,6226,ENCSR940IHI,E0-24
+Dll,TF,yellow_cinnabar_brown_speck,unknown,,non-commercial Dll modENCODE antibody 1,,,24/08/2016,1374,ENCSR556QKA,ENCODE bams
+Doc2,TF,Doc2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,1230,ENCSR417DNN,E0-18
+Doc3,TF,Doc3-GFP,embryonic,,ab290,,site-specific recombination,30/08/2022,3513,ENCSR216TTW,E0-24
+Dp,TF,Dp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,12020,ENCSR120ICM,ENCODE bams
+Dref,TF,Dref-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,06/07/2021,5583,ENCSR173XZD,E0-24
+Drgx,TF,Drgx-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/11/2021,8443,ENCSR832AOR,WPP+1
+Dsp1,chromatin factor,Dsp1-GFP,embryonic,,ab290,,site-specific recombination,28/02/2023,8280,,E0-24
+E(bx),TF,E(bx)-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,12497,ENCSR559AJG,ENCODE bams
+E(spl)m3-HLH,TF,E(spl)m3-HLH-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,4600,ENCSR671XAK,ENCODE bams
+E(spl)m5-HLH,TF,E(spl)m5-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,1837,ENCSR641KZS,ENCODE bams
+E(spl)m7-HLH,TF,HLHm7-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2453,ENCSR797YWF,ENCODE bams
+E(spl)m8-HLH,TF,E(spl)m8-HLH,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,8001,ENCSR365BOA,ENCODE bams
+E(spl)mbeta-HLH,TF,E(spl)m-beta-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,9347,ENCSR015ZUX,ENCODE bams
+E(spl)mbeta-HLH,TF,E(spl)m-beta-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,12248,ENCSR821PDI,ENCODE bams
+E(spl)mdelta-HLH,TF,E(spl)m-delta-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,2792,ENCSR758FTK,ENCODE bams
+E(spl)mgamma-HLH,TF,Esplmgamma-HLH-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,4168,ENCSR698UZG,ENCODE bams
+E(var)3-9,TF,E(var)3-9-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,2820,ENCSR929RAT,ENCODE bams
+E(z),chromatin factor,E(z)-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,6838,ENCSR032HMJ,ENCODE bams
+E2f1,TF,E2f1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,13/10/2021,5167,ENCSR576CBU,0-24
+E2f2,TF,E2F2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,8752,ENCSR180CNV,E0-24
+ERR,TF,ERR-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,4024,ENCSR904ALL,ENCODE bams
+EcR,TF,EcR-GFP,pupa,,goat-anti-GFP-UC,,stable transfection,12/04/2019,18056,ENCSR497FYG,ENCODE bams
+EcR,TF,EcR-GFP,unknown,,non-commercial eGFP modENCODE antibody 1,,stable transfection,15/06/2017,1427,ENCSR566ZYE,ENCODE bams
+EcR,TF,EcR-GFP,unknown,,non-commercial eGFP modENCODE antibody 1,,stable transfection,15/06/2017,698,ENCSR377EUZ,ENCODE bams
+Eip74EF,TF,Eip74EF-GFP,embryonic,,ab290,,stable transfection,23/08/2016,352,ENCSR547SRP,ENCODE bams
+Eip74EF,TF,Eip74EF-GFP,embryonic,,goat-anti-GFP-UC,,stable transfection,12/04/2019,7062,ENCSR150QNB,ENCODE bams
+Eip75B,TF,Eip75B-MiMIC-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,06/10/2015,9271,ENCSR410UOB,ENCODE bams
+Eip78C,TF,Eip78C-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,8505,ENCSR471YQA,ENCODE bams
+Eip93F,TF,Eip93F-MiMIC-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1947,ENCSR969SUB,ENCODE bams
+Elba2,TF,CG9883-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,2254,ENCSR932STL,ENCODE bams
+Ets21C,TF,d.ets6-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4535,ENCSR763HRS,ENCODE bams
+Ets65A,TF,ets3-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,3029,ENCSR811GFT,ENCODE bams
+Ets96B,TF,Ets96B,prepupa,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,10146,ENCSR572JUN,ENCODE bams
+Ets97D,TF,Delg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5207,ENCSR485SST,ENCODE bams
+Ets98B,TF,Ets98B-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,8788,ENCSR268GMP,WPP+2
+Fer1,TF,Fer1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,8632,ENCSR184CKS,ENCODE bams
+Fer2,TF,Fer2,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,2909,ENCSR605NFY,ENCODE bams
+Fer3,TF,Fer3,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,5447,ENCSR367SBM,ENCODE bams
+FoxK,TF,FoxK-GFP,embryonic,,ab290,,site-specific recombination,20/10/2022,3102,,E0-24
+FoxL1,TF,fd64A-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3088,ENCSR164WWJ,ENCODE bams
+FoxP,TF,fd85E-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,7234,ENCSR423GBK,ENCODE bams
+GATAd,TF,GATAd-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,1016,ENCSR245UCO,ENCODE bams
+GATAe,TF,GATAe-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/03/2021,3047,ENCSR625TAA,E0-24
+Gsc,TF,Gsc-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/08/2021,1655,ENCSR048FSW,E0-24
+Gug,TF,Gug-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/10/2020,4645,ENCSR068MPS,E0-24
+Gug,TF,Gug-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,05/02/2021,5753,ENCSR652TMY,WPP+1
+H,TF co-regulator,H-GFP,embryonic,,ab290,,site-specific recombination,20/10/2022,2717,,E0-24
+H15,TF,H15-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/08/2021,4419,ENCSR707SPH,E8-24
+H2.0,TF,H2.0-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,4590,ENCSR772DDF,E0-24
+HGTX,TF,HGTX-GFP,embryonic,,ab290,,site-specific recombination,24/01/2023,6509,,E0-24
+HHEX,TF,CG7056-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4067,ENCSR878RMZ,ENCODE bams
+HLH3B,TF,HLH3B-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/09/2021,5814,ENCSR125LUS,Aug-24
+HLH4C,TF,HLH4C-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,5164,ENCSR906ZIN,E8-24
+HLH54F,TF,HLH54F-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3857,ENCSR872ZXK,ENCODE bams
+Hand,TF,Hand-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2766,ENCSR315AML,ENCODE bams
+Hey,TF,Hey,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,3583,ENCSR418NNG,ENCODE bams
+HmgD,TF,HmgD-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2988,ENCSR425SCD,ENCODE bams
+HmgZ,TF,HmgZ,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,7023,ENCSR794HZG,ENCODE bams
+Hmr,chromatin factor,Hmr-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,6071,ENCSR324QVN,ENCODE bams
+Hmx,TF,Hmx-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1829,ENCSR493LWV,ENCODE bams
+Hnf4,TF,Hnf4-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,6762,ENCSR518MQL,ENCODE bams
+Hr3,TF,Hr3-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,4827,ENCSR690WSD,ENCODE bams
+Hr38,TF,Hr38-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,608,ENCSR271VMW,ENCODE bams
+Hr39,TF,Hr39-RC-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,7226,ENCSR982LVI,ENCODE bams
+Hr39,TF,yellow_cinnabar_brown_speck,embryonic,,Aviva-KW4-Hr39-D1,,,16/06/2017,1363,ENCSR672NRQ,ENCODE bams
+Hr4,TF,Hr4-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,8403,ENCSR196VPW,ENCODE bams
+Hr51,TF,Dhr51-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,10201,ENCSR555TTB,ENCODE bams
+Hr51,TF,Dhr51-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3377,ENCSR864SNW,ENCODE bams
+Hr78,TF,Hr78-GFP,embryonic,,ab290,,stable transfection,23/08/2016,326,ENCSR229FYE,ENCODE bams
+Hr78,TF,Hr78-GFP,embryonic,,goat-anti-GFP-UC,,stable transfection,12/04/2019,10609,ENCSR280XEB,ENCODE bams
+Hr78,TF,Hr78-GFP,wanderingthirdinstarlarva,,ab290,,stable transfection,24/08/2016,455,ENCSR107VQE,ENCODE bams
+Hr83,TF,Hr83-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,3377,ENCSR239YEX,ENCODE bams
+Hr96,TF,Hr96-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3330,ENCSR358XYO,ENCODE bams
+Hsf,TF,Hsf-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5318,ENCSR189NRY,ENCODE bams
+Jarid2,chromatin factor,Jarid2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4981,ENCSR388YUZ,ENCODE bams
+Jra,TF,Jra-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,3758,ENCSR471GSA,ENCODE bams
+Kah,TF,kah-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3734,ENCSR161YRO,ENCODE bams
+Klf15,TF,Bteb2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4650,ENCSR810MQU,ENCODE bams
+Kr,TF,Kr-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1360,ENCSR156QJC,ENCODE bams
+Kr-h1,TF,Kr-h1-GFP,embryonic,,ab290,,site-specific recombination,19/02/2023,8356,,E0-24
+Lhr,chromatin factor,Lhr-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,3660,ENCSR272DEA,ENCODE bams
+Lim3,TF,Lim3-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/12/2020,1500,ENCSR110JOZ,E8-24
+Lpt,chromatin factor,13T-exd-GFP,embryonic,,non-commercial Lpt modENCODE antibody 1,,stable transfection,24/08/2016,486,ENCSR376EUJ,ENCODE bams
+Lpt,chromatin factor,Lpt-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,5990,ENCSR303EBD,ENCODE bams
+M1BP,TF,CG9797-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,4950,ENCSR517LBX,ENCODE bams
+MBD-R2,TF,MBD-R2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,23/03/2021,7544,ENCSR717UAO,E0-24
+MESR4,TF,MESR4-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,11219,ENCSR295CRU,ENCODE bams
+MTF-1,TF,MTF-1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,2474,ENCSR261RKJ,ENCODE bams
+Mabi,TF,CG15479-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,9390,ENCSR161OBF,ENCODE bams
+Mad,TF,Mad-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3369,ENCSR875FVD,ENCODE bams
+Max,TF,Max-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4179,ENCSR672KPS,ENCODE bams
+Med,TF,Med-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6094,ENCSR476LOS,ENCODE bams
+Mef2,TF,Mef2-GFP,embryonic,,ab290,,site-specific recombination,24/01/2023,10570,,E0-24
+Meics,TF,Meics-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,6624,ENCSR775WXN,ENCODE bams
+Mes2,TF,Mes2-GFP,embryonic,,ab290,,site-specific recombination,20/02/2023,2866,,E0-24
+Mes4,DNA replication,Mes4-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2907,ENCSR517HVR,ENCODE bams
+Met,TF,Met-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,9358,ENCSR363SHZ,ENCODE bams
+Mnt,TF,Mnt-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5935,ENCSR855PBX,ENCODE bams
+Mondo,TF,Mio-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,968,ENCSR609RLI,ENCODE bams
+Mrtf,TF,Mrtf-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/07/2021,4033,ENCSR817ZOL,E0-24
+Myb,TF,Myb-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5501,ENCSR393AKW,ENCODE bams
+Myc,TF,Myc-GFP,embryonic,,KW1-dm-D1,,,24/08/2016,112,ENCSR949RDZ,ENCODE bams
+Myc,TF,dm-GFP,embryonic,strain is Myc-GFP,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3299,ENCSR999ZCR,ENCODE bams
+Myc,TF,yellow_cinnabar_brown_speck,wanderingthirdinstarlarva,,sc-28208,,,22/08/2016,3494,ENCSR191VCQ,ENCODE bams
+N,TF co-regulator,Notch-GFP,wanderingthirdinstarlarva,,ab290,,stable transfection,24/08/2016,1439,ENCSR829ZIC,ENCODE bams
+NC2alpha,TF,NC2alpha-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2015,ENCSR476OSZ,ENCODE bams
+NC2beta,TF,NC2beta-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4809,ENCSR682NHG,ENCODE bams
+NFAT,TF,NFAT-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,19/07/2021,4924,ENCSR375YXB,E0-24
+NK7.1,TF,NK7.1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1949,ENCSR021FJA,ENCODE bams
+Neu2,TF,Neu2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1287,ENCSR296ASC,ENCODE bams
+Nf-YA,TF,Nf-YA-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,3354,ENCSR326ASP,0-24
+Nf-YB,TF,Nf-YB-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,9834,ENCSR134NKA,ENCODE bams
+Nf-YC,TF,Nf-Yc,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,11322,ENCSR012MXT,ENCODE bams
+NfI,TF,NfI-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,5736,ENCSR085FSS,ENCODE bams
+Oaz,TF,Oaz-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/12/2020,2846,ENCSR668AXV,E0-24
+OdsH,TF,OdsH-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,8209,ENCSR833LUF,ENCODE bams
+OdsH,TF,OdsH-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,6458,ENCSR824HQS,ENCODE bams
+Oli,TF,Oli-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,7552,ENCSR139BJY,ENCODE bams
+Opbp,TF,Opbp-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,5686,ENCSR175RNN,0-24
+Optix,TF,Optix-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,3523,ENCSR031QSB,E0-24
+PHDP,TF,PHDP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,9639,ENCSR909XXF,ENCODE bams
+Pdp1,TF,Pdp1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,12916,ENCSR339IEZ,ENCODE bams
+Pdp1,TF,Pdp1-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4372,ENCSR005MLL,ENCODE bams
+Pif1A,Unknown,Pif1A-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,9725,ENCSR945XEH,ENCODE bams
+Pif1B,Protein binding,Pif1B-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,7859,ENCSR453UOF,ENCODE bams
+Plzf,TF,CG6792-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,7288,ENCSR332DSH,ENCODE bams
+Poxn,TF,Poxn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/04/2021,1488,ENCSR804DDF,E0-24
+Ptx1,TF,Ptx1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/11/2021,7439,ENCSR401EGK,E0-24
+REPTOR,TF,CG13624-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5533,ENCSR460LRT,ENCODE bams
+REPTOR-BP,TF,CG18619-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3866,ENCSR271ZJI,ENCODE bams
+Rabex-5,Guanine Nucleotide Exchange Factors,CG9139-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4453,ENCSR219AHM,ENCODE bams
+Ravus,TF co-regulator,Ravus-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/04/2021,1653,ENCSR524LOH,E0-24
+Rel,TF,Rel,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,13056,ENCSR138MDE,ENCODE bams
+Rel,TF,Rel-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1628,ENCSR291KUB,ENCODE bams
+Rfx,TF,Rfx-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,08/07/2021,9250,ENCSR471KCF,E0-24
+RunxB,TF,RunxB-GFP,embryonic,,ab290,,site-specific recombination,01/12/2022,3500,,E6-24
+Rx,TF,Rx-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,28/03/2022,3476,ENCSR065NEA,0-24
+SREBP,TF,SREBP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,8499,ENCSR288BZG,ENCODE bams
+Scr,TF,Scr-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,5742,ENCSR400ZYC,E0-24
+Sidpn,TF,Sidpn-GFP,embryonic,,ab290,,site-specific recombination,20/10/2022,3833,,E8-24
+Sidpn,TF,side-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4164,ENCSR069AWH,ENCODE bams
+Sin3A,Chromatin factor,Sin3A-GFP,embryonic,,non-commercial Sin3A modENCODE antibody 1,,,27/12/2017,371,ENCSR264MBG,ENCODE bams
+Sin3A,Chromatin factor,yellow_cinnabar_brown_speck,embryonic,,non-commercial Sin3A modENCODE antibody 1,,,27/12/2017,4138,ENCSR976PEM,ENCODE bams
+Six4,TF,Six4-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,3674,ENCSR176PDW,ENCODE bams
+Smox,TF,Smox-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,10844,ENCSR308HCJ,ENCODE bams
+Snoo,TF,snoo-MiMIC,pupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,8119,ENCSR613JPW,ENCODE bams
+Sox100B,TF,Sox100B-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,6747,ENCSR663AGU,ENCODE bams
+Sox102F,TF,Sox102F-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,8314,ENCSR281ORM,ENCODE bams
+Sox102F,TF,Sox102F-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,11651,ENCSR731HHO,ENCODE bams
+Sox14,TF,Sox14-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,8894,ENCSR745UIJ,ENCODE bams
+Sox15,TF,Sox15-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,4240,ENCSR202QJA,ENCODE bams
+SoxN,TF,SoxN-GFP,embryonic,,ab290,,site-specific recombination,04/12/2022,4615,,E0-24
+Sp1,TF,Sp1-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,11450,ENCSR603LBA,ENCODE bams
+Spps,TF,Spps,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,3213,ENCSR788JUU,ENCODE bams
+Sry-beta,TF,Sry-beta-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3248,ENCSR917WWZ,ENCODE bams
+Sry-delta,TF,Sry-delta-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,9418,ENCSR648DJA,ENCODE bams
+Ssrp,chromatin factor,Ssrp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,7511,ENCSR633IKC,ENCODE bams
+Stat92E,TF,Stat92E-GFP,embryonic,,ab290,,stable transfection,23/08/2016,331,ENCSR494UZY,ENCODE bams
+Stat92E,TF,Stat92E-GFP,embryonic,,goat-anti-GFP-UC,,stable transfection,12/04/2019,5851,ENCSR290OJD,ENCODE bams
+Su(H),TF,Su(H)-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3079,ENCSR325UBZ,ENCODE bams
+Su(H),TF,Su(H)-GFP,embryonic,,sc-25761,,,24/08/2016,21750,ENCSR736AKA,ENCODE bams
+Su(H),TF,yellow_cinnabar_brown_speck,embryonic,,sc-25761,,,01/09/2016,399,ENCSR175KWV,ENCODE bams
+Su(var)2-10,Transferase,Suvar2-10-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1234,ENCSR637GDK,ENCODE bams
+Su(var)2-HP2,Chromatin factor,Su(var)2-HP2,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,3466,ENCSR867RUX,ENCODE bams
+Su(var)205,Chromatin factor,yellow_cinnabar_brown_speck,embryonic,,PRB-291C,,,22/12/2017,400,ENCSR857XGK,ENCODE bams
+Su(var)205,Chromatin factor,yellow_cinnabar_brown_speck,embryonic,,ab24726,,,22/12/2017,89,ENCSR420PGU,ENCODE bams
+Su(var)205,Chromatin factor,yellow_cinnabar_brown_speck,embryonic,,ab24726,,,27/12/2017,423,ENCSR724EKO,ENCODE bams
+Su(var)3-7,Chromatin factor,Su(var)3-7-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6440,ENCSR589XWJ,ENCODE bams
+Su(var)3-9,chromatin factor,yellow_cinnabar_brown_speck,embryonic,,ab4811,,,22/12/2017,4472,ENCSR964LIH,ENCODE bams
+TFAM,TF,TFAM-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1458,ENCSR869ZGG,ENCODE bams
+Taf1,basal TF,Taf1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,23/03/2021,2665,ENCSR876FER,E0-24
+Tbp,basal TF,13T-exd-GFP,embryonic,,non-commercial Tbp modENCODE antibody 1,,stable transfection,24/08/2016,2296,ENCSR599DVZ,ENCODE bams
+TfAP-2,TF,TfAP-2-GFP,embryonic,,ab290,,site-specific recombination,02/12/2022,4611,,E6-24
+Trl,TF,Trl-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4138,ENCSR629WQT,ENCODE bams
+Trl,TF,yellow_cinnabar_brown_speck,embryonic,,Aviva-KW3-Trl-D2,,,15/06/2017,17037,ENCSR724XTR,ENCODE bams
+Trl,TF,yellow_cinnabar_brown_speck,embryonic,,Aviva-KW3-Trl-D2,,,17/06/2017,5179,ENCSR155JVI,ENCODE bams
+Usf,TF,Usf-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,2320,ENCSR032DLA,ENCODE bams
+Vsx1,TF,Vsx1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,5402,ENCSR564UWC,ENCODE bams
+Vsx2,TF,Vsx2-GFP,wanderingthirdinstarlarva,,ab290,,site-specific recombination,23/07/2015,2140,ENCSR816TQX,ENCODE bams
+Xbp1,TF,Xbp1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,6081,ENCSR698IEF,ENCODE bams
+Xrp1,TF,Xrp1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,05/02/2021,8735,ENCSR237HBW,E8-24
+YL-1,chromatin factor,YL-1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,5820,ENCSR396LMJ,ENCODE bams
+ZIPIC,TF,CG7928-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1610,ENCSR399FPR,ENCODE bams
+Zif,TF,Zif-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,11250,ENCSR393VQP,ENCODE bams
+ZnT49B,Membrane protein,CG8632-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,6495,ENCSR896OQW,ENCODE bams
+abd-A,TF,abd-A,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,14000,ENCSR609JDR,ENCODE bams
+ac,TF,ac-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3375,ENCSR240NHL,ENCODE bams
+achi,TF,achi-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,8993,ENCSR959SWC,ENCODE bams
+acj6,TF,acj6-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,8214,ENCSR317SVS,ENCODE bams
+al,TF,al-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,16/04/2021,3848,ENCSR473DHG,E0-24
+amos,TF,amos-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,5860,ENCSR906BIV,0-18
+aop,TF,aop-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/02/2022,1725,ENCSR308JMY,E0-24
+ap,TF,ap-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,15/12/2021,3318,ENCSR806BBT,E0-24
+apt,TF,apt-GFP,embryonic,,ab290,,site-specific recombination,01/12/2022,4050,,E0-24
+ara,TF,ara-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,31/03/2022,5483,ENCSR283CFB,E0-24
+ase,TF,ase-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,4209,ENCSR415VUK,E0-18
+ash1,chromatin factor,Ash1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,2655,ENCSR342YUI,ENCODE bams
+ato,TF,ato-GFP,embryonic,,ab290,,site-specific recombination,24/08/2022,3357,ENCSR433OUV,E0-18
+az2,TF,az2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,4878,ENCSR054BLW,ENCODE bams
+bab1,TF,bab1-RA_(bab1-s)-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,9473,ENCSR888UWA,ENCODE bams
+bab2,TF,bab2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3674,ENCSR769SFV,ENCODE bams
+bap,TF,bap-GFP,embryonic,,ab290,,site-specific recombination,26/01/2023,4890,,E0-18
+bbx,TF,bbx-GFP,embryonic,,ab290,,site-specific recombination,28/03/2022,5799,ENCSR959LNN,0-24
+bcd,TF,1T-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,4728,ENCSR167BID,ENCODE bams
+bigmax,TF,bigmax-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,2029,ENCSR224YOT,ENCODE bams
+bin,TF,bin-GFP,embryonic,,ab290,,site-specific recombination,23/02/2023,3424,,E0-24
+bowl,TF,bowl-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,2198,ENCSR163NNI,E0-24
+br,TF,br-re-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1841,ENCSR295GRP,ENCODE bams
+br,TF,br-rj-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6964,ENCSR824RLH,ENCODE bams
+br,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial br modENCODE antibody 1,,,24/08/2016,1021,ENCSR909WNS,ENCODE bams
+brk,TF,brk-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,6685,ENCSR200GOV,ENCODE bams
+bs,TF,bs-GFP,embryonic,,ab290,,site-specific recombination,25/10/2022,3203,,E0-24
+bsh,TF,bsh-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,10656,ENCSR310ZJI,ENCODE bams
+bsh,TF,bsh-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,5894,ENCSR450HPD,ENCODE bams
+btn,TF,btn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1785,ENCSR805JGA,ENCODE bams
+cad,TF,Cad-GFP-7T,embryonic,,non-commercial eGFP modENCODE antibody 1,,stable transfection,17/06/2017,2237,ENCSR004VNY,ENCODE bams
+cas,TF,cas-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,19/04/2021,2237,ENCSR260CTM,E0-24
+cato,TF,cato-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,2466,ENCSR247ZVM,ENCODE bams
+caup,TF,caup-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,5220,ENCSR239MPW,ENCODE bams
+cbt,TF,cbt-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,4724,ENCSR440JLG,E0-24
+cg,TF,cg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,16984,ENCSR766CLL,ENCODE bams
+chif,DNA replication,chif-RA-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3011,ENCSR949XGL,ENCODE bams
+chif,DNA replication,chif-RB-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5588,ENCSR032CDC,ENCODE bams
+chinmo,TF,chinmo-GFP,embryonic,,ab290,,site-specific recombination,23/08/2022,13848,ENCSR294JDU,E6-24
+chm,Transferase,chm-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/02/2022,6176,ENCSR611XWP,E0-24
+chn,TF,chn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3845,ENCSR248JJL,ENCODE bams
+ci,TF,ci-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,31/01/2022,10662,ENCSR677VHK,E0-24
+cic,TF,cic-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,10576,ENCSR073PHL,ENCODE bams
+cnc,TF,cnc-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,3620,ENCSR360YKV,ENCODE bams
+cnc,TF,yellow_cinnabar_brown_speck,adult,,KW0-CNC,,,22/08/2016,3884,ENCSR504XNN,ENCODE bams
+cnc,TF,yellow_cinnabar_brown_speck,adult,,KW0-CNC,,,22/08/2016,635,ENCSR785GVH,ENCODE bams
+corto,chromatin factor?,corto-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1904,ENCSR166XCH,ENCODE bams
+crc,TF,crc-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1932,ENCSR273JZM,ENCODE bams
+croc,TF,croc-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,15/10/2020,3650,ENCSR914YIP,E0-18
+crol,TF,crol-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/01/2022,10064,ENCSR646UNP,E0-24
+crp,TF,crp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1093,ENCSR279HMO,ENCODE bams
+crp,TF,crp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,6341,ENCSR121SPZ,ENCODE bams
+cwo,TF,cwo-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,9405,ENCSR900TNL,ENCODE bams
+cyc,TF,cyc-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6929,ENCSR007HUT,ENCODE bams
+da,TF,da-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1717,ENCSR416MJQ,ENCODE bams
+dac,TF,dac-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3638,ENCSR851UBK,ENCODE bams
+dan,TF,dan-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,1396,ENCSR562UCW,E0-8
+danr,TF,danr-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/11/2020,2799,ENCSR098MLT,E0-24
+dati,TF,dati-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,28/03/2022,1915,ENCSR730OSA,Aug-24
+dimm,TF,dimm-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,1942,ENCSR445JGO,0-24
+disco-r,TF,disco-r-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1784,ENCSR532YPP,ENCODE bams
+dl,TF,dl-small-GFP,wanderingthirdinstarlarva,,ab290,,site-specific recombination,23/07/2015,3020,ENCSR484YRI,ENCODE bams
+dmrt11E,TF,dmrt11E-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,8403,ENCSR365IMJ,ENCODE bams
+dmrt93B,TF,dmrt93B-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,4160,ENCSR900SLE,ENCODE bams
+dmrt99B,TF,dmrt99B-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,11060,ENCSR948EEN,ENCODE bams
+dpn,TF,dpn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/08/2016,5881,ENCSR722RUT,ENCODE bams
+dpn,TF,dpn-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4909,ENCSR339ZDU,ENCODE bams
+drm,TF,drm-GFP,embryonic,,ab290,,site-specific recombination,28/01/2023,5936,,E0-24
+dsf,TF,dsf-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,4095,ENCSR229DNL,ENCODE bams
+dsx,TF,dsx-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,13873,ENCSR128VHN,ENCODE bams
+dve,TF,dve-GFP,embryonic,,ab290,,site-specific recombination,22/02/2023,7011,,E0-24
+dysf,TF,dysf-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/07/2021,7959,ENCSR522KTT,E8-24
+eg,TF,eg-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,14/01/2022,11724,ENCSR552DCE,2
+elB,basal TF,elB-GFP,embryonic,,ab290,,site-specific recombination,24/01/2023,8564,,E0-24
+emc,TF,emc-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1698,ENCSR603QIJ,ENCODE bams
+ems,TF,16T-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3564,ENCSR771CMI,ENCODE bams
+en,TF,3T-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2790,ENCSR952TDU,ENCODE bams
+erm,TF,erm-GFP,embryonic,,ab290,,site-specific recombination,24/08/2022,3484,,E0-24
+esg,TF,esg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/03/2021,4419,ENCSR428CQN,E0-24
+esn,Protein binding,esn-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,13700,ENCSR978CMG,ENCODE bams
+eve,TF,5T-GFP,embryonic,,non-commercial eGFP modENCODE antibody 1,,site-specific recombination,15/06/2017,516,ENCSR550SQH,ENCODE bams
+eve,TF,5T-GFP,embryonic,,non-commercial eGFP modENCODE antibody 1,,site-specific recombination,15/06/2017,8496,ENCSR235MSK,ENCODE bams
+ewg,TF,ewg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,5605,ENCSR444JKK,ENCODE bams
+exex,TF,exex,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,12158,ENCSR974OVB,ENCODE bams
+ey,TF,ey-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6319,ENCSR855AGQ,ENCODE bams
+eyg,TF,eyg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2318,ENCSR504JFN,ENCODE bams
+fd102C,TF,fd102C-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,1698,ENCSR498KAT,ENCODE bams
+fd19B,TF,fd19B-GFP,embryonic,,ab290,,site-specific recombination,24/01/2023,4440,,E0-4
+fd3F,TF,fd3F-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,3918,ENCSR122VFA,ENCODE bams
+fd59A,TF,fd59A-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,4612,ENCSR870BBY,ENCODE bams
+fd96Ca,TF,fd96Ca-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,04/01/2021,8373,ENCSR319PSC,WPP+1
+fd96Cb,TF,fd96Cb,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,5341,ENCSR796DJB,ENCODE bams
+fkh,TF,fkh-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,10553,ENCSR786ALB,ENCODE bams
+foxo,TF,foxo-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,806,ENCSR548EHZ,ENCODE bams
+foxo,TF,foxo-MiMIC-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,9132,ENCSR985TNB,ENCODE bams
+fru,TF,fru-MiMIC-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,9064,ENCSR631PLV,ENCODE bams
+fru,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial fru modENCODE antibody 1,,,01/09/2016,594,ENCSR069DFE,ENCODE bams
+ftz-f1,TF,ftz-f1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,8011,ENCSR741KZZ,ENCODE bams
+gce,TF,gce-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,3770,ENCSR865KPF,Aug-24
+gcm,TF,gcm-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,8601,ENCSR776VNR,ENCODE bams
+gcm2,TF,gcm2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3223,ENCSR407MOM,ENCODE bams
+gem,TF,gem,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,15132,ENCSR469KTM,ENCODE bams
+gfzf,TF,gfzf-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,8376,ENCSR621PCK,ENCODE bams
+gl,TF,gl,pupa,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,6896,ENCSR472URU,ENCODE bams
+grau,TF,grau,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,12281,ENCSR199FME,ENCODE bams
+grh,TF,grh-GFP,wanderingthirdinstarlarva,,ab290,,site-specific recombination,23/07/2015,3195,ENCSR677CBX,ENCODE bams
+grn,TF,grn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,7724,ENCSR909QHH,ENCODE bams
+gro,TF co-regulator,gro-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6323,ENCSR981DLO,ENCODE bams
+gsb,TF,gsb-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,06/07/2021,2888,ENCSR103OZL,E0-18
+gsb-n,TF,gsb-n,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,6186,ENCSR414EAT,ENCODE bams
+gt,TF,gt-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/06/2022,1861,ENCSR944GCA,E0-18
+h,TF,15T-GFP,wanderingthirdinstarlarva,gene is hry,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,10176,ENCSR461AXL,ENCODE bams
+h,TF,h-GFP,embryonic,"strain is 15T-GFP, gene is hry",Aviva-KW3-h-D1,,,24/08/2016,15569,ENCSR890MZY,ENCODE bams
+ham,TF,ham-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,1495,ENCSR473WNJ,E0-24
+hb,TF,hb-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,3779,ENCSR391EHB,E0-24
+hbn,TF,hbn-GFP,embryonic,,ab290,,site-specific recombination,01/08/2022,3735,ENCSR029JYB,E0-18
+her,TF,her-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,5946,ENCSR505XFU,ENCODE bams
+hkb,TF,hkb-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,7220,ENCSR502VRR,E0-24
+hkb,TF,yellow_cinnabar_brown_speck,embryonic,,Aviva-KW3-hkb-D1,,,15/06/2017,2259,ENCSR692JFG,ENCODE bams
+hng1,TF,CG9437-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,4270,ENCSR965XSS,ENCODE bams
+hng2,TF,CG8359-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,1610,ENCSR335WXQ,ENCODE bams
+hth,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial hth modENCODE antibody 1,,,16/06/2017,3627,ENCSR249JVE,ENCODE bams
+ind,TF,ind-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,5354,ENCSR486EPD,ENCODE bams
+insv,TF,insv-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,6482,ENCSR492KRE,ENCODE bams
+insv,TF,insv-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,925,ENCSR713PDJ,ENCODE bams
+insv,TF,insv-GFP,embryonic,,non-commercial insv modENCODE antibody 1,,,24/08/2016,14719,ENCSR989SYT,ENCODE bams
+inv,TF,inv-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,3406,ENCSR126PUC,E0-24
+jigr1,TF,jigr1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/12/2020,2350,ENCSR543DKH,E0-24
+jim,TF,jim-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,1764,ENCSR978WED,ENCODE bams
+jing,TF,jing-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,5126,ENCSR749USJ,ENCODE bams
+jumu,TF,jumu-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3507,ENCSR946VDB,ENCODE bams
+kay,TF,kay-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,3420,ENCSR269HHK,ENCODE bams
+kay,TF,kay-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,4330,ENCSR172KOI,ENCODE bams
+ken,TF,ken-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,2356,ENCSR981TIE,E0-24
+ken,TF,ken-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,28/03/2022,5335,ENCSR642CTA,0-24
+klu,TF,klu-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/07/2021,3126,ENCSR343RCX,E0-24
+kmg,TF,CG5204-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2273,ENCSR804FUX,ENCODE bams
+kni,TF,kni-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,10467,ENCSR579WFC,ENCODE bams
+knrl,TF,knrl-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,4977,ENCSR105NBC,E0-24
+l(1)sc,TF,l(1)sc-GFP,embryonic,,ab290,,site-specific recombination,18/02/2023,7760,,E0-16
+l(3)neo38,TF,l(3)neo38-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,7219,ENCSR643EOU,ENCODE bams
+lab,TF,lab-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,11580,ENCSR990VZW,ENCODE bams
+lbe,TF,lbe-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3838,ENCSR392ANZ,ENCODE bams
+lilli,TF,lilli-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,6999,ENCSR801AQB,ENCODE bams
+lmd,TF,lmd-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/07/2021,6406,ENCSR244OOB,E0-18
+lms,TF,lms,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,8575,ENCSR092TNF,ENCODE bams
+lola,TF,lola-J-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,9712,ENCSR292EYZ,ENCODE bams
+lola,TF,lola-RI-GFP,embryonic,,ab290,,stable transfection,23/08/2016,280,ENCSR984IRI,ENCODE bams
+lola,TF,lola-RI-GFP,embryonic,,ab290,,stable transfection,23/08/2016,794,ENCSR074YRV,ENCODE bams
+lola,TF,lola-RI-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,stable transfection,12/04/2019,14888,ENCSR014ETB,ENCODE bams
+lov,TF,lov-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/02/2022,4337,ENCSR304JBT,E0-24
+lov,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial lov modENCODE antibody 1,,,01/09/2016,470,ENCSR488NXW,ENCODE bams
+luna,TF,luna-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1312,ENCSR770AUN,ENCODE bams
+lz,TF,lz-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,7612,ENCSR890OUH,ENCODE bams
+maf-S,TF,maf-S-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3518,ENCSR636TIL,ENCODE bams
+mam,TF co-regulator,mam-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4644,ENCSR948RHA,ENCODE bams
+mid,TF,mid-GFP,embryonic,,ab290,,site-specific recombination,18/02/2023,6316,,E0-24
+mirr,TF,mirr-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,8966,ENCSR593ZMJ,ENCODE bams
+mld,TF,mld-GFP,embryonic,,ab290,,site-specific recombination,01/08/2022,2996,ENCSR920JZO,E0-24
+mod(mdg4),TF co-regulator,mod(mdg4)-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,4148,ENCSR861XSB,ENCODE bams
+nau,TF,nau-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,6871,ENCSR035GCI,ENCODE bams
+nerfin-1,TF,nerfin-1,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,11132,ENCSR335NNR,ENCODE bams
+nerfin-2,TF,nerfin-2-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,3369,ENCSR769GVA,E8-24
+net,TF,net-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,9852,ENCSR399DAW,ENCODE bams
+nmo,kinase,nmo-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/12/2018,9602,ENCSR125NWX,ENCODE bams
+noc,basal TF,noc,larva,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,10954,ENCSR909HKS,ENCODE bams
+nom,TF,CG8145-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,8488,ENCSR295UVI,ENCODE bams
+nub,TF,nub-GFP,embryonic,,ab290,,site-specific recombination,16/02/2023,7177,,E0-24
+oc,TF,oc,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,9045,ENCSR266HYG,ENCODE bams
+odd,TF,odd-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,4814,ENCSR643MOM,ENCODE bams
+onecut,TF,onecut-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/10/2020,7222,ENCSR189IPH,E0-24
+org-1,TF,org-1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3516,ENCSR486EQS,ENCODE bams
+otp,TF,otp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,5060,ENCSR973FOX,0-24
+ouib,TF,CG11762-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,09/04/2016,5020,ENCSR826CFP,ENCODE bams
+ovo,TF,ovo-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,2628,ENCSR078TMF,ENCODE bams
+p53,TF,p53-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1901,ENCSR808XNJ,ENCODE bams
+pad,TF,pad-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,8202,ENCSR094HIY,ENCODE bams
+pan,TF,Hr3-GFP,embryonic,,non-commercial pan modENCODE antibody 1,,site-specific recombination,23/08/2016,166,ENCSR058DSI,ENCODE bams
+pan,TF,pan-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,7084,ENCSR042VRW,E0-24
+pan,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial pan modENCODE antibody 1,,,22/08/2016,261,ENCSR074LKQ,ENCODE bams
+pan,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial pan modENCODE antibody 1,,,22/08/2016,317,ENCSR033IIP,ENCODE bams
+pan,TF,yellow_cinnabar_brown_speck,unknown,,non-commercial pan modENCODE antibody 1,,,23/08/2016,979,ENCSR455AWG,ENCODE bams
+pan,TF,yellow_cinnabar_brown_speck,wanderingthirdinstarlarva,,non-commercial pan modENCODE antibody 1,,,23/08/2016,446,ENCSR636FRF,ENCODE bams
+pb,TF,pb-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2810,ENCSR946EAE,ENCODE bams
+pdm2,TF,pdm2-GFP,embryonic,,ab290,,site-specific recombination,24/01/2023,2194,,E0-24
+pdm3,TF,pdm3-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,8258,ENCSR518FUJ,ENCODE bams
+peb,TF,peb-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/11/2020,2845,ENCSR693KEG,E0-24
+pho,TF,pho-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3456,ENCSR681YMA,ENCODE bams
+phol,TF,phol-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,13882,ENCSR017FMO,ENCODE bams
+pita,TF,Pita-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,2358,ENCSR332BCD,ENCODE bams
+pnt,TF,pnt-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,3479,ENCSR997UIM,ENCODE bams
+prd,TF,prd-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,08/08/2021,8720,ENCSR013QWF,E0-8
+prd,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial prd modENCODE antibody 1,,,24/08/2016,236,ENCSR271OGF,ENCODE bams
+prd,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial prd modENCODE antibody 2,,,24/08/2016,494,ENCSR521GRU,ENCODE bams
+prg,TF,fu2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2805,ENCSR359ZMS,ENCODE bams
+pros,TF,pros-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,12794,ENCSR682YQM,ENCODE bams
+psq,TF,psq-GFP,embryonic,,Aviva-KW3-psq-D2,,,22/08/2016,1070,ENCSR842URM,ENCODE bams
+psq,TF,psq-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,13/01/2016,2548,ENCSR445WCZ,ENCODE bams
+psq,TF,psq-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,13/01/2016,14305,ENCSR748WWE,ENCODE bams
+psq,TF,psq-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,7370,ENCSR903DUB,ENCODE bams
+psq,TF,yellow_cinnabar_brown_speck,unknown,,Aviva-KW3-psq-D2,,,22/08/2016,335,ENCSR963PNX,ENCODE bams
+pum,RNA binding,Pum-MiMIC-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3565,ENCSR105OGL,ENCODE bams
+pzg,TF,pzg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,8680,ENCSR578RWH,ENCODE bams
+ranshi,TF,ranshi-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,15/12/2021,5373,ENCSR951RYW,E0-24
+repo,TF,repo-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2770,ENCSR522NJB,ENCODE bams
+rgr,TF,rgr-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,02/08/2016,7820,ENCSR951FDL,ENCODE bams
+rib,TF,rib-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,20/05/2021,4606,ENCSR129UZN,E0-24
+rn,TF,rn-GFP,pupa,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,3777,ENCSR042EXZ,
+ro,TF,ro-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,1969,ENCSR130TNS,E0-24
+row,TF,row-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/12/2020,13292,ENCSR943HBD,E0-24
+run,TF,run,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,3751,ENCSR392IEL,ENCODE bams
+sage,TF,sage-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2449,ENCSR756AUU,ENCODE bams
+salm,TF,salm,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,5465,ENCSR276LGX,ENCODE bams
+salr,TF,salr-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,03/08/2016,11299,ENCSR042XCV,ENCODE bams
+salr,TF,salr-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,4231,ENCSR943QAF,ENCODE bams
+sc,TF,sc-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,2961,ENCSR581LRS,ENCODE bams
+sc,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial scute modENCODE antibody 1,,,16/06/2017,103,ENCSR415SZP,ENCODE bams
+sc,TF,yellow_cinnabar_brown_speck,embryonic,,non-commercial scute modENCODE antibody 1,,,16/06/2017,114,ENCSR122IXI,ENCODE bams
+schlank,TF,schlank,embryonic,,goat-anti-GFP-UC,,site-specific recombination,29/05/2018,2136,ENCSR110JFN,ENCODE bams
+scro,TF,scro-GFP,embryonic,,ab290,,site-specific recombination,02/03/2023,4026,,E0-24
+scrt,TF,scrt-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,8909,ENCSR658VWK,ENCODE bams
+sd,TF,sd-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,16617,ENCSR591PRH,ENCODE bams
+sens,TF,sens-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,2858,ENCSR972RZE,ENCODE bams
+sens-2,TF,sens-2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/02/2022,3171,ENCSR741PHI,E0-24
+seq,TF,seq-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,5287,ENCSR435SJO,E0-24
+shn,TF,shn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3423,ENCSR373BIM,ENCODE bams
+sim,TF,sim-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,2682,ENCSR436KCT,0-24
+sima,TF,sima-RB-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1237,ENCSR390QUD,ENCODE bams
+sisA,TF,sisA-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,08/08/2021,5643,ENCSR709FCW,E0-18
+slbo,TF,slbo-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,08/08/2021,8786,ENCSR750SQL,E8-24
+slou,TF,slou-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2826,ENCSR637FPY,ENCODE bams
+slp1,TF,slp1-GFP,embryonic,,ab290,,site-specific recombination,02/12/2022,3371,,E0-24
+slp2,TF,9T-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,2659,ENCSR283UXP,ENCODE bams
+sna,TF,sna-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,4222,ENCSR081FZU,E0-24
+so,TF,so-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/11/2021,5376,ENCSR321CFC,E0-24
+sob,TF,sob-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/06/2021,7002,ENCSR229BTS,E0-24
+spab,Neuropeptide,CG8216-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,8786,ENCSR312RCJ,ENCODE bams
+sqz,TF,sqz-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,8714,ENCSR923VWW,ENCODE bams
+sr,TF,sr-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,31/01/2022,5040,ENCSR458OPJ,E8-24
+ss,TF,ss-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,11153,ENCSR893CTZ,ENCODE bams
+ss,TF,ss-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,11/09/2017,11850,ENCSR583EFI,ENCODE bams
+ssp,TF,ssp-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/09/2021,4948,ENCSR541BLD,0-24
+stc,TF,stc-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/09/2021,5084,ENCSR068FFA,0-24
+stwl,TF,stwl,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,8170,ENCSR066ITF,ENCODE bams
+su(Hw),TF,SuHw-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,8346,ENCSR761TCG,ENCODE bams
+sug,TF,sug,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,12988,ENCSR008NYP,ENCODE bams
+sv,TF,sv-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3742,ENCSR570ADO,ENCODE bams
+svp,TF,svp-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,9680,ENCSR335QAE,ENCODE bams
+tHMG1,TF,CG7045-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,3609,ENCSR978WWC,ENCODE bams
+tai,TF,tai-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,22/10/2015,2572,ENCSR443MIN,ENCODE bams
+tap,TF,tap,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,4045,ENCSR109RMR,ENCODE bams
+term,TF,term-GFP,embryonic,,ab290,,site-specific recombination,20/10/2022,92,,E0-8
+tgo,TF,tgo-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,09/09/2021,5794,ENCSR306TVS,0-24
+tin,TF,tin-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,10/04/2016,5179,ENCSR064GFC,ENCODE bams
+tio,TF,tio-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,4597,ENCSR748DHJ,ENCODE bams
+tj,TF,tj-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,21/12/2016,13837,ENCSR199TFG,ENCODE bams
+tll,TF,8T-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,12/04/2019,8354,ENCSR220HPB,ENCODE bams
+tll,TF,8T-GFP,embryonic,,non-commercial eGFP modENCODE antibody 1,,site-specific recombination,15/06/2017,1636,ENCSR553HEY,ENCODE bams
+tna,Transferase,tna-GFP,embryonic,,ab290,,site-specific recombination,26/08/2022,3500,ENCSR934WJF,E0-24
+toe,TF,toe-GFP,adult,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3642,ENCSR867MPT,ENCODE bams
+topi,TF,topi-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,8127,ENCSR165OGT,ENCODE bams
+toy,TF,toy-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/05/2021,1895,ENCSR897YWT,E0-24
+trem,TF,trem,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,6536,ENCSR104XOO,ENCODE bams
+trh,TF,trh-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,21/10/2015,1753,ENCSR153KTS,ENCODE bams
+ttk,TF,ttk-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,4745,ENCSR362ZUH,E0-24
+tup,TF,Tup-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1615,ENCSR502JHR,ENCODE bams
+twi,TF,twi,embryonic,,goat-anti-GFP-UC,,site-specific recombination,17/06/2019,9659,ENCSR119OUI,ENCODE bams
+tx,TF,tx-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3019,ENCSR793JPA,ENCODE bams
+unc-4,TF,unc-4-GFP,embryonic,,ab290,,site-specific recombination,26/08/2022,4921,ENCSR981GRF,E6-18
+unpg,TF,unpg-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,18/09/2018,9843,ENCSR394MHV,ENCODE bams
+ush,TF,ush-GFP,embryonic,,ab290,,site-specific recombination,28/01/2023,6031,,E0-24
+usp,TF,usp-GFP,embryonic,,ab290,,stable transfection,16/06/2017,215,ENCSR303MJE,ENCODE bams
+usp,TF,usp-GFP,unknown,,ab290,,stable transfection,23/08/2016,523,ENCSR711BGO,ENCODE bams
+usp,TF,usp-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,stable transfection,01/09/2016,307,ENCSR998ZQZ,ENCODE bams
+usp,TF,usp-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,stable transfection,12/04/2019,19417,ENCSR836VAV,ENCODE bams
+vnd,TF,vnd-GFP,embryonic,,ab290,,site-specific recombination,07/06/2022,3825,ENCSR555ZFT,E0-24
+vri,TF,vri-GFP,prepupa,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,12909,ENCSR224OFQ,ENCODE bams
+vvl,TF,vvl-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,04/10/2021,11692,ENCSR350VLI,E0-24
+wdn,TF,wdn-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,14/04/2021,3254,ENCSR625HUA,E0-24
+wek,TF,wek-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,3582,ENCSR316FKJ,ENCODE bams
+woc,TF,woc-GFP,wanderingthirdinstarlarva,,goat-anti-GFP-UC,,site-specific recombination,23/07/2015,9087,ENCSR933LXL,ENCODE bams
+wor,TF,wor-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,02/12/2020,3081,ENCSR321DCY,E0-18
+yki,TF co-regulator,yellow_cinnabar_brown_speck,embryonic,,non-commercial cad modENCODE antibody 1,,,27/12/2017,1141,ENCSR422OTX,ENCODE bams
+z,TF,z-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,22/12/2021,4457,ENCSR973ITX,0-24
+zen,TF,zen-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,07/12/2018,10805,ENCSR973GNK,ENCODE bams
+zen2,TF,zen2-GFP,embryonic,,ab290,,site-specific recombination,31/08/2022,3305,ENCSR615WMD,E0-6
+zf30C,TF,zf30C-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,01/02/2018,6445,ENCSR798RBJ,ENCODE bams
+zfh1,TF,zfh1-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,03/02/2022,7462,ENCSR945FQZ,E0-24
+zfh2,TF,zfh2-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,4330,ENCSR259WOE,ENCODE bams
+zld,TF,vfl-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,3300,ENCSR216AQL,ENCODE bams
+﻿ab,TF,ab-GFP,embryonic,,goat-anti-GFP-UC,,site-specific recombination,24/07/2015,1872,ENCSR140RMO,ENCODE bams
