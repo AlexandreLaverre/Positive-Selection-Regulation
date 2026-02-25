@@ -8,14 +8,16 @@ library(reshape2)
 library(ggseqlogo)
 library(patchwork)
 library(tidyr)
+library(cowplot)
 
 path = "/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/positive_selection/"
-all_MLE_list <- readRDS(paste0("/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/allMLE_list_exact_4sub.Rds"))
+pathFigure = "/Users/alaverre/Documents/Detecting_positive_selection/final_figures/"
+all_MLE_list <- readRDS(paste0("/Users/alaverre/Documents/Detecting_positive_selection/ChIP_peaks_RegEvol_exact_ranked.Rds"))
 
-#TFS=c("HNF6", "CEBPA","HNF4A", "FOXA1")
 sp="human"
 sample="Wilson"
 TFS=c("CEBPA")
+TF="CEBPA"
 rename_ID <- function(sp, IDs){
   if (sp == "drosophila"){
     IDs <- gsub(".*CTCF", "CTCF", IDs)
@@ -25,11 +27,10 @@ rename_ID <- function(sp, IDs){
   return(IDs)
 }
 
-getMatrix <- function(seqs, N=250, type="SVM"){
+getMatrix <- function(seqs, IDs, type="SVM"){
   SVM_matrixes <- list()
-  for (i in 1:N){
-    seq = seqs[i,-1]
-    ID = rownames(seq)
+  for (ID in IDs){
+    seq = seqs[ID,-1]
     
     # Use deltaSVM to retrieve sequence
     if (type=="SVM"){
@@ -68,9 +69,9 @@ getScore <- function(score, sp, sample, TF){
   return(score_base)
 } 
 
+list_pearson <- list()
 for (TF in TFS){
   message(TF)
-    
   ################################################################################
   # Peak summits
   file_summits = paste0(path, "../peaks_calling/NarrowPeaks/", sp, "/", sample, "/", TF, ".consensus_summits_UCSC_names.bed")
@@ -83,15 +84,34 @@ for (TF in TFS){
   length <- width(sequences)
   names(length) <- gsub("_.*:\\d+:\\d+:", "_", names(sequences))
   MLE <- all_MLE_list[[paste0(sp, "_", TF)]]
+  
+  if (sp == "drosophila"){rownames(MLE) <- paste0(MLE$peaks_ID)
+  }else{rownames(MLE) <- paste0(MLE$ID, "_", MLE$peaks_ID)}
+  
   MLE$start <- as.numeric(str_split_i(MLE$ID, ":", 2))
   MLE$length <- as.numeric(str_split_i(MLE$ID, ":", 3))-MLE$start 
-  MLE$effective_length <- length[rownames(MLE)]
+  MLE$effective_length <- length[paste0(MLE$ID, "_", MLE$peaks_ID)] # or :
   MLE$deltaLength <- MLE$length-MLE$effective_length
   MLE$summits <- summits[MLE$peaks_ID,]$V2
   MLE$pos_summit <- (MLE$summits-MLE$start)+1
   MLE <- MLE[which(MLE$deltaLength<5),]
+  MLE$meanSVM <- MLE$SVM / MLE$effective_length
   row.names(MLE) <- rename_ID(sp, row.names(MLE))
-
+  
+  # Peaks quality
+  pathData <- paste(path, "../peaks_calling/NarrowPeaks", sp, sample, "bowtie2/mergedLibrary/macs2/narrowPeak/consensus", sep="/") 
+  peaks_quality <- read_tsv(paste0(pathData, "/", TF, "/", TF, ".consensus_peaks.quality_scored.tsv"))
+  peaks_quality <- as.data.frame(peaks_quality)
+  rownames(peaks_quality) <- peaks_quality$interval_id
+  peaks_quality <- peaks_quality[row.names(MLE),]
+  peaks_quality$mean_coverage <- peaks_quality$Coverage / MLE$effective_length
+  
+  # Correlation Quality 
+  peaks_quality$class_coverage <- cut(peaks_quality$Coverage, 
+                                      breaks=quantile(peaks_quality$Coverage, probs=seq(0,1, by=0.1), na.rm=TRUE), labels=seq(1,10))
+  
+  peaks_quality$class_mean_coverage <- cut(peaks_quality$mean_coverage, 
+                                      breaks=quantile(peaks_quality$mean_coverage, probs=seq(0,1, by=0.1), na.rm=TRUE), labels=seq(1,10))
   # SVM
   svm_per_base = paste0(path, "/NarrowPeaks/", sp, "/", sample, "/", TF, "/SVM_per_base.txt")
   svm_per_base <- read.table(svm_per_base, h=T, sep="\t", quote="", fill=T)
@@ -105,10 +125,6 @@ for (TF in TFS){
   deltas_Interval <- rename_ID(sp, deltas_all$ID)
   rownames(deltas_all) <- deltas_Interval
   deltas_all <- deltas_all[row.names(MLE),]
-
-  # Get matrix for each sequence
-  deltaSVM_matrixes <- getMatrix(deltas_all, N=1000, type="deltaSVM")
-  SVM_matrixes <- getMatrix(svm_per_base_orginal, N=1000, type="SVM")
   
   deltas <- as.data.frame(t(deltas_all[,-1]))
   deltas$pos <- sub("\\..*", "", rownames(deltas))
@@ -200,45 +216,56 @@ for (TF in TFS){
   names(lines) <- IDS
   
   #################################################################################
-  # Compare correl phastCons vs Delta
-  pdf(paste0("/Users/alaverre/Documents/Detecting_positive_selection/results/figures/", sp, "_", TF, "_scores_correlations_along_peaks_CPM.pdf"))
+  par(mfrow=c(1,2))
+  # Correlation SVM
+  plot(MLE$meanSVM~peaks_quality$class_mean_coverage, notch=T, ylab="Peak mean SVM", xlab="Quantile Peak Total Coverage", main=paste(sp, TF), outline=F)
+  cor = cor.test(MLE$meanSVM, peaks_quality$mean_coverage, method="spearman")
+  mtext(bquote(rho == .(round(cor$estimate, 2)) ~ "," ~ italic(p) == .(formatC(cor$p.value, format = "e", digits = 2)) ), side = 3, line = 0.5, adj = 0)
   
+  # Correlation SVM-Coverage
+  plot(cor_svm[row.names(MLE)]~peaks_quality$class_coverage, notch=T, ylab="Correlation SVM-Coverage (per base)", xlab="Quantile Peak Total Coverage", outline=F)
+  cor = cor.test(cor_svm[row.names(MLE)], peaks_quality$Coverage, method="spearman")
+  mtext(bquote(rho == .(round(cor$estimate, 2)) ~ "," ~ italic(p) == .(formatC(cor$p.value, format = "e", digits = 2)) ), side = 3, line = 0.5, adj = 0)
+  
+  #################################################################################
+  # Compare correl phastCons vs Delta
   # Correlation Spearman
   data <- data.frame(
     name=c(rep("SVM",length(cor_svm)), rep("DeltaSVM",length(cor_delta)), rep("PhastCons",length(cor_phast)), rep("PhyloP",length(cor_phylo))),
     value=c(cor_svm, cor_delta, cor_phast, cor_phylo))
 
-   g <- ggplot(data, aes(x=name, y=value, fill=name)) +
+   spearman <- ggplot(data, aes(x=name, y=value, fill=name)) +
     geom_violin(width=1.1, alpha=0.5) +
     geom_boxplot(width=0.12, color="black", alpha=0.5) +
     scale_y_continuous(breaks = seq(-1, 1, by = 0.25)) +
-    theme_minimal() +
+     theme_minimal(base_size = 16) +
     theme(legend.position="none", axis.title=element_text(size=14),
       plot.title = element_text(size=15), axis.text = element_text(size=12)) +
     ggtitle(paste(TF, " - Reads coverage correlations along peaks")) +
     scale_x_discrete(limits=c("SVM", "DeltaSVM", "PhastCons", "PhyloP"), ) +
     xlab("") + ylab("Spearman's correlation coefficient") +
      scale_fill_manual(values=c("navy", "red", "#7CAE00", "orange"))
-   
-  plot(g)
   
   # Correlation Pearson
   data <- data.frame(
-    name=c(rep("SVM",length(cor_svm_P)), rep("DeltaSVM",length(cor_delta_P)), rep("PhastCons",length(cor_phast_P)), rep("PhyloP",length(cor_phylo_P))),
+    name=c(rep("SVM",length(cor_svm_P)), rep("ΔSVM",length(cor_delta_P)), rep("PhastCons",length(cor_phast_P)), rep("PhyloP",length(cor_phylo_P))),
     value=c(cor_svm_P, cor_delta_P, cor_phast_P, cor_phylo_P))
   
-  g <- ggplot(data, aes(x=name, y=value, fill=name)) +
+  pearson <- ggplot(data, aes(x=name, y=value, fill=name)) +
     geom_violin(width=1.1, alpha=0.5) +
     geom_boxplot(width=0.12, color="black", alpha=0.5) +
     scale_y_continuous(breaks = seq(-1, 1, by = 0.25)) +
-    theme_minimal() +
-    theme(legend.position="none", axis.title=element_text(size=14),
-          plot.title = element_text(size=15), axis.text = element_text(size=12)) +
-    ggtitle(paste(TF, " - Reads coverage correlations along peaks")) +
-    scale_x_discrete(limits=c("SVM", "DeltaSVM", "PhastCons", "PhyloP"), ) +
+    theme_minimal(base_size = 18) +
+    theme(legend.position="none", axis.text = element_text(size=14, colour = "black")) +
+    scale_x_discrete(limits=c("SVM", "ΔSVM", "PhastCons", "PhyloP")) +
     xlab("") + ylab("Pearson's correlation coefficient") +
     scale_fill_manual(values=c("navy", "red", "#7CAE00", "orange"))
-  plot(g)
+  
+  list_pearson[[paste0(sp, "_", TF)]] <- pearson
+  
+  #################################################################################
+  # Only for Figure 1
+  if (sp != "human" | TF != "CEBPA"){next}
   
   # Average centered at peak summit
   lines_summit <- list()
@@ -274,12 +301,16 @@ for (TF in TFS){
     lines_summit <- c(lines_summit, list(dat))
   }
   
+  
+  custom_labels = c("Normalised.coverage" = "Coverage", "SVM" = "SVM", "abs.deltaSVM." = "SVM", "phastCons" = "phastCons", "phyloP" = "phyloP")
   Concat_lines <- do.call(rbind, lines_summit)
   Mean_lines <- as.data.frame(apply(Concat_lines, 2, function(var) tapply(var, as.factor(Concat_lines$Position), function(x) mean(x, na.rm=T))))
   melt_data <- melt(Mean_lines, id.var="Position")
-  g <- ggplot(melt_data, aes(x = Position, y = value)) + geom_line(aes(color = variable)) + ylab("") +
-    facet_grid(variable ~ ., scales = "free_y", switch = "y", labeller = labeller(variable = custom_labels)) + theme_bw() +  
-    theme(legend.position = "none", text = element_text(size = 14), strip.placement = "outside", strip.text.y = element_text(size = 14), strip.background = element_blank()) +
+  plot_lines <- ggplot(melt_data, aes(x = Position, y = value)) + geom_line(aes(color = variable)) + ylab("") +
+    facet_grid(variable ~ ., scales = "free_y", switch = "y", labeller = labeller(variable = custom_labels)) + theme_bw(base_size = 16) +  
+    theme(legend.position = "none", text = element_text(size = 16), 
+          strip.placement = "outside", strip.text.y = element_text(size = 16), 
+          strip.background = element_blank(), axis.text = element_text(size=14, colour = "black")) +
     geom_vline(xintercept =0, linetype="dashed") +
     scale_color_manual(values = c(
       "Normalised.coverage" = "black",
@@ -288,24 +319,29 @@ for (TF in TFS){
       "phastCons" = "red",
       "phyloP" = "#7CAE00"
     ))
-  plot(g)
-  dev.off()
+
+  example_CEBPA = "Interval_17452" # example human CEBPA in Figure 1A
+  IDs=c(example_CEBPA) #, names(sort(cor_svm, decreasing = T)[1:5]), names(sort(cor_svm, decreasing = F)[1:5]))
   
-  #pdf(paste0("/Users/alaverre/Documents/Detecting_positive_selection/cluster/results/final_figures/Fig1_A_", sp, "_", TF, "_scores_CPM.pdf"), width=12)
+  # Get matrix for each sequence
+  deltaSVM_matrixes <- getMatrix(deltas_all, IDs, type="deltaSVM")
+  SVM_matrixes <- getMatrix(svm_per_base_orginal, IDs, type="SVM")
   
-  # Plot 20 peaks example
+  ID="CTCF_sample_peak_3159"
+  # Plot peaks example
   for (ID in N){
     if (ncol(SVM_matrixes[[ID]])>150){next}
-    if (cor_svm[ID]<0.6){next}
+    if (cor_svm[ID]<0.5){next}
     message(ID)
-    custom_labels <- c("Normalised.coverage" = "Coverage", "SVM" = "SVM", "abs.deltaSVM." = "ΔSVM", "phastCons" = "phastCons", "phyloP" = "phyloP")
     ID = names(deltaSVM_matrixes[ID])
     #if (ID != "Interval_43502"){next}
     melt_data <- melt(lines[[ID]], id.var="Position")
     #melt_data <- melt_data[which(melt_data$variable %in% c("Normalised.coverage", "phastCons", "phyloP")),]
     line_plot <- ggplot(melt_data, aes(x = Position, y = value)) + geom_line(aes(color = variable)) + ylab("") +
       facet_grid(variable ~ ., scales = "free_y", switch = "y", labeller = labeller(variable = custom_labels)) + theme_bw() + 
-      theme(legend.position = "none", text = element_text(size = 14), strip.placement = "outside", strip.text.y = element_text(size = 14), strip.background = element_blank()) +
+      theme(legend.position = "none", text = element_text(size = 14), strip.placement = "outside", 
+            strip.text.y = element_text(size = 14), strip.background = element_blank(),
+            axis.text = element_text(size=14, colour = "black")) +
       geom_vline(xintercept = max_summits[ID], linetype="dashed") +
       scale_color_manual(values = c(
         "Normalised.coverage" = "black",
@@ -314,26 +350,51 @@ for (TF in TFS){
         "phastCons" = "red",
         "phyloP" = "#7CAE00"
       ))
-    plot(line_plot)
 
     SVM_seqlogo <- ggseqlogo(SVM_matrixes[[ID]], method = "custom") + theme_minimal() +
-      theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(), axis.text.x = element_blank()) + 
-      labs(y = "SVM", x = "") + ggtitle(ID) + scale_x_continuous(breaks = seq(0, size-1, by = 25))
-    #plot(SVM_seqlogo)
+      theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(),
+            axis.text.x = element_blank(), text = element_text(size = 14), axis.text = element_text(size=14, colour = "black")) + 
+      labs(y = "SVM", x = "") + scale_x_continuous(breaks = seq(0, size-1, by = 25))
     
     deltaSVM_seqlogo <- ggseqlogo(deltaSVM_matrixes[[ID]], method = "custom") + theme_minimal() +
-      theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(), axis.text.x = element_blank()) + 
+      theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(),
+            axis.text.x = element_blank(), text = element_text(size = 14), axis.text = element_text(size=14, colour = "black"), 
+            plot.margin = margin(l=1)) + 
       labs(y = "deltaSVM", x = "") + ggtitle("") + scale_x_continuous(breaks = seq(0, size-1, by = 25))
-    tmp_plot <- SVM_seqlogo / deltaSVM_seqlogo 
+
 
     final_plot <- (SVM_seqlogo / deltaSVM_seqlogo / line_plot) +
       plot_layout(nrow = 3, heights = c(2, 2, 10)) &
       theme(plot.margin = margin(1, 1, 1, 1))
     
-    print(final_plot)
+    plot(final_plot)
+    A <- wrap_plots(SVM_seqlogo, deltaSVM_seqlogo, line_plot, ncol = 1, heights = c(2, 2, 10), labels = c("A"))
+    BC <- wrap_plots(plot_lines, pearson,  ncol = 2)
+
+    Figure1 <- A / (B + C) +
+      plot_layout(design = layout) +  # Adjust relative heights of top and bottom
+      plot_annotation(tag_levels = "A") &
+      theme(plot.tag = element_text(size = 16, face = "bold", hjust = -0.5),
+            plot.tag.position = c(0, 1))
     
+    top <- plot_grid(SVM_seqlogo, deltaSVM_seqlogo, line_plot, ncol = 1, heights = c(2, 2, 10))
+    bottom2 <- plot_grid(plot_lines, pearson, ncol = 2, label_size = 16)
+    Figure1 <- plot_grid(A, bottom2, ncol = 1, rel_heights = c(7,5), labels = "AUTO", label_size = 16)
+    
+    # Save Figure 1
+    ggsave(paste0(pathFigure,"/Figure1_human_CEBPA.pdf"), Figure1, width = 10, height = 15, dpi=320)
+    ggsave(paste0(pathFigure,"/Figure1_human_CEBPA.png"), Figure1, width = 10, height = 15, dpi=320)
   }
-  
-  dev.off()
 }
+
+p1 <- list_pearson[["human_FOXA1"]] + ggtitle("Human FOXA1") + theme(plot.title = element_text(size = 16))
+p2 <- list_pearson[["human_HNF4A"]] + ggtitle("Human HNF4A")+ theme(plot.title = element_text(size = 16))
+p3 <- list_pearson[["mouse_HNF6"]] + ggtitle("Mouse HNF6")+ theme(plot.title = element_text(size = 16))
+p4 <- list_pearson[["drosophila_CTCF"]] + ggtitle("Drosophila CTCF")+ theme(plot.title = element_text(size = 16))
+
+SupFig1 <- (p1 + p2) / (p3 + p4) +
+  plot_annotation(tag_levels = "A") &
+  theme(plot.tag = element_text(size = 16, face = "bold", hjust = -0.5), plot.tag.position = c(0, 1))
+ggsave(paste0(pathFigure,"/SupFigure1.pdf"), SupFig1, width = 10, height = 10, dpi=320)
+ggsave(paste0(pathFigure,"/SupFigure1.png"), SupFig1, width = 10, height = 10, dpi=320)
 
