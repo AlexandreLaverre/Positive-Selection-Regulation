@@ -16,7 +16,7 @@ The pipeline includes the following key steps:
 
 ### Positive Selection Detection
 - **Permutation Test**: Application of the method from [Liu & Robinson-Rechavi, 2020](https://www.science.org/doi/full/10.1126/sciadv.abc9863) to detect extreme change in binding affinity.
-- **RegSel Test**: A novel maximum likelihood-based test (RegEvol) to infer evolutionary regimes of regulatory regions from predicted binding affinity shifts.
+- **RegEvol Test**: A novel maximum likelihood-based test to infer evolutionary regimes of regulatory regions from predicted binding affinity shifts.
 
 ### Comparative and Functional Analyses
 - **Simulations**: Sequence evolution simulations under controlled parameters to validate the performance and robustness of selection detection methods.
@@ -130,7 +130,7 @@ The pipeline requires the following three input files:
 3. **BSgenome object** (tar.gz format)  
    → Used by 2_selection_tests/scripts/generate_negative_sequences.R to obtain a matching negative set of sequences for model training.  
    → If BSgenome is publicly available for the species of interest, it will be automatically downloaded; else it will look in: `../data/BSgenome/`  
-   → Home-made BSgenomes used in this study are available in Zenodo: 
+   → Home-made BSgenomes used in this study are available in Zenodo: https://zenodo.org/records/18379807
 
 #### Run
 ```bash
